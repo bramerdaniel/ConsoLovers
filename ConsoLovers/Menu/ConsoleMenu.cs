@@ -8,6 +8,7 @@ namespace ConsoLovers.Menu
 {
    using System;
    using System.Collections.Generic;
+   using System.Data;
    using System.Linq;
 
    using ConsoLovers.Console;
@@ -161,7 +162,7 @@ namespace ConsoLovers.Menu
       {
          WriteMenu();
 
-         inputHandler = new ConsoleMenuInputHandler(ConsoleProxy.Instance);
+         inputHandler = new ConsoleMenuInputHandler(Console);
          inputHandler.InputChanged += OnInputChanged;
          inputHandler.Start();
       }
@@ -569,7 +570,7 @@ namespace ConsoLovers.Menu
          }
       }
 
-      private void WriteMenu()
+      internal void WriteMenu()
       {
          Console.Clear(Colors.ConsoleBackground);
          expanderWidth = root.Items.Any(i => i.HasChildren) ? Expander.Length : 0;
@@ -579,9 +580,14 @@ namespace ConsoLovers.Menu
          indexMap.Clear();
          var elements = CreateElements(root.Items, null).ToList();
 
-         var unifiedLength = elements.Max(m => m.Text.Length + m.Indent.Length) + Selector.Length + expanderWidth + indexWidth;
          PrintHeader();
-         PrintElements(elements, unifiedLength);
+
+         if (elements.Count > 0)
+         {
+            var unifiedLength = elements.Max(m => m.Text.Length + m.Indent.Length) + Selector.Length + expanderWidth + indexWidth;
+            PrintElements(elements, unifiedLength);
+         }
+
          PrintFooter();
       }
 
