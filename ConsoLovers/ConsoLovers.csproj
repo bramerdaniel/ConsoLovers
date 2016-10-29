@@ -40,22 +40,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConsoleInputEventArgs.cs" />
-    <Compile Include="ConsoleInputHandler.cs" />
-    <Compile Include="ConsoleMenu.cs" />
+    <Compile Include="Console\ColoredConsoleProxy.cs" />
+    <Compile Include="Menu\ConsoleInputEventArgs.cs" />
+    <Compile Include="Menu\ConsoleMenuInputHandler.cs" />
+    <Compile Include="Menu\ConsoleMenu.cs" />
     <Compile Include="ConsoleMenuBuilder.cs" />
-    <Compile Include="ConsoleMenuItem.cs" />
-    <Compile Include="ConsoleProxy.cs" />
-    <Compile Include="ElementInfo.cs" />
-    <Compile Include="ExceptionEventArgs.cs" />
-    <Compile Include="ExpanderDescription.cs" />
-    <Compile Include="IColoredConsole.cs" />
-    <Compile Include="IConsole.cs" />
-    <Compile Include="ICustomHeader.cs" />
-    <Compile Include="MenuColorTheme.cs" />
-    <Compile Include="ElementColors.cs" />
+    <Compile Include="Menu\ConsoleMenuItem.cs" />
+    <Compile Include="Console\ConsoleProxy.cs" />
+    <Compile Include="Menu\ElementInfo.cs" />
+    <Compile Include="Menu\ExceptionEventArgs.cs" />
+    <Compile Include="Menu\ExpanderDescription.cs" />
+    <Compile Include="Contracts\IColoredConsole.cs" />
+    <Compile Include="Contracts\IConsole.cs" />
+    <Compile Include="Contracts\ICustomHeader.cs" />
+    <Compile Include="Menu\MenuColorTheme.cs" />
+    <Compile Include="Menu\ColorSet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SelectionStrech.cs" />
+    <Compile Include="Contracts\SelectionStrech.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Todo.txt" />

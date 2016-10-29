@@ -1,10 +1,10 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ConsoleMenuItem.cs" company="KUKA Roboter GmbH">
-//   Copyright (c) KUKA Roboter GmbH 2006 - 2016
+// <copyright file="ConsoleMenuItem.cs" company="ConsoLovers">
+//   Copyright (c) ConsoLovers  2015 - 2016
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers
+namespace ConsoLovers.Menu
 {
    using System;
    using System.Collections.Generic;
@@ -12,28 +12,31 @@ namespace ConsoLovers
    using System.Linq;
 
    [DebuggerDisplay("{Text}")]
-   public class ConsoleMenuItem 
+   public class ConsoleMenuItem
    {
-      private readonly Func<IEnumerable<ConsoleMenuItem>> loadChildren;
-
-      private readonly bool clearItemsOnCollapse;
-
-      #region Constructors and Destructors
-
-
-      private readonly Action<ConsoleMenuItem> execute;
+      #region Constants and Fields
 
       private readonly Func<bool> canExecute;
 
-      private bool isExpanded;
+      private readonly bool clearItemsOnCollapse;
 
-      private ConsoleMenu menu;
+      private readonly Action<ConsoleMenuItem> execute;
+
+      private readonly Func<IEnumerable<ConsoleMenuItem>> loadChildren;
+
+      private bool isExpanded;
 
       private List<ConsoleMenuItem> items;
 
+      private bool loadingChildren = false;
+
+      private ConsoleMenu menu;
+
       private string text;
 
-      private bool loadingChildren = false;
+      #endregion
+
+      #region Constructors and Destructors
 
       public ConsoleMenuItem(string text, Func<IEnumerable<ConsoleMenuItem>> loadChildren, bool clearItemsOnCollapse)
          : this(text)
@@ -87,11 +90,10 @@ namespace ConsoLovers
 
       #region Public Properties
 
-      public bool CanExpand() => items != null || loadChildren != null;
-
       /// <summary>Gets or sets the disabled hint that is displayed when the disabled item is executed.</summary>
-
       public string DisabledHint { get; set; }
+
+      public bool HasChildren => (items != null && items.Count > 0) || loadChildren != null;
 
       public bool IsExpanded
       {
@@ -121,10 +123,22 @@ namespace ConsoLovers
          }
       }
 
+      /// <summary>Gets the <see cref="ConsoleMenu"/> the item is part of.</summary>
+      public ConsoleMenu Menu
+      {
+         get
+         {
+            return menu ?? Parent?.Menu;
+         }
+
+         internal set
+         {
+            menu = value;
+         }
+      }
+
       /// <summary>Gets the menu the item is part of.</summary>
       public ConsoleMenuItem Parent { get; internal set; }
-
-      public bool HasChildren => (items != null && items.Count > 0) || loadChildren != null;
 
       public bool ReturnsToMenu { get; set; } = true;
 
@@ -141,74 +155,21 @@ namespace ConsoLovers
          }
       }
 
-      /// <summary>Gets the <see cref="ConsoleMenu"/> the item is part of.</summary>
-      public ConsoleMenu Menu
-      {
-         get
-         {
-            return menu ?? Parent?.Menu;
-         }
-
-         internal set
-         {
-            menu = value;
-         }
-      }
-
       #endregion
 
       #region Public Methods and Operators
-
-      internal ConsoleMenuItem Next()
-      {
-         return Next(true);
-      }
-
-      private ConsoleMenuItem Next(bool firstChildWhenExpanded)
-      {
-         if (firstChildWhenExpanded && IsExpanded && HasChildren)
-            return items?.FirstOrDefault();
-
-         if (Parent == null || Parent.items == null)
-            return null;
-
-         var currentIndex = Parent.items.IndexOf(this);
-         var nextIndex = currentIndex + 1;
-
-         if (nextIndex >= Parent.items.Count)
-            return Parent.Next(false);
-
-         return Parent.items[nextIndex];
-      }
-
-      internal ConsoleMenuItem Previous()
-      {
-         if (Parent == null)
-            return null;
-
-         var currentIndex = Parent.items.IndexOf(this);
-         if (currentIndex <= 0)
-            return Parent;
-
-         var previous = Parent.items[currentIndex - 1];
-         if (previous.IsExpanded)
-         {
-            var item = previous.items.Last();
-            while (item.IsExpanded)
-            {
-               item = item.Items.Last();
-            }
-
-            return item;
-         }
-
-         return previous;
-      }
 
       public bool CanCollapse()
       {
          return items != null;
       }
+
+      public bool CanExecute()
+      {
+         return execute != null && (canExecute == null || canExecute());
+      }
+
+      public bool CanExpand() => items != null || loadChildren != null;
 
       public bool Collapse()
       {
@@ -222,6 +183,11 @@ namespace ConsoLovers
          }
 
          return false;
+      }
+
+      public void Execute()
+      {
+         execute(this);
       }
 
       public void Expand(bool recursive)
@@ -257,7 +223,7 @@ namespace ConsoLovers
             {
                if (item.HasChildren && item.CanExpand())
                   item.Expand(true);
-            }   
+            }
          }
       }
 
@@ -271,6 +237,52 @@ namespace ConsoLovers
       #endregion
 
       #region Methods
+
+      internal ConsoleMenuItem Next()
+      {
+         return Next(true);
+      }
+
+      internal ConsoleMenuItem Previous()
+      {
+         if (Parent == null)
+            return null;
+
+         var currentIndex = Parent.items.IndexOf(this);
+         if (currentIndex <= 0)
+            return Parent;
+
+         var previous = Parent.items[currentIndex - 1];
+         if (previous.IsExpanded)
+         {
+            var item = previous.items.Last();
+            while (item.IsExpanded)
+            {
+               item = item.Items.Last();
+            }
+
+            return item;
+         }
+
+         return previous;
+      }
+
+      private ConsoleMenuItem Next(bool firstChildWhenExpanded)
+      {
+         if (firstChildWhenExpanded && IsExpanded && HasChildren)
+            return items?.FirstOrDefault();
+
+         if (Parent == null || Parent.items == null)
+            return null;
+
+         var currentIndex = Parent.items.IndexOf(this);
+         var nextIndex = currentIndex + 1;
+
+         if (nextIndex >= Parent.items.Count)
+            return Parent.Next(false);
+
+         return Parent.items[nextIndex];
+      }
 
       private void SwapExpand(ConsoleMenuItem sender)
       {
@@ -288,15 +300,5 @@ namespace ConsoLovers
       }
 
       #endregion
-
-      public bool CanExecute()
-      {
-         return execute != null && (canExecute == null || canExecute());
-      }
-
-      public void Execute()
-      {
-         execute(this);
-      }
    }
 }

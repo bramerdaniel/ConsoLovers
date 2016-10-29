@@ -1,10 +1,10 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ElementInfo.cs" company="KUKA Roboter GmbH">
-//   Copyright (c) KUKA Roboter GmbH 2006 - 2016
+// <copyright file="ElementInfo.cs" company="ConsoLovers">
+//   Copyright (c) ConsoLovers  2015 - 2016
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers
+namespace ConsoLovers.Menu
 {
    internal class ElementInfo
    {
@@ -14,9 +14,9 @@ namespace ConsoLovers
 
       public string Hint { get; set; }
 
-      public string Indent { get; set; } = string.Empty;
-
       public string Identifier { get; set; }
+
+      public string Indent { get; set; } = string.Empty;
 
       public string IndexString { get; set; }
 
@@ -26,9 +26,9 @@ namespace ConsoLovers
 
       public ConsoleMenuItem MenuItem { get; set; }
 
-      public string Text { get; set; }
-
       public string Path { get; set; }
+
+      public string Text { get; set; }
 
       #endregion
    }

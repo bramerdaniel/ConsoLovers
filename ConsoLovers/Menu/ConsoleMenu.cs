@@ -1,18 +1,23 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ConsoleMenu.cs" company="KUKA Roboter GmbH">
-//   Copyright (c) KUKA Roboter GmbH 2006 - 2016
+// <copyright file="ConsoleMenu.cs" company="ConsoLovers">
+//   Copyright (c) ConsoLovers  2015 - 2016
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers
+namespace ConsoLovers.Menu
 {
    using System;
    using System.Collections.Generic;
    using System.Linq;
 
+   using ConsoLovers.Console;
+   using ConsoLovers.Contracts;
+
    public class ConsoleMenu
    {
       #region Constants and Fields
+
+      private readonly Dictionary<string, ElementInfo> indexMap = new Dictionary<string, ElementInfo>();
 
       private readonly ConsoleMenuItem root = new ConsoleMenuItem("rootItem");
 
@@ -20,9 +25,7 @@ namespace ConsoLovers
 
       private int expanderWidth = 1;
 
-      private readonly Dictionary<string, ElementInfo> indexMap = new Dictionary<string, ElementInfo>();
-
-      private ConsoleInputHandler inputHandler;
+      private ConsoleMenuInputHandler inputHandler;
 
       private ConsoleMenuItem notExecutable;
 
@@ -42,7 +45,11 @@ namespace ConsoLovers
 
       public bool ClearOnExecution { get; set; } = true;
 
+      public ConsoleKey[] CloseKeys { get; set; } = new ConsoleKey[0];
+
       public MenuColorTheme Colors { get; set; } = new MenuColorTheme();
+
+      public IColoredConsole Console { get; set; } = ColoredConsoleProxy.Instance;
 
       public int Count => root.Items.Count;
 
@@ -74,6 +81,11 @@ namespace ConsoLovers
       #endregion
 
       #region Public Methods and Operators
+
+      public static ConsoleMenuBuilder CreateNew()
+      {
+         return new ConsoleMenuBuilder();
+      }
 
       public void Add(ConsoleMenuItem item)
       {
@@ -117,6 +129,11 @@ namespace ConsoLovers
          item.Menu = this;
       }
 
+      public void Invalidate()
+      {
+         WriteMenu();
+      }
+
       /// <summary>Removes the given item from the menu.</summary>
       /// <param name="item">The item to remove.</param>
       /// <returns>True if the item could be removed</returns>
@@ -144,7 +161,7 @@ namespace ConsoLovers
       {
          WriteMenu();
 
-         inputHandler = new ConsoleInputHandler(ConsoleProxy.Instance);
+         inputHandler = new ConsoleMenuInputHandler(ConsoleProxy.Instance);
          inputHandler.InputChanged += OnInputChanged;
          inputHandler.Start();
       }
@@ -216,10 +233,6 @@ namespace ConsoLovers
          }
       }
 
-      public IColoredConsole Console { get; set; } = ConsoleProxy.Instance;
-
-      public ConsoleKey[] CloseKeys { get; set; } = new ConsoleKey[0];
-
       private void Execute(ConsoleMenuItem menuItem)
       {
          if (!menuItem.CanExecute())
@@ -267,7 +280,6 @@ namespace ConsoLovers
 
       private bool HandleSelectionChanged(ConsoleKeyInfo lastKey, string input)
       {
-
          switch (lastKey.Key)
          {
             case ConsoleKey.DownArrow:
@@ -350,11 +362,6 @@ namespace ConsoLovers
          {
             WriteMenu();
          }
-      }
-
-      public void Invalidate()
-      {
-         WriteMenu();
       }
 
       private void PrintElement(ElementInfo element, int unifiedLength)
@@ -579,11 +586,6 @@ namespace ConsoLovers
       }
 
       #endregion
-
-      public static ConsoleMenuBuilder CreateNew()
-      {
-         return new ConsoleMenuBuilder();
-      }
    }
 
    internal interface ICustomFooter

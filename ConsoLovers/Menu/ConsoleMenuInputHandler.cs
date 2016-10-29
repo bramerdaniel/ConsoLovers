@@ -1,36 +1,41 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ConsoleInputHandler.cs" company="KUKA Roboter GmbH">
-//   Copyright (c) KUKA Roboter GmbH 2006 - 2016
+// <copyright file="ConsoleMenuInputHandler.cs" company="ConsoLovers">
+//   Copyright (c) ConsoLovers  2015 - 2016
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers
+namespace ConsoLovers.Menu
 {
    using System;
    using System.Collections.Generic;
-   using System.Linq;
    using System.Text;
    using System.Timers;
 
-   public class ConsoleInputHandler
+   using ConsoLovers.Contracts;
+
+   internal class ConsoleMenuInputHandler
    {
-      private readonly IConsole console;
-
-      public ConsoleInputHandler(IConsole console)
-      {
-         if (console == null)
-            throw new ArgumentNullException(nameof(console));
-
-         this.console = console;
-      }
-
       #region Constants and Fields
+
+      private readonly IConsole console;
 
       private readonly Queue<ConsoleKeyInfo> pressedKeys = new Queue<ConsoleKeyInfo>();
 
       private bool stopped;
 
       private Timer timer;
+
+      #endregion
+
+      #region Constructors and Destructors
+
+      internal ConsoleMenuInputHandler(IConsole console)
+      {
+         if (console == null)
+            throw new ArgumentNullException(nameof(console));
+
+         this.console = console;
+      }
 
       #endregion
 

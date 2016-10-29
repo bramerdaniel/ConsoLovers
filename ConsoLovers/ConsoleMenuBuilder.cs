@@ -2,6 +2,8 @@ namespace ConsoLovers
 {
    using System;
 
+   using ConsoLovers.Menu;
+
    public class ConsoleMenuBuilder
    {
       private ConsoleMenu menu;

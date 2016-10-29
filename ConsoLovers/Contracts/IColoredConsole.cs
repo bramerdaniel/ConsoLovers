@@ -1,15 +1,15 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IColoredConsole.cs" company="KUKA Roboter GmbH">
-//   Copyright (c) KUKA Roboter GmbH 2006 - 2016
+// <copyright file="IColoredConsole.cs" company="ConsoLovers">
+//   Copyright (c) ConsoLovers  2015 - 2016
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers
+namespace ConsoLovers.Contracts
 {
    using System;
 
    /// <summary>Console abstraction that adds some methods for easy colorizing the console</summary>
-   /// <seealso cref="ConsoLovers.IConsole"/>
+   /// <seealso cref="IConsole"/>
    public interface IColoredConsole : IConsole
    {
       #region Public Methods and Operators

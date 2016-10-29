@@ -1,8 +1,8 @@
-namespace ConsoLovers
+namespace ConsoLovers.Menu
 {
    using System;
 
-   public class ConsoleInputEventArgs : EventArgs
+   internal class ConsoleInputEventArgs : EventArgs
    {
       public ConsoleKeyInfo KeyInfo { get; set; }
 

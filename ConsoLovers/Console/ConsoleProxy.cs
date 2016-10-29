@@ -1,29 +1,24 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ConsoleProxy.cs" company="KUKA Roboter GmbH">
-//   Copyright (c) KUKA Roboter GmbH 2006 - 2016
+// <copyright file="ConsoleProxy.cs" company="ConsoLovers">
+//   Copyright (c) ConsoLovers  2015 - 2016
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers
+namespace ConsoLovers.Console
 {
    using System;
 
-   public class ConsoleProxy : IColoredConsole
+   using ConsoLovers.Contracts;
+
+   public class ConsoleProxy : IConsole
    {
       #region Constants and Fields
 
-      private static IColoredConsole instance;
+      private static IConsole instance;
 
       #endregion
 
       #region IColoredConsole Members
-
-      public void Clear(ConsoleColor clearingColor)
-      {
-         Console.BackgroundColor = clearingColor;
-         Console.Clear();
-         Console.ResetColor();
-      }
 
       #endregion
 
@@ -208,7 +203,7 @@ namespace ConsoLovers
          }
       }
 
-      public static IColoredConsole Instance => instance ?? (instance = new ConsoleProxy());
+      public static IConsole Instance => instance ?? (instance = new ConsoleProxy());
 
       #endregion
    }

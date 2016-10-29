@@ -1,4 +1,4 @@
-﻿namespace ConsoLovers
+﻿namespace ConsoLovers.Menu
 {
    using System;
 
