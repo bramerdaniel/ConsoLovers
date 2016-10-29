@@ -133,6 +133,42 @@ namespace ConsoLovers.Menu
          }
       }
 
+      public static MenuColorTheme Bahama
+      {
+         get
+         {
+            var theme = new MenuColorTheme
+            {
+               MenuItem = new ColorSet
+               {
+                  SelectedForeground = ConsoleColor.Blue,
+                  Background = ConsoleColor.Black,
+                  SelectedBackground = ConsoleColor.White,
+                  DisabledForeground = ConsoleColor.Red,
+                  DisabledBackground = ConsoleColor.Black,
+                  DisabledSelectedForeground = ConsoleColor.Red,
+                  DisabledSelectedBackground = ConsoleColor.DarkGray
+               },
+
+               Selector = new ColorSet
+               {
+                  SelectedForeground = ConsoleColor.Blue,
+                  SelectedBackground = ConsoleColor.White,
+                  DisabledSelectedForeground = ConsoleColor.Red
+               },
+
+               Expander = new ColorSet
+               {
+                  SelectedForeground = ConsoleColor.Blue,
+                  SelectedBackground = ConsoleColor.White
+               }
+            };
+
+            return theme;
+         }
+      }
+
+
       #endregion
    }
 }

@@ -101,7 +101,8 @@ namespace MenuDemo
             chooseRedTheme,
             chooseCrazyTheme,
             chooseDefaultTheme,
-            new ConsoleMenuItem("CloseOptions", new ConsoleMenuItem("Exit application but use a long long name", x => Environment.Exit(0))),
+            new ConsoleMenuItem("Bahama", m => m.Menu.Colors = ConsoleMenuThemes.Bahama),
+         new ConsoleMenuItem("CloseOptions", new ConsoleMenuItem("Exit application but use a long long name", x => Environment.Exit(0))),
             new ConsoleMenuItem("A disabled menu ittem using a long name"));
       }
 
@@ -194,21 +195,6 @@ namespace MenuDemo
                                                                     |_|                         ";
 
          var footer = Environment.NewLine + "THIS COULD BE YOUR FOOTER";
-         var theme = new MenuColorTheme
-         {
-            MenuItem =
-               new ColorSet
-               {
-                  Foreground = ConsoleColor.Blue,
-                  SelectedForeground = ConsoleColor.Blue,
-                  Background = ConsoleColor.Black,
-                  SelectedBackground = ConsoleColor.White,
-                  DisabledForeground = ConsoleColor.Red,
-                  DisabledBackground = ConsoleColor.Black,
-                  DisabledSelectedForeground = ConsoleColor.Red,
-                  DisabledSelectedBackground = ConsoleColor.DarkRed
-               }
-         };
 
          ////ConsoleMenu.CreateNew()
          ////   .WithHeader(header)
@@ -217,11 +203,10 @@ namespace MenuDemo
          ////   .CloseOn(ConsoleKey.Escape)
          ////   .Show();
 
-         var menu = new ConsoleMenu { Header = header, Footer = footer, CircularSelection = false, Selector = "» ", Colors = theme };
+         var menu = new ConsoleMenu { Header = header, Footer = footer, CircularSelection = false, Selector = "» ", Colors = ConsoleMenuThemes.Bahama };
 
          menu.SelectionStrech = SelectionStrech.UnifiedLength;
          // menu.Expander = new ExpanderDescription { Collapsed = "►", Expanded = "▼" };
-
          menu.Add(CreateColorMenu());
          menu.Add(CreateSelectionStrechMenu());
          menu.Add(CreatCircularSelectionMenu(menu));
