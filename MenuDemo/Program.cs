@@ -78,54 +78,6 @@ namespace MenuDemo
 
       private static ConsoleMenuItem CreateColorMenu()
       {
-         var blueTheme = new MenuColorTheme();
-         blueTheme.Selector.SelectedForeground = ConsoleColor.White;
-         blueTheme.Selector.SelectedBackground = ConsoleColor.Blue;
-         blueTheme.Selector.DisabledSelectedBackground = ConsoleColor.DarkBlue;
-         blueTheme.Selector.DisabledSelectedForeground = ConsoleColor.DarkGray;
-         blueTheme.MenuItem.Foreground = ConsoleColor.Blue;
-         blueTheme.MenuItem.DisabledForeground = ConsoleColor.DarkBlue;
-         blueTheme.MenuItem.SelectedForeground = ConsoleColor.DarkBlue;
-         blueTheme.MenuItem.SelectedBackground = ConsoleColor.Blue;
-         blueTheme.MenuItem.DisabledSelectedForeground = ConsoleColor.Blue;
-         blueTheme.MenuItem.DisabledSelectedBackground = ConsoleColor.DarkBlue;
-         blueTheme.Expander.SelectedBackground = ConsoleColor.Blue;
-         blueTheme.Expander.SelectedForeground = ConsoleColor.White;
-         blueTheme.HeaderForeground = ConsoleColor.Blue;
-         blueTheme.HeaderBackground = ConsoleColor.Black;
-         blueTheme.FooterForeground = ConsoleColor.Blue;
-         blueTheme.FooterBackground = ConsoleColor.Black;
-
-         var redTheme = new MenuColorTheme
-         {
-            ConsoleBackground = ConsoleColor.Red,
-            HeaderForeground = ConsoleColor.Red,
-            HeaderBackground = ConsoleColor.DarkRed,
-            MenuItem =
-               new ColorSet
-               {
-                  Foreground = ConsoleColor.Black,
-                  Background = ConsoleColor.Red,
-                  SelectedForeground = ConsoleColor.White,
-                  SelectedBackground = ConsoleColor.DarkRed,
-                  DisabledForeground = ConsoleColor.Gray,
-                  DisabledBackground = ConsoleColor.Red,
-                  DisabledSelectedBackground = ConsoleColor.DarkRed,
-                  DisabledSelectedForeground = ConsoleColor.Red
-               },
-            Selector =
-               new ColorSet
-               {
-                  Background = ConsoleColor.Red,
-                  DisabledBackground = ConsoleColor.Red,
-                  DisabledSelectedBackground = ConsoleColor.DarkRed,
-                  SelectedForeground = ConsoleColor.White,
-                  SelectedBackground = ConsoleColor.DarkRed
-               },
-            Expander =
-               new ColorSet { Foreground = ConsoleColor.Black, Background = ConsoleColor.Red, SelectedForeground = ConsoleColor.White, SelectedBackground = ConsoleColor.DarkRed }
-         };
-
          var crazyTheme = new MenuColorTheme();
          crazyTheme.Selector.Foreground = ConsoleColor.Yellow;
          crazyTheme.MenuItem.Foreground = ConsoleColor.DarkRed;
@@ -140,8 +92,8 @@ namespace MenuDemo
          crazyTheme.HeaderBackground = ConsoleColor.Yellow;
 
          var chooseDefaultTheme = new ConsoleMenuItem("Default", m => m.Menu.Colors = new MenuColorTheme());
-         var chooseBlueTheme = new ConsoleMenuItem("Blue", m => m.Menu.Colors = blueTheme);
-         var chooseRedTheme = new ConsoleMenuItem("Red", m => m.Menu.Colors = redTheme);
+         var chooseBlueTheme = new ConsoleMenuItem("Blue", m => m.Menu.Colors = ConsoleMenuThemes.Blue);
+         var chooseRedTheme = new ConsoleMenuItem("Red", m => m.Menu.Colors = ConsoleMenuThemes.Red);
          var chooseCrazyTheme = new ConsoleMenuItem("Crazy", m => m.Menu.Colors = crazyTheme);
          return new ConsoleMenuItem(
             "Choose color theme",
@@ -235,13 +187,11 @@ namespace MenuDemo
       {
          Console.CursorSize = 4;
          Console.WindowHeight = 40;
-         string header = @"  _________        .__                     __                                           __   .__                       
- /   _____/  ____  |  |    ____    ____  _/  |_    _____     ____       ____  ______  _/  |_ |__|  ____    ____        
- \_____  \ _/ __ \ |  |  _/ __ \ _/ ___\ \   __\   \__  \   /    \     /  _ \ \____ \ \   __\|  | /  _ \  /    \       
- /        \\  ___/ |  |__\  ___/ \  \___  |  |      / __ \_|   |  \   (  <_> )|  |_> > |  |  |  |(  <_> )|   |  \      
-/_______  / \___  >|____/ \___  > \___  > |__|     (____  /|___|  /    \____/ |   __/  |__|  |__| \____/ |___|  /      
-        \/      \/            \/      \/                \/      \/            |__|                            \/       
-";
+         string header = @"    ___                     _        __ __                  ___           _                     
+   |  _> ___ ._ _  ___ ___ | | ___  |  \  \ ___ ._ _  _ _  | __>__   ___ | | ___  _ _  ___  _ _ 
+   | <__/ . \| ' |<_-</ . \| |/ ._> |     |/ ._>| ' || | | | _> \ \/| . \| |/ . \| '_>/ ._>| '_>
+   `___/\___/|_|_|/__/\___/|_|\___. |_|_|_|\___.|_|_|`___| |___>/\_\|  _/|_|\___/|_|  \___.|_|  
+                                                                    |_|                         ";
 
          var footer = Environment.NewLine + "THIS COULD BE YOUR FOOTER";
          var theme = new MenuColorTheme
