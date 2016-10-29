@@ -48,6 +48,20 @@ namespace ConsoLovers.UnitTests.Menu
          consoleMock.Verify(x => x.WriteLine(), Times.Once());
       }
 
+      [TestMethod]
+      public void EnsureFlatItemIsDisplayed()
+      {
+         var consoleMock = new Mock<IColoredConsole>();
+         var target = new ConsoleMenu { Console = consoleMock.Object };
+         target.Add(new ConsoleMenuItem("Item 1"));
+
+         target.WriteMenu();
+
+         consoleMock.Verify(x => x.Write(target.Selector), Times.Once());
+         consoleMock.Verify(x => x.Write("Item 1"), Times.Once());
+         consoleMock.Verify(x => x.WriteLine(), Times.Once());
+      }
+
       #endregion
    }
 }

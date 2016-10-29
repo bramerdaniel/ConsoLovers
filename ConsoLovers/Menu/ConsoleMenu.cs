@@ -8,7 +8,6 @@ namespace ConsoLovers.Menu
 {
    using System;
    using System.Collections.Generic;
-   using System.Data;
    using System.Linq;
 
    using ConsoLovers.Console;
@@ -590,15 +589,6 @@ namespace ConsoLovers.Menu
 
          PrintFooter();
       }
-
-      #endregion
-   }
-
-   internal interface ICustomFooter
-   {
-      #region Public Methods and Operators
-
-      void PrintFooter();
 
       #endregion
    }

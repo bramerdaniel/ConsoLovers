@@ -53,6 +53,7 @@
     <Compile Include="Contracts\IColoredConsole.cs" />
     <Compile Include="Contracts\IConsole.cs" />
     <Compile Include="Contracts\ICustomHeader.cs" />
+    <Compile Include="Contracts\ICustomFooter.cs" />
     <Compile Include="Menu\MenuColorTheme.cs" />
     <Compile Include="Menu\ColorSet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
