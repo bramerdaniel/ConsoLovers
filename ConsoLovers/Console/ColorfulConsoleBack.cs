@@ -12,8 +12,8 @@ namespace ConsoLovers.Console
    using System.Drawing;
    using System.Linq;
 
-   /// <summary>Wraps around the System.Console class, adding enhanced styling functionality.</summary>
-   public partial class Console
+   /// <summary>Wraps around the System.ColoredConsole class, adding enhanced styling functionality.</summary>
+   public partial class ColoredConsole
    {
       #region Constants and Fields
 

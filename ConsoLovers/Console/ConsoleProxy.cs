@@ -31,10 +31,10 @@ namespace ConsoLovers.Console
       ///    console key. The <see cref="T:System.ConsoleKeyInfo"/> object also describes, in a bitwise combination of <see cref="T:System.ConsoleModifiers"/> values, whether one or more
       ///    Shift, Alt, or Ctrl modifier keys was pressed simultaneously with the console key.
       /// </returns>
-      /// <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Console.In"/> property is redirected from some stream other than the console.</exception>
+      /// <exception cref="T:System.InvalidOperationException">The <see cref="P:System.ColoredConsole.In"/> property is redirected from some stream other than the console.</exception>
       public ConsoleKeyInfo ReadKey()
       {
-         return Console.ReadKey();
+         return ColoredConsole.ReadKey();
       }
 
       /// <summary>Clears the console buffer and corresponding console window of display information.</summary>
@@ -42,34 +42,34 @@ namespace ConsoLovers.Console
       /// <filterpriority>1</filterpriority>
       public void Clear()
       {
-         Console.Clear();
+         ColoredConsole.Clear();
       }
 
       /// <summary>Gets or sets the column position of the cursor within the buffer area.</summary>
       /// <returns>The current position, in columns, of the cursor.</returns>
       /// <exception cref="T:System.ArgumentOutOfRangeException">The value in a set operation is less than zero.-or- The value in a set operation is greater than or equal to
-      ///    <see cref="P:System.Console.BufferWidth"/>.</exception>
+      ///    <see cref="P:System.ColoredConsole.BufferWidth"/>.</exception>
       /// <exception cref="T:System.Security.SecurityException">The user does not have permission to perform this action. </exception>
       /// <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
       public int CursorLeft
       {
          get
          {
-            return Console.CursorLeft;
+            return ColoredConsole.CursorLeft;
          }
          set
          {
-            Console.CursorLeft = value;
+            ColoredConsole.CursorLeft = value;
          }
       }
 
       /// <summary>Gets or sets the width of the console window.</summary>
       /// <returns>The width of the console window measured in columns.</returns>
       /// <exception cref="T:System.ArgumentOutOfRangeException">
-      ///    The value of the <see cref="P:System.Console.WindowWidth"/> property or the value of the
-      ///    <see cref="P:System.Console.WindowHeight"/> property is less than or equal to 0.-or-The value of the <see cref="P:System.Console.WindowHeight"/> property plus the value of the
-      ///    <see cref="P:System.Console.WindowTop"/> property is greater than or equal to <see cref="F:System.Int16.MaxValue"/>.-or-The value of the
-      ///    <see cref="P:System.Console.WindowWidth"/> property or the value of the <see cref="P:System.Console.WindowHeight"/> property is greater than the largest possible window width
+      ///    The value of the <see cref="P:System.ColoredConsole.WindowWidth"/> property or the value of the
+      ///    <see cref="P:System.ColoredConsole.WindowHeight"/> property is less than or equal to 0.-or-The value of the <see cref="P:System.ColoredConsole.WindowHeight"/> property plus the value of the
+      ///    <see cref="P:System.ColoredConsole.WindowTop"/> property is greater than or equal to <see cref="F:System.Int16.MaxValue"/>.-or-The value of the
+      ///    <see cref="P:System.ColoredConsole.WindowWidth"/> property or the value of the <see cref="P:System.ColoredConsole.WindowHeight"/> property is greater than the largest possible window width
       ///    or height for the current screen resolution and console font.
       /// </exception>
       /// <exception cref="T:System.IO.IOException">Error reading or writing information.</exception>
@@ -77,29 +77,29 @@ namespace ConsoLovers.Console
       {
          get
          {
-            return Console.WindowWidth;
+            return ColoredConsole.WindowWidth;
          }
          set
          {
-            Console.WindowWidth = value;
+            ColoredConsole.WindowWidth = value;
          }
       }
 
       /// <summary>Gets or sets the row position of the cursor within the buffer area.</summary>
       /// <returns>The current position, in rows, of the cursor.</returns>
       /// <exception cref="T:System.ArgumentOutOfRangeException">The value in a set operation is less than zero.-or- The value in a set operation is greater than or equal to
-      ///    <see cref="P:System.Console.BufferHeight"/>.</exception>
+      ///    <see cref="P:System.ColoredConsole.BufferHeight"/>.</exception>
       /// <exception cref="T:System.Security.SecurityException">The user does not have permission to perform this action. </exception>
       /// <exception cref="T:System.IO.IOException">An I/O error occurred.</exception>
       public int CursorTop
       {
          get
          {
-            return Console.CursorTop;
+            return ColoredConsole.CursorTop;
          }
          set
          {
-            Console.CursorTop = value;
+            ColoredConsole.CursorTop = value;
          }
       }
 
@@ -112,11 +112,11 @@ namespace ConsoLovers.Console
       {
          get
          {
-            return Console.ForegroundColor;
+            return ColoredConsole.ForegroundColor;
          }
          set
          {
-            Console.ForegroundColor = value;
+            ColoredConsole.ForegroundColor = value;
          }
       }
 
@@ -129,11 +129,11 @@ namespace ConsoLovers.Console
       {
          get
          {
-            return Console.BackgroundColor;
+            return ColoredConsole.BackgroundColor;
          }
          set
          {
-            Console.BackgroundColor = value;
+            ColoredConsole.BackgroundColor = value;
          }
       }
 
@@ -141,7 +141,7 @@ namespace ConsoLovers.Console
       /// <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
       public void WriteLine()
       {
-         Console.WriteLine();
+         ColoredConsole.WriteLine();
       }
 
       /// <summary>Sets the foreground and background console colors to their defaults.</summary>
@@ -149,7 +149,7 @@ namespace ConsoLovers.Console
       /// <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
       public void ResetColor()
       {
-         Console.ResetColor();
+         ColoredConsole.ResetColor();
       }
 
       /// <summary>Writes the specified string value, followed by the current line terminator, to the standard output stream.</summary>
@@ -158,7 +158,7 @@ namespace ConsoLovers.Console
       /// <filterpriority>1</filterpriority>
       public void WriteLine(string value)
       {
-         Console.WriteLine(value);
+         ColoredConsole.WriteLine(value);
       }
 
       /// <summary>Sets the position of the cursor.</summary>
@@ -166,13 +166,13 @@ namespace ConsoLovers.Console
       /// <param name="top">The row position of the cursor. Rows are numbered from top to bottom starting at 0. </param>
       /// <exception cref="T:System.ArgumentOutOfRangeException">
       ///    <paramref name="left"/> or <paramref name="top"/> is less than zero.-or- <paramref name="left"/> is greater than or equal to
-      ///    <see cref="P:System.Console.BufferWidth"/>.-or- <paramref name="top"/> is greater than or equal to <see cref="P:System.Console.BufferHeight"/>.
+      ///    <see cref="P:System.ColoredConsole.BufferWidth"/>.-or- <paramref name="top"/> is greater than or equal to <see cref="P:System.ColoredConsole.BufferHeight"/>.
       /// </exception>
       /// <exception cref="T:System.Security.SecurityException">The user does not have permission to perform this action. </exception>
       /// <exception cref="T:System.IO.IOException">An I/O error occurred.</exception>
       public void SetCursorPosition(int left, int top)
       {
-         Console.SetCursorPosition(left, top);
+         ColoredConsole.SetCursorPosition(left, top);
       }
 
       /// <summary>Writes the specified string value to the standard output stream.</summary>
@@ -180,7 +180,7 @@ namespace ConsoLovers.Console
       /// <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
       public void Write(string value)
       {
-         Console.Write(value);
+         ColoredConsole.Write(value);
       }
 
       #endregion
@@ -196,11 +196,11 @@ namespace ConsoLovers.Console
       {
          get
          {
-            return Console.CursorSize;
+            return ColoredConsole.CursorSize;
          }
          set
          {
-            Console.CursorSize = value;
+            ColoredConsole.CursorSize = value;
          }
       }
 
