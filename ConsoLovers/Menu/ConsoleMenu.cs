@@ -406,18 +406,18 @@ namespace ConsoLovers.Menu
 
       private void PrintFooter()
       {
-         var stringHeader = Footer as string;
-         if (stringHeader != null)
+         var stringFooter = Footer as string;
+         if (stringFooter != null)
          {
-            Write(stringHeader, Colors.FooterForeground, Colors.FooterBackground);
+            Write(stringFooter, Colors.FooterForeground, Colors.FooterBackground);
             Console.WriteLine();
             return;
          }
 
-         var customHeader = Footer as ICustomFooter;
-         if (customHeader != null)
+         var customFooter = Footer as ICustomFooter;
+         if (customFooter != null)
          {
-            customHeader.PrintFooter();
+            customFooter.PrintFooter();
             return;
          }
 
@@ -536,15 +536,6 @@ namespace ConsoLovers.Menu
          Console.BackgroundColor = background;
          Console.Write(text);
          Console.ResetColor();
-      }
-
-      private void Write(string text)
-      {
-         if (text == null)
-            throw new ArgumentNullException(nameof(text));
-
-         Console.ResetColor();
-         Console.Write(text);
       }
 
       private void WriteExpander(ElementInfo elementInfo, ConsoleColor itemForeground, ConsoleColor itemBackground)

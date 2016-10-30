@@ -8,9 +8,9 @@ namespace ConsoLovers.Console
    {
       public void Clear(ConsoleColor clearingColor)
       {
-         Console.BackgroundColor = clearingColor;
-         Console.Clear();
-         Console.ResetColor();
+         System.Console.BackgroundColor = clearingColor;
+         System.Console.Clear();
+         System.Console.ResetColor();
       }
 
       private static IColoredConsole instance;

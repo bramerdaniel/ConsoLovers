@@ -111,11 +111,11 @@ namespace ConsoLovers.Console
       {
          get
          {
-            return Console.ForegroundColor;
+            return System.Console.ForegroundColor;
          }
          set
          {
-            Console.ForegroundColor = value;
+            System.Console.ForegroundColor = value;
          }
       }
 
@@ -128,11 +128,11 @@ namespace ConsoLovers.Console
       {
          get
          {
-            return Console.BackgroundColor;
+            return System.Console.BackgroundColor;
          }
          set
          {
-            Console.BackgroundColor = value;
+            System.Console.BackgroundColor = value;
          }
       }
 

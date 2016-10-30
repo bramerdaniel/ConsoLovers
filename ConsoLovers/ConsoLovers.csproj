@@ -32,6 +32,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -40,7 +41,36 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Console\ColorAlternator.cs" />
     <Compile Include="Console\ColoredConsoleProxy.cs" />
+    <Compile Include="Console\ColorExtensions.cs" />
+    <Compile Include="Console\ColorfulConsoleBack.cs" />
+    <Compile Include="Console\ColorfulConsoleFront.cs" />
+    <Compile Include="Console\ColorManager.cs" />
+    <Compile Include="Console\ColorManagerFactory.cs" />
+    <Compile Include="Console\ColorMapper.cs" />
+    <Compile Include="Console\ColorMappingException.cs" />
+    <Compile Include="Console\ColorStore.cs" />
+    <Compile Include="Console\DefaultFonts.cs" />
+    <Compile Include="Console\ExtensionMethods.cs" />
+    <Compile Include="Console\Figlet.cs" />
+    <Compile Include="Console\FigletFont.cs" />
+    <Compile Include="Console\Formatter.cs" />
+    <Compile Include="Console\FrequencyBasedColorAlternator.cs" />
+    <Compile Include="Console\GradientGenerator.cs" />
+    <Compile Include="Console\IPrototypable.cs" />
+    <Compile Include="Console\MatchLocation.cs" />
+    <Compile Include="Console\Pattern.cs" />
+    <Compile Include="Console\PatternBasedColorAlternator.cs" />
+    <Compile Include="Console\PatternCollection.cs" />
+    <Compile Include="Console\StyleClass.cs" />
+    <Compile Include="Console\StyledString.cs" />
+    <Compile Include="Console\Styler.cs" />
+    <Compile Include="Console\StyleSheet.cs" />
+    <Compile Include="Console\TextAnnotator.cs" />
+    <Compile Include="Console\TextFormatter.cs" />
+    <Compile Include="Console\TextPattern.cs" />
+    <Compile Include="Console\TextPatternCollection.cs" />
     <Compile Include="Menu\ConsoleInputEventArgs.cs" />
     <Compile Include="Menu\ConsoleMenuInputHandler.cs" />
     <Compile Include="Menu\ConsoleMenu.cs" />
