@@ -10,11 +10,11 @@
         /// <summary>
         /// The index of the beginning of the pattern match.
         /// </summary>
-        public int Beginning { get; private set; }
+        public int Beginning { get; }
         /// <summary>
         /// The index of the end of the pattern match.
         /// </summary>
-        public int End { get; private set; }
+        public int End { get; }
 
         /// <summary>
         /// Exposes properties describing the indices of the beginning and end of a pattern match.
@@ -23,8 +23,8 @@
         /// <param name="end">The index of the end of the pattern match.</param>
         public MatchLocation(int beginning, int end)
         {
-            this.Beginning = beginning;
-            this.End = end;
+            Beginning = beginning;
+            End = end;
         }
 
         public MatchLocation Prototype()
@@ -39,8 +39,8 @@
                 return false;
             }
 
-            return this.Beginning == other.Beginning
-                && this.End == other.End;
+            return Beginning == other.Beginning
+                && End == other.End;
         }
 
         public override bool Equals(object obj)
@@ -60,7 +60,7 @@
 
         public int CompareTo(MatchLocation other)
         {
-            return this.Beginning.CompareTo(other.Beginning);
+            return Beginning.CompareTo(other.Beginning);
         }
 
         public override string ToString()

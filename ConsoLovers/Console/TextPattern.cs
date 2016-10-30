@@ -8,7 +8,7 @@
     /// </summary>
     public sealed class TextPattern : Pattern<string>
     {
-        private Regex regexPattern;
+        private readonly Regex regexPattern;
 
         /// <summary>
         /// Exposes methods and properties representing a text pattern.

@@ -8,6 +8,7 @@ namespace MenuDemo
 {
    using System;
    using System.Collections.Generic;
+   using System.Drawing;
    using System.Threading;
 
    using ConsoLovers.Contracts;
@@ -34,8 +35,8 @@ namespace MenuDemo
          menu.Add(new ConsoleMenuItem("Go home", ShowProgress));
          menu.Add(new ConsoleMenuItem("Go to bed", InsertName));
          menu.Add(new ConsoleMenuItem("Back to main menu", x => menu.Close()));
-         menu.Colors.MenuItem.SelectedForeground = ConsoleColor.Green;
-         menu.Colors.MenuItem.SelectedBackground = ConsoleColor.Red;
+         menu.Colors.MenuItem.SelectedForeground = Color.Green;
+         menu.Colors.MenuItem.SelectedBackground = Color.Red;
          menu.Show();
       }
 
@@ -79,17 +80,17 @@ namespace MenuDemo
       private static ConsoleMenuItem CreateColorMenu()
       {
          var crazyTheme = new MenuColorTheme();
-         crazyTheme.Selector.Foreground = ConsoleColor.Yellow;
-         crazyTheme.MenuItem.Foreground = ConsoleColor.DarkRed;
-         crazyTheme.MenuItem.DisabledForeground = ConsoleColor.Magenta;
-         crazyTheme.MenuItem.SelectedForeground = ConsoleColor.Green;
-         crazyTheme.MenuItem.SelectedBackground = ConsoleColor.Blue;
-         crazyTheme.MenuItem.DisabledSelectedForeground = ConsoleColor.Blue;
-         crazyTheme.MenuItem.DisabledSelectedBackground = ConsoleColor.DarkGray;
-         crazyTheme.Expander.Foreground = ConsoleColor.Magenta;
-         crazyTheme.Expander.Background = ConsoleColor.Green;
-         crazyTheme.HeaderForeground = ConsoleColor.Black;
-         crazyTheme.HeaderBackground = ConsoleColor.Yellow;
+         crazyTheme.Selector.Foreground = Color.Yellow;
+         crazyTheme.MenuItem.Foreground = Color.DarkRed;
+         crazyTheme.MenuItem.DisabledForeground = Color.Magenta;
+         crazyTheme.MenuItem.SelectedForeground = Color.Green;
+         crazyTheme.MenuItem.SelectedBackground = Color.Blue;
+         crazyTheme.MenuItem.DisabledSelectedForeground = Color.Blue;
+         crazyTheme.MenuItem.DisabledSelectedBackground = Color.DarkGray;
+         crazyTheme.Expander.Foreground = Color.Magenta;
+         crazyTheme.Expander.Background = Color.Green;
+         crazyTheme.HeaderForeground = Color.Black;
+         crazyTheme.HeaderBackground = Color.Yellow;
 
          var chooseDefaultTheme = new ConsoleMenuItem("Default", m => m.Menu.Colors = new MenuColorTheme());
          var chooseBlueTheme = new ConsoleMenuItem("Blue", m => m.Menu.Colors = ConsoleMenuThemes.Blue);

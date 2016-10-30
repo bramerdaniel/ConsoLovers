@@ -12,13 +12,13 @@
         /// <summary>
         /// The value, or definition, of the pattern.
         /// </summary>
-        public T Value { get; private set; }
+        public T Value { get; }
 
         /// <summary>
         /// Exposes methods and properties representing a pattern.
         /// </summary>
         /// <param name="pattern">The value, or definition, of the pattern.</param>
-        public Pattern(T pattern)
+        protected Pattern(T pattern)
         {
             Value = pattern;
         }
@@ -38,7 +38,7 @@
                 return false;
             }
 
-            return this.Value.Equals(other.Value);
+            return Value.Equals(other.Value);
         }
 
         public override bool Equals(object obj)

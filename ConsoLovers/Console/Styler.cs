@@ -28,7 +28,7 @@
         /// <summary>
         /// A delegate instance which can be used for custom styling.
         /// </summary>
-        public MatchFound MatchFoundHandler { get; private set; }
+        public MatchFound MatchFoundHandler { get; }
 
         /// <summary>
         /// A StyleClass instance that exposes a delegate instance which can be used for more 
@@ -48,12 +48,9 @@
         public bool Equals(Styler other)
         {
             if (other == null)
-            {
                 return false;
-            }
 
-            return base.Equals(other)
-                && this.MatchFoundHandler == other.MatchFoundHandler;
+            return base.Equals(other) && MatchFoundHandler == other.MatchFoundHandler;
         }
 
         public override bool Equals(object obj)

@@ -7,32 +7,33 @@
 namespace ConsoLovers.Menu
 {
    using System;
+   using System.Drawing;
 
    public class ColorSet
    {
       #region Public Properties
 
-      public ConsoleColor Background { get; set; } = ConsoleColor.Black;
+      public Color Background { get; set; } = Color.Black;
 
-      public ConsoleColor DisabledBackground { get; set; } = ConsoleColor.Black;
+      public Color DisabledBackground { get; set; } = Color.Black;
 
-      public ConsoleColor DisabledForeground { get; set; } = ConsoleColor.DarkGray;
+      public Color DisabledForeground { get; set; } = Color.DarkGray;
 
-      public ConsoleColor DisabledSelectedBackground { get; set; } = ConsoleColor.DarkGray;
+      public Color DisabledSelectedBackground { get; set; } = Color.DarkGray;
 
-      public ConsoleColor DisabledSelectedForeground { get; set; } = ConsoleColor.Gray;
+      public Color DisabledSelectedForeground { get; set; } = Color.Gray;
 
-      public ConsoleColor Foreground { get; set; } = ConsoleColor.White;
+      public Color Foreground { get; set; } = Color.White;
 
-      public ConsoleColor SelectedBackground { get; set; } = ConsoleColor.Gray;
+      public Color SelectedBackground { get; set; } = Color.Gray;
 
-      public ConsoleColor SelectedForeground { get; set; } = ConsoleColor.Black;
+      public Color SelectedForeground { get; set; } = Color.Black;
 
       #endregion
 
       #region Public Methods and Operators
 
-      public ConsoleColor GetBackground(bool isSelected, bool disabled)
+      public Color GetBackground(bool isSelected, bool disabled)
       {
          if (isSelected)
             return disabled ? DisabledSelectedBackground : SelectedBackground;
@@ -40,7 +41,7 @@ namespace ConsoLovers.Menu
          return disabled ? DisabledBackground : Background;
       }
 
-      public ConsoleColor GetForeground(bool isSelected, bool disabled)
+      public Color GetForeground(bool isSelected, bool disabled)
       {
          if (isSelected)
             return disabled ? DisabledSelectedForeground : SelectedForeground;

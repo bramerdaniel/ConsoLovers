@@ -13,7 +13,7 @@
 
         public Figlet()
         {
-            this.font = FigletFont.Default;
+            font = FigletFont.Default;
         }
 
         public Figlet(FigletFont font)
@@ -41,7 +41,7 @@
                 for (int c = 0; c < value.Length; c++) 
                 {
                     char character = value[c];
-                    string fragment = GetCharacter(this.font, character, line);
+                    string fragment = GetCharacter(font, character, line);
 
                     stringBuilder.Append(fragment);
                     CalculateCharacterGeometries(fragment, c, runningWidthTotal, line, characterGeometry, characterIndexGeometry);

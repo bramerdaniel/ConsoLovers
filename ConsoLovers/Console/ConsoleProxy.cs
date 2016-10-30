@@ -7,6 +7,7 @@
 namespace ConsoLovers.Console
 {
    using System;
+   using System.Drawing;
 
    using ConsoLovers.Contracts;
 
@@ -107,15 +108,15 @@ namespace ConsoLovers.Console
       /// <exception cref="T:System.ArgumentException">The color specified in a set operation is not a valid member of <see cref="T:System.ConsoleColor"/>. </exception>
       /// <exception cref="T:System.Security.SecurityException">The user does not have permission to perform this action. </exception>
       /// <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
-      public ConsoleColor ForegroundColor
+      public Color ForegroundColor
       {
          get
          {
-            return System.Console.ForegroundColor;
+            return Console.ForegroundColor;
          }
          set
          {
-            System.Console.ForegroundColor = value;
+            Console.ForegroundColor = value;
          }
       }
 
@@ -124,15 +125,15 @@ namespace ConsoLovers.Console
       /// <exception cref="T:System.ArgumentException">The color specified in a set operation is not a valid member of <see cref="T:System.ConsoleColor"/>. </exception>
       /// <exception cref="T:System.Security.SecurityException">The user does not have permission to perform this action. </exception>
       /// <exception cref="T:System.IO.IOException">An I/O error occurred. </exception>
-      public ConsoleColor BackgroundColor
+      public Color BackgroundColor
       {
          get
          {
-            return System.Console.BackgroundColor;
+            return Console.BackgroundColor;
          }
          set
          {
-            System.Console.BackgroundColor = value;
+            Console.BackgroundColor = value;
          }
       }
 

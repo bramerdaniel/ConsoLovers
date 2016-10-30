@@ -7,14 +7,11 @@
     /// </summary>
     public sealed class TextPatternCollection : PatternCollection<string>
     {
-        /// <summary>
-        /// Represents a collection of TextPattern objects.
-        /// </summary>
-        /// <param name="firstPattern">The first pattern to be added to the collection.</param>
-        /// <param name="morePatterns">Other patterns to be added to the collection.</param>
-        public TextPatternCollection(string[] patterns)
-            : base()
-        {
+      /// <summary>
+      /// Represents a collection of TextPattern objects.
+      /// </summary>
+      public TextPatternCollection(string[] patterns)
+      {
             foreach (string pattern in patterns)
             {
                 this.patterns.Add(new TextPattern(pattern));
@@ -39,7 +36,7 @@
         /// the input string.</returns>
         public override bool MatchFound(string input)
         {
-            return patterns.Any(pattern => pattern.GetMatches(input).Count() > 0);
+            return patterns.Any(pattern => pattern.GetMatches(input).Any());
         }
     }
 }

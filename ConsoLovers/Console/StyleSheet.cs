@@ -11,7 +11,7 @@
         /// <summary>
         /// The StyleSheet's collection of style classifications.
         /// </summary>
-        public List<StyleClass<TextPattern>> Styles { get; private set; }
+        public List<StyleClass<TextPattern>> Styles { get; }
         /// <summary>
         /// The color to be associated with unstyled text.
         /// </summary>

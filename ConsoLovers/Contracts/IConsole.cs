@@ -1,6 +1,7 @@
 namespace ConsoLovers.Contracts
 {
    using System;
+   using System.Drawing;
 
    public interface IConsole
    {
@@ -14,9 +15,9 @@ namespace ConsoLovers.Contracts
 
       int CursorTop { get; set; }
 
-      ConsoleColor ForegroundColor { get; set; }
+      Color ForegroundColor { get; set; }
 
-      ConsoleColor BackgroundColor { get; set; }
+      Color BackgroundColor { get; set; }
 
       void WriteLine();
 

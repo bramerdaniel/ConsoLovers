@@ -12,11 +12,11 @@
         /// <summary>
         /// A map from System.Drawing.Color to ConsoleColor.
         /// </summary>
-        public ConcurrentDictionary<Color, ConsoleColor> Colors { get; private set; }
+        public ConcurrentDictionary<Color, ConsoleColor> Colors { get; }
         /// <summary>
         /// A map from ConsoleColor to System.Drawing.Color.
         /// </summary>
-        public ConcurrentDictionary<ConsoleColor, Color> ConsoleColors { get; private set; }
+        public ConcurrentDictionary<ConsoleColor, Color> ConsoleColors { get; }
 
         /// <summary>
         /// Manages the assignment of System.Drawing.Color objects to ConsoleColor objects.

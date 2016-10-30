@@ -7,53 +7,54 @@
 namespace ConsoLovers.Menu
 {
    using System;
+   using System.Drawing;
 
    public class MenuColorTheme
    {
       #region Public Properties
 
-      public ConsoleColor ConsoleBackground { get; set; } = ConsoleColor.Black;
+      public Color ConsoleBackground { get; set; } = Color.Black;
 
       public ColorSet Expander { get; set; } = new ColorSet
       {
-         Foreground = ConsoleColor.White,
-         Background = ConsoleColor.Black,
-         DisabledBackground = ConsoleColor.Black,
-         DisabledForeground = ConsoleColor.DarkGray,
-         SelectedForeground = ConsoleColor.Black,
-         SelectedBackground = ConsoleColor.Gray,
-         DisabledSelectedForeground = ConsoleColor.Gray,
-         DisabledSelectedBackground = ConsoleColor.DarkGray
+         Foreground = Color.White,
+         Background = Color.Black,
+         DisabledBackground = Color.Black,
+         DisabledForeground = Color.DarkGray,
+         SelectedForeground = Color.Black,
+         SelectedBackground = Color.Gray,
+         DisabledSelectedForeground = Color.Gray,
+         DisabledSelectedBackground = Color.DarkGray
       };
 
-      public ConsoleColor FooterBackground { get; set; } = ConsoleColor.Black;
+      public Color FooterBackground { get; set; } = Color.Black;
 
-      public ConsoleColor FooterForeground { get; set; } = ConsoleColor.White;
+      public Color FooterForeground { get; set; } = Color.White;
 
-      public ConsoleColor HeaderBackground { get; set; } = ConsoleColor.Black;
+      public Color HeaderBackground { get; set; } = Color.Black;
 
-      public ConsoleColor HeaderForeground { get; set; } = ConsoleColor.White;
+      public Color HeaderForeground { get; set; } = Color.White;
 
       /// <summary>Gets or sets the <see cref="ColorSet"/> of a normal, not seleted menu item.</summary>
       public ColorSet MenuItem { get; set; } = new ColorSet
       {
-         Foreground = ConsoleColor.White,
-         Background = ConsoleColor.Black,
-         DisabledBackground = ConsoleColor.Black,
-         DisabledForeground = ConsoleColor.DarkGray,
-         SelectedForeground = ConsoleColor.Black,
-         SelectedBackground = ConsoleColor.Gray,
-         DisabledSelectedForeground = ConsoleColor.Gray,
-         DisabledSelectedBackground = ConsoleColor.DarkGray
+         Foreground = Color.White,
+         Background = Color.Black,
+         DisabledBackground = Color.Black,
+         DisabledForeground = Color.DarkGray,
+         SelectedForeground = Color.Black,
+         SelectedBackground = Color.Gray,
+         DisabledSelectedForeground = Color.Gray,
+         DisabledSelectedBackground = Color.DarkGray
       };
 
       /// <summary>Gets or sets the <see cref="ColorSet"/> of the selector.</summary>
       public ColorSet Selector { get; set; } = new ColorSet
       {
-         Foreground = ConsoleColor.White,
-         Background = ConsoleColor.Black,
-         DisabledBackground = ConsoleColor.Black,
-         DisabledForeground = ConsoleColor.DarkGray
+         Foreground = Color.White,
+         Background = Color.Black,
+         DisabledBackground = Color.Black,
+         DisabledForeground = Color.DarkGray
       };
 
       #endregion
@@ -68,22 +69,22 @@ namespace ConsoLovers.Menu
          get
          {
             var blueTheme = new MenuColorTheme();
-            blueTheme.Selector.SelectedForeground = ConsoleColor.White;
-            blueTheme.Selector.SelectedBackground = ConsoleColor.Blue;
-            blueTheme.Selector.DisabledSelectedBackground = ConsoleColor.DarkBlue;
-            blueTheme.Selector.DisabledSelectedForeground = ConsoleColor.DarkGray;
-            blueTheme.MenuItem.Foreground = ConsoleColor.Blue;
-            blueTheme.MenuItem.DisabledForeground = ConsoleColor.DarkBlue;
-            blueTheme.MenuItem.SelectedForeground = ConsoleColor.DarkBlue;
-            blueTheme.MenuItem.SelectedBackground = ConsoleColor.Blue;
-            blueTheme.MenuItem.DisabledSelectedForeground = ConsoleColor.Blue;
-            blueTheme.MenuItem.DisabledSelectedBackground = ConsoleColor.DarkBlue;
-            blueTheme.Expander.SelectedBackground = ConsoleColor.Blue;
-            blueTheme.Expander.SelectedForeground = ConsoleColor.White;
-            blueTheme.HeaderForeground = ConsoleColor.Blue;
-            blueTheme.HeaderBackground = ConsoleColor.Black;
-            blueTheme.FooterForeground = ConsoleColor.Blue;
-            blueTheme.FooterBackground = ConsoleColor.Black;
+            blueTheme.Selector.SelectedForeground = Color.White;
+            blueTheme.Selector.SelectedBackground = Color.Blue;
+            blueTheme.Selector.DisabledSelectedBackground = Color.DarkBlue;
+            blueTheme.Selector.DisabledSelectedForeground = Color.DarkGray;
+            blueTheme.MenuItem.Foreground = Color.Blue;
+            blueTheme.MenuItem.DisabledForeground = Color.DarkBlue;
+            blueTheme.MenuItem.SelectedForeground = Color.DarkBlue;
+            blueTheme.MenuItem.SelectedBackground = Color.Blue;
+            blueTheme.MenuItem.DisabledSelectedForeground = Color.Blue;
+            blueTheme.MenuItem.DisabledSelectedBackground = Color.DarkBlue;
+            blueTheme.Expander.SelectedBackground = Color.Blue;
+            blueTheme.Expander.SelectedForeground = Color.White;
+            blueTheme.HeaderForeground = Color.Blue;
+            blueTheme.HeaderBackground = Color.Black;
+            blueTheme.FooterForeground = Color.Blue;
+            blueTheme.FooterBackground = Color.Black;
 
             return blueTheme;
          }
@@ -95,37 +96,37 @@ namespace ConsoLovers.Menu
          {
             var redTheme = new MenuColorTheme
             {
-               ConsoleBackground = ConsoleColor.Red,
-               HeaderForeground = ConsoleColor.Red,
-               HeaderBackground = ConsoleColor.DarkRed,
+               ConsoleBackground = Color.Red,
+               HeaderForeground = Color.Red,
+               HeaderBackground = Color.DarkRed,
                MenuItem =
                   new ColorSet
                   {
-                     Foreground = ConsoleColor.Black,
-                     Background = ConsoleColor.Red,
-                     SelectedForeground = ConsoleColor.White,
-                     SelectedBackground = ConsoleColor.DarkRed,
-                     DisabledForeground = ConsoleColor.Gray,
-                     DisabledBackground = ConsoleColor.Red,
-                     DisabledSelectedBackground = ConsoleColor.DarkRed,
-                     DisabledSelectedForeground = ConsoleColor.Red
+                     Foreground = Color.Black,
+                     Background = Color.Red,
+                     SelectedForeground = Color.White,
+                     SelectedBackground = Color.DarkRed,
+                     DisabledForeground = Color.Gray,
+                     DisabledBackground = Color.Red,
+                     DisabledSelectedBackground = Color.DarkRed,
+                     DisabledSelectedForeground = Color.Red
                   },
                Selector =
                   new ColorSet
                   {
-                     Background = ConsoleColor.Red,
-                     DisabledBackground = ConsoleColor.Red,
-                     DisabledSelectedBackground = ConsoleColor.DarkRed,
-                     SelectedForeground = ConsoleColor.White,
-                     SelectedBackground = ConsoleColor.DarkRed
+                     Background = Color.Red,
+                     DisabledBackground = Color.Red,
+                     DisabledSelectedBackground = Color.DarkRed,
+                     SelectedForeground = Color.White,
+                     SelectedBackground = Color.DarkRed
                   },
                Expander =
                   new ColorSet
                   {
-                     Foreground = ConsoleColor.Black,
-                     Background = ConsoleColor.Red,
-                     SelectedForeground = ConsoleColor.White,
-                     SelectedBackground = ConsoleColor.DarkRed
+                     Foreground = Color.Black,
+                     Background = Color.Red,
+                     SelectedForeground = Color.White,
+                     SelectedBackground = Color.DarkRed
                   }
             };
 
@@ -141,26 +142,27 @@ namespace ConsoLovers.Menu
             {
                MenuItem = new ColorSet
                {
-                  SelectedForeground = ConsoleColor.Blue,
-                  Background = ConsoleColor.Black,
-                  SelectedBackground = ConsoleColor.White,
-                  DisabledForeground = ConsoleColor.Red,
-                  DisabledBackground = ConsoleColor.Black,
-                  DisabledSelectedForeground = ConsoleColor.Red,
-                  DisabledSelectedBackground = ConsoleColor.DarkGray
+                  SelectedForeground = Color.Blue,
+                  Background = Color.Black,
+                  SelectedBackground = Color.Azure,
+                  DisabledForeground = Color.Orange,
+                  DisabledBackground = Color.Black,
+                  DisabledSelectedForeground = Color.Orange,
+                  DisabledSelectedBackground = Color.Azure
                },
 
                Selector = new ColorSet
                {
-                  SelectedForeground = ConsoleColor.Blue,
-                  SelectedBackground = ConsoleColor.White,
-                  DisabledSelectedForeground = ConsoleColor.Red
+                  SelectedForeground = Color.Blue,
+                  SelectedBackground = Color.Azure,
+                  DisabledSelectedForeground = Color.Orange,
+                  DisabledSelectedBackground= Color.Azure
                },
 
                Expander = new ColorSet
                {
-                  SelectedForeground = ConsoleColor.Blue,
-                  SelectedBackground = ConsoleColor.White
+                  SelectedForeground = Color.Blue,
+                  SelectedBackground = Color.Azure
                }
             };
 

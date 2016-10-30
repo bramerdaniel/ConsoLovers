@@ -38,7 +38,6 @@
             return string.Join(string.Empty, (dynamic)input);
         }
 
-        // TODO: NO DYNAMIC IN .NET CORE
         /// <summary>
         /// Takes a single object (which could be a 1-dimensional array) and returns it (or, potentially,
         /// all of its elements) as an element of an array of the corresponding type.

@@ -7,6 +7,7 @@
 namespace ConsoLovers.Contracts
 {
    using System;
+   using System.Drawing;
 
    /// <summary>Console abstraction that adds some methods for easy colorizing the console</summary>
    /// <seealso cref="IConsole"/>
@@ -16,7 +17,7 @@ namespace ConsoLovers.Contracts
 
       /// <summary>Clears the console with the given <see cref="ConsoleColor"/>.</summary>
       /// <param name="clearingColor">The <see cref="ConsoleColor"/> to clear the console with.</param>
-      void Clear(ConsoleColor clearingColor);
+      void Clear(Color clearingColor);
 
       #endregion
    }

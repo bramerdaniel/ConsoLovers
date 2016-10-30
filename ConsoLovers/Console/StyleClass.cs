@@ -43,8 +43,8 @@
                 return false;
             }
 
-            return this.Target.Equals(other.Target)
-                && this.Color == other.Color;
+            return Target.Equals(other.Target)
+                && Color == other.Color;
         }
 
         public override bool Equals(object obj)

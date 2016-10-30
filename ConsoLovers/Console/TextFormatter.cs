@@ -13,8 +13,8 @@
     {
         // NOTE: I still feel that there's too much overlap between this class and the TextAnnotator class.
 
-        private Color defaultColor;
-        private TextPattern textPattern;
+        private readonly Color defaultColor;
+        private readonly TextPattern textPattern;
         private readonly string defaultFormatToken = "{[0-9][^}]*}";
 
         /// <summary>
@@ -58,7 +58,7 @@
             TryExtendColors(ref args, ref colors);
 
             int chocolateEnd = 0;
-            for (int i = 0; i < locations.Count(); i++)
+            for (int i = 0; i < locations.Count; i++)
 			{
                 int vanillaStart = 0;
                 if (i > 0)

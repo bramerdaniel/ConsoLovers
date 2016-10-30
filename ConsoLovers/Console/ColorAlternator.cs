@@ -17,7 +17,7 @@
         /// <summary>
         /// Exposes methods and properties used for alternating over a set of colors.
         /// </summary>
-        public ColorAlternator()
+        protected ColorAlternator()
         {
             Colors = new Color[]{};
         }
@@ -25,7 +25,7 @@
         /// <summary>
         /// Exposes methods and properties used for alternating over a set of colors.
         /// </summary>
-        public ColorAlternator(params Color[] colors)
+        protected ColorAlternator(params Color[] colors)
         {
             Colors = colors;
         }

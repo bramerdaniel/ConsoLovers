@@ -1,16 +1,17 @@
 namespace ConsoLovers.Console
 {
    using System;
+   using System.Drawing;
 
    using ConsoLovers.Contracts;
 
    public class ColoredConsoleProxy : ConsoleProxy, IColoredConsole
    {
-      public void Clear(ConsoleColor clearingColor)
+      public void Clear(Color clearingColor)
       {
-         System.Console.BackgroundColor = clearingColor;
-         System.Console.Clear();
-         System.Console.ResetColor();
+        Console.BackgroundColor = clearingColor;
+        Console.Clear();
+        Console.ResetColor();
       }
 
       private static IColoredConsole instance;

@@ -8,6 +8,7 @@ namespace ConsoLovers.Menu
 {
    using System;
    using System.Collections.Generic;
+   using System.Drawing;
    using System.Linq;
 
    using ConsoLovers.Console;
@@ -454,12 +455,12 @@ namespace ConsoLovers.Menu
             if (SelectionStrech == SelectionStrech.FullLine)
             {
                Console.SetCursorPosition(Console.CursorLeft - disabledHint.Length, Console.CursorTop);
-               Write(disabledHint, ConsoleColor.White, ConsoleColor.Red);
+               Write(disabledHint, Color.White, Color.Red);
             }
             else
             {
                Console.Write("  ");
-               Write(disabledHint, ConsoleColor.White, ConsoleColor.Red);
+               Write(disabledHint, Color.White, Color.Red);
             }
 
             notExecutable = null;
@@ -527,7 +528,7 @@ namespace ConsoLovers.Menu
          }
       }
 
-      private void Write(string text, ConsoleColor foreground, ConsoleColor background)
+      private void Write(string text, Color foreground, Color background)
       {
          if (string.IsNullOrEmpty(text))
             return;
@@ -538,7 +539,7 @@ namespace ConsoLovers.Menu
          Console.ResetColor();
       }
 
-      private void WriteExpander(ElementInfo elementInfo, ConsoleColor itemForeground, ConsoleColor itemBackground)
+      private void WriteExpander(ElementInfo elementInfo, Color itemForeground, Color itemBackground)
       {
          if (!elementInfo.IsExpanded.HasValue)
          {
