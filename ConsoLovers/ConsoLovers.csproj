@@ -42,7 +42,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Console\ColorAlternator.cs" />
-    <Compile Include="Console\ColoredConsoleProxy.cs" />
     <Compile Include="Console\ColorExtensions.cs" />
     <Compile Include="Console\ColorfulConsoleBack.cs" />
     <Compile Include="Console\ColorfulConsoleFront.cs" />
@@ -76,7 +75,6 @@
     <Compile Include="Menu\ConsoleMenu.cs" />
     <Compile Include="ConsoleMenuBuilder.cs" />
     <Compile Include="Menu\ConsoleMenuItem.cs" />
-    <Compile Include="Console\ConsoleProxy.cs" />
     <Compile Include="Menu\ConsoleMenuThemes.cs" />
     <Compile Include="Menu\ElementInfo.cs" />
     <Compile Include="Menu\ExceptionEventArgs.cs" />

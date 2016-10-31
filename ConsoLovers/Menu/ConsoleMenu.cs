@@ -50,7 +50,7 @@ namespace ConsoLovers.Menu
 
       public MenuColorTheme Colors { get; set; } = new MenuColorTheme();
 
-      public IColoredConsole Console { get; set; } = ColoredConsoleProxy.Instance;
+      public IColoredConsole Console { get; set; } = ColoredConsole.Instance;
 
       public int Count => root.Items.Count;
 

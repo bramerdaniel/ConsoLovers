@@ -12,9 +12,13 @@ namespace ConsoLovers.Console
    using System.IO;
    using System.Text;
 
+   using ConsoLovers.Contracts;
+
    /// <summary>Wraps around the System.ColoredConsole class, adding enhanced styling functionality.</summary>
-   public partial class ColoredConsole
+   public partial class ColoredConsole : IColoredConsole
    {
+      private static IColoredConsole instance;
+
       #region Constructors and Destructors
 
       static ColoredConsole()
@@ -36,7 +40,7 @@ namespace ConsoLovers.Console
 
       #region Public Properties
 
-      public static Color BackgroundColor
+      public Color BackgroundColor
       {
          get
          {
@@ -48,7 +52,7 @@ namespace ConsoLovers.Console
          }
       }
 
-      public static int BufferHeight
+      public int BufferHeight
       {
          get
          {
@@ -74,7 +78,7 @@ namespace ConsoLovers.Console
 
       public static bool CapsLock => Console.CapsLock;
 
-      public static int CursorLeft
+      public int CursorLeft
       {
          get
          {
@@ -86,7 +90,7 @@ namespace ConsoLovers.Console
          }
       }
 
-      public static int CursorSize
+      public int CursorSize
       {
          get
          {
@@ -98,7 +102,7 @@ namespace ConsoLovers.Console
          }
       }
 
-      public static int CursorTop
+      public int CursorTop
       {
          get
          {
@@ -110,7 +114,7 @@ namespace ConsoLovers.Console
          }
       }
 
-      public static bool CursorVisible
+      public bool CursorVisible
       {
          get
          {
@@ -124,7 +128,7 @@ namespace ConsoLovers.Console
 
       public static TextWriter Error => Console.Error;
 
-      public static Color ForegroundColor
+      public Color ForegroundColor
       {
          get
          {
@@ -136,7 +140,7 @@ namespace ConsoLovers.Console
          }
       }
 
-      public static TextReader In => Console.In;
+      public TextReader In => Console.In;
 
       public static Encoding InputEncoding
       {
@@ -220,7 +224,7 @@ namespace ConsoLovers.Console
          }
       }
 
-      public static int WindowTop
+      public int WindowTop
       {
          get
          {
@@ -232,7 +236,7 @@ namespace ConsoLovers.Console
          }
       }
 
-      public static int WindowWidth
+      public int WindowWidth
       {
          get
          {
@@ -248,12 +252,12 @@ namespace ConsoLovers.Console
 
       #region Public Methods and Operators
 
-      public static void Beep(int frequency, int duration)
+      public void Beep(int frequency, int duration)
       {
          Console.Beep(frequency, duration);
       }
 
-      public static void Clear()
+      public void Clear()
       {
          Console.Clear();
       }
@@ -311,7 +315,7 @@ namespace ConsoLovers.Console
          return Console.Read();
       }
 
-      public static ConsoleKeyInfo ReadKey()
+      public ConsoleKeyInfo ReadKey()
       {
          return Console.ReadKey();
       }
@@ -326,27 +330,27 @@ namespace ConsoLovers.Console
          return Console.ReadLine();
       }
 
-      public static void ResetColor()
+      public void ResetColor()
       {
          Console.ResetColor();
       }
 
-      public static void SetBufferSize(int width, int height)
+      public void SetBufferSize(int width, int height)
       {
          Console.SetBufferSize(width, height);
       }
 
-      public static void SetCursorPosition(int left, int top)
+      public void SetCursorPosition(int left, int top)
       {
          Console.SetCursorPosition(left, top);
       }
 
-      public static void SetError(TextWriter newError)
+      public void SetError(TextWriter newError)
       {
          Console.SetError(newError);
       }
 
-      public static void SetIn(TextReader newIn)
+      public void SetIn(TextReader newIn)
       {
          Console.SetIn(newIn);
       }
@@ -456,17 +460,24 @@ namespace ConsoLovers.Console
          WriteInColor(Console.Write, value, color);
       }
 
-      public static void Write(string value)
+      public void Write(string value)
       {
          Console.Write(value);
       }
 
-      public static void Write(string value, Color color)
+      public void Clear(Color clearingColor)
+      {
+         Console.BackgroundColor = colorManager.GetConsoleColor(clearingColor);
+         Console.Clear();
+         Console.ResetColor();
+      }
+
+      public void Write(string value, Color color)
       {
          WriteInColor(Console.Write, value, color);
       }
 
-      public static void Write(uint value)
+      public void Write(uint value)
       {
          Console.Write(value);
       }
@@ -639,12 +650,12 @@ namespace ConsoLovers.Console
          WriteInColorAlternating(Console.Write, format, new[] { arg0, arg1, arg2, arg3 }, alternator);
       }
 
-      public static void WriteAscii(string value)
+      public void WriteAscii(string value)
       {
          WriteAscii(value, null);
       }
 
-      public static void WriteAscii(string value, FigletFont font)
+      public void WriteAscii(string value, FigletFont font)
       {
          WriteLine(GetFiglet(font).ToAscii(value).ConcreteValue);
       }
@@ -732,7 +743,7 @@ namespace ConsoLovers.Console
          WriteInColorFormatted(WRITE_TRAILER, format, new[] { arg0, arg1, arg2, arg3 }, defaultColor);
       }
 
-      public static void WriteLine()
+      public void WriteLine()
       {
          Console.WriteLine();
       }
@@ -827,7 +838,7 @@ namespace ConsoLovers.Console
          WriteInColor(Console.WriteLine, value, color);
       }
 
-      public static void WriteLine(string value)
+      public void WriteLine(string value)
       {
          Console.WriteLine(value);
       }
@@ -1277,6 +1288,14 @@ namespace ConsoLovers.Console
       public static bool IsInputRedirected => Console.IsInputRedirected;
 
       public static bool IsOutputRedirected => Console.IsOutputRedirected;
+
+      public static IColoredConsole Instance
+      {
+         get
+         {
+            return instance ?? (instance = new ColoredConsole());
+         }
+      }
 #endif
    }
 }
