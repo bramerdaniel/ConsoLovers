@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoLovers", "ConsoLovers\ConsoLovers.csproj", "{A001404C-4752-48B0-B28A-2EA524E49ADB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoLovers.ConsoleToolkit", "ConsoLovers\ConsoLovers.ConsoleToolkit.csproj", "{A001404C-4752-48B0-B28A-2EA524E49ADB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleMenuExplorer", "MenuDemo\ConsoleMenuExplorer.csproj", "{E3B5C7F4-39BA-44DE-8124-43CECC4DA671}"
 EndProject

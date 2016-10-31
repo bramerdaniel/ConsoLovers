@@ -56,9 +56,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ConsoLovers\ConsoLovers.csproj">
+    <ProjectReference Include="..\ConsoLovers\ConsoLovers.ConsoleToolkit.csproj">
       <Project>{a001404c-4752-48b0-b28a-2ea524e49adb}</Project>
-      <Name>ConsoLovers</Name>
+      <Name>ConsoLovers.ConsoleToolkit</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

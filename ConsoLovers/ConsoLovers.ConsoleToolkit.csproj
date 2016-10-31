@@ -7,8 +7,8 @@
     <ProjectGuid>{A001404C-4752-48B0-B28A-2EA524E49ADB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ConsoLovers</RootNamespace>
-    <AssemblyName>ConsoLovers</AssemblyName>
+    <RootNamespace>ConsoLovers.ConsoleToolkit</RootNamespace>
+    <AssemblyName>ConsoLovers.ConsoleToolkit</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -89,14 +89,16 @@
     <Compile Include="Contracts\SelectionStrech.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Icon.ico" />
     <Content Include="Todo.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ConsoLovers.nuspec" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>IF $(ConfigurationName) == Release ($(SolutionDir)nuget.exe pack $(ProjectPath) -properties Configuration=Release)</PostBuildEvent>
+    <PostBuildEvent>IF $(ConfigurationName) == Release ($(SolutionDir)nuget.exe pack $(ProjectPath) -OutputDirectory $(TargetDir) -properties Configuration=Release -symbols)</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
