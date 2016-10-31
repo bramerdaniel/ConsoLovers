@@ -17,28 +17,43 @@ namespace ConsoLovers.Console
    /// <summary>Wraps around the System.ColoredConsole class, adding enhanced styling functionality.</summary>
    public partial class ColoredConsole : IColoredConsole
    {
+      #region Constants and Fields
+
       private static IColoredConsole instance;
+
+      #endregion
 
       #region Constructors and Destructors
 
-      static ColoredConsole()
+      private ColoredConsole()
       {
          colorStore = GetColorStore();
          colorManagerFactory = new ColorManagerFactory();
          colorManager = colorManagerFactory.GetManager(colorStore, MAX_COLOR_CHANGES, INITIAL_COLOR_CHANGE_COUNT_VALUE);
 
-         Console.CancelKeyPress += Console_CancelKeyPress;
+         Console.CancelKeyPress += OnConsoleCancelKeyPress;
       }
 
       #endregion
 
       #region Public Events
 
-      public static event ConsoleCancelEventHandler CancelKeyPress = delegate { };
+      public event ConsoleCancelEventHandler CancelKeyPress = delegate { };
 
       #endregion
 
-      #region Public Properties
+      #region IColoredConsole Members
+
+      public void Clear(Color clearingColor)
+      {
+         Console.BackgroundColor = colorManager.GetConsoleColor(clearingColor);
+         Console.Clear();
+         Console.ResetColor();
+      }
+
+      #endregion
+
+      #region IConsole Members
 
       public Color BackgroundColor
       {
@@ -52,32 +67,6 @@ namespace ConsoLovers.Console
          }
       }
 
-      public int BufferHeight
-      {
-         get
-         {
-            return Console.BufferHeight;
-         }
-         set
-         {
-            Console.BufferHeight = value;
-         }
-      }
-
-      public static int BufferWidth
-      {
-         get
-         {
-            return Console.BufferWidth;
-         }
-         set
-         {
-            Console.BufferWidth = value;
-         }
-      }
-
-      public static bool CapsLock => Console.CapsLock;
-
       public int CursorLeft
       {
          get
@@ -87,18 +76,6 @@ namespace ConsoLovers.Console
          set
          {
             Console.CursorLeft = value;
-         }
-      }
-
-      public int CursorSize
-      {
-         get
-         {
-            return Console.CursorSize;
-         }
-         set
-         {
-            Console.CursorSize = value;
          }
       }
 
@@ -114,20 +91,6 @@ namespace ConsoLovers.Console
          }
       }
 
-      public bool CursorVisible
-      {
-         get
-         {
-            return Console.CursorVisible;
-         }
-         set
-         {
-            Console.CursorVisible = value;
-         }
-      }
-
-      public static TextWriter Error => Console.Error;
-
       public Color ForegroundColor
       {
          get
@@ -140,9 +103,114 @@ namespace ConsoLovers.Console
          }
       }
 
+      public int WindowWidth
+      {
+         get
+         {
+            return Console.WindowWidth;
+         }
+         set
+         {
+            Console.WindowWidth = value;
+         }
+      }
+
+      public void Clear()
+      {
+         Console.Clear();
+      }
+
+      public ConsoleKeyInfo ReadKey()
+      {
+         return Console.ReadKey();
+      }
+
+      public void ResetColor()
+      {
+         Console.ResetColor();
+      }
+
+      public void SetCursorPosition(int left, int top)
+      {
+         Console.SetCursorPosition(left, top);
+      }
+
+      public void Write(string value)
+      {
+         Console.Write(value);
+      }
+
+      public void WriteLine()
+      {
+         Console.WriteLine();
+      }
+
+      public void WriteLine(string value)
+      {
+         Console.WriteLine(value);
+      }
+
+      #endregion
+
+      #region Public Properties
+
+      public static IColoredConsole Instance => instance ?? (instance = new ColoredConsole());
+
+      public int BufferHeight
+      {
+         get
+         {
+            return Console.BufferHeight;
+         }
+         set
+         {
+            Console.BufferHeight = value;
+         }
+      }
+
+      public int BufferWidth
+      {
+         get
+         {
+            return Console.BufferWidth;
+         }
+         set
+         {
+            Console.BufferWidth = value;
+         }
+      }
+
+      public bool CapsLock => Console.CapsLock;
+
+      public int CursorSize
+      {
+         get
+         {
+            return Console.CursorSize;
+         }
+         set
+         {
+            Console.CursorSize = value;
+         }
+      }
+
+      public bool CursorVisible
+      {
+         get
+         {
+            return Console.CursorVisible;
+         }
+         set
+         {
+            Console.CursorVisible = value;
+         }
+      }
+
+      public TextWriter Error => Console.Error;
+
       public TextReader In => Console.In;
 
-      public static Encoding InputEncoding
+      public Encoding InputEncoding
       {
          get
          {
@@ -154,17 +222,23 @@ namespace ConsoLovers.Console
          }
       }
 
-      public static bool KeyAvailable => Console.KeyAvailable;
+      public bool IsErrorRedirected => Console.IsErrorRedirected;
 
-      public static int LargestWindowHeight => Console.LargestWindowHeight;
+      public bool IsInputRedirected => Console.IsInputRedirected;
 
-      public static int LargestWindowWidth => Console.LargestWindowWidth;
+      public bool IsOutputRedirected => Console.IsOutputRedirected;
 
-      public static bool NumberLock => Console.NumberLock;
+      public bool KeyAvailable => Console.KeyAvailable;
 
-      public static TextWriter Out => Console.Out;
+      public int LargestWindowHeight => Console.LargestWindowHeight;
 
-      public static Encoding OutputEncoding
+      public int LargestWindowWidth => Console.LargestWindowWidth;
+
+      public bool NumberLock => Console.NumberLock;
+
+      public TextWriter Out => Console.Out;
+
+      public Encoding OutputEncoding
       {
          get
          {
@@ -176,7 +250,7 @@ namespace ConsoLovers.Console
          }
       }
 
-      public static string Title
+      public string Title
       {
          get
          {
@@ -188,7 +262,7 @@ namespace ConsoLovers.Console
          }
       }
 
-      public static bool TreatControlCAsInput
+      public bool TreatControlCAsInput
       {
          get
          {
@@ -200,7 +274,7 @@ namespace ConsoLovers.Console
          }
       }
 
-      public static int WindowHeight
+      public int WindowHeight
       {
          get
          {
@@ -212,7 +286,7 @@ namespace ConsoLovers.Console
          }
       }
 
-      public static int WindowLeft
+      public int WindowLeft
       {
          get
          {
@@ -236,18 +310,6 @@ namespace ConsoLovers.Console
          }
       }
 
-      public int WindowWidth
-      {
-         get
-         {
-            return Console.WindowWidth;
-         }
-         set
-         {
-            Console.WindowWidth = value;
-         }
-      }
-
       #endregion
 
       #region Public Methods and Operators
@@ -257,92 +319,72 @@ namespace ConsoLovers.Console
          Console.Beep(frequency, duration);
       }
 
-      public void Clear()
-      {
-         Console.Clear();
-      }
-
-      public static void MoveBufferArea(int sourceLeft, int sourceTop, int sourceWidth, int sourceHeight, int targetLeft, int targetTop)
+      public void MoveBufferArea(int sourceLeft, int sourceTop, int sourceWidth, int sourceHeight, int targetLeft, int targetTop)
       {
          Console.MoveBufferArea(sourceLeft, sourceTop, sourceWidth, sourceHeight, targetLeft, targetTop);
       }
 
-      public static void MoveBufferArea
+      public void MoveBufferArea
          (int sourceLeft, int sourceTop, int sourceWidth, int sourceHeight, int targetLeft, int targetTop, char sourceChar, ConsoleColor sourceForeColor,
             ConsoleColor sourceBackColor)
       {
          Console.MoveBufferArea(sourceLeft, sourceTop, sourceWidth, sourceHeight, targetLeft, targetTop, sourceChar, sourceForeColor, sourceBackColor);
       }
 
-      public static Stream OpenStandardError()
+      public Stream OpenStandardError()
       {
          return Console.OpenStandardError();
       }
 
 #if !NETSTANDARD1_3
-      public static Stream OpenStandardError(int bufferSize)
+      public Stream OpenStandardError(int bufferSize)
       {
          return Console.OpenStandardError(bufferSize);
       }
 #endif
 
-      public static Stream OpenStandardInput()
+      public Stream OpenStandardInput()
       {
          return Console.OpenStandardInput();
       }
 
 #if !NETSTANDARD1_3
-      public static Stream OpenStandardInput(int bufferSize)
+      public Stream OpenStandardInput(int bufferSize)
       {
          return Console.OpenStandardInput(bufferSize);
       }
 #endif
 
-      public static Stream OpenStandardOutput()
+      public Stream OpenStandardOutput()
       {
          return Console.OpenStandardOutput();
       }
 
 #if !NETSTANDARD1_3
-      public static Stream OpenStandardOutput(int bufferSize)
+      public Stream OpenStandardOutput(int bufferSize)
       {
          return Console.OpenStandardOutput(bufferSize);
       }
 #endif
 
-      public static int Read()
+      public int Read()
       {
          return Console.Read();
       }
 
-      public ConsoleKeyInfo ReadKey()
-      {
-         return Console.ReadKey();
-      }
-
-      public static ConsoleKeyInfo ReadKey(bool intercept)
+      public ConsoleKeyInfo ReadKey(bool intercept)
       {
          return Console.ReadKey(intercept);
       }
 
-      public static string ReadLine()
+      public string ReadLine()
       {
          return Console.ReadLine();
-      }
-
-      public void ResetColor()
-      {
-         Console.ResetColor();
       }
 
       public void SetBufferSize(int width, int height)
       {
          Console.SetBufferSize(width, height);
-      }
-
-      public void SetCursorPosition(int left, int top)
-      {
-         Console.SetCursorPosition(left, top);
       }
 
       public void SetError(TextWriter newError)
@@ -355,121 +397,109 @@ namespace ConsoLovers.Console
          Console.SetIn(newIn);
       }
 
-      public static void SetOut(TextWriter newOut)
+      public void SetOut(TextWriter newOut)
       {
          Console.SetOut(newOut);
       }
 
-      public static void SetWindowPosition(int left, int top)
+      public void SetWindowPosition(int left, int top)
       {
          Console.SetWindowPosition(left, top);
       }
 
-      public static void SetWindowSize(int width, int height)
+      public void SetWindowSize(int width, int height)
       {
          Console.SetWindowSize(width, height);
       }
 
-      public static void Write(bool value)
+      public void Write(bool value)
       {
          Console.Write(value);
       }
 
-      public static void Write(bool value, Color color)
+      public void Write(bool value, Color color)
       {
          WriteInColor(Console.Write, value, color);
       }
 
-      public static void Write(char value)
+      public void Write(char value)
       {
          Console.Write(value);
       }
 
-      public static void Write(char value, Color color)
+      public void Write(char value, Color color)
       {
          WriteInColor(Console.Write, value, color);
       }
 
-      public static void Write(char[] value)
+      public void Write(char[] value)
       {
          Console.Write(value);
       }
 
-      public static void Write(char[] value, Color color)
+      public void Write(char[] value, Color color)
       {
          WriteInColor(Console.Write, value, color);
       }
 
-      public static void Write(decimal value)
+      public void Write(decimal value)
       {
          Console.Write(value);
       }
 
-      public static void Write(decimal value, Color color)
+      public void Write(decimal value, Color color)
       {
          WriteInColor(Console.Write, value, color);
       }
 
-      public static void Write(double value)
+      public void Write(double value)
       {
          Console.Write(value);
       }
 
-      public static void Write(double value, Color color)
+      public void Write(double value, Color color)
       {
          WriteInColor(Console.Write, value, color);
       }
 
-      public static void Write(float value)
+      public void Write(float value)
       {
          Console.Write(value);
       }
 
-      public static void Write(float value, Color color)
+      public void Write(float value, Color color)
       {
          WriteInColor(Console.Write, value, color);
       }
 
-      public static void Write(int value)
+      public void Write(int value)
       {
          Console.Write(value);
       }
 
-      public static void Write(int value, Color color)
+      public void Write(int value, Color color)
       {
          WriteInColor(Console.Write, value, color);
       }
 
-      public static void Write(long value)
+      public void Write(long value)
       {
          Console.Write(value);
       }
 
-      public static void Write(long value, Color color)
+      public void Write(long value, Color color)
       {
          WriteInColor(Console.Write, value, color);
       }
 
-      public static void Write(object value)
+      public void Write(object value)
       {
          Console.Write(value);
       }
 
-      public static void Write(object value, Color color)
+      public void Write(object value, Color color)
       {
          WriteInColor(Console.Write, value, color);
-      }
-
-      public void Write(string value)
-      {
-         Console.Write(value);
-      }
-
-      public void Clear(Color clearingColor)
-      {
-         Console.BackgroundColor = colorManager.GetConsoleColor(clearingColor);
-         Console.Clear();
-         Console.ResetColor();
       }
 
       public void Write(string value, Color color)
@@ -482,77 +512,77 @@ namespace ConsoLovers.Console
          Console.Write(value);
       }
 
-      public static void Write(uint value, Color color)
+      public void Write(uint value, Color color)
       {
          WriteInColor(Console.Write, value, color);
       }
 
-      public static void Write(ulong value)
+      public void Write(ulong value)
       {
          Console.Write(value);
       }
 
-      public static void Write(ulong value, Color color)
+      public void Write(ulong value, Color color)
       {
          WriteInColor(Console.Write, value, color);
       }
 
-      public static void Write(string format, object arg0)
+      public void Write(string format, object arg0)
       {
          Console.WriteLine(format, arg0);
       }
 
-      public static void Write(string format, object arg0, Color color)
+      public void Write(string format, object arg0, Color color)
       {
          WriteInColor(Console.Write, format, arg0, color);
       }
 
-      public static void Write(string format, params object[] args)
+      public void Write(string format, params object[] args)
       {
          Console.Write(format, args);
       }
 
-      public static void Write(string format, Color color, params object[] args)
+      public void Write(string format, Color color, params object[] args)
       {
          WriteInColor(Console.Write, format, args, color);
       }
 
-      public static void Write(char[] buffer, int index, int count)
+      public void Write(char[] buffer, int index, int count)
       {
          Console.Write(buffer, index, count);
       }
 
-      public static void Write(char[] buffer, int index, int count, Color color)
+      public void Write(char[] buffer, int index, int count, Color color)
       {
          WriteChunkInColor(Console.Write, buffer, index, count, color);
       }
 
-      public static void Write(string format, object arg0, object arg1)
+      public void Write(string format, object arg0, object arg1)
       {
          Console.Write(format, arg0, arg1);
       }
 
-      public static void Write(string format, object arg0, object arg1, Color color)
+      public void Write(string format, object arg0, object arg1, Color color)
       {
          WriteInColor(Console.Write, format, arg0, arg1, color);
       }
 
-      public static void Write(string format, object arg0, object arg1, object arg2)
+      public void Write(string format, object arg0, object arg1, object arg2)
       {
          Console.Write(format, arg0, arg1, arg2);
       }
 
-      public static void Write(string format, object arg0, object arg1, object arg2, Color color)
+      public void Write(string format, object arg0, object arg1, object arg2, Color color)
       {
          WriteInColor(Console.Write, format, arg0, arg1, arg2, color);
       }
 
-      public static void Write(string format, object arg0, object arg1, object arg2, object arg3)
+      public void Write(string format, object arg0, object arg1, object arg2, object arg3)
       {
          Console.Write(format, arg0, arg1, arg2, arg3);
       }
 
-      public static void Write(string format, object arg0, object arg1, object arg2, object arg3, Color color)
+      public void Write(string format, object arg0, object arg1, object arg2, object arg3, Color color)
       {
          // NOTE: The Intellisense for this overload of System.ColoredConsole.Write is misleading, as the C# compiler
          //       actually resolves this overload to System.ColoredConsole.Write(string format, object[] args)!
@@ -560,92 +590,92 @@ namespace ConsoLovers.Console
          WriteInColor(Console.Write, format, new[] { arg0, arg1, arg2, arg3 }, color);
       }
 
-      public static void WriteAlternating(bool value, ColorAlternator alternator)
+      public void WriteAlternating(bool value, ColorAlternator alternator)
       {
          WriteInColorAlternating(Console.Write, value, alternator);
       }
 
-      public static void WriteAlternating(char value, ColorAlternator alternator)
+      public void WriteAlternating(char value, ColorAlternator alternator)
       {
          WriteInColorAlternating(Console.Write, value, alternator);
       }
 
-      public static void WriteAlternating(char[] value, ColorAlternator alternator)
+      public void WriteAlternating(char[] value, ColorAlternator alternator)
       {
          WriteInColorAlternating(Console.Write, value, alternator);
       }
 
-      public static void WriteAlternating(decimal value, ColorAlternator alternator)
+      public void WriteAlternating(decimal value, ColorAlternator alternator)
       {
          WriteInColorAlternating(Console.Write, value, alternator);
       }
 
-      public static void WriteAlternating(double value, ColorAlternator alternator)
+      public void WriteAlternating(double value, ColorAlternator alternator)
       {
          WriteInColorAlternating(Console.Write, value, alternator);
       }
 
-      public static void WriteAlternating(float value, ColorAlternator alternator)
+      public void WriteAlternating(float value, ColorAlternator alternator)
       {
          WriteInColorAlternating(Console.Write, value, alternator);
       }
 
-      public static void WriteAlternating(int value, ColorAlternator alternator)
+      public void WriteAlternating(int value, ColorAlternator alternator)
       {
          WriteInColorAlternating(Console.Write, value, alternator);
       }
 
-      public static void WriteAlternating(long value, ColorAlternator alternator)
+      public void WriteAlternating(long value, ColorAlternator alternator)
       {
          WriteInColorAlternating(Console.Write, value, alternator);
       }
 
-      public static void WriteAlternating(object value, ColorAlternator alternator)
+      public void WriteAlternating(object value, ColorAlternator alternator)
       {
          WriteInColorAlternating(Console.Write, value, alternator);
       }
 
-      public static void WriteAlternating(string value, ColorAlternator alternator)
+      public void WriteAlternating(string value, ColorAlternator alternator)
       {
          WriteInColorAlternating(Console.Write, value, alternator);
       }
 
-      public static void WriteAlternating(uint value, ColorAlternator alternator)
+      public void WriteAlternating(uint value, ColorAlternator alternator)
       {
          WriteInColorAlternating(Console.Write, value, alternator);
       }
 
-      public static void WriteAlternating(ulong value, ColorAlternator alternator)
+      public void WriteAlternating(ulong value, ColorAlternator alternator)
       {
          WriteInColorAlternating(Console.Write, value, alternator);
       }
 
-      public static void WriteAlternating(string format, object arg0, ColorAlternator alternator)
+      public void WriteAlternating(string format, object arg0, ColorAlternator alternator)
       {
          WriteInColorAlternating(Console.Write, format, arg0, alternator);
       }
 
-      public static void WriteAlternating(string format, ColorAlternator alternator, params object[] args)
+      public void WriteAlternating(string format, ColorAlternator alternator, params object[] args)
       {
          WriteInColorAlternating(Console.Write, format, args, alternator);
       }
 
-      public static void WriteAlternating(char[] buffer, int index, int count, ColorAlternator alternator)
+      public void WriteAlternating(char[] buffer, int index, int count, ColorAlternator alternator)
       {
          WriteChunkInColorAlternating(Console.Write, buffer, index, count, alternator);
       }
 
-      public static void WriteAlternating(string format, object arg0, object arg1, ColorAlternator alternator)
+      public void WriteAlternating(string format, object arg0, object arg1, ColorAlternator alternator)
       {
          WriteInColorAlternating(Console.Write, format, arg0, arg1, alternator);
       }
 
-      public static void WriteAlternating(string format, object arg0, object arg1, object arg2, ColorAlternator alternator)
+      public void WriteAlternating(string format, object arg0, object arg1, object arg2, ColorAlternator alternator)
       {
          WriteInColorAlternating(Console.Write, format, arg0, arg1, arg2, alternator);
       }
 
-      public static void WriteAlternating(string format, object arg0, object arg1, object arg2, object arg3, ColorAlternator alternator)
+      public void WriteAlternating(string format, object arg0, object arg1, object arg2, object arg3, ColorAlternator alternator)
       {
          WriteInColorAlternating(Console.Write, format, new[] { arg0, arg1, arg2, arg3 }, alternator);
       }
@@ -660,22 +690,22 @@ namespace ConsoLovers.Console
          WriteLine(GetFiglet(font).ToAscii(value).ConcreteValue);
       }
 
-      public static void WriteAscii(string value, Color color)
+      public void WriteAscii(string value, Color color)
       {
          WriteAscii(value, null, color);
       }
 
-      public static void WriteAscii(string value, FigletFont font, Color color)
+      public void WriteAscii(string value, FigletFont font, Color color)
       {
          WriteLine(GetFiglet(font).ToAscii(value).ConcreteValue, color);
       }
 
-      public static void WriteAsciiAlternating(string value, ColorAlternator alternator)
+      public void WriteAsciiAlternating(string value, ColorAlternator alternator)
       {
          WriteAsciiAlternating(value, null, alternator);
       }
 
-      public static void WriteAsciiAlternating(string value, FigletFont font, ColorAlternator alternator)
+      public void WriteAsciiAlternating(string value, FigletFont font, ColorAlternator alternator)
       {
          foreach (var line in GetFiglet(font).ToAscii(value).ConcreteValue.Split('\n'))
          {
@@ -683,247 +713,237 @@ namespace ConsoLovers.Console
          }
       }
 
-      public static void WriteAsciiStyled(string value, StyleSheet styleSheet)
+      public void WriteAsciiStyled(string value, StyleSheet styleSheet)
       {
          WriteAsciiStyled(value, null, styleSheet);
       }
 
-      public static void WriteAsciiStyled(string value, FigletFont font, StyleSheet styleSheet)
+      public void WriteAsciiStyled(string value, FigletFont font, StyleSheet styleSheet)
       {
          WriteLineStyled(GetFiglet(font).ToAscii(value), styleSheet);
       }
 
-      public static void WriteFormatted(string format, object arg0, Color styledColor, Color defaultColor)
+      public void WriteFormatted(string format, object arg0, Color styledColor, Color defaultColor)
       {
          WriteInColorFormatted(WRITE_TRAILER, format, arg0, styledColor, defaultColor);
       }
 
-      public static void WriteFormatted(string format, Formatter arg0, Color defaultColor)
+      public void WriteFormatted(string format, Formatter arg0, Color defaultColor)
       {
          WriteInColorFormatted(WRITE_TRAILER, format, arg0, defaultColor);
       }
 
-      public static void WriteFormatted(string format, Color styledColor, Color defaultColor, params object[] args)
+      public void WriteFormatted(string format, Color styledColor, Color defaultColor, params object[] args)
       {
          WriteInColorFormatted(WRITE_TRAILER, format, args, styledColor, defaultColor);
       }
 
-      public static void WriteFormatted(string format, Color defaultColor, params Formatter[] args)
+      public void WriteFormatted(string format, Color defaultColor, params Formatter[] args)
       {
          WriteInColorFormatted(WRITE_TRAILER, format, args, defaultColor);
       }
 
-      public static void WriteFormatted(string format, object arg0, object arg1, Color styledColor, Color defaultColor)
+      public void WriteFormatted(string format, object arg0, object arg1, Color styledColor, Color defaultColor)
       {
          WriteInColorFormatted(WRITE_TRAILER, format, arg0, arg1, styledColor, defaultColor);
       }
 
-      public static void WriteFormatted(string format, Formatter arg0, Formatter arg1, Color defaultColor)
+      public void WriteFormatted(string format, Formatter arg0, Formatter arg1, Color defaultColor)
       {
          WriteInColorFormatted(WRITE_TRAILER, format, arg0, arg1, defaultColor);
       }
 
-      public static void WriteFormatted(string format, object arg0, object arg1, object arg2, Color styledColor, Color defaultColor)
+      public void WriteFormatted(string format, object arg0, object arg1, object arg2, Color styledColor, Color defaultColor)
       {
          WriteInColorFormatted(WRITE_TRAILER, format, arg0, arg1, arg2, styledColor, defaultColor);
       }
 
-      public static void WriteFormatted(string format, Formatter arg0, Formatter arg1, Formatter arg2, Color defaultColor)
+      public void WriteFormatted(string format, Formatter arg0, Formatter arg1, Formatter arg2, Color defaultColor)
       {
          WriteInColorFormatted(WRITE_TRAILER, format, arg0, arg1, arg2, defaultColor);
       }
 
-      public static void WriteFormatted(string format, object arg0, object arg1, object arg2, object arg3, Color styledColor, Color defaultColor)
+      public void WriteFormatted(string format, object arg0, object arg1, object arg2, object arg3, Color styledColor, Color defaultColor)
       {
          WriteInColorFormatted(WRITE_TRAILER, format, new[] { arg0, arg1, arg2, arg3 }, styledColor, defaultColor);
       }
 
-      public static void WriteFormatted(string format, Formatter arg0, Formatter arg1, Formatter arg2, Formatter arg3, Color defaultColor)
+      public void WriteFormatted(string format, Formatter arg0, Formatter arg1, Formatter arg2, Formatter arg3, Color defaultColor)
       {
          WriteInColorFormatted(WRITE_TRAILER, format, new[] { arg0, arg1, arg2, arg3 }, defaultColor);
       }
 
-      public void WriteLine()
-      {
-         Console.WriteLine();
-      }
-
-      public static void WriteLine(bool value)
+      public void WriteLine(bool value)
       {
          Console.WriteLine(value);
       }
 
-      public static void WriteLine(bool value, Color color)
+      public void WriteLine(bool value, Color color)
       {
          WriteInColor(Console.WriteLine, value, color);
       }
 
-      public static void WriteLine(char value)
+      public void WriteLine(char value)
       {
          Console.WriteLine(value);
       }
 
-      public static void WriteLine(char value, Color color)
+      public void WriteLine(char value, Color color)
       {
          WriteInColor(Console.WriteLine, value, color);
       }
 
-      public static void WriteLine(char[] value)
+      public void WriteLine(char[] value)
       {
          Console.WriteLine(value);
       }
 
-      public static void WriteLine(char[] value, Color color)
+      public void WriteLine(char[] value, Color color)
       {
          WriteInColor(Console.WriteLine, value, color);
       }
 
-      public static void WriteLine(decimal value)
+      public void WriteLine(decimal value)
       {
          Console.WriteLine(value);
       }
 
-      public static void WriteLine(decimal value, Color color)
+      public void WriteLine(decimal value, Color color)
       {
          WriteInColor(Console.WriteLine, value, color);
       }
 
-      public static void WriteLine(double value)
+      public void WriteLine(double value)
       {
          Console.WriteLine(value);
       }
 
-      public static void WriteLine(double value, Color color)
+      public void WriteLine(double value, Color color)
       {
          WriteInColor(Console.WriteLine, value, color);
       }
 
-      public static void WriteLine(float value)
+      public void WriteLine(float value)
       {
          Console.WriteLine(value);
       }
 
-      public static void WriteLine(float value, Color color)
+      public void WriteLine(float value, Color color)
       {
          WriteInColor(Console.WriteLine, value, color);
       }
 
-      public static void WriteLine(int value)
+      public void WriteLine(int value)
       {
          Console.WriteLine(value);
       }
 
-      public static void WriteLine(int value, Color color)
+      public void WriteLine(int value, Color color)
       {
          WriteInColor(Console.WriteLine, value, color);
       }
 
-      public static void WriteLine(long value)
+      public void WriteLine(long value)
       {
          Console.WriteLine(value);
       }
 
-      public static void WriteLine(long value, Color color)
+      public void WriteLine(long value, Color color)
       {
          WriteInColor(Console.WriteLine, value, color);
       }
 
-      public static void WriteLine(object value)
+      public void WriteLine(object value)
       {
          Console.WriteLine(value);
       }
 
-      public static void WriteLine(object value, Color color)
+      public void WriteLine(object value, Color color)
       {
          WriteInColor(Console.WriteLine, value, color);
       }
 
-      public void WriteLine(string value)
+      public void WriteLine(string value, Color color)
+      {
+         WriteInColor(Console.WriteLine, value, color);
+      }
+
+      public void WriteLine(uint value)
       {
          Console.WriteLine(value);
       }
 
-      public static void WriteLine(string value, Color color)
+      public void WriteLine(uint value, Color color)
       {
          WriteInColor(Console.WriteLine, value, color);
       }
 
-      public static void WriteLine(uint value)
+      public void WriteLine(ulong value)
       {
          Console.WriteLine(value);
       }
 
-      public static void WriteLine(uint value, Color color)
+      public void WriteLine(ulong value, Color color)
       {
          WriteInColor(Console.WriteLine, value, color);
       }
 
-      public static void WriteLine(ulong value)
-      {
-         Console.WriteLine(value);
-      }
-
-      public static void WriteLine(ulong value, Color color)
-      {
-         WriteInColor(Console.WriteLine, value, color);
-      }
-
-      public static void WriteLine(string format, object arg0)
+      public void WriteLine(string format, object arg0)
       {
          Console.WriteLine(format, arg0);
       }
 
-      public static void WriteLine(string format, object arg0, Color color)
+      public void WriteLine(string format, object arg0, Color color)
       {
          WriteInColor(Console.WriteLine, format, arg0, color);
       }
 
-      public static void WriteLine(string format, params object[] args)
+      public void WriteLine(string format, params object[] args)
       {
          Console.WriteLine(format, args);
       }
 
-      public static void WriteLine(string format, Color color, params object[] args)
+      public void WriteLine(string format, Color color, params object[] args)
       {
          WriteInColor(Console.WriteLine, format, args, color);
       }
 
-      public static void WriteLine(char[] buffer, int index, int count)
+      public void WriteLine(char[] buffer, int index, int count)
       {
          Console.WriteLine(buffer, index, count);
       }
 
-      public static void WriteLine(char[] buffer, int index, int count, Color color)
+      public void WriteLine(char[] buffer, int index, int count, Color color)
       {
          WriteChunkInColor(Console.WriteLine, buffer, index, count, color);
       }
 
-      public static void WriteLine(string format, object arg0, object arg1)
+      public void WriteLine(string format, object arg0, object arg1)
       {
          Console.WriteLine(format, arg0, arg1);
       }
 
-      public static void WriteLine(string format, object arg0, object arg1, Color color)
+      public void WriteLine(string format, object arg0, object arg1, Color color)
       {
          WriteInColor(Console.WriteLine, format, arg0, arg1, color);
       }
 
-      public static void WriteLine(string format, object arg0, object arg1, object arg2)
+      public void WriteLine(string format, object arg0, object arg1, object arg2)
       {
          Console.WriteLine(format, arg0, arg1, arg2);
       }
 
-      public static void WriteLine(string format, object arg0, object arg1, object arg2, Color color)
+      public void WriteLine(string format, object arg0, object arg1, object arg2, Color color)
       {
          WriteInColor(Console.WriteLine, format, arg0, arg1, arg2, color);
       }
 
-      public static void WriteLine(string format, object arg0, object arg1, object arg2, object arg3)
+      public void WriteLine(string format, object arg0, object arg1, object arg2, object arg3)
       {
          Console.WriteLine(format, arg0, arg1, arg2, arg3);
       }
 
-      public static void WriteLine(string format, object arg0, object arg1, object arg2, object arg3, Color color)
+      public void WriteLine(string format, object arg0, object arg1, object arg2, object arg3, Color color)
       {
          // NOTE: The Intellisense for this overload of System.ColoredConsole.WriteLine is misleading, as the C# compiler
          //       actually resolves this overload to System.ColoredConsole.WriteLine(string format, object[] args)!
@@ -931,342 +951,342 @@ namespace ConsoLovers.Console
          WriteInColor(Console.WriteLine, format, new[] { arg0, arg1, arg2, arg3 }, color);
       }
 
-      public static void WriteLineAlternating(ColorAlternator alternator)
+      public void WriteLineAlternating(ColorAlternator alternator)
       {
          WriteInColorAlternating(Console.Write, WRITELINE_TRAILER, alternator);
       }
 
-      public static void WriteLineAlternating(bool value, ColorAlternator alternator)
+      public void WriteLineAlternating(bool value, ColorAlternator alternator)
       {
          WriteInColorAlternating(Console.WriteLine, value, alternator);
       }
 
-      public static void WriteLineAlternating(char value, ColorAlternator alternator)
+      public void WriteLineAlternating(char value, ColorAlternator alternator)
       {
          WriteInColorAlternating(Console.WriteLine, value, alternator);
       }
 
-      public static void WriteLineAlternating(char[] value, ColorAlternator alternator)
+      public void WriteLineAlternating(char[] value, ColorAlternator alternator)
       {
          WriteInColorAlternating(Console.WriteLine, value, alternator);
       }
 
-      public static void WriteLineAlternating(decimal value, ColorAlternator alternator)
+      public void WriteLineAlternating(decimal value, ColorAlternator alternator)
       {
          WriteInColorAlternating(Console.WriteLine, value, alternator);
       }
 
-      public static void WriteLineAlternating(double value, ColorAlternator alternator)
+      public void WriteLineAlternating(double value, ColorAlternator alternator)
       {
          WriteInColorAlternating(Console.WriteLine, value, alternator);
       }
 
-      public static void WriteLineAlternating(float value, ColorAlternator alternator)
+      public void WriteLineAlternating(float value, ColorAlternator alternator)
       {
          WriteInColorAlternating(Console.WriteLine, value, alternator);
       }
 
-      public static void WriteLineAlternating(int value, ColorAlternator alternator)
+      public void WriteLineAlternating(int value, ColorAlternator alternator)
       {
          WriteInColorAlternating(Console.WriteLine, value, alternator);
       }
 
-      public static void WriteLineAlternating(long value, ColorAlternator alternator)
+      public void WriteLineAlternating(long value, ColorAlternator alternator)
       {
          WriteInColorAlternating(Console.WriteLine, value, alternator);
       }
 
-      public static void WriteLineAlternating(object value, ColorAlternator alternator)
+      public void WriteLineAlternating(object value, ColorAlternator alternator)
       {
          WriteInColorAlternating(Console.WriteLine, value, alternator);
       }
 
-      public static void WriteLineAlternating(string value, ColorAlternator alternator)
+      public void WriteLineAlternating(string value, ColorAlternator alternator)
       {
          WriteInColorAlternating(Console.WriteLine, value, alternator);
       }
 
-      public static void WriteLineAlternating(uint value, ColorAlternator alternator)
+      public void WriteLineAlternating(uint value, ColorAlternator alternator)
       {
          WriteInColorAlternating(Console.WriteLine, value, alternator);
       }
 
-      public static void WriteLineAlternating(ulong value, ColorAlternator alternator)
+      public void WriteLineAlternating(ulong value, ColorAlternator alternator)
       {
          WriteInColorAlternating(Console.WriteLine, value, alternator);
       }
 
-      public static void WriteLineAlternating(string format, object arg0, ColorAlternator alternator)
+      public void WriteLineAlternating(string format, object arg0, ColorAlternator alternator)
       {
          WriteInColorAlternating(Console.WriteLine, format, arg0, alternator);
       }
 
-      public static void WriteLineAlternating(string format, ColorAlternator alternator, params object[] args)
+      public void WriteLineAlternating(string format, ColorAlternator alternator, params object[] args)
       {
          WriteInColorAlternating(Console.WriteLine, format, args, alternator);
       }
 
-      public static void WriteLineAlternating(char[] buffer, int index, int count, ColorAlternator alternator)
+      public void WriteLineAlternating(char[] buffer, int index, int count, ColorAlternator alternator)
       {
          WriteChunkInColorAlternating(Console.WriteLine, buffer, index, count, alternator);
       }
 
-      public static void WriteLineAlternating(string format, object arg0, object arg1, ColorAlternator alternator)
+      public void WriteLineAlternating(string format, object arg0, object arg1, ColorAlternator alternator)
       {
          WriteInColorAlternating(Console.WriteLine, format, arg0, arg1, alternator);
       }
 
-      public static void WriteLineAlternating(string format, object arg0, object arg1, object arg2, ColorAlternator alternator)
+      public void WriteLineAlternating(string format, object arg0, object arg1, object arg2, ColorAlternator alternator)
       {
          WriteInColorAlternating(Console.WriteLine, format, arg0, arg1, arg2, alternator);
       }
 
-      public static void WriteLineAlternating(string format, object arg0, object arg1, object arg2, object arg3, ColorAlternator alternator)
+      public void WriteLineAlternating(string format, object arg0, object arg1, object arg2, object arg3, ColorAlternator alternator)
       {
          WriteInColorAlternating(Console.WriteLine, format, new[] { arg0, arg1, arg2, arg3 }, alternator);
       }
 
-      public static void WriteLineFormatted(string format, object arg0, Color styledColor, Color defaultColor)
+      public void WriteLineFormatted(string format, object arg0, Color styledColor, Color defaultColor)
       {
          WriteInColorFormatted(WRITELINE_TRAILER, format, arg0, styledColor, defaultColor);
       }
 
-      public static void WriteLineFormatted(string format, Formatter arg0, Color defaultColor)
+      public void WriteLineFormatted(string format, Formatter arg0, Color defaultColor)
       {
          WriteInColorFormatted(WRITELINE_TRAILER, format, arg0, defaultColor);
       }
 
-      public static void WriteLineFormatted(string format, Color styledColor, Color defaultColor, params object[] args)
+      public void WriteLineFormatted(string format, Color styledColor, Color defaultColor, params object[] args)
       {
          WriteInColorFormatted(WRITELINE_TRAILER, format, args, styledColor, defaultColor);
       }
 
-      public static void WriteLineFormatted(string format, Color defaultColor, params Formatter[] args)
+      public void WriteLineFormatted(string format, Color defaultColor, params Formatter[] args)
       {
          WriteInColorFormatted(WRITELINE_TRAILER, format, args, defaultColor);
       }
 
-      public static void WriteLineFormatted(string format, object arg0, object arg1, Color styledColor, Color defaultColor)
+      public void WriteLineFormatted(string format, object arg0, object arg1, Color styledColor, Color defaultColor)
       {
          WriteInColorFormatted(WRITELINE_TRAILER, format, arg0, arg1, styledColor, defaultColor);
       }
 
-      public static void WriteLineFormatted(string format, Formatter arg0, Formatter arg1, Color defaultColor)
+      public void WriteLineFormatted(string format, Formatter arg0, Formatter arg1, Color defaultColor)
       {
          WriteInColorFormatted(WRITELINE_TRAILER, format, arg0, arg1, defaultColor);
       }
 
-      public static void WriteLineFormatted(string format, object arg0, object arg1, object arg2, Color styledColor, Color defaultColor)
+      public void WriteLineFormatted(string format, object arg0, object arg1, object arg2, Color styledColor, Color defaultColor)
       {
          WriteInColorFormatted(WRITELINE_TRAILER, format, arg0, arg1, arg2, styledColor, defaultColor);
       }
 
-      public static void WriteLineFormatted(string format, Formatter arg0, Formatter arg1, Formatter arg2, Color defaultColor)
+      public void WriteLineFormatted(string format, Formatter arg0, Formatter arg1, Formatter arg2, Color defaultColor)
       {
          WriteInColorFormatted(WRITELINE_TRAILER, format, arg0, arg1, arg2, defaultColor);
       }
 
-      public static void WriteLineFormatted(string format, object arg0, object arg1, object arg2, object arg3, Color styledColor, Color defaultColor)
+      public void WriteLineFormatted(string format, object arg0, object arg1, object arg2, object arg3, Color styledColor, Color defaultColor)
       {
          WriteInColorFormatted(WRITELINE_TRAILER, format, new[] { arg0, arg1, arg2, arg3 }, styledColor, defaultColor);
       }
 
-      public static void WriteLineFormatted(string format, Formatter arg0, Formatter arg1, Formatter arg2, Formatter arg3, Color defaultColor)
+      public void WriteLineFormatted(string format, Formatter arg0, Formatter arg1, Formatter arg2, Formatter arg3, Color defaultColor)
       {
          WriteInColorFormatted(WRITELINE_TRAILER, format, new[] { arg0, arg1, arg2, arg3 }, defaultColor);
       }
 
-      public static void WriteLineStyled(StyleSheet styleSheet)
+      public void WriteLineStyled(StyleSheet styleSheet)
       {
          WriteInColorStyled(WRITE_TRAILER, WRITELINE_TRAILER, styleSheet);
       }
 
-      public static void WriteLineStyled(bool value, StyleSheet styleSheet)
+      public void WriteLineStyled(bool value, StyleSheet styleSheet)
       {
          WriteInColorStyled(WRITELINE_TRAILER, value, styleSheet);
       }
 
-      public static void WriteLineStyled(char value, StyleSheet styleSheet)
+      public void WriteLineStyled(char value, StyleSheet styleSheet)
       {
          WriteInColorStyled(WRITELINE_TRAILER, value, styleSheet);
       }
 
-      public static void WriteLineStyled(char[] value, StyleSheet styleSheet)
+      public void WriteLineStyled(char[] value, StyleSheet styleSheet)
       {
          WriteInColorStyled(WRITELINE_TRAILER, value, styleSheet);
       }
 
-      public static void WriteLineStyled(decimal value, StyleSheet styleSheet)
+      public void WriteLineStyled(decimal value, StyleSheet styleSheet)
       {
          WriteInColorStyled(WRITELINE_TRAILER, value, styleSheet);
       }
 
-      public static void WriteLineStyled(double value, StyleSheet styleSheet)
+      public void WriteLineStyled(double value, StyleSheet styleSheet)
       {
          WriteInColorStyled(WRITELINE_TRAILER, value, styleSheet);
       }
 
-      public static void WriteLineStyled(float value, StyleSheet styleSheet)
+      public void WriteLineStyled(float value, StyleSheet styleSheet)
       {
          WriteInColorStyled(WRITELINE_TRAILER, value, styleSheet);
       }
 
-      public static void WriteLineStyled(int value, StyleSheet styleSheet)
+      public void WriteLineStyled(int value, StyleSheet styleSheet)
       {
          WriteInColorStyled(WRITELINE_TRAILER, value, styleSheet);
       }
 
-      public static void WriteLineStyled(long value, StyleSheet styleSheet)
+      public void WriteLineStyled(long value, StyleSheet styleSheet)
       {
          WriteInColorStyled(WRITELINE_TRAILER, value, styleSheet);
       }
 
-      public static void WriteLineStyled(StyledString value, StyleSheet styleSheet)
+      public void WriteLineStyled(StyledString value, StyleSheet styleSheet)
       {
          WriteAsciiInColorStyled(WRITELINE_TRAILER, value, styleSheet);
       }
 
-      public static void WriteLineStyled(string value, StyleSheet styleSheet)
+      public void WriteLineStyled(string value, StyleSheet styleSheet)
       {
          WriteInColorStyled(WRITELINE_TRAILER, value, styleSheet);
       }
 
-      public static void WriteLineStyled(uint value, StyleSheet styleSheet)
+      public void WriteLineStyled(uint value, StyleSheet styleSheet)
       {
          WriteInColorStyled(WRITELINE_TRAILER, value, styleSheet);
       }
 
-      public static void WriteLineStyled(ulong value, StyleSheet styleSheet)
+      public void WriteLineStyled(ulong value, StyleSheet styleSheet)
       {
          WriteInColorStyled(WRITELINE_TRAILER, value, styleSheet);
       }
 
-      public static void WriteLineStyled(string format, object arg0, StyleSheet styleSheet)
+      public void WriteLineStyled(string format, object arg0, StyleSheet styleSheet)
       {
          WriteInColorStyled(WRITELINE_TRAILER, format, arg0, styleSheet);
       }
 
-      public static void WriteLineStyled(StyleSheet styleSheet, string format, params object[] args)
+      public void WriteLineStyled(StyleSheet styleSheet, string format, params object[] args)
       {
          WriteInColorStyled(WRITELINE_TRAILER, format, args, styleSheet);
       }
 
-      public static void WriteLineStyled(char[] buffer, int index, int count, StyleSheet styleSheet)
+      public void WriteLineStyled(char[] buffer, int index, int count, StyleSheet styleSheet)
       {
          WriteChunkInColorStyled(WRITELINE_TRAILER, buffer, index, count, styleSheet);
       }
 
-      public static void WriteLineStyled(string format, object arg0, object arg1, StyleSheet styleSheet)
+      public void WriteLineStyled(string format, object arg0, object arg1, StyleSheet styleSheet)
       {
          WriteInColorStyled(WRITELINE_TRAILER, format, arg0, arg1, styleSheet);
       }
 
-      public static void WriteLineStyled(string format, object arg0, object arg1, object arg2, StyleSheet styleSheet)
+      public void WriteLineStyled(string format, object arg0, object arg1, object arg2, StyleSheet styleSheet)
       {
          WriteInColorStyled(WRITELINE_TRAILER, format, arg0, arg1, arg2, styleSheet);
       }
 
-      public static void WriteLineStyled(string format, object arg0, object arg1, object arg2, object arg3, StyleSheet styleSheet)
+      public void WriteLineStyled(string format, object arg0, object arg1, object arg2, object arg3, StyleSheet styleSheet)
       {
          WriteInColorStyled(WRITELINE_TRAILER, format, new[] { arg0, arg1, arg2, arg3 }, styleSheet);
       }
 
-      public static void WriteLineWithGradient<T>(IEnumerable<T> input, Color startColor, Color endColor, int maxColorsInGradient = MAX_COLOR_CHANGES)
+      public void WriteLineWithGradient<T>(IEnumerable<T> input, Color startColor, Color endColor, int maxColorsInGradient = MAX_COLOR_CHANGES)
       {
          DoWithGradient(WriteLine, input, startColor, endColor, maxColorsInGradient);
       }
 
-      public static void WriteStyled(bool value, StyleSheet styleSheet)
+      public void WriteStyled(bool value, StyleSheet styleSheet)
       {
          WriteInColorStyled(WRITE_TRAILER, value, styleSheet);
       }
 
-      public static void WriteStyled(char value, StyleSheet styleSheet)
+      public void WriteStyled(char value, StyleSheet styleSheet)
       {
          WriteInColorStyled(WRITE_TRAILER, value, styleSheet);
       }
 
-      public static void WriteStyled(char[] value, StyleSheet styleSheet)
+      public void WriteStyled(char[] value, StyleSheet styleSheet)
       {
          WriteInColorStyled(WRITE_TRAILER, value, styleSheet);
       }
 
-      public static void WriteStyled(decimal value, StyleSheet styleSheet)
+      public void WriteStyled(decimal value, StyleSheet styleSheet)
       {
          WriteInColorStyled(WRITE_TRAILER, value, styleSheet);
       }
 
-      public static void WriteStyled(double value, StyleSheet styleSheet)
+      public void WriteStyled(double value, StyleSheet styleSheet)
       {
          WriteInColorStyled(WRITE_TRAILER, value, styleSheet);
       }
 
-      public static void WriteStyled(float value, StyleSheet styleSheet)
+      public void WriteStyled(float value, StyleSheet styleSheet)
       {
          WriteInColorStyled(WRITE_TRAILER, value, styleSheet);
       }
 
-      public static void WriteStyled(int value, StyleSheet styleSheet)
+      public void WriteStyled(int value, StyleSheet styleSheet)
       {
          WriteInColorStyled(WRITE_TRAILER, value, styleSheet);
       }
 
-      public static void WriteStyled(long value, StyleSheet styleSheet)
+      public void WriteStyled(long value, StyleSheet styleSheet)
       {
          WriteInColorStyled(WRITE_TRAILER, value, styleSheet);
       }
 
-      public static void WriteStyled(object value, StyleSheet styleSheet)
+      public void WriteStyled(object value, StyleSheet styleSheet)
       {
          WriteInColorStyled(WRITE_TRAILER, value, styleSheet);
       }
 
-      public static void WriteStyled(string value, StyleSheet styleSheet)
+      public void WriteStyled(string value, StyleSheet styleSheet)
       {
          WriteInColorStyled(WRITE_TRAILER, value, styleSheet);
       }
 
-      public static void WriteStyled(uint value, StyleSheet styleSheet)
+      public void WriteStyled(uint value, StyleSheet styleSheet)
       {
          WriteInColorStyled(WRITE_TRAILER, value, styleSheet);
       }
 
-      public static void WriteStyled(ulong value, StyleSheet styleSheet)
+      public void WriteStyled(ulong value, StyleSheet styleSheet)
       {
          WriteInColorStyled(WRITE_TRAILER, value, styleSheet);
       }
 
-      public static void WriteStyled(string format, object arg0, StyleSheet styleSheet)
+      public void WriteStyled(string format, object arg0, StyleSheet styleSheet)
       {
          WriteInColorStyled(WRITE_TRAILER, format, arg0, styleSheet);
       }
 
-      public static void WriteStyled(StyleSheet styleSheet, string format, params object[] args)
+      public void WriteStyled(StyleSheet styleSheet, string format, params object[] args)
       {
          WriteInColorStyled(WRITE_TRAILER, format, args, styleSheet);
       }
 
-      public static void WriteStyled(char[] buffer, int index, int count, StyleSheet styleSheet)
+      public void WriteStyled(char[] buffer, int index, int count, StyleSheet styleSheet)
       {
          WriteChunkInColorStyled(WRITE_TRAILER, buffer, index, count, styleSheet);
       }
 
-      public static void WriteStyled(string format, object arg0, object arg1, StyleSheet styleSheet)
+      public void WriteStyled(string format, object arg0, object arg1, StyleSheet styleSheet)
       {
          WriteInColorStyled(WRITE_TRAILER, format, arg0, arg1, styleSheet);
       }
 
-      public static void WriteStyled(string format, object arg0, object arg1, object arg2, StyleSheet styleSheet)
+      public void WriteStyled(string format, object arg0, object arg1, object arg2, StyleSheet styleSheet)
       {
          WriteInColorStyled(WRITE_TRAILER, format, arg0, arg1, arg2, styleSheet);
       }
 
-      public static void WriteStyled(string format, object arg0, object arg1, object arg2, object arg3, StyleSheet styleSheet)
+      public void WriteStyled(string format, object arg0, object arg1, object arg2, object arg3, StyleSheet styleSheet)
       {
          WriteInColorStyled(WRITE_TRAILER, format, new[] { arg0, arg1, arg2, arg3 }, styleSheet);
       }
 
-      public static void WriteWithGradient<T>(IEnumerable<T> input, Color startColor, Color endColor, int maxColorsInGradient = MAX_COLOR_CHANGES)
+      public void WriteWithGradient<T>(IEnumerable<T> input, Color startColor, Color endColor, int maxColorsInGradient = MAX_COLOR_CHANGES)
       {
          DoWithGradient(Write, input, startColor, endColor, maxColorsInGradient);
       }
@@ -1275,27 +1295,11 @@ namespace ConsoLovers.Console
 
       #region Methods
 
-      private static void Console_CancelKeyPress(object sender, ConsoleCancelEventArgs e)
+      private void OnConsoleCancelKeyPress(object sender, ConsoleCancelEventArgs e)
       {
          CancelKeyPress.Invoke(sender, e);
       }
 
       #endregion
-
-#if !NET40
-      public static bool IsErrorRedirected => Console.IsErrorRedirected;
-
-      public static bool IsInputRedirected => Console.IsInputRedirected;
-
-      public static bool IsOutputRedirected => Console.IsOutputRedirected;
-
-      public static IColoredConsole Instance
-      {
-         get
-         {
-            return instance ?? (instance = new ColoredConsole());
-         }
-      }
-#endif
    }
 }
