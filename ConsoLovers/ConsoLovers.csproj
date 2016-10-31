@@ -77,6 +77,7 @@
     <Compile Include="ConsoleMenuBuilder.cs" />
     <Compile Include="Menu\ConsoleMenuItem.cs" />
     <Compile Include="Console\ConsoleProxy.cs" />
+    <Compile Include="Menu\ConsoleMenuThemes.cs" />
     <Compile Include="Menu\ElementInfo.cs" />
     <Compile Include="Menu\ExceptionEventArgs.cs" />
     <Compile Include="Menu\ExpanderDescription.cs" />

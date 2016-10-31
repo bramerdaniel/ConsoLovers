@@ -459,7 +459,7 @@ namespace ConsoLovers.Menu
             }
             else
             {
-               Console.Write("  ");
+               Write("  ", Colors.MenuItem.Foreground, Colors.ConsoleBackground);
                Write(disabledHint, Color.White, Color.Red);
             }
 

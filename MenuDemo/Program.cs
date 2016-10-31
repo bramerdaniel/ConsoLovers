@@ -95,11 +95,13 @@ namespace MenuDemo
          var chooseDefaultTheme = new ConsoleMenuItem("Default", m => m.Menu.Colors = new MenuColorTheme());
          var chooseBlueTheme = new ConsoleMenuItem("Blue", m => m.Menu.Colors = ConsoleMenuThemes.Blue);
          var chooseRedTheme = new ConsoleMenuItem("Red", m => m.Menu.Colors = ConsoleMenuThemes.Red);
+         var choosePinkTheme = new ConsoleMenuItem("Pink", m => m.Menu.Colors = ConsoleMenuThemes.Pink);
          var chooseCrazyTheme = new ConsoleMenuItem("Crazy", m => m.Menu.Colors = crazyTheme);
          return new ConsoleMenuItem(
             "Choose color theme",
             chooseBlueTheme,
             chooseRedTheme,
+            choosePinkTheme,
             chooseCrazyTheme,
             chooseDefaultTheme,
             new ConsoleMenuItem("Bahama", m => m.Menu.Colors = ConsoleMenuThemes.Bahama),
