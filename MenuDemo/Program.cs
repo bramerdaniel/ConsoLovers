@@ -14,6 +14,8 @@ namespace MenuDemo
    using ConsoLovers.ConsoleToolkit.Contracts;
    using ConsoLovers.ConsoleToolkit.Menu;
 
+   using ShellProgressBar;
+
    class Program
    {
       #region Constants and Fields
@@ -45,7 +47,10 @@ namespace MenuDemo
          if (userName == null)
             return;
 
-         var progressBar = new ShellProgressBar.ProgressBar(100, "Connecting to server with username " + userName, ConsoleColor.Magenta);
+         var progressBar = new ProgressBar(
+            100,
+            "Connecting to server with username " + userName,
+            new ProgressBarOptions { BackgroundColor = ConsoleColor.Blue, ForeGroundColor = ConsoleColor.Cyan, ProgressBarOnBottom = false, ProgressCharacter = '*' });
          for (int i = 0; i < 100; i++)
          {
             progressBar.Tick();
@@ -105,7 +110,7 @@ namespace MenuDemo
             chooseCrazyTheme,
             chooseDefaultTheme,
             new ConsoleMenuItem("Bahama", m => m.Menu.Colors = ConsoleMenuThemes.Bahama),
-         new ConsoleMenuItem("CloseOptions", new ConsoleMenuItem("Exit application but use a long long name", x => Environment.Exit(0))),
+            new ConsoleMenuItem("CloseOptions", new ConsoleMenuItem("Exit application but use a long long name", x => Environment.Exit(0))),
             new ConsoleMenuItem("A disabled menu ittem using a long name"));
       }
 
@@ -199,12 +204,34 @@ namespace MenuDemo
 
          var footer = Environment.NewLine + "THIS COULD BE YOUR FOOTER";
 
-         ////ConsoleMenu.CreateNew()
-         ////   .WithHeader(header)
-         ////   .WithFooter(footer)
-         ////   .WithItem(CreateColorMenu())
-         ////   .CloseOn(ConsoleKey.Escape)
-         ////   .Show();
+         ConsoleMenu.CreateNew()
+            .WithHeader(header)
+            .WithFooter(footer)
+            .CloseOn(ConsoleKey.Escape)
+            .WithItem(CreateColorMenu())
+            .WithSubMenu("Change selection strech")
+            .WithItem("None", x => x.Menu.SelectionStrech = SelectionStrech.None)
+            .WithItem("UnifiedLength", x => x.Menu.SelectionStrech = SelectionStrech.UnifiedLength)
+            .WithItem("FullLine", x => x.Menu.SelectionStrech = SelectionStrech.FullLine)
+            .Done<IRootMenuBuilder>()
+            .WithItem(
+               new ConsoleMenuItem("CircularSelection = True",
+                  x =>
+                  {
+                     x.Menu.CircularSelection = !x.Menu.CircularSelection;
+                     x.Text = $"CircularSelection = {x.Menu.CircularSelection}";
+                  }))
+             .Show();
+
+         //.WithItem("Remove until 9 remain", x =>
+         //{
+         //   while (x.Menu.Count >= 10)
+         //      x.Menu.RemoveAt(x.Menu.Count - 1);
+         //})
+
+         //.Done()
+         //// 
+         //.Show();
 
          var menu = new ConsoleMenu { Header = header, Footer = footer, CircularSelection = false, Selector = "» ", Colors = ConsoleMenuThemes.Bahama };
 
@@ -245,7 +272,7 @@ namespace MenuDemo
 
       private static void ShowProgress(ConsoleMenuItem sender)
       {
-         var progressBar = new ShellProgressBar.ProgressBar(100, "Some long running process", ConsoleColor.DarkYellow);
+         var progressBar = new ProgressBar(100, "Some long running process", ConsoleColor.DarkYellow);
          for (int i = 0; i < 100; i++)
          {
             progressBar.Tick();

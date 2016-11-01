@@ -83,7 +83,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       #region Public Methods and Operators
 
-      public static ConsoleMenuBuilder CreateNew()
+      public static IRootMenuBuilder CreateNew()
       {
          return new ConsoleMenuBuilder();
       }
