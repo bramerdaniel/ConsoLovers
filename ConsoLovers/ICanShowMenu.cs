@@ -10,7 +10,7 @@ namespace ConsoLovers.ConsoleToolkit
 
    using ConsoLovers.ConsoleToolkit.Menu;
 
-   public interface IMenuBuilder : IAddMenuItem
+   public interface ICanShowMenu
    {
       #region Public Methods and Operators
 
@@ -19,24 +19,28 @@ namespace ConsoLovers.ConsoleToolkit
       #endregion
    }
 
-   public interface IAddMenuItem
+   internal interface IMenuItemParent
    {
       void AddItem(ConsoleMenuItem item);
    }
 
-   public interface ISubMenuBuilder : IMenuBuilder
+   public interface ISubMenuBuilder : ICanShowMenu
    {
       #region Public Methods and Operators
 
-      IMenuBuilder Done();
-
-      T Done<T>() where T : class, IMenuBuilder;
+      ICanAddMenuItems FinishSubMenu();
 
       ISubMenuBuilder WithItem(ConsoleMenuItem item);
 
       ISubMenuBuilder WithItem(string text, Action<ConsoleMenuItem> execute);
 
-      ISubMenuBuilder WithSubMenu(string text);
+      ISubMenuBuilder WithItem(string text, Action<ConsoleMenuItem> execute, Func<bool> canExecute);
+
+      ISubMenuBuilder WithItem(string text, Action execute);
+
+      ISubMenuBuilder WithItem(string text, Action execute, Func<bool> canExecute);
+
+      ISubMenuBuilder CreateSubMenu(string text);
 
       #endregion
    }

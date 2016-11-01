@@ -5,7 +5,7 @@
    using System.Runtime.InteropServices;
 
    /// <summary>
-    /// Exposes methods used for mapping System.Drawing.Colors to System.ConsoleColors.
+    /// Exposes methods used for mapping System.Drawing.Theme to System.ConsoleColors.
     /// Based on code that was originally written by Alex Shvedov, and that was then modified by MercuryP.
     /// </summary>
     public sealed class ColorMapper

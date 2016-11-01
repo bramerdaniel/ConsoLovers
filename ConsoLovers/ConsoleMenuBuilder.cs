@@ -10,83 +10,87 @@ namespace ConsoLovers.ConsoleToolkit
 
    using ConsoLovers.ConsoleToolkit.Menu;
 
-   public class ConsoleMenuBuilder : IRootMenuBuilder
+   internal class ConsoleMenuBuilder : IFluentMenu, IMenuItemParent
    {
       #region Constants and Fields
 
-      private ConsoleMenu menu;
+      private readonly ConsoleMenu menu;
 
       #endregion
 
       #region Constructors and Destructors
 
-      public ConsoleMenuBuilder()
+      public ConsoleMenuBuilder(string header)
       {
-         menu = new ConsoleMenu();
+         menu = new ConsoleMenu { Header = header };
       }
 
       #endregion
 
-      #region IMenuBuilder Members
+      #region ICanAddMenuItems Members
 
-      public void Show()
-      {
-         Done().Show();
-      }
-
-      public IRootMenuBuilder WithItem(ConsoleMenuItem item)
+      public ICanAddMenuItems WithItem(ConsoleMenuItem item)
       {
          menu.Add(item);
          return this;
       }
 
-      public IRootMenuBuilder WithItem(string text, Action<ConsoleMenuItem> execute)
+      public ICanAddMenuItems WithItem(string text, Action<ConsoleMenuItem> execute)
       {
          menu.Add(new ConsoleMenuItem(text, execute));
          return this;
       }
 
-      public ISubMenuBuilder WithSubMenu(string text)
+      public ICanAddMenuItems WithItem(string text, Action execute)
+      {
+         return WithItem(text, x => execute());
+      }
+
+      public ICanAddMenuItems WithItem(string text, Action<ConsoleMenuItem> execute, Func<bool> canExecute)
+      {
+         menu.Add(new ConsoleMenuItem(text, execute, canExecute));
+         return this;
+      }
+
+      public ICanAddMenuItems WithItem(string text, Action execute, Func<bool> canExecute)
+      {
+         menu.Add(new ConsoleMenuItem(text, x => execute(), canExecute));
+         return this;
+      }
+
+      public ISubMenuBuilder CreateSubMenu(string text)
       {
          return new SubMenuBuilder(this, text);
       }
 
       #endregion
 
-      #region IRootMenuBuilder Members
+      #region ICanShowMenu Members
 
-      public IRootMenuBuilder WithHeader(string header)
+      public void Show()
       {
-         menu.Header = header;
-         return this;
+         menu.Show();
       }
 
-      public IRootMenuBuilder WithFooter(string footer)
-      {
-         menu.Footer = footer;
-         return this;
-      }
+      #endregion
 
-      public IRootMenuBuilder CloseOn(ConsoleKey key)
+      #region IFluentMenu Members
+
+      public IFluentMenu Where(Action<IConsoleMenuOptions> propertySetter)
       {
-         menu.CloseKeys = new[] { key };
+         propertySetter(menu);
          return this;
       }
 
       #endregion
 
-      #region Public Methods and Operators
+      #region IMenuItemParent Members
 
-      public ConsoleMenu Done()
-      {
-         return menu;
-      }
-
-      #endregion
-
-      public void AddItem(ConsoleMenuItem item)
+      void IMenuItemParent.AddItem(ConsoleMenuItem item)
       {
          WithItem(item);
       }
+
+      #endregion
    }
 }

@@ -70,7 +70,7 @@
     <Compile Include="Console\TextFormatter.cs" />
     <Compile Include="Console\TextPattern.cs" />
     <Compile Include="Console\TextPatternCollection.cs" />
-    <Compile Include="IMenuBuilder.cs" />
+    <Compile Include="ICanShowMenu.cs" />
     <Compile Include="Menu\ConsoleInputEventArgs.cs" />
     <Compile Include="Menu\ConsoleMenuInputHandler.cs" />
     <Compile Include="Menu\ConsoleMenu.cs" />
@@ -84,7 +84,8 @@
     <Compile Include="Contracts\IConsole.cs" />
     <Compile Include="Contracts\ICustomHeader.cs" />
     <Compile Include="Contracts\ICustomFooter.cs" />
-    <Compile Include="Menu\IRootMenuBuilder.cs" />
+    <Compile Include="Menu\ICanAddMenuItems.cs" />
+    <Compile Include="Menu\IFluentMenu.cs" />
     <Compile Include="Menu\MenuColorTheme.cs" />
     <Compile Include="Menu\ColorSet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

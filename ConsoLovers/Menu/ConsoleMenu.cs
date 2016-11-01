@@ -14,7 +14,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
    using ConsoLovers.ConsoleToolkit.Console;
    using ConsoLovers.ConsoleToolkit.Contracts;
 
-   public class ConsoleMenu
+   public class ConsoleMenu : IConsoleMenuOptions
    {
       #region Constants and Fields
 
@@ -48,8 +48,10 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       public ConsoleKey[] CloseKeys { get; set; } = new ConsoleKey[0];
 
-      public MenuColorTheme Colors { get; set; } = new MenuColorTheme();
+      /// <summary>Gets or sets the <see cref="MenuColorTheme"/> the <see cref="ConsoleMenu"/> uses.</summary>
+      public MenuColorTheme Theme { get; set; } = new MenuColorTheme();
 
+      /// <summary>Gets or sets the console that is used for printing the menu.</summary>
       public IColoredConsole Console { get; set; } = ColoredConsole.Instance;
 
       public int Count => root.Items.Count;
@@ -83,9 +85,14 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       #region Public Methods and Operators
 
-      public static IRootMenuBuilder CreateNew()
+      public static IFluentMenu WithHeader(string text)
       {
-         return new ConsoleMenuBuilder();
+         return new ConsoleMenuBuilder(text);
+      }
+
+      public static IFluentMenu WithoutHeader()
+      {
+         return new ConsoleMenuBuilder(null);
       }
 
       public void Add(ConsoleMenuItem item)
@@ -352,9 +359,12 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          var lastKey = e.KeyInfo;
          if (lastKey.Key == ConsoleKey.Enter)
          {
-            Execute(SelectedItem);
-            if (!SelectedItem.ReturnsToMenu)
-               return;
+            if (SelectedItem != null)
+            {
+               Execute(SelectedItem);
+               if (!SelectedItem.ReturnsToMenu)
+                  return;
+            }
 
             WriteMenu();
          }
@@ -367,8 +377,8 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       private void PrintElement(ElementInfo element, int unifiedLength)
       {
-         var foreground = Colors.MenuItem.GetForeground(element.IsSelected, element.Disabled);
-         var background = Colors.MenuItem.GetBackground(element.IsSelected, element.Disabled);
+         var foreground = Theme.MenuItem.GetForeground(element.IsSelected, element.Disabled);
+         var background = Theme.MenuItem.GetBackground(element.IsSelected, element.Disabled);
 
          Write(element.Indent, foreground, background);
          WriteExpander(element, foreground, background);
@@ -410,7 +420,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          var stringFooter = Footer as string;
          if (stringFooter != null)
          {
-            Write(stringFooter, Colors.FooterForeground, Colors.FooterBackground);
+            Write(stringFooter, Theme.FooterForeground, Theme.FooterBackground);
             Console.WriteLine();
             return;
          }
@@ -431,7 +441,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          var stringHeader = Header as string;
          if (stringHeader != null)
          {
-            Write(stringHeader, Colors.HeaderForeground, Colors.HeaderBackground);
+            Write(stringHeader, Theme.HeaderForeground, Theme.HeaderBackground);
             Console.WriteLine();
             return;
          }
@@ -452,8 +462,8 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          if (notExecutable == menuItem.MenuItem)
          {
             var disabledHint = menuItem.Hint;
-            var foreground = Colors.Hint.GetForeground(menuItem.IsSelected, menuItem.Disabled);
-            var background = Colors.Hint.GetBackground(menuItem.IsSelected, menuItem.Disabled);
+            var foreground = Theme.Hint.GetForeground(menuItem.IsSelected, menuItem.Disabled);
+            var background = Theme.Hint.GetBackground(menuItem.IsSelected, menuItem.Disabled);
 
             if (SelectionStrech == SelectionStrech.FullLine)
             {
@@ -462,7 +472,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
             }
             else
             {
-               Write("  ", Colors.MenuItem.Foreground, Colors.ConsoleBackground);
+               Write("  ", Theme.MenuItem.Foreground, Theme.ConsoleBackground);
                Write(disabledHint, foreground, background);
             }
 
@@ -473,8 +483,8 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       private void PrintSelector(ElementInfo element)
       {
-         var foreground = Colors.Selector.GetForeground(element.IsSelected, element.Disabled);
-         var background = Colors.Selector.GetBackground(element.IsSelected, element.Disabled);
+         var foreground = Theme.Selector.GetForeground(element.IsSelected, element.Disabled);
+         var background = Theme.Selector.GetBackground(element.IsSelected, element.Disabled);
 
          if (element.IsSelected)
          {
@@ -550,8 +560,8 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          }
          else
          {
-            itemForeground = Colors.Expander.GetForeground(elementInfo.IsSelected, elementInfo.Disabled);
-            itemBackground = Colors.Expander.GetBackground(elementInfo.IsSelected, elementInfo.Disabled);
+            itemForeground = Theme.Expander.GetForeground(elementInfo.IsSelected, elementInfo.Disabled);
+            itemBackground = Theme.Expander.GetBackground(elementInfo.IsSelected, elementInfo.Disabled);
 
             if (elementInfo.IsExpanded.Value)
             {
@@ -566,7 +576,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       internal void WriteMenu()
       {
-         Console.Clear(Colors.ConsoleBackground);
+         Console.Clear(Theme.ConsoleBackground);
          expanderWidth = root.Items.Any(i => i.HasChildren) ? Expander.Length : 0;
 
          var indexWidth = IndexMenuItems ? 3 + (root.Items.Count < 10 ? 1 : 2) : 0;
@@ -586,5 +596,37 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       }
 
       #endregion
+   }
+
+   public interface IConsoleMenuOptions
+   {
+      /// <summary>Gets or sets a value indicating whether the circular selection is enabled or not.</summary>
+      bool CircularSelection { get; set; }
+
+      bool ClearOnExecution { get; set; }
+
+      bool ExecuteOnIndexSelection { get; set; }
+
+      ExpanderDescription Expander { get; set; }
+
+      /// <summary>Gets or sets the size of the indent that is used to indent child menu items.</summary>
+      int IndentSize { get; set; }
+
+      /// <summary>Gets or sets a value indicating whether the <see cref="ConsoleMenuItem"/>s should be displayed and be accessible with an index.</summary>
+      bool IndexMenuItems { get; set; }
+
+      /// <summary>Gets or sets the selection strech mode that is used for displaying the selection.</summary>
+      SelectionStrech SelectionStrech { get; set; }
+
+      /// <summary>Gets or sets the selector that is used for displaying the selection.</summary>
+      string Selector { get; set; }
+
+      /// <summary>Gets or sets the footer that is displayed below the menu.</summary>
+      object Footer { get; set; }
+
+      /// <summary>Gets or sets the header that is displayed.</summary>
+      object Header { get; set; }
+
+      ConsoleKey[] CloseKeys { get; set; }
    }
 }

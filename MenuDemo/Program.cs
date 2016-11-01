@@ -37,8 +37,8 @@ namespace MenuDemo
          menu.Add(new ConsoleMenuItem("Go home", ShowProgress));
          menu.Add(new ConsoleMenuItem("Go to bed", InsertName));
          menu.Add(new ConsoleMenuItem("Back to main menu", x => menu.Close()));
-         menu.Colors.MenuItem.SelectedForeground = Color.Green;
-         menu.Colors.MenuItem.SelectedBackground = Color.Red;
+         menu.Theme.MenuItem.SelectedForeground = Color.Green;
+         menu.Theme.MenuItem.SelectedBackground = Color.Red;
          menu.Show();
       }
 
@@ -97,11 +97,11 @@ namespace MenuDemo
          crazyTheme.HeaderForeground = Color.Black;
          crazyTheme.HeaderBackground = Color.Yellow;
 
-         var chooseDefaultTheme = new ConsoleMenuItem("Default", m => m.Menu.Colors = new MenuColorTheme());
-         var chooseBlueTheme = new ConsoleMenuItem("Blue", m => m.Menu.Colors = ConsoleMenuThemes.Blue);
-         var chooseRedTheme = new ConsoleMenuItem("Red", m => m.Menu.Colors = ConsoleMenuThemes.Red);
-         var choosePinkTheme = new ConsoleMenuItem("Pink", m => m.Menu.Colors = ConsoleMenuThemes.Pink);
-         var chooseCrazyTheme = new ConsoleMenuItem("Crazy", m => m.Menu.Colors = crazyTheme);
+         var chooseDefaultTheme = new ConsoleMenuItem("Default", m => m.Menu.Theme = new MenuColorTheme());
+         var chooseBlueTheme = new ConsoleMenuItem("Blue", m => m.Menu.Theme = ConsoleMenuThemes.Blue);
+         var chooseRedTheme = new ConsoleMenuItem("Red", m => m.Menu.Theme = ConsoleMenuThemes.Red);
+         var choosePinkTheme = new ConsoleMenuItem("Pink", m => m.Menu.Theme = ConsoleMenuThemes.Pink);
+         var chooseCrazyTheme = new ConsoleMenuItem("Crazy", m => m.Menu.Theme = crazyTheme);
          return new ConsoleMenuItem(
             "Choose color theme",
             chooseBlueTheme,
@@ -109,7 +109,7 @@ namespace MenuDemo
             choosePinkTheme,
             chooseCrazyTheme,
             chooseDefaultTheme,
-            new ConsoleMenuItem("Bahama", m => m.Menu.Colors = ConsoleMenuThemes.Bahama),
+            new ConsoleMenuItem("Bahama", m => m.Menu.Theme = ConsoleMenuThemes.Bahama),
             new ConsoleMenuItem("CloseOptions", new ConsoleMenuItem("Exit application but use a long long name", x => Environment.Exit(0))),
             new ConsoleMenuItem("A disabled menu ittem using a long name"));
       }
@@ -204,24 +204,48 @@ namespace MenuDemo
 
          var footer = Environment.NewLine + "THIS COULD BE YOUR FOOTER";
 
-         ConsoleMenu.CreateNew()
-            .WithHeader(header)
-            .WithFooter(footer)
-            .CloseOn(ConsoleKey.Escape)
-            .WithItem(CreateColorMenu())
-            .WithSubMenu("Change selection strech")
+         ConsoleMenu.WithoutHeader()
+            .Where(m => m.Footer = "Footer")
+            .Where(m => m.Expander = new ExpanderDescription { Collapsed = "#", Expanded = "~" })
+            .Where(m => m.Selector = ">>>>")
+            .Where(m => m.IndentSize = 10)
+            .WithItem("Crash", x => { throw null; })
+            .WithItem("Beep", Console.Beep)
+            .WithItem("Disabled", Console.Beep, () => false)
+            .WithItem("Expand", () => { Console.WindowHeight += 1; })
+            .CreateSubMenu("Change selection strech")
             .WithItem("None", x => x.Menu.SelectionStrech = SelectionStrech.None)
             .WithItem("UnifiedLength", x => x.Menu.SelectionStrech = SelectionStrech.UnifiedLength)
             .WithItem("FullLine", x => x.Menu.SelectionStrech = SelectionStrech.FullLine)
-            .Done<IRootMenuBuilder>()
+            .FinishSubMenu()
+            .WithItem("Log some result",
+               () =>
+               {
+                  Console.Clear();
+                  Console.WriteLine("Some result");
+                  Console.WriteLine("Press any key to return to menu");
+                  Console.ReadKey(true);
+               })
+            .WithItem("Exit", x => x.Menu.Close())
+            .Show();
+
+         ConsoleMenu.WithHeader(header)
+            .Where(m => m.Footer = footer)
+            .Where(m => m.CloseKeys = new[] { ConsoleKey.Escape, ConsoleKey.End })
+            .WithItem(CreateColorMenu())
+            .CreateSubMenu("Change selection strech")
+            .WithItem("None", x => x.Menu.SelectionStrech = SelectionStrech.None)
+            .WithItem("UnifiedLength", x => x.Menu.SelectionStrech = SelectionStrech.UnifiedLength)
+            .WithItem("FullLine", x => x.Menu.SelectionStrech = SelectionStrech.FullLine)
+            .FinishSubMenu()
             .WithItem(
-               new ConsoleMenuItem("CircularSelection = True",
+               new ConsoleMenuItem(
+                  "CircularSelection = True",
                   x =>
                   {
                      x.Menu.CircularSelection = !x.Menu.CircularSelection;
                      x.Text = $"CircularSelection = {x.Menu.CircularSelection}";
-                  }))
-             .Show();
+                  })).Show();
 
          //.WithItem("Remove until 9 remain", x =>
          //{
@@ -229,11 +253,11 @@ namespace MenuDemo
          //      x.Menu.RemoveAt(x.Menu.Count - 1);
          //})
 
-         //.Done()
+         //.FinishSubMenu()
          //// 
          //.Show();
 
-         var menu = new ConsoleMenu { Header = header, Footer = footer, CircularSelection = false, Selector = "» ", Colors = ConsoleMenuThemes.Bahama };
+         var menu = new ConsoleMenu { Header = header, Footer = footer, CircularSelection = false, Selector = "» ", Theme = ConsoleMenuThemes.Bahama };
 
          menu.SelectionStrech = SelectionStrech.UnifiedLength;
          // menu.Expander = new ExpanderDescription { Collapsed = "►", Expanded = "▼" };

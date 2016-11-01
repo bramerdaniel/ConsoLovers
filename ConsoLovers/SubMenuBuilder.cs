@@ -11,19 +11,21 @@ namespace ConsoLovers.ConsoleToolkit
 
    using ConsoLovers.ConsoleToolkit.Menu;
 
-   public class SubMenuBuilder : ISubMenuBuilder
+   internal class SubMenuBuilder : ISubMenuBuilder, IMenuItemParent
    {
       #region Constants and Fields
 
       private readonly List<ConsoleMenuItem> menuItems = new List<ConsoleMenuItem>(5);
 
-      private readonly IMenuBuilder parent;
+      private readonly ICanShowMenu parent;
+
+      private readonly string subMenuText;
 
       #endregion
 
       #region Constructors and Destructors
 
-      public SubMenuBuilder(IMenuBuilder parent, string text)
+      public SubMenuBuilder(ICanShowMenu parent, string text)
       {
          if (parent == null)
             throw new ArgumentNullException(nameof(parent));
@@ -31,12 +33,22 @@ namespace ConsoLovers.ConsoleToolkit
             throw new ArgumentNullException(nameof(text));
 
          this.parent = parent;
-         Text = text;
+         subMenuText = text;
       }
 
       #endregion
 
-      #region IAddMenuItem Members
+      #region ICanShowMenu Members
+
+      public void Show()
+      {
+         FinishSubMenu();
+         parent.Show();
+      }
+
+      #endregion
+
+      #region IMenuItemParent Members
 
       public void AddItem(ConsoleMenuItem item)
       {
@@ -45,31 +57,17 @@ namespace ConsoLovers.ConsoleToolkit
 
       #endregion
 
-      #region IMenuBuilder Members
-
-      public void Show()
-      {
-         Done();
-         parent.Show();
-      }
-
-      #endregion
-
       #region ISubMenuBuilder Members
 
       /// <summary>Finishes the creation of the menu and returns to the parent.</summary>
       /// <returns>The parent menu builder</returns>
-      public IMenuBuilder Done()
+      public ICanAddMenuItems FinishSubMenu()
       {
-         var subMenu = new ConsoleMenuItem(Text, menuItems.ToArray());
-         parent.AddItem(subMenu);
+         var subMenu = new ConsoleMenuItem(subMenuText, menuItems.ToArray());
 
-         return parent;
-      }
+         ((IMenuItemParent)parent).AddItem(subMenu);
 
-      public T Done<T>() where T : class, IMenuBuilder
-      {
-         return Done() as T;
+         return parent as ICanAddMenuItems;
       }
 
       public ISubMenuBuilder WithItem(ConsoleMenuItem item)
@@ -84,17 +82,35 @@ namespace ConsoLovers.ConsoleToolkit
          return this;
       }
 
-      public ISubMenuBuilder WithSubMenu(string text)
+      public ISubMenuBuilder WithItem(string text, Action<ConsoleMenuItem> execute, Func<bool> canExecute)
+      {
+         menuItems.Add(new ConsoleMenuItem(text, execute, canExecute));
+         return this;
+      }
+
+      public ISubMenuBuilder WithItem(string text, Action execute)
+      {
+         return WithItem(text, x => execute());
+      }
+
+      public ISubMenuBuilder WithItem(string text, Action execute, Func<bool> canExecute)
+      {
+         return WithItem(text, x => execute(), canExecute);
+      }
+
+      public ISubMenuBuilder CreateSubMenu(string text)
       {
          return new SubMenuBuilder(this, text);
       }
 
       #endregion
 
-      #region Public Properties
+      #region Public Methods and Operators
 
-      /// <summary>Gets the text of the menu item.</summary>
-      public string Text { get; }
+      public T Done<T>() where T : class, ICanShowMenu
+      {
+         return FinishSubMenu() as T;
+      }
 
       #endregion
    }
