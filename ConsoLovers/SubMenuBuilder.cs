@@ -25,7 +25,7 @@ namespace ConsoLovers.ConsoleToolkit
 
       #region Constructors and Destructors
 
-      public SubMenuBuilder(ICanShowMenu parent, string text)
+      internal SubMenuBuilder(ICanShowMenu parent, string text)
       {
          if (parent == null)
             throw new ArgumentNullException(nameof(parent));

@@ -219,11 +219,12 @@ namespace MenuDemo
             .WithItem("FullLine", x => x.Menu.SelectionStrech = SelectionStrech.FullLine)
             .FinishSubMenu()
             .WithItem("Log some result",
-               () =>
+               x =>
                {
                   Console.Clear();
                   Console.WriteLine("Some result");
                   Console.WriteLine("Press any key to return to menu");
+                  x.ReturnsToMenu = false;
                   Console.ReadKey(true);
                })
             .WithItem("Exit", x => x.Menu.Close())

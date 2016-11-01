@@ -363,16 +363,17 @@ namespace ConsoLovers.ConsoleToolkit.Menu
             {
                Execute(SelectedItem);
                if (!SelectedItem.ReturnsToMenu)
+               {
+                  Close();
                   return;
+               }
             }
 
             WriteMenu();
          }
 
          if (HandleSelectionChanged(lastKey, e.Input))
-         {
             WriteMenu();
-         }
       }
 
       private void PrintElement(ElementInfo element, int unifiedLength)
