@@ -209,6 +209,7 @@ namespace MenuDemo
             .Where(m => m.Expander = new ExpanderDescription { Collapsed = "#", Expanded = "~" })
             .Where(m => m.Selector = ">>>>")
             .Where(m => m.IndentSize = 10)
+            .Where(m => m.IndexMenuItems = false)
             .WithItem("Crash", x => { throw null; })
             .WithItem("Beep", Console.Beep)
             .WithItem("Disabled", Console.Beep, () => false)
@@ -231,7 +232,7 @@ namespace MenuDemo
             .Show();
 
          ConsoleMenu.WithHeader(header)
-            .Where(m => m.Footer = footer)
+            .Where(m => m.Footer = "Press ESCAPE to move on")
             .Where(m => m.CloseKeys = new[] { ConsoleKey.Escape, ConsoleKey.End })
             .WithItem(CreateColorMenu())
             .CreateSubMenu("Change selection strech")
