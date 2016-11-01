@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.Contracts
+namespace ConsoLovers.ConsoleToolkit.Contracts
 {
    using System;
    using System.Drawing;

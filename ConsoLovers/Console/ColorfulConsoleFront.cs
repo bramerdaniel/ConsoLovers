@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.Console
+namespace ConsoLovers.ConsoleToolkit.Console
 {
    using System;
    using System.Collections.Generic;
@@ -12,7 +12,7 @@ namespace ConsoLovers.Console
    using System.IO;
    using System.Text;
 
-   using ConsoLovers.Contracts;
+   using ConsoLovers.ConsoleToolkit.Contracts;
 
    /// <summary>Wraps around the System.ColoredConsole class, adding enhanced styling functionality.</summary>
    public partial class ColoredConsole : IColoredConsole

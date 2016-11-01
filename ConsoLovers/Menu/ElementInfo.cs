@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.Menu
+namespace ConsoLovers.ConsoleToolkit.Menu
 {
    internal class ElementInfo
    {

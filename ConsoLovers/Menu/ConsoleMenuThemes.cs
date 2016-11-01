@@ -1,4 +1,4 @@
-namespace ConsoLovers.Menu
+namespace ConsoLovers.ConsoleToolkit.Menu
 {
    using System.Drawing;
 
@@ -51,22 +51,27 @@ namespace ConsoLovers.Menu
          },
 
          Selector = new ColorSet
-            {
-               Background = Color.Pink,
-               DisabledBackground = Color.Pink,
-               DisabledSelectedBackground = Color.HotPink,
-               SelectedForeground = Color.White,
-               SelectedBackground = Color.DeepPink
+         {
+            Background = Color.Pink,
+            DisabledBackground = Color.Pink,
+            DisabledSelectedBackground = Color.HotPink,
+            SelectedForeground = Color.White,
+            SelectedBackground = Color.DeepPink
          },
 
-         Expander =
-            new ColorSet
-            {
-               Foreground = Color.DeepPink,
-               Background = Color.Pink,
-               SelectedForeground = Color.White,
-               SelectedBackground = Color.DeepPink
-            }
+         Expander = new ColorSet
+         {
+            Foreground = Color.DeepPink,
+            Background = Color.Pink,
+            SelectedForeground = Color.White,
+            SelectedBackground = Color.DeepPink
+         },
+
+         Hint = new ColorSet
+         {
+            DisabledSelectedForeground = Color.Black,
+            DisabledSelectedBackground = Color.PaleVioletRed
+         }
       };
 
       public static MenuColorTheme Red
@@ -135,7 +140,7 @@ namespace ConsoLovers.Menu
                   SelectedForeground = Color.Blue,
                   SelectedBackground = Color.Azure,
                   DisabledSelectedForeground = Color.Orange,
-                  DisabledSelectedBackground= Color.Azure
+                  DisabledSelectedBackground = Color.Azure
                },
 
                Expander = new ColorSet

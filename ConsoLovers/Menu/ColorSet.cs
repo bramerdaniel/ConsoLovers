@@ -4,9 +4,8 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.Menu
+namespace ConsoLovers.ConsoleToolkit.Menu
 {
-   using System;
    using System.Drawing;
 
    public class ColorSet

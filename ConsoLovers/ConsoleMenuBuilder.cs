@@ -1,9 +1,9 @@
 
-namespace ConsoLovers
+namespace ConsoLovers.ConsoleToolkit
 {
    using System;
 
-   using ConsoLovers.Menu;
+   using ConsoLovers.ConsoleToolkit.Menu;
 
    public class ConsoleMenuBuilder
    {

@@ -6,8 +6,8 @@
 
 namespace ConsoLovers.UnitTests.Menu
 {
-   using ConsoLovers.Contracts;
-   using ConsoLovers.Menu;
+   using ConsoLovers.ConsoleToolkit.Contracts;
+   using ConsoLovers.ConsoleToolkit.Menu;
 
    using Microsoft.VisualStudio.TestTools.UnitTesting;
 

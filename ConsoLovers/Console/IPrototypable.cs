@@ -1,4 +1,4 @@
-﻿namespace ConsoLovers.Console
+﻿namespace ConsoLovers.ConsoleToolkit.Console
 {
    /// <summary>
     /// Exposes methods used for creating (potentially inexact) copies of objects.

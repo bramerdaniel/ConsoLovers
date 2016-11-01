@@ -1,4 +1,4 @@
-namespace ConsoLovers.Contracts
+namespace ConsoLovers.ConsoleToolkit.Contracts
 {
    internal interface ICustomFooter
    {

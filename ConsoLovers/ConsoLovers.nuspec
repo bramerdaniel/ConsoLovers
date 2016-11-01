@@ -3,15 +3,15 @@
   <metadata>
     <id>ConsoLovers.ConsoleToolkit</id>
     <version>0.0.0.1</version>
-    <title>ConsoleToolkit</title>
-    <authors>ConsoLovers</authors>
-    <owners>ConsoLovers</owners>
-    <projectUrl>http://PROJECT_URL_HERE_OR_DELETE_THIS_LINE</projectUrl>
-    <iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>
+    <title>ConsoLovers.ConsoleToolkit</title>
+    <authors>danielbramer</authors>
+    <owners>danielbramer</owners>
+    <projectUrl>https://github.com/bramerdaniel/ConsoLovers</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/bramerdaniel/ConsoLovers/master/ConsoLovers/Resources/Icon.ico</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>First creation of the package.</releaseNotes>
+    <releaseNotes>First version of the package only containing the ConsoleMenu. Not for productive usage yet.</releaseNotes>
     <copyright>Copyright 2016</copyright>
-    <tags>Console Menu ConsoleMenu</tags>
+    <tags>Console Menu ConsoleMenu ConsoleToolkit .Net</tags>
   </metadata>
 </package>

@@ -4,15 +4,15 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.Menu
+namespace ConsoLovers.ConsoleToolkit.Menu
 {
    using System;
    using System.Collections.Generic;
    using System.Drawing;
    using System.Linq;
 
-   using ConsoLovers.Console;
-   using ConsoLovers.Contracts;
+   using ConsoLovers.ConsoleToolkit.Console;
+   using ConsoLovers.ConsoleToolkit.Contracts;
 
    public class ConsoleMenu
    {
@@ -452,15 +452,18 @@ namespace ConsoLovers.Menu
          if (notExecutable == menuItem.MenuItem)
          {
             var disabledHint = menuItem.Hint;
+            var foreground = Colors.Hint.GetForeground(menuItem.IsSelected, menuItem.Disabled);
+            var background = Colors.Hint.GetBackground(menuItem.IsSelected, menuItem.Disabled);
+
             if (SelectionStrech == SelectionStrech.FullLine)
             {
                Console.SetCursorPosition(Console.CursorLeft - disabledHint.Length, Console.CursorTop);
-               Write(disabledHint, Color.White, Color.Red);
+               Write(disabledHint, foreground, background);
             }
             else
             {
                Write("  ", Colors.MenuItem.Foreground, Colors.ConsoleBackground);
-               Write(disabledHint, Color.White, Color.Red);
+               Write(disabledHint, foreground, background);
             }
 
             notExecutable = null;

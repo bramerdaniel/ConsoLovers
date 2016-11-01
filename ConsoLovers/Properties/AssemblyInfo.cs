@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ConsoLovers")]
-[assembly: AssemblyDescription("Toolbox for advanced console applications")]
+[assembly: AssemblyTitle("ConsoLovers.ConsoleToolkit")]
+[assembly: AssemblyDescription("Toolbox for advanced console applications. The toolbox contains a console menu and some other useful console helpers.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("ConsoLovers")]
-[assembly: AssemblyProduct("ConsoLovers")]
+[assembly: AssemblyProduct("ConsoLovers.ConsoleToolkit")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

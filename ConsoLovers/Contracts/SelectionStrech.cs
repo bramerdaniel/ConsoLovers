@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.Contracts
+namespace ConsoLovers.ConsoleToolkit.Contracts
 {
    public enum SelectionStrech
    {

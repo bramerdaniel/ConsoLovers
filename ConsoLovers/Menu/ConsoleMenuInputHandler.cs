@@ -4,14 +4,14 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.Menu
+namespace ConsoLovers.ConsoleToolkit.Menu
 {
    using System;
    using System.Collections.Generic;
    using System.Text;
    using System.Timers;
 
-   using ConsoLovers.Contracts;
+   using ConsoLovers.ConsoleToolkit.Contracts;
 
    internal class ConsoleMenuInputHandler
    {

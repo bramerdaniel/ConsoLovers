@@ -4,9 +4,8 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.Menu
+namespace ConsoLovers.ConsoleToolkit.Menu
 {
-   using System;
    using System.Drawing;
 
    public class MenuColorTheme
@@ -55,6 +54,13 @@ namespace ConsoLovers.Menu
          Background = Color.Black,
          DisabledBackground = Color.Black,
          DisabledForeground = Color.DarkGray
+      };
+
+      /// <summary>Gets or sets the <see cref="ColorSet"/> for the disabled hint.</summary>
+      public ColorSet Hint { get; set; } = new ColorSet
+      {
+         DisabledSelectedForeground = Color.White,
+         DisabledSelectedBackground = Color.Red
       };
 
       #endregion

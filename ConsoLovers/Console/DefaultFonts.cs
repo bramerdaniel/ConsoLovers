@@ -1,4 +1,4 @@
-﻿namespace ConsoLovers.Console
+﻿namespace ConsoLovers.ConsoleToolkit.Console
 {
    public sealed class DefaultFonts
     {

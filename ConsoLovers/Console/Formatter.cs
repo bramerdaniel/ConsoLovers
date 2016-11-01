@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.Console
+namespace ConsoLovers.ConsoleToolkit.Console
 {
    using System.Drawing;
 

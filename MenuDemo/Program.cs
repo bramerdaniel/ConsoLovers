@@ -11,8 +11,8 @@ namespace MenuDemo
    using System.Drawing;
    using System.Threading;
 
-   using ConsoLovers.Contracts;
-   using ConsoLovers.Menu;
+   using ConsoLovers.ConsoleToolkit.Contracts;
+   using ConsoLovers.ConsoleToolkit.Menu;
 
    class Program
    {
