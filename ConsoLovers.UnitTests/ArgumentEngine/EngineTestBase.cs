@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ParserTestBase.cs" company="ConsoLovers">
+// <copyright file="EngineTestBase.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2016
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -21,6 +21,7 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
 
       #endregion
    }
+
    public class ParserTestBase
    {
       #region Methods
@@ -33,6 +34,11 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
       protected IDictionary<string, string> Parse(string[] parameters)
       {
          return GetTarget().Parse(parameters);
+      }
+
+      protected IDictionary<string, string> Parse(string[] parameters, bool caseSensitive)
+      {
+         return GetTarget().Parse(parameters, caseSensitive);
       }
 
       #endregion

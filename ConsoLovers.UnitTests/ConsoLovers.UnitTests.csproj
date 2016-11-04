@@ -79,8 +79,6 @@
     <Compile Include="ArgumentEngine\UnmapTests.cs" />
     <Compile Include="ArgumentEngine\EngineTestBase.cs" />
     <Compile Include="ArgumentEngine\Setup.cs" />
-    <Compile Include="ContainsOption.cs" />
-    <Compile Include="ContainsParameter.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="Menu\WriteMenu.cs" />
     <Compile Include="NormalizeArguments.cs" />

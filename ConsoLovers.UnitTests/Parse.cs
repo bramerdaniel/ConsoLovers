@@ -22,6 +22,38 @@ namespace ConsoLovers.UnitTests
       #region Public Methods and Operators
 
       [TestMethod]
+      public void ContainsParameterShouldBeFalse()
+      {
+         var arguments = Parse(new[] { "-Name:Hans" });
+         arguments.Count.Should().Be(1);
+         arguments.ContainsKey("Name").Should().BeTrue();
+      }
+
+      [TestMethod]
+      public void ContainsParameterShouldBeTrue()
+      {
+         var arguments = Parse(new[] { "-FullName:Hans" });
+         arguments.Count.Should().Be(1);
+         arguments.ContainsKey("Name").Should().BeFalse();
+      }
+
+      [TestMethod]
+      public void ContainsOptionShouldBeFalse()
+      {
+         var arguments = Parse(new[] { "-other" });
+         arguments.Count.Should().Be(1);
+         arguments.ContainsKey("enabled").Should().BeFalse();
+      }
+
+      [TestMethod]
+      public void ContainsOptionShouldBeTrue()
+      {
+         var arguments = Parse(new[] { "-enabled" });
+         arguments.Count.Should().Be(1);
+         arguments.ContainsKey("enabled").Should().BeTrue();
+      }
+
+      [TestMethod]
       public void ParseMultipleNamedParameters()
       {
          var arguments = Parse(new[] { "-Ä=4", "/Ü:5.5", "-Ö:Peter" });
@@ -64,6 +96,17 @@ namespace ConsoLovers.UnitTests
          arguments.ContainsKey("NAME").Should().BeTrue();
 
          arguments["Name"].Should().Be("Olga");
+      }
+
+      [TestMethod]
+      public void ParseCommand()
+      {
+         var arguments = Parse(new[] { "Command" });
+         arguments.ContainsKey("Command").Should().BeTrue();
+         arguments.ContainsKey("command").Should().BeTrue();
+         arguments.ContainsKey("COMMAND").Should().BeTrue();
+
+         arguments["COMMAND"].Should().Be("true");
       }
 
       [TestMethod]

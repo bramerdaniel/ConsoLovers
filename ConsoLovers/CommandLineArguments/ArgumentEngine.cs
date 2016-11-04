@@ -88,12 +88,12 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       /// <summary>Maps the specified arguments to given object of the given type.</summary>
       /// <typeparam name="T">The type of the class to map the argument to.</typeparam>
       /// <param name="instance">The instance to map the arguments to.</param>
-      /// <param name="args">The arguments as <see cref="Dictionary{TKey,TValue}"/> that should be mapped to the instance.</param>
+      /// <param name="arguments">The arguments as <see cref="Dictionary{TKey,TValue}"/> that should be mapped to the instance.</param>
       /// <returns>The created instance of the arguments class.</returns>
-      public T Map<T>(T instance, IDictionary<string, string> args)
+      public T Map<T>(T instance, IDictionary<string, string> arguments)
       {
          var mapper = new ArgumentMapper<T>();
-         return mapper.Map(instance, args);
+         return mapper.Map(instance, arguments);
       }
 
       /// <summary>Maps the specified arguments to a class of the given type.</summary>
