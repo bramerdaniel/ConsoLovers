@@ -10,13 +10,24 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
 
    using ConsoLovers.ConsoleToolkit.CommandLineArguments;
 
-   public class ParserTestBase
+   public class EngineTestBase
    {
       #region Methods
 
       protected ArgumentEngine GetTarget()
       {
-         return Setup.CommandLineParser().Done();
+         return Setup.ArgumentEngine().Done();
+      }
+
+      #endregion
+   }
+   public class ParserTestBase
+   {
+      #region Methods
+
+      protected CommandLineArgumentParser GetTarget()
+      {
+         return Setup.CommandLineArgumentParser().Done();
       }
 
       protected IDictionary<string, string> Parse(string[] parameters)

@@ -19,7 +19,7 @@ namespace ConsoLovers.UnitTests
 
    [TestClass]
    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Reviewed. Suppression is OK here.")]
-   public class Map : ParserTestBase
+   public class Map : EngineTestBase
    {
       #region Public Methods and Operators
 

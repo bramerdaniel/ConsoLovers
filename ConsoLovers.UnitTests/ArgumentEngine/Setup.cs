@@ -12,15 +12,27 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
    {
       #region Public Methods and Operators
 
-      public static CommandLineParserSetup CommandLineParser()
+      public static ArgumentEngineSetup ArgumentEngine()
       {
-         return new CommandLineParserSetup();
+         return new ArgumentEngineSetup();
       }
 
       #endregion
+
+      public static CommandLinerParserSetup CommandLineArgumentParser()
+      {
+         return new CommandLinerParserSetup();
+      }
    }
 
-   public class CommandLineParserSetup
+   public class CommandLinerParserSetup
+   {
+      public CommandLineArgumentParser Done()
+      {
+         return new CommandLineArgumentParser();
+      }
+   }
+   public class ArgumentEngineSetup
    {
       public ArgumentEngine Done()
       {

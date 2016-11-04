@@ -9,7 +9,6 @@ namespace ConsoLovers.UnitTests
    using System.Diagnostics.CodeAnalysis;
    using System.Linq;
 
-   using ConsoLovers.ConsoleToolkit.CommandLineArguments;
    using ConsoLovers.UnitTests.ArgumentEngine;
 
    using FluentAssertions;

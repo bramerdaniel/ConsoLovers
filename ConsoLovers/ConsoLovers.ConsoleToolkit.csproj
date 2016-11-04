@@ -50,6 +50,7 @@
     <Compile Include="CommandLineArguments\ArgumentMapper.cs" />
     <Compile Include="CommandLineArguments\CommandAttribute.cs" />
     <Compile Include="CommandLineArguments\CommandLineArgumentException.cs" />
+    <Compile Include="CommandLineArguments\CommandLineArgumentParser.cs" />
     <Compile Include="CommandLineArguments\CommandLineAttribute.cs" />
     <Compile Include="CommandLineArguments\CommandLineAttributeException.cs" />
     <Compile Include="CommandLineArguments\ArgumentEngine.cs" />
