@@ -30,6 +30,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="JetBrains.Annotations, Version=10.2.1.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.Annotations.10.2.1\lib\net\JetBrains.Annotations.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -41,6 +45,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandLineArguments\ArgumentAttribute.cs" />
+    <Compile Include="CommandLineArguments\ArgumentHelp.cs" />
+    <Compile Include="CommandLineArguments\ArgumentMapper.cs" />
+    <Compile Include="CommandLineArguments\CommandAttribute.cs" />
+    <Compile Include="CommandLineArguments\CommandLineArgumentException.cs" />
+    <Compile Include="CommandLineArguments\CommandLineAttribute.cs" />
+    <Compile Include="CommandLineArguments\CommandLineAttributeException.cs" />
+    <Compile Include="CommandLineArguments\CommandLineParser.cs" />
+    <Compile Include="CommandLineArguments\HelpTextAttribute.cs" />
+    <Compile Include="CommandLineArguments\MapperBase.cs" />
+    <Compile Include="CommandLineArguments\MissingCommandLineArgumentException.cs" />
+    <Compile Include="CommandLineArguments\OptionAttribute.cs" />
     <Compile Include="Console\ColorAlternator.cs" />
     <Compile Include="Console\ColorExtensions.cs" />
     <Compile Include="Console\ColorfulConsoleBack.cs" />
@@ -98,6 +114,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ConsoLovers.nuspec" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
