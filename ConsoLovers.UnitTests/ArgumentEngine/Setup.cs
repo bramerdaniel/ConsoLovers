@@ -4,8 +4,10 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.UnitTests.CommandLineParserTests
+namespace ConsoLovers.UnitTests.ArgumentEngine
 {
+   using ConsoLovers.ConsoleToolkit.CommandLineArguments;
+
    public class Setup
    {
       #region Public Methods and Operators
@@ -16,5 +18,13 @@ namespace ConsoLovers.UnitTests.CommandLineParserTests
       }
 
       #endregion
+   }
+
+   public class CommandLineParserSetup
+   {
+      public ArgumentEngine Done()
+      {
+         return new ArgumentEngine();
+      }
    }
 }

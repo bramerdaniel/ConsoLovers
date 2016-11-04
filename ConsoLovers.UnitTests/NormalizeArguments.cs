@@ -10,6 +10,7 @@ namespace ConsoLovers.UnitTests
    using System.Linq;
 
    using ConsoLovers.ConsoleToolkit.CommandLineArguments;
+   using ConsoLovers.UnitTests.ArgumentEngine;
 
    using FluentAssertions;
 
@@ -17,14 +18,14 @@ namespace ConsoLovers.UnitTests
 
    [TestClass]
    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Reviewed. Suppression is OK here.")]
-   public class NormalizeArguments
+   public class NormalizeArguments : ParserTestBase
    {
       #region Public Methods and Operators
 
       [TestMethod]
       public void EnsureCorrectArgumentsAreNormalizedCorrectly()
       {
-         var result = CommandLineParser.NormalizeArguments("a=5").ToList();
+         var result = GetTarget().NormalizeArguments("a=5").ToList();
          result.Count.Should().Be(1);
          result.Contains("a=5").Should().BeTrue();
       }
@@ -32,7 +33,7 @@ namespace ConsoLovers.UnitTests
       [TestMethod]
       public void EnsureSpacedArgumentsAreCorrected()
       {
-         var result = CommandLineParser.NormalizeArguments("a", "=", "5").ToList();
+         var result = GetTarget().NormalizeArguments("a", "=", "5").ToList();
          result.Count.Should().Be(1);
          result.Contains("a=5").Should().BeTrue();
       }
@@ -40,7 +41,7 @@ namespace ConsoLovers.UnitTests
       [TestMethod]
       public void EnsureSpacedArgumentsAreCorrectedWithMultipleArguments()
       {
-         var result = CommandLineParser.NormalizeArguments("-level", "=", "55", "/debug", ":", "true").ToList();
+         var result = GetTarget().NormalizeArguments("-level", "=", "55", "/debug", ":", "true").ToList();
          result.Count.Should().Be(2);
          result.Contains("-level=55").Should().BeTrue();
          result.Contains("/debug:true").Should().BeTrue();
@@ -49,7 +50,7 @@ namespace ConsoLovers.UnitTests
       [TestMethod]
       public void EnsureSpacedEqualWithoutValueWorks()
       {
-         var result = CommandLineParser.NormalizeArguments("a", "=").ToList();
+         var result = GetTarget().NormalizeArguments("a", "=").ToList();
          result.Count.Should().Be(1);
          result.Contains("a=").Should().BeTrue();
       }

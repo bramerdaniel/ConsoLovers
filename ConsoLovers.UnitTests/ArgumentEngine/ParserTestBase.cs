@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.UnitTests.CommandLineParserTests
+namespace ConsoLovers.UnitTests.ArgumentEngine
 {
    using System.Collections.Generic;
 

@@ -9,6 +9,7 @@ namespace ConsoLovers.UnitTests
    using System.Diagnostics.CodeAnalysis;
 
    using ConsoLovers.ConsoleToolkit.CommandLineArguments;
+   using ConsoLovers.UnitTests.ArgumentEngine;
 
    using FluentAssertions;
 
@@ -16,21 +17,21 @@ namespace ConsoLovers.UnitTests
 
    [TestClass]
    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Reviewed. Suppression is OK here.")]
-   public class ContainsOption
+   public class ContainsOption : ParserTestBase
    {
       #region Public Methods and Operators
 
       [TestMethod]
       public void ContainsOptionShouldBeFalse()
       {
-         var arguments = CommandLineParser.Parse(new[] { "-other" });
+         var arguments = Parse(new[] { "-other" });
          arguments.ContainsKey("enabled").Should().BeFalse();
       }
 
       [TestMethod]
       public void ContainsOptionShouldBeTrue()
       {
-         var arguments = CommandLineParser.Parse(new[] { "-enabled" });
+         var arguments = Parse(new[] { "-enabled" });
          arguments.ContainsKey("enabled").Should().BeTrue();
       }
 

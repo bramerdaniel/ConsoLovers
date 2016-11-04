@@ -52,7 +52,7 @@
     <Compile Include="CommandLineArguments\CommandLineArgumentException.cs" />
     <Compile Include="CommandLineArguments\CommandLineAttribute.cs" />
     <Compile Include="CommandLineArguments\CommandLineAttributeException.cs" />
-    <Compile Include="CommandLineArguments\CommandLineParser.cs" />
+    <Compile Include="CommandLineArguments\ArgumentEngine.cs" />
     <Compile Include="CommandLineArguments\HelpTextAttribute.cs" />
     <Compile Include="CommandLineArguments\MapperBase.cs" />
     <Compile Include="CommandLineArguments\MissingCommandLineArgumentException.cs" />

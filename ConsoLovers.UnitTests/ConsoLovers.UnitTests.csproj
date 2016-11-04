@@ -77,6 +77,8 @@
     <Compile Include="ArgumentEngine\MapArgumentTests.cs" />
     <Compile Include="ArgumentEngine\MapCommandTests.cs" />
     <Compile Include="ArgumentEngine\UnmapTests.cs" />
+    <Compile Include="ArgumentEngine\ParserTestBase.cs" />
+    <Compile Include="ArgumentEngine\Setup.cs" />
     <Compile Include="ContainsOption.cs" />
     <Compile Include="ContainsParameter.cs" />
     <Compile Include="Map.cs" />
@@ -94,7 +96,9 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="CommandLineParserTests\" />
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

@@ -9,6 +9,7 @@ namespace ConsoLovers.UnitTests
    using System.Diagnostics.CodeAnalysis;
 
    using ConsoLovers.ConsoleToolkit.CommandLineArguments;
+   using ConsoLovers.UnitTests.ArgumentEngine;
 
    using FluentAssertions;
 
@@ -16,14 +17,14 @@ namespace ConsoLovers.UnitTests
 
    [TestClass]
    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Reviewed. Suppression is OK here.")]
-   public class Parse
+   public class Parse : ParserTestBase
    {
       #region Public Methods and Operators
 
       [TestMethod]
       public void ParseMultipleNamedParameters()
       {
-         var arguments = CommandLineParser.Parse(new[] { "-Ä=4", "/Ü:5.5", "-Ö:Peter" });
+         var arguments = Parse(new[] { "-Ä=4", "/Ü:5.5", "-Ö:Peter" });
          arguments.ContainsKey("ä").Should().BeTrue();
          arguments.ContainsKey("ü").Should().BeTrue();
          arguments.ContainsKey("ö").Should().BeTrue();
@@ -36,7 +37,7 @@ namespace ConsoLovers.UnitTests
       [TestMethod]
       public void ParseMultipleOptions()
       {
-         var arguments = CommandLineParser.Parse(new[] { "-d", "/a", "-x" });
+         var arguments = Parse(new[] { "-d", "/a", "-x" });
          arguments.ContainsKey("d").Should().BeTrue();
          arguments.ContainsKey("a").Should().BeTrue();
          arguments.ContainsKey("x").Should().BeTrue();
@@ -50,14 +51,14 @@ namespace ConsoLovers.UnitTests
       [TestMethod]
       public void ParseNamedArgument()
       {
-         var arguments = CommandLineParser.Parse(new[] { "-Name=Hans" });
+         var arguments = Parse(new[] { "-Name=Hans" });
          arguments.ContainsKey("Name").Should().BeTrue();
          arguments.ContainsKey("name").Should().BeTrue();
          arguments.ContainsKey("NAME").Should().BeTrue();
 
          arguments["Name"].Should().Be("Hans");
 
-         arguments = CommandLineParser.Parse(new[] { "-Name:Olga" });
+         arguments = Parse(new[] { "-Name:Olga" });
          arguments.ContainsKey("Name").Should().BeTrue();
          arguments.ContainsKey("name").Should().BeTrue();
          arguments.ContainsKey("NAME").Should().BeTrue();
@@ -68,7 +69,7 @@ namespace ConsoLovers.UnitTests
       [TestMethod]
       public void ParseOption()
       {
-         var arguments = CommandLineParser.Parse(new[] { " -Debug" });
+         var arguments = Parse(new[] { " -Debug" });
          arguments.ContainsKey("Debug").Should().BeTrue();
          arguments.ContainsKey("debug").Should().BeTrue();
          arguments.ContainsKey("DEBUG").Should().BeTrue();
@@ -78,7 +79,7 @@ namespace ConsoLovers.UnitTests
 
          arguments["DEBUg"].Should().Be("true");
 
-         arguments = CommandLineParser.Parse(new[] { " -Release" });
+         arguments = Parse(new[] { " -Release" });
          arguments.ContainsKey("Debug").Should().BeFalse();
          arguments.ContainsKey("debug").Should().BeFalse();
          arguments.ContainsKey("DEBUG").Should().BeFalse();
