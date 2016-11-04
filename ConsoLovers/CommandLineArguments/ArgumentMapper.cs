@@ -15,7 +15,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
    /// <summary>Class that can map a dictionary to an instance of a class, filling the properties.</summary>
    /// <typeparam name="T">The type of the class to create</typeparam>
-   public class ArgumentMapper<T> : MapperBase
+   public class ArgumentMapper<T> : MapperBase , IArgumentMapper<T> 
    {
       #region Public Methods and Operators
 
@@ -27,16 +27,16 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       public T Map(IDictionary<string, string> arguments)
       {
          var instance = Activator.CreateInstance<T>();
-         return Map(instance, arguments);
+         return Map(arguments, instance);
       }
 
       /// <summary>Maps the give argument dictionary to the given instance.</summary>
-      /// <param name="instance">The instance to map the arguments to.</param>
       /// <param name="arguments">The arguments to map.</param>
+      /// <param name="instance">The instance to map the arguments to.</param>
       /// <returns>The instance of the class, the command line argument were mapped to</returns>
       /// <exception cref="System.IO.InvalidDataException">Option attribute can only be applied to boolean properties</exception>
       /// <exception cref="InvalidDataException">Option attribute can only be applied to boolean properties</exception>
-      public T Map(T instance, IDictionary<string, string> arguments)
+      public T Map(IDictionary<string, string> arguments, T instance)
       {
          var usedNames = new Dictionary<string, PropertyInfo>();
 

@@ -8,7 +8,6 @@ namespace ConsoLovers.UnitTests
 {
    using System.Diagnostics.CodeAnalysis;
 
-   using ConsoLovers.ConsoleToolkit.CommandLineArguments;
    using ConsoLovers.UnitTests.ArgumentEngine;
 
    using FluentAssertions;
@@ -20,6 +19,22 @@ namespace ConsoLovers.UnitTests
    public class Parse : ParserTestBase
    {
       #region Public Methods and Operators
+
+      [TestMethod]
+      public void ContainsOptionShouldBeFalse()
+      {
+         var arguments = Parse(new[] { "-other" });
+         arguments.Count.Should().Be(1);
+         arguments.ContainsKey("enabled").Should().BeFalse();
+      }
+
+      [TestMethod]
+      public void ContainsOptionShouldBeTrue()
+      {
+         var arguments = Parse(new[] { "-enabled" });
+         arguments.Count.Should().Be(1);
+         arguments.ContainsKey("enabled").Should().BeTrue();
+      }
 
       [TestMethod]
       public void ContainsParameterShouldBeFalse()
@@ -38,19 +53,14 @@ namespace ConsoLovers.UnitTests
       }
 
       [TestMethod]
-      public void ContainsOptionShouldBeFalse()
+      public void ParseCommand()
       {
-         var arguments = Parse(new[] { "-other" });
-         arguments.Count.Should().Be(1);
-         arguments.ContainsKey("enabled").Should().BeFalse();
-      }
+         var arguments = Parse(new[] { "Command" });
+         arguments.ContainsKey("Command").Should().BeTrue();
+         arguments.ContainsKey("command").Should().BeTrue();
+         arguments.ContainsKey("COMMAND").Should().BeTrue();
 
-      [TestMethod]
-      public void ContainsOptionShouldBeTrue()
-      {
-         var arguments = Parse(new[] { "-enabled" });
-         arguments.Count.Should().Be(1);
-         arguments.ContainsKey("enabled").Should().BeTrue();
+         arguments["COMMAND"].Should().Be("true");
       }
 
       [TestMethod]
@@ -96,17 +106,6 @@ namespace ConsoLovers.UnitTests
          arguments.ContainsKey("NAME").Should().BeTrue();
 
          arguments["Name"].Should().Be("Olga");
-      }
-
-      [TestMethod]
-      public void ParseCommand()
-      {
-         var arguments = Parse(new[] { "Command" });
-         arguments.ContainsKey("Command").Should().BeTrue();
-         arguments.ContainsKey("command").Should().BeTrue();
-         arguments.ContainsKey("COMMAND").Should().BeTrue();
-
-         arguments["COMMAND"].Should().Be("true");
       }
 
       [TestMethod]

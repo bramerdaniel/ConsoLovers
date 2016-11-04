@@ -6,8 +6,6 @@
 
 namespace ConsoLovers.UnitTests.ArgumentEngine
 {
-   using System.Collections.Generic;
-
    using ConsoLovers.ConsoleToolkit.CommandLineArguments;
 
    public class EngineTestBase
@@ -17,28 +15,6 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
       protected ArgumentEngine GetTarget()
       {
          return Setup.ArgumentEngine().Done();
-      }
-
-      #endregion
-   }
-
-   public class ParserTestBase
-   {
-      #region Methods
-
-      protected CommandLineArgumentParser GetTarget()
-      {
-         return Setup.CommandLineArgumentParser().Done();
-      }
-
-      protected IDictionary<string, string> Parse(string[] parameters)
-      {
-         return GetTarget().Parse(parameters);
-      }
-
-      protected IDictionary<string, string> Parse(string[] parameters, bool caseSensitive)
-      {
-         return GetTarget().Parse(parameters, caseSensitive);
       }
 
       #endregion

@@ -26,7 +26,7 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
          var dictionary = new Dictionary<string, string> { { "AliasName2", "TheNameValue" }, { "RequiredArgument", "RequiredArgumentValue" } };
 
          var argumentMapper = new ArgumentMapper<ArgumentTestClass>();
-         var result = argumentMapper.Map(commandTestClass, dictionary);
+         var result = argumentMapper.Map(dictionary, commandTestClass);
 
          Assert.AreEqual(result.NamedArgument, "TheNameValue");
       }
@@ -38,7 +38,7 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
          var dictionary = new Dictionary<string, string> { { "AliasName1", "TheNameValue" }, { "RequiredArgument", "RequiredArgumentValue" } };
 
          var argumentMapper = new ArgumentMapper<ArgumentTestClass>();
-         var result = argumentMapper.Map(commandTestClass, dictionary);
+         var result = argumentMapper.Map(dictionary, commandTestClass);
 
          Assert.AreEqual(result.NamedArgument, "TheNameValue");
       }
@@ -49,7 +49,7 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
          var commandTestClass = new ArgumentTestClass();
          var dictionary = new Dictionary<string, string>();
          var argumentMapper = new ArgumentMapper<ArgumentTestClass>();
-         argumentMapper.Invoking(x => x.Map(commandTestClass, dictionary)).ShouldThrow<MissingCommandLineArgumentException>();
+         argumentMapper.Invoking(x => x.Map(dictionary, commandTestClass)).ShouldThrow<MissingCommandLineArgumentException>();
       }
 
       [TestMethod]
@@ -64,7 +64,7 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
             { "RequiredArgument", "RequiredArgumentValue" }
          };
          var argumentMapper = new ArgumentMapper<ArgumentTestClass>();
-         var result = argumentMapper.Map(commandTestClass, dictionary);
+         var result = argumentMapper.Map(dictionary, commandTestClass);
 
          Assert.AreEqual(result.SimpleArgument, "\"SimpleArgumentValue\"");
          Assert.AreEqual(result.NamedArgument, "TheNameValue");
@@ -79,7 +79,7 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
          var dictionary = new Dictionary<string, string> { { "TrimmedArgument", "\"UntrimmedValue\"" }, { "RequiredArgument", "RequiredArgumentValue" } };
 
          var argumentMapper = new ArgumentMapper<ArgumentTestClass>();
-         var result = argumentMapper.Map(commandTestClass, dictionary);
+         var result = argumentMapper.Map(dictionary, commandTestClass);
 
          Assert.AreEqual(result.TrimmedArgument, "UntrimmedValue");
       }

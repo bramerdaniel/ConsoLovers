@@ -93,7 +93,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       public T Map<T>(T instance, IDictionary<string, string> arguments)
       {
          var mapper = new ArgumentMapper<T>();
-         return mapper.Map(instance, arguments);
+         return mapper.Map(arguments, instance);
       }
 
       /// <summary>Maps the specified arguments to a class of the given type.</summary>
@@ -141,7 +141,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          var arguments = ArgumentParser.Parse(args, caseSensitive);
          var mapper = new ArgumentMapper<T>();
 
-         var result = mapper.Map(instance, arguments);
+         var result = mapper.Map(arguments, instance);
          unmappedArguments = arguments;
 
          return result;
@@ -167,7 +167,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       {
          var arguments = ArgumentParser.Parse(args, caseSensitive);
          var mapper = new ArgumentMapper<T>();
-         return mapper.Map(instance, arguments);
+         return mapper.Map(arguments, instance);
       }
 
       /// <summary>Prints the help to the <see cref="Console"/>.</summary>

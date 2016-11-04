@@ -55,6 +55,7 @@
     <Compile Include="CommandLineArguments\CommandLineAttributeException.cs" />
     <Compile Include="CommandLineArguments\ArgumentEngine.cs" />
     <Compile Include="CommandLineArguments\HelpTextAttribute.cs" />
+    <Compile Include="CommandLineArguments\IArgumentMapper.cs" />
     <Compile Include="CommandLineArguments\MapperBase.cs" />
     <Compile Include="CommandLineArguments\MissingCommandLineArgumentException.cs" />
     <Compile Include="CommandLineArguments\OptionAttribute.cs" />
