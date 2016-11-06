@@ -19,7 +19,7 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
          return Setup.CommandLineArgumentParser().Done();
       }
 
-      protected IDictionary<string, string> Parse(string[] parameters)
+      protected IDictionary<string, string> Parse(params string[] parameters)
       {
          return GetTarget().Parse(parameters);
       }

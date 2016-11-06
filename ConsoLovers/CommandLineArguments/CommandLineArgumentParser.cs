@@ -60,7 +60,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       /// <summary>Normalizes the arguments.</summary>
       /// <param name="args">The arguments.</param>
       /// <returns>A normalized enumerable</returns>
-      internal IEnumerable<string> NormalizeArguments(params string[] args)
+      public IEnumerable<string> NormalizeArguments(params string[] args)
       {
          var normalized = new List<string>();
          var maxIndex = args.Length - 1;
@@ -71,18 +71,42 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
             var candidate = maxIndex >= (i + 1) ? args[i + 1].Trim() : string.Empty;
             var next = maxIndex >= (i + 2) ? args[i + 2].Trim() : string.Empty;
 
-            if (candidate.Length == 1 && NameSeparators.Contains(candidate[0]))
+            if (IsNameSeparator(candidate))
             {
                normalized.Add($"{current}{candidate}{next}");
                i += 2;
             }
             else
             {
-               normalized.Add(current);
+               if (EndsWithNameSeparator(current) || StartsWithNameSeparator(candidate))
+               {
+                  normalized.Add($"{current}{candidate}");
+                  i++;
+               }
+               else
+               {
+                  normalized.Add(current);
+               }
+
             }
          }
 
          return normalized;
+      }
+
+      private static bool IsNameSeparator(string candidate)
+      {
+         return candidate.Length == 1 && NameSeparators.Contains(candidate[0]);
+      }
+
+      private static bool StartsWithNameSeparator(string candidate)
+      {
+         return !string.IsNullOrEmpty(candidate) && NameSeparators.Contains(candidate[0]);
+      }
+
+      private static bool EndsWithNameSeparator(string current)
+      {
+         return !string.IsNullOrEmpty(current) && NameSeparators.Contains(current[current.Length - 1]);
       }
 
       private static int GetSplitIndex(string argumentString)

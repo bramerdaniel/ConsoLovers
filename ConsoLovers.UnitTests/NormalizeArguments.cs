@@ -24,15 +24,24 @@ namespace ConsoLovers.UnitTests
       [TestMethod]
       public void EnsureCorrectArgumentsAreNormalizedCorrectly()
       {
-         var result = GetTarget().NormalizeArguments("a=5").ToList();
+         var result = GetTarget().NormalizeArguments("name=hans").ToList();
          result.Count.Should().Be(1);
-         result.Contains("a=5").Should().BeTrue();
+         result.Contains("name=hans").Should().BeTrue();
       }
 
       [TestMethod]
       public void EnsureSpacedArgumentsAreCorrected()
       {
-         var result = GetTarget().NormalizeArguments("a", "=", "5").ToList();
+         var result = GetTarget().NormalizeArguments("a=", "5").ToList();
+         result.Count.Should().Be(1);
+         result.Contains("a=5").Should().BeTrue();
+
+         result = GetTarget().NormalizeArguments("a", "=5").ToList();
+         result.Count.Should().Be(1);
+         result.Contains("a=5").Should().BeTrue();
+
+
+         result = GetTarget().NormalizeArguments("a", "=", "5").ToList();
          result.Count.Should().Be(1);
          result.Contains("a=5").Should().BeTrue();
       }

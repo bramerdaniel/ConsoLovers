@@ -11,6 +11,7 @@ namespace MenuDemo
    using System.Drawing;
    using System.Threading;
 
+   using ConsoLovers.ConsoleToolkit.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Contracts;
    using ConsoLovers.ConsoleToolkit.Menu;
 
@@ -194,6 +195,9 @@ namespace MenuDemo
 
       static void Main(string[] args)
       {
+         ShowArgs(args);
+         ShowArgs(new CommandLineArgumentParser().NormalizeArguments(args));
+
          Console.CursorSize = 4;
          Console.WindowHeight = 40;
          string header = @"    ___                     _        __ __                  ___           _                     
@@ -235,6 +239,17 @@ namespace MenuDemo
          menu.Add(new ConsoleMenuItem("Close menu", x => menu.Close()));
          menu.Add(new ConsoleMenuItem("Exit", x => Environment.Exit(0)));
          menu.Show();
+      }
+
+      private static void ShowArgs(IEnumerable<string> args)
+      {
+         Console.WriteLine("Arguments:");
+         foreach (var arg in args)
+         {
+            Console.WriteLine("   {0}", arg);
+         }
+
+         Console.ReadLine();
       }
 
       private static void OnError(object sender, ExceptionEventArgs e)
