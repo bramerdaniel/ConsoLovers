@@ -103,6 +103,7 @@
     <Compile Include="Contracts\ICustomHeader.cs" />
     <Compile Include="Contracts\ICustomFooter.cs" />
     <Compile Include="Menu\ICanAddMenuItems.cs" />
+    <Compile Include="Menu\IConsoleMenuOptions.cs" />
     <Compile Include="Menu\IFluentMenu.cs" />
     <Compile Include="Menu\MenuColorTheme.cs" />
     <Compile Include="Menu\ColorSet.cs" />

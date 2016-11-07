@@ -30,6 +30,8 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       public string Text { get; set; }
 
+      public int Line { get; set; }
+
       #endregion
    }
 }

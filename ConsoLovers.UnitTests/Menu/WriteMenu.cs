@@ -27,7 +27,7 @@ namespace ConsoLovers.UnitTests.Menu
          var target = new ConsoleMenu { Console = consoleMock.Object };
          target.Header = header;
 
-         target.WriteMenu();
+         target.RefreshMenu();
 
          consoleMock.Verify(x => x.Write(header), Times.Once());
          consoleMock.Verify(x => x.WriteLine(), Times.Once());
@@ -42,7 +42,7 @@ namespace ConsoLovers.UnitTests.Menu
          var target = new ConsoleMenu { Console = consoleMock.Object };
          target.Footer = footer;
 
-         target.WriteMenu();
+         target.RefreshMenu();
 
          consoleMock.Verify(x => x.Write(footer), Times.Once());
          consoleMock.Verify(x => x.WriteLine(), Times.Once());
@@ -55,7 +55,7 @@ namespace ConsoLovers.UnitTests.Menu
          var target = new ConsoleMenu { Console = consoleMock.Object };
          target.Add(new ConsoleMenuItem("Item 1"));
 
-         target.WriteMenu();
+         target.RefreshMenu();
 
          consoleMock.Verify(x => x.Write(target.Selector), Times.Once());
          consoleMock.Verify(x => x.Write("Item 1"), Times.Once());

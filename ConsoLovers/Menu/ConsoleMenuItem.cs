@@ -179,6 +179,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
             if (clearItemsOnCollapse)
                items = null;
 
+            Menu.Invalidate();
             return true;
          }
 
@@ -191,6 +192,11 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       }
 
       public void Expand(bool recursive)
+      {
+         ExpandInternal(recursive);
+      }
+
+      private void ExpandInternal(bool recursive, bool invalidate = true)
       {
          if (items == null && loadChildren != null)
          {
@@ -222,9 +228,12 @@ namespace ConsoLovers.ConsoleToolkit.Menu
             foreach (var item in Items)
             {
                if (item.HasChildren && item.CanExpand())
-                  item.Expand(true);
+                  item.ExpandInternal(true, false);
             }
          }
+
+         if (invalidate)
+            Menu.Invalidate();
       }
 
       /// <summary>Removes this item from its menu.</summary>

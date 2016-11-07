@@ -195,8 +195,8 @@ namespace MenuDemo
 
       static void Main(string[] args)
       {
-         ShowArgs(args);
-         ShowArgs(new CommandLineArgumentParser().NormalizeArguments(args));
+         ////ShowArgs(args);
+         ////ShowArgs(new CommandLineArgumentParser().NormalizeArguments(args));
 
          Console.CursorSize = 4;
          Console.WindowHeight = 40;

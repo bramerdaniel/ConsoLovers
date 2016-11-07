@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="ConsoleMenu.cs" company="ConsoLovers">
-//   Copyright (c) ConsoLovers  2015 - 2016
+//    Copyright (c) ConsoLovers  2015 - 2016
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -24,11 +24,17 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       private bool closed;
 
+      private IDictionary<ConsoleMenuItem, ElementInfo> elements = new Dictionary<ConsoleMenuItem, ElementInfo>();
+
       private int expanderWidth = 1;
 
       private ConsoleMenuInputHandler inputHandler;
 
       private ConsoleMenuItem notExecutable;
+
+      private ConsoleMenuItem selectedItem;
+
+      private int unifiedLength;
 
       #endregion
 
@@ -39,7 +45,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       #endregion
 
-      #region Public Properties
+      #region IConsoleMenuOptions Members
 
       /// <summary>Gets or sets a value indicating whether the circular selection is enabled or not.</summary>
       public bool CircularSelection { get; set; } = true;
@@ -47,14 +53,6 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       public bool ClearOnExecution { get; set; } = true;
 
       public ConsoleKey[] CloseKeys { get; set; } = new ConsoleKey[0];
-
-      /// <summary>Gets or sets the <see cref="MenuColorTheme"/> the <see cref="ConsoleMenu"/> uses.</summary>
-      public MenuColorTheme Theme { get; set; } = new MenuColorTheme();
-
-      /// <summary>Gets or sets the console that is used for printing the menu.</summary>
-      public IColoredConsole Console { get; set; } = ColoredConsole.Instance;
-
-      public int Count => root.Items.Count;
 
       public bool ExecuteOnIndexSelection { get; set; } = false;
 
@@ -72,14 +70,47 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       /// <summary>Gets or sets a value indicating whether the <see cref="ConsoleMenuItem"/>s should be displayed and be accessible with an index.</summary>
       public bool IndexMenuItems { get; set; } = true;
 
-      /// <summary>Gets or sets the selected item.</summary>
-      public ConsoleMenuItem SelectedItem { get; private set; }
-
       /// <summary>Gets or sets the selection strech mode that is used for displaying the selection.</summary>
       public SelectionStrech SelectionStrech { get; set; }
 
       /// <summary>Gets or sets the selector that is used for displaying the selection.</summary>
       public string Selector { get; set; } = ">> ";
+
+      #endregion
+
+      #region Public Properties
+
+      /// <summary>Gets or sets the console that is used for printing the menu.</summary>
+      public IColoredConsole Console { get; set; } = ColoredConsole.Instance;
+
+      public int Count => root.Items.Count;
+
+      /// <summary>Gets or sets the selected item.</summary>
+      public ConsoleMenuItem SelectedItem
+      {
+         get
+         {
+            return selectedItem;
+         }
+
+         private set
+         {
+            if (selectedItem == value)
+               return;
+
+            RefreshMenuItem(selectedItem, false);
+            RefreshMenuItem(value, true);
+
+            selectedItem = value;
+         }
+      }
+
+      /// <summary>Gets or sets the <see cref="MenuColorTheme"/> the <see cref="ConsoleMenu"/> uses.</summary>
+      public MenuColorTheme Theme { get; set; } = new MenuColorTheme();
+
+      #endregion
+
+      #region Properties
 
       #endregion
 
@@ -101,7 +132,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
             throw new ArgumentNullException(nameof(item));
 
          if (SelectedItem == null)
-            SelectedItem = item;
+            selectedItem = item;
 
          item.Parent = root;
          item.Menu = this;
@@ -139,7 +170,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       public void Invalidate()
       {
-         WriteMenu();
+         RefreshMenu();
       }
 
       /// <summary>Removes the given item from the menu.</summary>
@@ -167,7 +198,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       public void Show()
       {
-         WriteMenu();
+         RefreshMenu();
 
          inputHandler = new ConsoleMenuInputHandler(Console);
          inputHandler.InputChanged += OnInputChanged;
@@ -177,6 +208,27 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       #endregion
 
       #region Methods
+
+      internal void RefreshMenu()
+      {
+         Console.Clear(Theme.ConsoleBackground);
+         expanderWidth = root.Items.Any(i => i.HasChildren) ? Expander.Length : 0;
+
+         var indexWidth = IndexMenuItems ? 3 + (root.Items.Count < 10 ? 1 : 2) : 0;
+         indexMap.Clear();
+
+         UpdateElements();
+
+         PrintHeader();
+
+         if (elements.Count > 0)
+         {
+            unifiedLength = elements.Values.Max(m => m.Text.Length + m.Indent.Length) + Selector.Length + expanderWidth + indexWidth;
+            PrintElements();
+         }
+
+         PrintFooter();
+      }
 
       private static string DisabledHint(ConsoleMenuItem menuItem)
       {
@@ -277,68 +329,17 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          if (SelectedItem.IsExpanded)
          {
             if (moveNextWhenExpanded)
+            {
                SelectNext();
+            }
          }
          else
          {
             if (SelectedItem.CanExpand())
-               SelectedItem.Expand(revursive);
-         }
-      }
-
-      private bool HandleSelectionChanged(ConsoleKeyInfo lastKey, string input)
-      {
-         switch (lastKey.Key)
-         {
-            case ConsoleKey.DownArrow:
-               SelectNext();
-               return true;
-            case ConsoleKey.UpArrow:
-               SelectPrevious();
-               return true;
-            case ConsoleKey.RightArrow:
-               Expand(true, false);
-               return true;
-            case ConsoleKey.Add:
-               Expand(false, false);
-               return true;
-            case ConsoleKey.Multiply:
-               Expand(false, true);
-               return true;
-            case ConsoleKey.LeftArrow:
-               Collapse(true);
-               return true;
-            case ConsoleKey.Subtract:
-               Collapse(false);
-               return true;
-            case ConsoleKey.Backspace:
-               if (SelectedItem == null || SelectedItem.Parent == root)
-                  return false;
-
-               SelectedItem = SelectedItem.Parent;
-               return true;
-         }
-
-         if (!IndexMenuItems)
-            return false;
-
-         ElementInfo element;
-         if (indexMap.TryGetValue(input, out element))
-         {
-            SelectedItem = element.MenuItem;
-
-            if (ExecuteOnIndexSelection && SelectedItem != null)
             {
-               if (SelectedItem.IsExpanded)
-                  SelectedItem.Collapse();
-
-               Execute(SelectedItem);
+               SelectedItem.Expand(revursive);
             }
-
-            return true;
          }
-
-         return false;
       }
 
       private bool IsSelected(ConsoleMenuItem menuItem)
@@ -369,14 +370,13 @@ namespace ConsoLovers.ConsoleToolkit.Menu
                }
             }
 
-            WriteMenu();
+            return;
          }
 
-         if (HandleSelectionChanged(lastKey, e.Input))
-            WriteMenu();
+         UpdateSelection(lastKey, e.Input);
       }
 
-      private void PrintElement(ElementInfo element, int unifiedLength)
+      private void PrintElement(ElementInfo element)
       {
          var foreground = Theme.MenuItem.GetForeground(element.IsSelected, element.Disabled);
          var background = Theme.MenuItem.GetBackground(element.IsSelected, element.Disabled);
@@ -403,12 +403,14 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          }
       }
 
-      private void PrintElements(List<ElementInfo> elements, int unifiedLength)
+      private void PrintElements()
       {
-         foreach (var elementInfo in elements)
+         foreach (var elementInfo in elements.Values)
          {
+            elementInfo.Line = Console.CursorTop;
+
             PrintSelector(elementInfo);
-            PrintElement(elementInfo, unifiedLength);
+            PrintElement(elementInfo);
             PrintHint(elementInfo);
 
             Console.WriteLine();
@@ -480,6 +482,11 @@ namespace ConsoLovers.ConsoleToolkit.Menu
             notExecutable = null;
             Console.ResetColor();
          }
+         else
+         {
+            var totalWidth = Console.WindowWidth - Console.CursorLeft - 1;
+            Write(string.Empty.PadRight(Math.Max(totalWidth, 0)), Theme.ConsoleBackground, Theme.ConsoleBackground);
+         }
       }
 
       private void PrintSelector(ElementInfo element)
@@ -542,6 +549,85 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          }
       }
 
+      private void RefreshMenuItem(ConsoleMenuItem itemToUpdate, bool isSelected)
+      {
+         ElementInfo elementToUpdate;
+         if (elements.TryGetValue(itemToUpdate, out elementToUpdate))
+         {
+            elementToUpdate.IsSelected = isSelected;
+            Console.CursorTop = elementToUpdate.Line;
+            Console.CursorLeft = 0;
+
+            PrintSelector(elementToUpdate);
+            PrintElement(elementToUpdate);
+            PrintHint(elementToUpdate);
+         }
+      }
+
+      private void UpdateElements()
+      {
+         elements.Clear();
+         foreach (var element in CreateElements(root.Items, null))
+            elements[element.MenuItem] = element;
+      }
+
+      private void UpdateSelection(ConsoleKeyInfo lastKey, string input)
+      {
+         switch (lastKey.Key)
+         {
+            case ConsoleKey.DownArrow:
+               SelectNext();
+               return;
+            case ConsoleKey.UpArrow:
+               SelectPrevious();
+               return;
+            case ConsoleKey.RightArrow:
+               Expand(true, false);
+               return;
+            case ConsoleKey.Add:
+               Expand(false, false);
+               break;
+            case ConsoleKey.Multiply:
+               Expand(false, true);
+               break;
+            case ConsoleKey.LeftArrow:
+               Collapse(true);
+               return;
+            case ConsoleKey.Subtract:
+               Collapse(false);
+               break;
+            case ConsoleKey.Backspace:
+               if (SelectedItem == null || SelectedItem.Parent == root)
+                  return;
+
+               SelectedItem = SelectedItem.Parent;
+               break;
+            case ConsoleKey.Home:
+               SelectedItem = root.Items.FirstOrDefault();
+               return;
+            case ConsoleKey.End:
+               SelectedItem = elements.Values.LastOrDefault()?.MenuItem;
+               return;
+         }
+
+         if (!IndexMenuItems)
+            return;
+
+         ElementInfo element;
+         if (indexMap.TryGetValue(input, out element))
+         {
+            SelectedItem = element.MenuItem;
+
+            if (ExecuteOnIndexSelection && SelectedItem != null)
+            {
+               if (SelectedItem.IsExpanded)
+                  SelectedItem.Collapse();
+
+               Execute(SelectedItem);
+            }
+         }
+      }
+
       private void Write(string text, Color foreground, Color background)
       {
          if (string.IsNullOrEmpty(text))
@@ -575,59 +661,6 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          }
       }
 
-      internal void WriteMenu()
-      {
-         Console.Clear(Theme.ConsoleBackground);
-         expanderWidth = root.Items.Any(i => i.HasChildren) ? Expander.Length : 0;
-
-         var indexWidth = IndexMenuItems ? 3 + (root.Items.Count < 10 ? 1 : 2) : 0;
-
-         indexMap.Clear();
-         var elements = CreateElements(root.Items, null).ToList();
-
-         PrintHeader();
-
-         if (elements.Count > 0)
-         {
-            var unifiedLength = elements.Max(m => m.Text.Length + m.Indent.Length) + Selector.Length + expanderWidth + indexWidth;
-            PrintElements(elements, unifiedLength);
-         }
-
-         PrintFooter();
-      }
-
       #endregion
-   }
-
-   public interface IConsoleMenuOptions
-   {
-      /// <summary>Gets or sets a value indicating whether the circular selection is enabled or not.</summary>
-      bool CircularSelection { get; set; }
-
-      bool ClearOnExecution { get; set; }
-
-      bool ExecuteOnIndexSelection { get; set; }
-
-      ExpanderDescription Expander { get; set; }
-
-      /// <summary>Gets or sets the size of the indent that is used to indent child menu items.</summary>
-      int IndentSize { get; set; }
-
-      /// <summary>Gets or sets a value indicating whether the <see cref="ConsoleMenuItem"/>s should be displayed and be accessible with an index.</summary>
-      bool IndexMenuItems { get; set; }
-
-      /// <summary>Gets or sets the selection strech mode that is used for displaying the selection.</summary>
-      SelectionStrech SelectionStrech { get; set; }
-
-      /// <summary>Gets or sets the selector that is used for displaying the selection.</summary>
-      string Selector { get; set; }
-
-      /// <summary>Gets or sets the footer that is displayed below the menu.</summary>
-      object Footer { get; set; }
-
-      /// <summary>Gets or sets the header that is displayed.</summary>
-      object Header { get; set; }
-
-      ConsoleKey[] CloseKeys { get; set; }
    }
 }
