@@ -575,6 +575,9 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       {
          switch (lastKey.Key)
          {
+            case ConsoleKey.F5:
+               RefreshMenu();
+               return;
             case ConsoleKey.DownArrow:
                SelectNext();
                return;
