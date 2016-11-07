@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("ConsoLovers.ConsoleToolkit")]
-[assembly: AssemblyDescription("Toolbox for advanced console applications. The toolbox contains a console menu and some other useful console helpers.")]
+[assembly: AssemblyDescription("Toolbox for advanced console applications. The toolbox contains a console menu, a command line argument engine and some other useful console helpers.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("ConsoLovers")]
 [assembly: AssemblyProduct("ConsoLovers.ConsoleToolkit")]

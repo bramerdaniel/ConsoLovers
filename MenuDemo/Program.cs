@@ -14,6 +14,7 @@ namespace MenuDemo
    using ConsoLovers.ConsoleToolkit.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Contracts;
    using ConsoLovers.ConsoleToolkit.Menu;
+   using ConsoLovers.ConsoleToolkit.PInvoke;
 
    using ShellProgressBar;
 
@@ -195,6 +196,11 @@ namespace MenuDemo
 
       static void Main(string[] args)
       {
+         // ConsoleWindow.HideMinimizeAndMaximizeButtons();
+         ConsoleWindow.DisableMinimize();
+         ConsoleWindow.DisableMaximize();
+
+
          ////ShowArgs(args);
          ////ShowArgs(new CommandLineArgumentParser().NormalizeArguments(args));
 

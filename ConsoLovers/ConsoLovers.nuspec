@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>ConsoLovers.ConsoleToolkit</id>
-    <version>0.0.0.2</version>
+    <version>0.1.0.0</version>
     <title>ConsoLovers.ConsoleToolkit</title>
     <authors>danielbramer</authors>
     <owners>danielbramer</owners>
@@ -10,7 +10,10 @@
     <iconUrl>https://raw.githubusercontent.com/bramerdaniel/ConsoLovers/master/ConsoLovers/Resources/Icon.ico</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>First version of the package only containing the ConsoleMenu. Not for productive usage yet.</releaseNotes>
+    <releaseNotes>First version of the package only containing the ConsoleMenu.
+    - Improved console menu with incremental update 
+    - Added first version of a command line argument parser
+ </releaseNotes>
     <copyright>Copyright 2016</copyright>
     <tags>Console Shell Menu ConsoleMenu ConsoleToolkit .Net</tags>
   </metadata>
