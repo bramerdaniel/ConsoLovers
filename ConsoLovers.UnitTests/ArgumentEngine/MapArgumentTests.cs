@@ -23,7 +23,11 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
       public void NamedArgumentAlias2Test()
       {
          var commandTestClass = new ArgumentTestClass();
-         var dictionary = new Dictionary<string, string> { { "AliasName2", "TheNameValue" }, { "RequiredArgument", "RequiredArgumentValue" } };
+         var dictionary = new Dictionary<string, CommandLineArgument>
+         {
+            { "AliasName2", new CommandLineArgument { Value = "TheNameValue" } },
+            { "RequiredArgument", new CommandLineArgument { Value = "RequiredArgumentValue" } }
+         };
 
          var argumentMapper = new ArgumentMapper<ArgumentTestClass>();
          var result = argumentMapper.Map(dictionary, commandTestClass);
@@ -35,7 +39,11 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
       public void NamedArgumentAliasTest()
       {
          var commandTestClass = new ArgumentTestClass();
-         var dictionary = new Dictionary<string, string> { { "AliasName1", "TheNameValue" }, { "RequiredArgument", "RequiredArgumentValue" } };
+         var dictionary = new Dictionary<string, CommandLineArgument>
+         {
+            { "AliasName1", new CommandLineArgument { Value = "TheNameValue" } },
+            { "RequiredArgument", new CommandLineArgument { Value = "RequiredArgumentValue" } }
+         };
 
          var argumentMapper = new ArgumentMapper<ArgumentTestClass>();
          var result = argumentMapper.Map(dictionary, commandTestClass);
@@ -47,7 +55,7 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
       public void NotUsedRequiredArgumentErrorTest()
       {
          var commandTestClass = new ArgumentTestClass();
-         var dictionary = new Dictionary<string, string>();
+         var dictionary = new Dictionary<string, CommandLineArgument>();
          var argumentMapper = new ArgumentMapper<ArgumentTestClass>();
          argumentMapper.Invoking(x => x.Map(dictionary, commandTestClass)).ShouldThrow<MissingCommandLineArgumentException>();
       }
@@ -56,12 +64,12 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
       public void RegularUsageTest()
       {
          var commandTestClass = new ArgumentTestClass();
-         var dictionary = new Dictionary<string, string>
+         var dictionary = new Dictionary<string, CommandLineArgument>
          {
-            { "SimpleArgument", "\"SimpleArgumentValue\"" },
-            { "TheName", "TheNameValue" },
-            { "TrimmedArgument", "TrimmedArgumentValue" },
-            { "RequiredArgument", "RequiredArgumentValue" }
+            { "SimpleArgument", new CommandLineArgument { Value = "\"SimpleArgumentValue\"" } },
+            { "TheName", new CommandLineArgument { Value = "TheNameValue" } },
+            { "TrimmedArgument", new CommandLineArgument { Value = "TrimmedArgumentValue" } },
+            { "RequiredArgument", new CommandLineArgument { Value = "RequiredArgumentValue" } }
          };
          var argumentMapper = new ArgumentMapper<ArgumentTestClass>();
          var result = argumentMapper.Map(dictionary, commandTestClass);
@@ -76,7 +84,11 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
       public void TrimmedArgumentTest()
       {
          var commandTestClass = new ArgumentTestClass();
-         var dictionary = new Dictionary<string, string> { { "TrimmedArgument", "\"UntrimmedValue\"" }, { "RequiredArgument", "RequiredArgumentValue" } };
+         var dictionary = new Dictionary<string, CommandLineArgument>
+         {
+            { "TrimmedArgument", new CommandLineArgument { Value = "\"UntrimmedValue\"" } },
+            { "RequiredArgument", new CommandLineArgument { Value = "RequiredArgumentValue" } }
+         };
 
          var argumentMapper = new ArgumentMapper<ArgumentTestClass>();
          var result = argumentMapper.Map(dictionary, commandTestClass);

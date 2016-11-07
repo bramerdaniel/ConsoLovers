@@ -18,7 +18,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       /// <returns>The instance of the class, the command line argument were mapped to</returns>
       /// <exception cref="System.IO.InvalidDataException">Option attribute can only be applied to boolean properties</exception>
       /// <exception cref="InvalidDataException">Option attribute can only be applied to boolean properties</exception>
-      T Map(IDictionary<string, string> arguments);
+      T Map(IDictionary<string, CommandLineArgument> arguments);
 
       /// <summary>Maps the give argument dictionary to the given instance.</summary>
       /// <param name="arguments">The arguments to map.</param>
@@ -26,7 +26,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       /// <returns>The instance of the class, the command line argument were mapped to</returns>
       /// <exception cref="System.IO.InvalidDataException">Option attribute can only be applied to boolean properties</exception>
       /// <exception cref="InvalidDataException">Option attribute can only be applied to boolean properties</exception>
-      T Map(IDictionary<string, string> arguments, T instance);
+      T Map(IDictionary<string, CommandLineArgument> arguments, T instance);
 
       #endregion
    }

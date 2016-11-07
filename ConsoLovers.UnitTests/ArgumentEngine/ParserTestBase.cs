@@ -19,14 +19,14 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
          return Setup.CommandLineArgumentParser().Done();
       }
 
-      protected IDictionary<string, string> Parse(params string[] parameters)
+      protected IDictionary<string, CommandLineArgument> Parse(params string[] parameters)
       {
-         return GetTarget().Parse(parameters);
+         return GetTarget().ParseArguments(parameters, false);
       }
 
-      protected IDictionary<string, string> Parse(string[] parameters, bool caseSensitive)
+      protected IDictionary<string, CommandLineArgument> Parse(string[] parameters, bool caseSensitive)
       {
-         return GetTarget().Parse(parameters, caseSensitive);
+         return GetTarget().ParseArguments(parameters, caseSensitive);
       }
 
       #endregion

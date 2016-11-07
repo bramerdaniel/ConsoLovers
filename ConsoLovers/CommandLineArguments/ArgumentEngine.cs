@@ -85,16 +85,6 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          }
       }
 
-      /// <summary>Maps the specified arguments to given object of the given type.</summary>
-      /// <typeparam name="T">The type of the class to map the argument to.</typeparam>
-      /// <param name="instance">The instance to map the arguments to.</param>
-      /// <param name="arguments">The arguments as <see cref="Dictionary{TKey,TValue}"/> that should be mapped to the instance.</param>
-      /// <returns>The created instance of the arguments class.</returns>
-      public T Map<T>(T instance, IDictionary<string, string> arguments)
-      {
-         var mapper = new ArgumentMapper<T>();
-         return mapper.Map(arguments, instance);
-      }
 
       /// <summary>Maps the specified arguments to a class of the given type.</summary>
       /// <typeparam name="T">The type of the class to map the argument to.</typeparam>
@@ -112,62 +102,10 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       /// <returns>The created instance of the arguments class.</returns>
       public T Map<T>(string[] args, bool caseSensitive)
       {
-         var arguments = ArgumentParser.Parse(args, caseSensitive);
+         var arguments = ArgumentParser.ParseArguments(args, caseSensitive);
          var mapper = new ArgumentMapper<T>();
 
          return mapper.Map(arguments);
-      }
-
-      /// <summary>Maps the specified arguments to given object of the given type.</summary>
-      /// <typeparam name="T">The type of the class to map the argument to.</typeparam>
-      /// <param name="instance">The instance to map the arguments to.</param>
-      /// <param name="args">The arguments that should be mapped to the instance.</param>
-      /// <param name="unmappedArguments">Dictionary containing the arguments that could not be mapped.</param>
-      /// <returns>The created instance of the arguments class.</returns>
-      public T Map<T>(T instance, string[] args, out IDictionary<string, string> unmappedArguments)
-      {
-         return Map(instance, args, false, out unmappedArguments);
-      }
-
-      /// <summary>Maps the specified arguments to given object of the given type.</summary>
-      /// <typeparam name="T">The type of the class to map the argument to.</typeparam>
-      /// <param name="instance">The instance to map the arguments to.</param>
-      /// <param name="args">The arguments that should be mapped to the instance.</param>
-      /// <param name="caseSensitive">if set to <c>true</c> the parameters are treated case sensitive.</param>
-      /// <param name="unmappedArguments">Dictionary containing the arguments that could not be mapped.</param>
-      /// <returns>The created instance of the arguments class.</returns>
-      public T Map<T>(T instance, string[] args, bool caseSensitive, out IDictionary<string, string> unmappedArguments)
-      {
-         var arguments = ArgumentParser.Parse(args, caseSensitive);
-         var mapper = new ArgumentMapper<T>();
-
-         var result = mapper.Map(arguments, instance);
-         unmappedArguments = arguments;
-
-         return result;
-      }
-
-      /// <summary>Maps the specified arguments to given object of the given type.</summary>
-      /// <typeparam name="T">The type of the class to map the argument to.</typeparam>
-      /// <param name="instance">The instance to map the arguments to.</param>
-      /// <param name="args">The arguments that should be mapped to the instance.</param>
-      /// <returns>The created instance of the arguments class.</returns>
-      public T Map<T>(T instance, string[] args)
-      {
-         return Map(instance, args, false);
-      }
-
-      /// <summary>Maps the specified arguments to given object of the given type.</summary>
-      /// <typeparam name="T">The type of the class to map the argument to.</typeparam>
-      /// <param name="instance">The instance to map the arguments to.</param>
-      /// <param name="args">The arguments that should be mapped to the instance.</param>
-      /// <param name="caseSensitive">if set to <c>true</c> the parameters are treated case sensitive.</param>
-      /// <returns>The created instance of the arguments class.</returns>
-      public T Map<T>(T instance, string[] args, bool caseSensitive)
-      {
-         var arguments = ArgumentParser.Parse(args, caseSensitive);
-         var mapper = new ArgumentMapper<T>();
-         return mapper.Map(arguments, instance);
       }
 
       /// <summary>Prints the help to the <see cref="Console"/>.</summary>
@@ -198,16 +136,6 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
                Console.WriteLine(" ".PadLeft(leftWidth) + part);
             }
          }
-      }
-
-      /// <summary>Converts the given arguments instance class to an argument string.</summary>
-      /// <typeparam name="T">The type of the arguments class</typeparam>
-      /// <param name="instance">The instance.</param>
-      /// <returns>The command line argument string</returns>
-      public string UnMap<T>(T instance)
-      {
-         var mapper = new ArgumentMapper<T>();
-         return mapper.UnMap(instance);
       }
 
       #endregion

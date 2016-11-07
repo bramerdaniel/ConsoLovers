@@ -23,40 +23,6 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
       #region Public Methods and Operators
 
-      /// <summary>Parses the specified arguments.</summary>
-      /// <param name="args">The arguments to parse.</param>
-      /// <returns>A <see cref="IDictionary{TKey,TValue}"/> the arguments were parsed into</returns>
-      public IDictionary<string, string> Parse(string[] args)
-      {
-         return Parse(args, false);
-      }
-
-      /// <summary>Parses the specified arguments.</summary>
-      /// <param name="args">The arguments to parse.</param>
-      /// <param name="caseSensitive">if set to <c>true</c> the parameters are treated case sensitive.</param>
-      /// <returns>A <see cref="IDictionary{TKey,TValue}"/> the arguments were parsed into</returns>
-      public IDictionary<string, string> Parse(string[] args, bool caseSensitive)
-      {
-         var arguments = new Dictionary<string, string>(caseSensitive ? StringComparer.InvariantCulture : StringComparer.CurrentCultureIgnoreCase);
-
-         foreach (string arg in NormalizeArguments(args))
-         {
-            if (!string.IsNullOrEmpty(arg))
-            {
-               if (IsNamedParameter(arg))
-                  ParseNamedParameter(arg, arguments);
-               else
-                  ParseOption(arg, arguments);
-            }
-         }
-
-         return arguments;
-      }
-
-      #endregion
-
-      #region Methods
-
       /// <summary>Normalizes the arguments.</summary>
       /// <param name="args">The arguments.</param>
       /// <returns>A normalized enumerable</returns>
@@ -87,22 +53,33 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
                {
                   normalized.Add(current);
                }
-
             }
          }
 
          return normalized;
       }
 
-      private static bool IsNameSeparator(string candidate)
+      public IDictionary<string, CommandLineArgument> ParseArguments(string[] args, bool caseSensitive)
       {
-         return candidate.Length == 1 && NameSeparators.Contains(candidate[0]);
+         var arguments = new Dictionary<string, CommandLineArgument>(caseSensitive ? StringComparer.InvariantCulture : StringComparer.CurrentCultureIgnoreCase);
+         int index = 0;
+
+         foreach (string argument in NormalizeArguments(args).Where(x => !string.IsNullOrEmpty(x)))
+         {
+            if (IsNamedParameter(argument))
+               ParseNamedParameter(argument, arguments, index);
+            else
+               ParseOption(argument, arguments, index);
+
+            index++;
+         }
+
+         return arguments;
       }
 
-      private static bool StartsWithNameSeparator(string candidate)
-      {
-         return !string.IsNullOrEmpty(candidate) && NameSeparators.Contains(candidate[0]);
-      }
+      #endregion
+
+      #region Methods
 
       private static bool EndsWithNameSeparator(string current)
       {
@@ -124,10 +101,20 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
       private static bool IsNamedParameter(string argumentString)
       {
-         return NameSeparators.Any(argumentString.Contains);
+         return !IsQuoted(argumentString) && NameSeparators.Any(argumentString.Contains);
       }
 
-      private static void ParseNamedParameter(string argumentString, IDictionary<string, string> arguments)
+      private static bool IsQuoted(string argumentString)
+      {
+         return argumentString.StartsWith("\"");
+      }
+
+      private static bool IsNameSeparator(string candidate)
+      {
+         return candidate.Length == 1 && NameSeparators.Contains(candidate[0]);
+      }
+
+      private static void ParseNamedParameter(string argumentString, IDictionary<string, CommandLineArgument> arguments, int index)
       {
          if (string.IsNullOrEmpty(argumentString))
             return;
@@ -147,10 +134,10 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
             throw new CommandLineArgumentException(string.Format(CultureInfo.InvariantCulture, "The argument \"{0}\" occurs more than once.", argumentString));
          }
 
-         arguments[name] = valueString;
+         arguments[name] = new CommandLineArgument { Name = name, Value = valueString, Index = index };
       }
 
-      private static void ParseOption(string argumentString, IDictionary<string, string> arguments)
+      private static void ParseOption(string argumentString, IDictionary<string, CommandLineArgument> arguments, int index)
       {
          if (string.IsNullOrEmpty(argumentString))
             return;
@@ -164,7 +151,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
             throw new CommandLineArgumentException(string.Format(CultureInfo.InvariantCulture, "The option \"{0}\" occurs more than once.", argumentString));
          }
 
-         arguments.Add(option, "true");
+         arguments.Add(option, new CommandLineArgument { Name = option, Value = "true", Index = index });
       }
 
       private static string[] Split(string argumentString)
@@ -175,6 +162,24 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          var value = valueStart >= argumentString.Length ? string.Empty : argumentString.Substring(valueStart);
          return new[] { name, value };
       }
+
+      private static bool StartsWithNameSeparator(string candidate)
+      {
+         return !string.IsNullOrEmpty(candidate) && NameSeparators.Contains(candidate[0]);
+      }
+
+      #endregion
+   }
+
+   public class CommandLineArgument
+   {
+      #region Public Properties
+
+      public int Index { get; set; }
+
+      public string Value { get; set; }
+
+      public string Name { get; set; }
 
       #endregion
    }

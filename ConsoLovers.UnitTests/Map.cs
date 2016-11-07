@@ -148,6 +148,16 @@ namespace ConsoLovers.UnitTests
          this.Invoking(t => GetTarget().Map<RequiredArguments>(new[] { string.Empty })).ShouldThrow<MissingCommandLineArgumentException>().Where(e => e.Argument == "Name");
       }
 
+      [TestMethod]
+      public void MapIndexedArguments()
+      {
+         var path = "\"C:\\Path\\File.txt\"";
+         var name = "Nick Oteen";
+         var arguments = GetTarget().Map<IndexedArguments>(new[] { path, name });
+         arguments.Path.Should().Be(path);
+         arguments.Name.Should().Be(name);
+      }
+
       #endregion
 
       public class Arguments
@@ -174,6 +184,21 @@ namespace ConsoLovers.UnitTests
 
          #endregion
       }
+
+
+      public class IndexedArguments
+      {
+         #region Public Properties
+
+         [IndexedArgument(0)]
+         public string Path { get; [UsedImplicitly] set; }
+
+         [IndexedArgument(1)]
+         public string Name { get; [UsedImplicitly] set; }
+
+         #endregion
+      }
+
 
       public class Options
       {

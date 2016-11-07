@@ -38,15 +38,16 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          }
       }
 
-      internal static bool SetPropertyValue<T>(T instance, PropertyInfo propertyInfo, IDictionary<string, string> arguments, CommandLineAttribute attribute, bool trim = false)
+      internal static bool SetPropertyValue<T>(T instance, PropertyInfo propertyInfo, IDictionary<string, CommandLineArgument> arguments, CommandLineAttribute attribute, bool trim = false)
       {
          var count = 0;
          var propertyName = attribute.Name ?? propertyInfo.Name;
 
          string stringValue;
-         if (arguments.TryGetValue(propertyName, out stringValue))
+         CommandLineArgument argument;
+         if (arguments.TryGetValue(propertyName, out argument))
          {
-            stringValue = GetValue(stringValue, attribute, trim);
+            stringValue = GetValue(argument.Value, attribute, trim);
 
             propertyInfo.SetValue(instance, ConvertValue(propertyInfo.PropertyType, stringValue, (t, v) => CreateErrorMessage(t, v, propertyName)), null);
             arguments.Remove(propertyName);
@@ -55,9 +56,9 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
          foreach (var alias in attribute.Aliases)
          {
-            if (arguments.TryGetValue(alias, out stringValue))
+            if (arguments.TryGetValue(alias, out argument))
             {
-               stringValue = GetValue(stringValue, attribute, trim);
+               stringValue = GetValue(argument.Value, attribute, trim);
 
                propertyInfo.SetValue(instance, ConvertValue(propertyInfo.PropertyType, stringValue, (t, v) => CreateErrorMessage(t, v, propertyName)), null);
                arguments.Remove(alias);
@@ -111,7 +112,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          }
       }
 
-      private static string CreateErrorMessage(Type targetType, string value, string name)
+      protected static string CreateErrorMessage(Type targetType, string value, string name)
       {
          if (targetType.IsEnum)
          {

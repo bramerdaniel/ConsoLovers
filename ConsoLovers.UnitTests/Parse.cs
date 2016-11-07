@@ -6,9 +6,11 @@
 
 namespace ConsoLovers.UnitTests
 {
+   using System;
    using System.Collections.Generic;
    using System.Diagnostics.CodeAnalysis;
 
+   using ConsoLovers.ConsoleToolkit.CommandLineArguments;
    using ConsoLovers.UnitTests.ArgumentEngine;
 
    using FluentAssertions;
@@ -24,15 +26,15 @@ namespace ConsoLovers.UnitTests
       [TestMethod]
       public void EnsureParsingOfSingleOptionWorksCorrectly()
       {
-         var arguments = Parse("-enabled");
+         var arguments = Parse("-Enabled");
          arguments.Count.Should().Be(1);
          AssertContains(arguments, "Enabled");
 
-         arguments = Parse("/enabled");
+         arguments = Parse("/Enabled");
          arguments.Count.Should().Be(1);
          AssertContains(arguments, "Enabled");
 
-         arguments = Parse("enabled");
+         arguments = Parse("Enabled");
          arguments.Count.Should().Be(1);
          AssertContains(arguments, "Enabled");
       }
@@ -43,6 +45,14 @@ namespace ConsoLovers.UnitTests
          var arguments = Parse("-Name:Hans");
          arguments.Count.Should().Be(1);
          AssertContains(arguments, "Name", "Hans");
+      }
+
+      [TestMethod]
+      public void EnsureParsingOfAPathWorksCorrectly()
+      {
+         var arguments = Parse(@"""D:\Temp\file.txt""");
+         arguments.Count.Should().Be(1);
+         AssertContains(arguments, @"""D:\Temp\file.txt""");
       }
 
       [TestMethod]
@@ -64,9 +74,9 @@ namespace ConsoLovers.UnitTests
          arguments.ContainsKey("a").Should().BeTrue();
          arguments.ContainsKey("x").Should().BeTrue();
 
-         arguments["D"].Should().Be("true");
-         arguments["A"].Should().Be("true");
-         arguments["X"].Should().Be("true");
+         arguments["D"].Value.Should().Be("true");
+         arguments["A"].Value.Should().Be("true");
+         arguments["X"].Value.Should().Be("true");
       }
 
       [TestMethod]
@@ -77,9 +87,9 @@ namespace ConsoLovers.UnitTests
          arguments.ContainsKey("ü").Should().BeTrue();
          arguments.ContainsKey("ö").Should().BeTrue();
 
-         arguments["Ä"].Should().Be("4");
-         arguments["Ü"].Should().Be("5.5");
-         arguments["Ö"].Should().Be("Peter");
+         arguments["Ä"].Value.Should().Be("4");
+         arguments["Ü"].Value.Should().Be("5.5");
+         arguments["Ö"].Value.Should().Be("Peter");
       }
 
       [TestMethod]
@@ -90,7 +100,7 @@ namespace ConsoLovers.UnitTests
          arguments.ContainsKey("command").Should().BeTrue();
          arguments.ContainsKey("COMMAND").Should().BeTrue();
 
-         arguments["COMMAND"].Should().Be("true");
+         arguments["COMMAND"].Value.Should().Be("true");
       }
 
       /// <summary>Parses the named string.</summary>
@@ -102,14 +112,14 @@ namespace ConsoLovers.UnitTests
          arguments.ContainsKey("name").Should().BeTrue();
          arguments.ContainsKey("NAME").Should().BeTrue();
 
-         arguments["Name"].Should().Be("Hans");
+         arguments["Name"].Value.Should().Be("Hans");
 
          arguments = Parse("-Name:Olga");
          arguments.ContainsKey("Name").Should().BeTrue();
          arguments.ContainsKey("name").Should().BeTrue();
          arguments.ContainsKey("NAME").Should().BeTrue();
 
-         arguments["Name"].Should().Be("Olga");
+         arguments["Name"].Value.Should().Be("Olga");
       }
 
       [TestMethod]
@@ -123,7 +133,7 @@ namespace ConsoLovers.UnitTests
          arguments.ContainsKey("release").Should().BeFalse();
          arguments.ContainsKey("RELEASE").Should().BeFalse();
 
-         arguments["DEBUg"].Should().Be("true");
+         arguments["DEBUg"].Value.Should().Be("true");
 
          arguments = Parse(" -Release");
          arguments.ContainsKey("Debug").Should().BeFalse();
@@ -133,20 +143,22 @@ namespace ConsoLovers.UnitTests
          arguments.ContainsKey("release").Should().BeTrue();
          arguments.ContainsKey("RELEASE").Should().BeTrue();
 
-         arguments["ReleasE"].Should().Be("true");
+         arguments["ReleasE"].Value.Should().Be("true");
       }
 
       #endregion
 
       #region Methods
 
-      private static void AssertContains(IDictionary<string, string> arguments, string expectedKey, string expectedValue = "true")
+      private static void AssertContains(IDictionary<string, CommandLineArgument> arguments, string expectedKey, string expectedValue = "true")
       {
          arguments.Should().ContainKey(expectedKey);
          arguments.Should().ContainKey(expectedKey.ToLower());
          arguments.Should().ContainKey(expectedKey.ToUpper());
 
-         arguments[expectedKey].Should().Be(expectedValue);
+         var argument = arguments[expectedKey];
+         string.Equals(argument.Name, expectedKey, StringComparison.InvariantCultureIgnoreCase).Should().BeTrue();
+         argument.Value.Should().Be(expectedValue);
       }
 
       #endregion
