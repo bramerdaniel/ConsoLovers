@@ -20,6 +20,7 @@ namespace ConsoleMouseSample
          listener.MouseDoubleClicked += OnMouseDoubleClicked;
          listener.MouseWheelChanged += OnMouseWheelChanged;
          listener.KeyEvent += OnKeyEvent;
+         listener.KeyDown += OnKeyDown;
          listener.Start();
          listener.Wait();
 
@@ -45,9 +46,9 @@ namespace ConsoleMouseSample
          //menu.Show();
 
 
+         Console.ReadKey();
 
          //Console.WriteLine("This is a test");
-         //Console.ReadLine();
          //Console.ReadLine();
          // ProcessMouseInputs();
       }
@@ -106,6 +107,20 @@ namespace ConsoleMouseSample
          Console.WriteLine($"    dwControlKeyState: 0x{KeyEvent.dwControlKeyState:X4}  ");
          var consoleKey = (ConsoleKey)KeyEvent.wVirtualKeyCode;
          Console.WriteLine($"    ConsoleKey: .....:   {consoleKey.ToString().PadRight(10)}  ");
+      }
+
+      private static void OnKeyDown(object sender, KeyEventArgs e)
+      {
+         Console.SetCursorPosition(0, 0);
+         //Console.WriteLine($"    bKeyDown  .......:  {KeyEvent.bKeyDown,5}  ");
+         //Console.WriteLine($"    wRepeatCount ....:   {KeyEvent.wRepeatCount,4:0}  ");
+         //Console.WriteLine($"    wVirtualKeyCode .:   {KeyEvent.wVirtualKeyCode,4:0}  ");
+         //Console.WriteLine($"    dwControlKeyState: 0x{KeyEvent.dwControlKeyState:X4}  ");
+         Console.WriteLine();
+         Console.WriteLine($" ConsoleKey: .....:     {e.Key.ToString().PadRight(10)}  ");
+         Console.WriteLine($" KeyChar .........:     {e.KeyChar}  ");
+         Console.WriteLine($" Modifiers .........:   {e.ControlKeys.ToString().PadRight(Console.WindowWidth - 10)}  ");
+
       }
 
       private static void OnMouseEvent(MOUSE_EVENT_RECORD MouseEvent)

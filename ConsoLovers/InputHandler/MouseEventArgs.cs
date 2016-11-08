@@ -1,4 +1,10 @@
-﻿namespace ConsoLovers.ConsoleToolkit.InputHandler
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="MouseEventArgs.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2016
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace ConsoLovers.ConsoleToolkit.InputHandler
 {
    using System;
 

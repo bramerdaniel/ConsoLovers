@@ -97,6 +97,7 @@
     <Compile Include="InputHandler\dwControlKeyStates.cs" />
     <Compile Include="InputHandler\dwEventFlags.cs" />
     <Compile Include="InputHandler\INPUT_RECORD.cs" />
+    <Compile Include="InputHandler\KeyEventArgs.cs" />
     <Compile Include="InputHandler\KEY_EVENT_RECORD.cs" />
     <Compile Include="InputHandler\MouseEventArgs.cs" />
     <Compile Include="InputHandler\MOUSE_EVENT_RECORD.cs" />

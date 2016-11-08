@@ -48,6 +48,8 @@ namespace ConsoLovers.ConsoleToolkit.InputHandler
 
       public event EventHandler<MouseEventArgs> MouseWheelChanged;
 
+      public event EventHandler<KeyEventArgs> KeyDown;
+
       public event ConsoleWindowBufferSizeEvent WindowBufferSizeEvent;
 
       #endregion
@@ -117,7 +119,14 @@ namespace ConsoLovers.ConsoleToolkit.InputHandler
                            // MouseEvent?.Invoke(record[0].MouseEvent);
                            break;
                         case INPUT_RECORD.KEY_EVENT:
-                           KeyEvent?.Invoke(record[0].KeyEvent);
+                           var keyEvent = record[0].KeyEvent;
+
+                           if (keyEvent.bKeyDown)
+                           {
+                              KeyDown?.Invoke(this, CreateEventArgs(keyEvent));
+                           }
+
+                           KeyEvent?.Invoke(keyEvent);
                            break;
                         case INPUT_RECORD.WINDOW_BUFFER_SIZE_EVENT:
                            WindowBufferSizeEvent?.Invoke(record[0].WindowBufferSizeEvent);
@@ -133,6 +142,17 @@ namespace ConsoLovers.ConsoleToolkit.InputHandler
             });
 
          thread.Start();
+      }
+
+      private KeyEventArgs CreateEventArgs(KEY_EVENT_RECORD keyEvent)
+      {
+         return new KeyEventArgs
+         {
+            Key = (ConsoleKey)keyEvent.wVirtualKeyCode,
+            KeyChar = keyEvent.UnicodeChar,
+            VirtualKeyCode = keyEvent.wVirtualKeyCode,
+            ControlKeys = (ControlKeyState)keyEvent.dwControlKeyState
+      };
       }
 
       public void Stop() => isRunning = false;
