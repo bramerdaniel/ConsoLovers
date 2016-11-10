@@ -13,6 +13,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
    using ConsoLovers.ConsoleToolkit.Console;
    using ConsoLovers.ConsoleToolkit.Contracts;
+   using ConsoLovers.ConsoleToolkit.InputHandler;
 
    public class ConsoleMenu : IConsoleMenuOptions
    {
@@ -49,6 +50,8 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       private MenuColorTheme theme = new MenuColorTheme();
 
       private bool clearOnExecution = true;
+
+      private ElementInfo lastMouseOver;
 
       #endregion
 
@@ -328,7 +331,80 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
          inputHandler = new ConsoleMenuInputHandler(Console);
          inputHandler.InputChanged += OnInputChanged;
+         inputHandler.MouseMoved += OnMouseMoved;
+         inputHandler.MouseClicked += OnMouseClicked;
+         inputHandler.MouseDoubleClicked += OnMouseDoubleClicked;
          inputHandler.Start();
+      }
+
+      private void OnMouseClicked(object sender, MouseEventArgs e)
+      {
+         var mouseOverElement = GetMouseOverElement(e);
+         if (mouseOverElement != null)
+         {
+            SelectedItem = mouseOverElement.MenuItem;
+         }
+      }
+
+      private void OnMouseDoubleClicked(object sender, MouseEventArgs e)
+      {
+         var mouseOverElement = GetMouseOverElement(e);
+         if (mouseOverElement != null)
+         {
+            SelectedItem = mouseOverElement.MenuItem;
+            Execute(SelectedItem);
+         }
+      }
+
+      internal void UpdateMouseOver(ElementInfo value)
+      {
+         if (lastMouseOver == value)
+            return;
+
+         if (lastMouseOver != null)
+         {
+            lastMouseOver.IsMouseOver = false;
+            RefreshMenuItem(lastMouseOver.MenuItem, lastMouseOver.IsSelected);
+         }
+
+         if (value != null)
+         {
+            value.IsMouseOver = true;
+            RefreshMenuItem(value.MenuItem, value.IsSelected);
+         }
+
+         lastMouseOver = value;
+      }
+
+      private void OnMouseMoved(object sender, MouseEventArgs e)
+      {
+         var mouseOverElement = GetMouseOverElement(e);
+         UpdateMouseOver(mouseOverElement);
+      }
+
+      private ElementInfo GetMouseOverElement(MouseEventArgs e)
+      {
+         foreach (var element in elements.Values)
+         {
+            if (element.Line == e.WindowTop)
+            {
+               if (selectionStrech == SelectionStrech.FullLine)
+                  return element;
+
+               if (selectionStrech == SelectionStrech.UnifiedLength)
+               {
+                  if (unifiedLength > e.WindowLeft)
+                     return element;
+               }
+               else
+               {
+                  if (element.Length > e.WindowLeft)
+                     return element;
+               }
+            }
+         }
+
+         return null;
       }
 
       #endregion
@@ -508,8 +584,8 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       private void PrintElement(ElementInfo element)
       {
-         var foreground = Theme.MenuItem.GetForeground(element.IsSelected, element.Disabled);
-         var background = Theme.MenuItem.GetBackground(element.IsSelected, element.Disabled);
+         var foreground = element.IsMouseOver ? Theme.MouseOverForeground : Theme.MenuItem.GetForeground(element.IsSelected, element.Disabled);
+         var background = element.IsMouseOver ? Theme.MouseOverBackground : Theme.MenuItem.GetBackground(element.IsSelected, element.Disabled);
 
          Write(element.Indent, foreground, background);
          WriteExpander(element, foreground, background);
@@ -541,6 +617,9 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
             PrintSelector(elementInfo);
             PrintElement(elementInfo);
+
+            elementInfo.Length = Console.CursorLeft; 
+
             PrintHint(elementInfo, false);
 
             Console.WriteLine();
@@ -620,8 +699,8 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       private void PrintSelector(ElementInfo element)
       {
-         var foreground = Theme.Selector.GetForeground(element.IsSelected, element.Disabled);
-         var background = Theme.Selector.GetBackground(element.IsSelected, element.Disabled);
+         var foreground = element.IsMouseOver ? Theme.MouseOverForeground : Theme.Selector.GetForeground(element.IsSelected, element.Disabled);
+         var background = element.IsMouseOver ? Theme.MouseOverBackground :Theme.Selector.GetBackground(element.IsSelected, element.Disabled);
 
          if (element.IsSelected)
          {

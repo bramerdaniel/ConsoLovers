@@ -15,7 +15,6 @@ namespace ConsoleMouseSample
       static void Main(string[] args)
       {
          var listener = new ConsoleInputHandler();
-         listener.Prepare();
          listener.MouseMoved += OnMouseMoved;
          listener.MouseDoubleClicked += OnMouseDoubleClicked;
          listener.MouseWheelChanged += OnMouseWheelChanged;

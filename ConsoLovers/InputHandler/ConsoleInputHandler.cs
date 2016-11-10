@@ -42,6 +42,8 @@ namespace ConsoLovers.ConsoleToolkit.InputHandler
 
       public event EventHandler<MouseEventArgs> MouseDoubleClicked;
 
+      public event EventHandler<MouseEventArgs> MouseClicked;
+
       // public event ConsoleMouseEvent MouseEvent;
 
       public event EventHandler<MouseEventArgs> MouseMoved;
@@ -71,7 +73,7 @@ namespace ConsoLovers.ConsoleToolkit.InputHandler
       [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
       public static extern bool WriteConsoleInput(IntPtr hConsoleInput, INPUT_RECORD[] lpBuffer, uint nLength, ref uint lpNumberOfEventsWritten);
 
-      public void Prepare()
+      protected void Prepare()
       {
          IntPtr inHandle = GetStdHandle(STD_INPUT_HANDLE);
          uint mode = 0;
@@ -86,6 +88,8 @@ namespace ConsoLovers.ConsoleToolkit.InputHandler
       {
          if (isRunning)
             return;
+
+         Prepare();
          isRunning = true;
 
          IntPtr handleIn = GetStdHandle(STD_INPUT_HANDLE);
@@ -103,6 +107,10 @@ namespace ConsoLovers.ConsoleToolkit.InputHandler
                      {
                         case INPUT_RECORD.MOUSE_EVENT:
                            var mouseEvent = record[0].MouseEvent;
+                           if (mouseEvent.dwButtonState == dwButtonStates.FROM_LEFT_1ST_BUTTON_PRESSED)
+                           {
+                              MouseClicked?.Invoke(this, CreateEventArgs(mouseEvent));
+                           }
                            if (mouseEvent.dwEventFlags == dwEventFlags.DOUBLE_CLICK)
                            {
                               MouseDoubleClicked?.Invoke(this, CreateEventArgs(mouseEvent));

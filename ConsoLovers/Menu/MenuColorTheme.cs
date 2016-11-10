@@ -63,6 +63,10 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          DisabledSelectedBackground = Color.Red
       };
 
+      public Color MouseOverBackground { get; set; } = Color.LightGray;
+
+      public Color MouseOverForeground { get; set; } = Color.Black;
+
       #endregion
    }
 }

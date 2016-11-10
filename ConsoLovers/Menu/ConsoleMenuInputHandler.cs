@@ -12,6 +12,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
    using System.Timers;
 
    using ConsoLovers.ConsoleToolkit.Contracts;
+   using ConsoLovers.ConsoleToolkit.InputHandler;
 
    internal class ConsoleMenuInputHandler
    {
@@ -25,6 +26,8 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       private Timer timer;
 
+      private ConsoleInputHandler handler;
+
       #endregion
 
       #region Constructors and Destructors
@@ -35,6 +38,8 @@ namespace ConsoLovers.ConsoleToolkit.Menu
             throw new ArgumentNullException(nameof(console));
 
          this.console = console;
+
+         handler = new ConsoleInputHandler();
       }
 
       #endregion
@@ -53,34 +58,84 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          timer.AutoReset = false;
          timer.Elapsed += OnElapsed;
 
-         while (!stopped)
+         handler.KeyDown += OnKeyDown;
+         handler.Start();
+         handler.Wait();
+      }
+
+
+      public event EventHandler<MouseEventArgs> MouseMoved
+      {
+         add
          {
-            var pressedKey = console.ReadKey();
-            timer.Stop();
-
-            if (char.IsLetterOrDigit(pressedKey.KeyChar))
-            {
-               pressedKeys.Enqueue(pressedKey);
-
-               StringBuilder builder = new StringBuilder();
-               foreach (var key in pressedKeys)
-                  builder.Append(key.KeyChar);
-
-               InputChanged?.Invoke(this, new ConsoleInputEventArgs(pressedKey, builder.ToString()));
-            }
-            else
-            {
-               InputChanged?.Invoke(this, new ConsoleInputEventArgs(pressedKey));
-               pressedKeys.Clear();
-            }
-
-            timer.Start();
+            handler.MouseMoved += value;
          }
+         remove
+         {
+            handler.MouseMoved -= value;
+         }
+      }
+
+
+      public event EventHandler<MouseEventArgs> MouseDoubleClicked
+      {
+         add
+         {
+            handler.MouseDoubleClicked += value;
+         }
+         remove
+         {
+            handler.MouseDoubleClicked -= value;
+         }
+      }
+
+      public event EventHandler<MouseEventArgs> MouseClicked
+      {
+         add
+         {
+            handler.MouseClicked += value;
+         }
+         remove
+         {
+            handler.MouseClicked -= value;
+         }
+      }
+
+
+      private void OnKeyDown(object sender, KeyEventArgs e)
+      {
+         timer.Stop();
+         var pressedKey = new ConsoleKeyInfo(e.KeyChar, e.Key, false, false, false);
+
+         if (char.IsLetterOrDigit(e.KeyChar))
+         {
+            pressedKeys.Enqueue(pressedKey);
+
+            StringBuilder builder = new StringBuilder();
+            foreach (var key in pressedKeys)
+               builder.Append(key.KeyChar);
+
+            InputChanged?.Invoke(this, new ConsoleInputEventArgs(pressedKey, builder.ToString()));
+         }
+         else
+         {
+            InputChanged?.Invoke(this, new ConsoleInputEventArgs(pressedKey));
+            pressedKeys.Clear();
+         }
+
+         timer.Start();
+
+      }
+
+      private void OnMouseMoved(object sender, MouseEventArgs e)
+      {
+         Console.Beep();
       }
 
       public void Stop()
       {
          stopped = true;
+         handler.Stop();
       }
 
       #endregion

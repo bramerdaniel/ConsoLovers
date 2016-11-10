@@ -24,6 +24,8 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       public bool IsSelected { get; set; }
 
+      public bool IsMouseOver{ get; set; }
+
       public ConsoleMenuItem MenuItem { get; set; }
 
       public string Path { get; set; }
@@ -31,6 +33,8 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       public string Text { get; set; }
 
       public int Line { get; set; }
+
+      public int Length { get; set; }
 
       #endregion
    }
