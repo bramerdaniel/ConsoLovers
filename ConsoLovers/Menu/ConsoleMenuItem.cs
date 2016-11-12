@@ -142,7 +142,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       public bool ReturnsToMenu { get; set; } = true;
 
-      public string Text
+      public virtual string Text
       {
          get
          {

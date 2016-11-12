@@ -19,39 +19,43 @@ namespace ConsoLovers.ConsoleToolkit.Menu
    {
       #region Constants and Fields
 
+      private readonly IDictionary<ConsoleMenuItem, ElementInfo> elements = new Dictionary<ConsoleMenuItem, ElementInfo>();
+
       private readonly Dictionary<string, ElementInfo> indexMap = new Dictionary<string, ElementInfo>();
 
       private readonly ConsoleMenuItem root = new ConsoleMenuItem("rootItem");
 
+      private bool circularSelection = true;
+
+      private bool clearOnExecution = true;
+
       private bool closed;
 
-      private readonly IDictionary<ConsoleMenuItem, ElementInfo> elements = new Dictionary<ConsoleMenuItem, ElementInfo>();
+      private MouseMode mouseMode = MouseMode.Hover;
+
+      private ExpanderDescription expander = new ExpanderDescription();
 
       private int expanderWidth = 1;
 
+      private int indentSize = 2;
+
+      private bool indexMenuItems = true;
+
       private ConsoleMenuInputHandler inputHandler;
 
-      private ConsoleMenuItem selectedItem;
+      private ElementInfo lastMouseOver;
 
-      private int unifiedLength;
+      private ConsoleMenuItem selectedItem;
 
       private SelectionStrech selectionStrech;
 
       private string selector = ">> ";
 
-      private bool indexMenuItems = true;
-
-      private int indentSize = 2;
-
-      private ExpanderDescription expander = new ExpanderDescription();
-
-      private bool circularSelection = true;
-
       private MenuColorTheme theme = new MenuColorTheme();
 
-      private bool clearOnExecution = true;
+      private int unifiedLength;
 
-      private ElementInfo lastMouseOver;
+      private bool attached = false;
 
       #endregion
 
@@ -200,6 +204,25 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       public int Count => root.Items.Count;
 
+      /// <summary>Gets or sets a value indicating whether the mouse selection is enabled.</summary>
+      public MouseMode MouseMode
+      {
+         get
+         {
+            return mouseMode;
+         }
+         set
+         {
+            if (value == mouseMode)
+               return;
+
+            lastMouseOver = null;
+            mouseMode = value;
+            AttachMouseEvents(value != MouseMode.Disabled);
+            Invalidate();
+         }
+      }
+
       /// <summary>Gets or sets the selected item.</summary>
       public ConsoleMenuItem SelectedItem
       {
@@ -236,10 +259,6 @@ namespace ConsoLovers.ConsoleToolkit.Menu
             Invalidate();
          }
       }
-
-      #endregion
-
-      #region Properties
 
       #endregion
 
@@ -281,6 +300,9 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       public void Close()
       {
+         inputHandler.InputChanged -= OnInputChanged;
+         AttachMouseEvents(false);
+
          inputHandler.Stop();
          closed = true;
       }
@@ -329,82 +351,34 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       {
          RefreshMenu();
 
-         inputHandler = new ConsoleMenuInputHandler(Console);
+         inputHandler = new ConsoleMenuInputHandler();
          inputHandler.InputChanged += OnInputChanged;
-         inputHandler.MouseMoved += OnMouseMoved;
-         inputHandler.MouseClicked += OnMouseClicked;
-         inputHandler.MouseDoubleClicked += OnMouseDoubleClicked;
+         AttachMouseEvents(MouseMode != MouseMode.Disabled);
          inputHandler.Start();
       }
 
-      private void OnMouseClicked(object sender, MouseEventArgs e)
+      private void AttachMouseEvents(bool attach)
       {
-         var mouseOverElement = GetMouseOverElement(e);
-         if (mouseOverElement != null)
+         if (attach)
          {
-            SelectedItem = mouseOverElement.MenuItem;
-         }
-      }
+            if(attached)
+               return;
 
-      private void OnMouseDoubleClicked(object sender, MouseEventArgs e)
-      {
-         var mouseOverElement = GetMouseOverElement(e);
-         if (mouseOverElement != null)
+            inputHandler.MouseMoved += OnMouseMoved;
+            inputHandler.MouseClicked += OnMouseClicked;
+            inputHandler.MouseDoubleClicked += OnMouseDoubleClicked;
+            attached = true;
+         }
+         else
          {
-            SelectedItem = mouseOverElement.MenuItem;
-            Execute(SelectedItem);
+            if (!attached)
+               return;
+
+            inputHandler.MouseMoved -= OnMouseMoved;
+            inputHandler.MouseClicked -= OnMouseClicked;
+            inputHandler.MouseDoubleClicked -= OnMouseDoubleClicked;
+            attached = false;
          }
-      }
-
-      internal void UpdateMouseOver(ElementInfo value)
-      {
-         if (lastMouseOver == value)
-            return;
-
-         if (lastMouseOver != null)
-         {
-            lastMouseOver.IsMouseOver = false;
-            RefreshMenuItem(lastMouseOver.MenuItem, lastMouseOver.IsSelected);
-         }
-
-         if (value != null)
-         {
-            value.IsMouseOver = true;
-            RefreshMenuItem(value.MenuItem, value.IsSelected);
-         }
-
-         lastMouseOver = value;
-      }
-
-      private void OnMouseMoved(object sender, MouseEventArgs e)
-      {
-         var mouseOverElement = GetMouseOverElement(e);
-         UpdateMouseOver(mouseOverElement);
-      }
-
-      private ElementInfo GetMouseOverElement(MouseEventArgs e)
-      {
-         foreach (var element in elements.Values)
-         {
-            if (element.Line == e.WindowTop)
-            {
-               if (selectionStrech == SelectionStrech.FullLine)
-                  return element;
-
-               if (selectionStrech == SelectionStrech.UnifiedLength)
-               {
-                  if (unifiedLength > e.WindowLeft)
-                     return element;
-               }
-               else
-               {
-                  if (element.Length > e.WindowLeft)
-                     return element;
-               }
-            }
-         }
-
-         return null;
       }
 
       #endregion
@@ -430,6 +404,26 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          }
 
          PrintFooter();
+      }
+
+      internal void UpdateMouseOver(ElementInfo value)
+      {
+         if (lastMouseOver == value)
+            return;
+
+         if (lastMouseOver != null)
+         {
+            lastMouseOver.IsMouseOver = false;
+            RefreshMenuItem(lastMouseOver.MenuItem, lastMouseOver.IsSelected);
+         }
+
+         if (value != null)
+         {
+            value.IsMouseOver = true;
+            RefreshMenuItem(value.MenuItem, value.IsSelected);
+         }
+
+         lastMouseOver = value;
       }
 
       private static string DisabledHint(ConsoleMenuItem menuItem)
@@ -548,6 +542,31 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          }
       }
 
+      private ElementInfo GetMouseOverElement(MouseEventArgs e)
+      {
+         foreach (var element in elements.Values)
+         {
+            if (element.Line == e.WindowTop)
+            {
+               if (selectionStrech == SelectionStrech.FullLine)
+                  return element;
+
+               if (selectionStrech == SelectionStrech.UnifiedLength)
+               {
+                  if (unifiedLength > e.WindowLeft)
+                     return element;
+               }
+               else
+               {
+                  if (element.Length > e.WindowLeft)
+                     return element;
+               }
+            }
+         }
+
+         return null;
+      }
+
       private bool IsSelected(ConsoleMenuItem menuItem)
       {
          if (menuItem == SelectedItem)
@@ -580,6 +599,39 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          }
 
          UpdateSelection(lastKey, e.Input);
+      }
+
+      private void OnMouseClicked(object sender, MouseEventArgs e)
+      {
+         var mouseOverElement = GetMouseOverElement(e);
+         if (mouseOverElement != null)
+         {
+            SelectedItem = mouseOverElement.MenuItem;
+         }
+      }
+
+      private void OnMouseDoubleClicked(object sender, MouseEventArgs e)
+      {
+         var mouseOverElement = GetMouseOverElement(e);
+         if (mouseOverElement != null)
+         {
+            SelectedItem = mouseOverElement.MenuItem;
+            Execute(SelectedItem);
+         }
+      }
+
+      private void OnMouseMoved(object sender, MouseEventArgs e)
+      {
+         var mouseOverElement = GetMouseOverElement(e);
+         if (MouseMode == MouseMode.Hover)
+         {
+            UpdateMouseOver(mouseOverElement);
+         }
+         else if (MouseMode == MouseMode.Select)
+         {
+            if (mouseOverElement != null)
+               SelectedItem = mouseOverElement.MenuItem;
+         }
       }
 
       private void PrintElement(ElementInfo element)
@@ -618,7 +670,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
             PrintSelector(elementInfo);
             PrintElement(elementInfo);
 
-            elementInfo.Length = Console.CursorLeft; 
+            elementInfo.Length = Console.CursorLeft;
 
             PrintHint(elementInfo, false);
 
@@ -700,7 +752,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       private void PrintSelector(ElementInfo element)
       {
          var foreground = element.IsMouseOver ? Theme.MouseOverForeground : Theme.Selector.GetForeground(element.IsSelected, element.Disabled);
-         var background = element.IsMouseOver ? Theme.MouseOverBackground :Theme.Selector.GetBackground(element.IsSelected, element.Disabled);
+         var background = element.IsMouseOver ? Theme.MouseOverBackground : Theme.Selector.GetBackground(element.IsSelected, element.Disabled);
 
          if (element.IsSelected)
          {
@@ -709,6 +761,21 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          else
          {
             Write(string.Empty.PadRight(Selector.Length), foreground, background);
+         }
+      }
+
+      private void RefreshMenuItem(ConsoleMenuItem itemToUpdate, bool isSelected, bool showHint = false)
+      {
+         ElementInfo elementToUpdate;
+         if (elements.TryGetValue(itemToUpdate, out elementToUpdate))
+         {
+            elementToUpdate.IsSelected = isSelected;
+            Console.CursorTop = elementToUpdate.Line;
+            Console.CursorLeft = 0;
+
+            PrintSelector(elementToUpdate);
+            PrintElement(elementToUpdate);
+            PrintHint(elementToUpdate, showHint);
          }
       }
 
@@ -754,21 +821,6 @@ namespace ConsoLovers.ConsoleToolkit.Menu
                   SelectedItem = previousItem;
                }
             }
-         }
-      }
-
-      private void RefreshMenuItem(ConsoleMenuItem itemToUpdate, bool isSelected, bool showHint = false)
-      {
-         ElementInfo elementToUpdate;
-         if (elements.TryGetValue(itemToUpdate, out elementToUpdate))
-         {
-            elementToUpdate.IsSelected = isSelected;
-            Console.CursorTop = elementToUpdate.Line;
-            Console.CursorLeft = 0;
-
-            PrintSelector(elementToUpdate);
-            PrintElement(elementToUpdate);
-            PrintHint(elementToUpdate, showHint);
          }
       }
 
@@ -850,18 +902,18 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          Console.ResetColor();
       }
 
-      private void WriteExpander(ElementInfo elementInfo, Color itemForeground, Color itemBackground)
+      private void WriteExpander(ElementInfo element, Color itemForeground, Color itemBackground)
       {
-         if (!elementInfo.IsExpanded.HasValue)
+         if (!element.IsExpanded.HasValue)
          {
             Write(string.Empty.PadRight(expanderWidth), itemForeground, itemBackground);
          }
          else
          {
-            itemForeground = Theme.Expander.GetForeground(elementInfo.IsSelected, elementInfo.Disabled);
-            itemBackground = Theme.Expander.GetBackground(elementInfo.IsSelected, elementInfo.Disabled);
+            itemForeground = element.IsMouseOver ? Theme.MouseOverForeground : Theme.Expander.GetForeground(element.IsSelected, element.Disabled);
+            itemBackground = element.IsMouseOver ? Theme.MouseOverBackground : Theme.Expander.GetBackground(element.IsSelected, element.Disabled);
 
-            if (elementInfo.IsExpanded.Value)
+            if (element.IsExpanded.Value)
             {
                Write(Expander.Expanded, itemForeground, itemBackground);
             }

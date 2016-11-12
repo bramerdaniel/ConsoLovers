@@ -120,6 +120,7 @@
     <Compile Include="Menu\IFluentMenu.cs" />
     <Compile Include="Menu\MenuColorTheme.cs" />
     <Compile Include="Menu\ColorSet.cs" />
+    <Compile Include="Menu\MouseMode.cs" />
     <Compile Include="PInvoke\ConsoleWindow.cs" />
     <Compile Include="PInvoke\NativeMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

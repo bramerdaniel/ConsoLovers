@@ -9,9 +9,11 @@ namespace MenuDemo
    using System;
    using System.Collections.Generic;
    using System.Drawing;
+   using System.Reflection;
    using System.Threading;
 
    using ConsoLovers.ConsoleToolkit.CommandLineArguments;
+   using ConsoLovers.ConsoleToolkit.Console;
    using ConsoLovers.ConsoleToolkit.Contracts;
    using ConsoLovers.ConsoleToolkit.Menu;
    using ConsoLovers.ConsoleToolkit.PInvoke;
@@ -73,6 +75,14 @@ namespace MenuDemo
             });
       }
 
+      private static ConsoleMenuItem CreatMouseSelectionMenu(ConsoleMenu menu)
+      {
+         return new ConsoleMenuItem("Mouse mode",
+            new ConsoleMenuItem("Disabled", x => x.Menu.MouseMode = MouseMode.Disabled),
+            new ConsoleMenuItem("Select", x => x.Menu.MouseMode = MouseMode.Select),
+            new ConsoleMenuItem("Hover", x => x.Menu.MouseMode = MouseMode.Hover));
+      }
+
       private static ConsoleMenuItem CreatClearOnExecutionMenu(bool initialValue)
       {
          return new ConsoleMenuItem(
@@ -120,7 +130,7 @@ namespace MenuDemo
       {
          return new ConsoleMenuItem(
             "Change selection strech",
-            new ConsoleMenuItem("None", x => x.Menu.SelectionStrech = SelectionStrech.None),
+            new ConsoleMenuItem("Disabled", x => x.Menu.SelectionStrech = SelectionStrech.None),
             new ConsoleMenuItem("UnifiedLength", x => x.Menu.SelectionStrech = SelectionStrech.UnifiedLength),
             new ConsoleMenuItem("FullLine", x => x.Menu.SelectionStrech = SelectionStrech.FullLine));
       }
@@ -129,7 +139,7 @@ namespace MenuDemo
       {
          return new ConsoleMenuItem(
             "Change selector",
-            new ConsoleMenuItem("None", x => x.Menu.Selector = string.Empty),
+            new ConsoleMenuItem("Disabled", x => x.Menu.Selector = string.Empty),
             new ConsoleMenuItem("Arrow ( => )", x => x.Menu.Selector = "=>"),
             new ConsoleMenuItem("Star ( * )", x => x.Menu.Selector = "*"),
             new ConsoleMenuItem("Big Double ( >> )", x => x.Menu.Selector = ">>"),
@@ -223,6 +233,7 @@ namespace MenuDemo
          menu.Add(CreateColorMenu());
          menu.Add(CreateSelectionStrechMenu());
          menu.Add(CreatCircularSelectionMenu(menu));
+         menu.Add(CreatMouseSelectionMenu(menu));
          menu.Add(CreatIndexMenuItemsMenu(menu.IndexMenuItems));
          menu.Add(CreatClearOnExecutionMenu(menu.ClearOnExecution));
          menu.Add(CreateSelectorMenu(menu));
@@ -241,10 +252,23 @@ namespace MenuDemo
          menu.Add(new ConsoleMenuItem("Connect to server", ConnectToServer, CanConnectToServer) { DisabledHint = "Set username first" });
          menu.Add(new ConsoleMenuItem("Register crash event handler", x => HandleCrash(menu)));
          menu.Add(new ConsoleMenuItem("Simulate Crash", DoCrash));
+         menu.Add(new ConsoleMenuItem("ColorSimulation", ColorSimulation));
          menu.Add(new ConsoleMenuItem("LazyLoadChildren", LazyLoadChildren, true));
          menu.Add(new ConsoleMenuItem("Close menu", x => menu.Close()));
          menu.Add(new ConsoleMenuItem("Exit", x => Environment.Exit(0)));
          menu.Show();
+      }
+
+      private static void ColorSimulation(ConsoleMenuItem obj)
+      {
+         foreach (PropertyInfo property in typeof(Color).GetProperties(BindingFlags.Static | BindingFlags.Public))
+            if (property.PropertyType == typeof(Color))
+            {
+               var value = (Color)property.GetValue(null);
+               ColoredConsole.Instance.WriteLine(property.Name, value);
+               Thread.Sleep(1000);
+            }
+
       }
 
       private static void ShowArgs(IEnumerable<string> args)

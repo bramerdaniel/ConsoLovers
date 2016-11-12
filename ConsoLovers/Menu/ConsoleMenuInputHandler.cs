@@ -11,34 +11,24 @@ namespace ConsoLovers.ConsoleToolkit.Menu
    using System.Text;
    using System.Timers;
 
-   using ConsoLovers.ConsoleToolkit.Contracts;
    using ConsoLovers.ConsoleToolkit.InputHandler;
 
    internal class ConsoleMenuInputHandler
    {
       #region Constants and Fields
 
-      private readonly IConsole console;
-
       private readonly Queue<ConsoleKeyInfo> pressedKeys = new Queue<ConsoleKeyInfo>();
-
-      private bool stopped;
 
       private Timer timer;
 
-      private ConsoleInputHandler handler;
+      private readonly ConsoleInputHandler handler;
 
       #endregion
 
       #region Constructors and Destructors
 
-      internal ConsoleMenuInputHandler(IConsole console)
+      internal ConsoleMenuInputHandler()
       {
-         if (console == null)
-            throw new ArgumentNullException(nameof(console));
-
-         this.console = console;
-
          handler = new ConsoleInputHandler();
       }
 
@@ -101,7 +91,6 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          }
       }
 
-
       private void OnKeyDown(object sender, KeyEventArgs e)
       {
          timer.Stop();
@@ -127,14 +116,8 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       }
 
-      private void OnMouseMoved(object sender, MouseEventArgs e)
-      {
-         Console.Beep();
-      }
-
       public void Stop()
       {
-         stopped = true;
          handler.Stop();
       }
 
