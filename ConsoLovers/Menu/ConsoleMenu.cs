@@ -19,7 +19,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
    {
       #region Constants and Fields
 
-      private readonly IDictionary<ConsoleMenuItem, ElementInfo> elements = new Dictionary<ConsoleMenuItem, ElementInfo>();
+      private readonly IDictionary<PrintableItem, ElementInfo> elements = new Dictionary<PrintableItem, ElementInfo>();
 
       private readonly Dictionary<string, ElementInfo> indexMap = new Dictionary<string, ElementInfo>();
 
@@ -274,13 +274,13 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          return new ConsoleMenuBuilder(null);
       }
 
-      public void Add(ConsoleMenuItem item)
+      public void Add(PrintableItem item)
       {
          if (item == null)
             throw new ArgumentNullException(nameof(item));
 
          if (SelectedItem == null)
-            selectedItem = item;
+            selectedItem = item as ConsoleMenuItem;
 
          item.Parent = root;
          item.Menu = this;
@@ -327,7 +327,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       /// <summary>Removes the given item from the menu.</summary>
       /// <param name="item">The item to remove.</param>
       /// <returns>True if the item could be removed</returns>
-      public bool Remove(ConsoleMenuItem item)
+      public bool Remove(PrintableItem item)
       {
          if (item.Parent == root)
          {
@@ -361,7 +361,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       {
          if (attach)
          {
-            if(attached)
+            if (attached)
                return;
 
             inputHandler.MouseMoved += OnMouseMoved;
@@ -388,7 +388,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       internal void RefreshMenu()
       {
          Console.Clear(Theme.ConsoleBackground);
-         expanderWidth = root.Items.Any(i => i.HasChildren) ? Expander.Length : 0;
+         expanderWidth = root.Items.OfType<ConsoleMenuItem>().Any(i => i.HasChildren) ? Expander.Length : 0;
 
          var indexWidth = IndexMenuItems ? 3 + (root.Items.Count < 10 ? 1 : 2) : 0;
          indexMap.Clear();
@@ -414,13 +414,13 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          if (lastMouseOver != null)
          {
             lastMouseOver.IsMouseOver = false;
-            RefreshMenuItem(lastMouseOver.MenuItem, lastMouseOver.IsSelected);
+            RefreshMenuItem(lastMouseOver.MenuItem as ConsoleMenuItem, lastMouseOver.IsSelected);
          }
 
-         if (value != null)
+         if (value != null && value.IsSelectable)
          {
             value.IsMouseOver = true;
-            RefreshMenuItem(value.MenuItem, value.IsSelected);
+            RefreshMenuItem(value.MenuItem as ConsoleMenuItem, value.IsSelected);
          }
 
          lastMouseOver = value;
@@ -458,11 +458,29 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          }
       }
 
-      private IEnumerable<ElementInfo> CreateElements(IList<ConsoleMenuItem> menuItems, ElementInfo parent, bool useNumbers = true, int indent = 0)
+      private IEnumerable<ElementInfo> CreateElements(IList<PrintableItem> menuItems, ElementInfo parent, bool useNumbers = true, int indent = 0)
       {
          for (var i = 0; i < menuItems.Count; i++)
          {
-            var menuItem = menuItems[i];
+            var menuItem = menuItems[i] as ConsoleMenuItem;
+            if (menuItem == null)
+            {
+
+               var seperator = menuItems[i] as ConsoleMenuSeperator;
+               var seperatorElement = new ElementInfo
+               {
+                  Text = "----",
+                  MenuItem = seperator,
+                  IsSelected = false,
+                  Disabled = true,
+                  Hint = null,
+                  Indent = string.Empty.PadRight(indent * IndentSize),
+                  IsExpanded = null
+               };
+               yield return seperatorElement;
+               continue;
+            }
+
             var identifier = useNumbers ? (i + 1).ToString() : ((char)(97 + i)).ToString();
             var elementInfo = new ElementInfo
             {
@@ -475,7 +493,8 @@ namespace ConsoLovers.ConsoleToolkit.Menu
                Disabled = !CanExecute(menuItem),
                Hint = DisabledHint(menuItem),
                Indent = string.Empty.PadRight(indent * IndentSize),
-               IsExpanded = menuItem.HasChildren ? (bool?)menuItem.IsExpanded : null
+               IsExpanded = menuItem.HasChildren ? (bool?)menuItem.IsExpanded : null,
+               IsSelectable = true
             };
 
             indexMap.Add(parent == null ? identifier : parent.Path + identifier, elementInfo);
@@ -606,7 +625,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          var mouseOverElement = GetMouseOverElement(e);
          if (mouseOverElement != null)
          {
-            SelectedItem = mouseOverElement.MenuItem;
+            SelectedItem = mouseOverElement.MenuItem as ConsoleMenuItem;
          }
       }
 
@@ -615,7 +634,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          var mouseOverElement = GetMouseOverElement(e);
          if (mouseOverElement != null)
          {
-            SelectedItem = mouseOverElement.MenuItem;
+            SelectedItem = mouseOverElement.MenuItem as ConsoleMenuItem;
             Execute(SelectedItem);
          }
       }
@@ -630,7 +649,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          else if (MouseMode == MouseMode.Select)
          {
             if (mouseOverElement != null)
-               SelectedItem = mouseOverElement.MenuItem;
+               SelectedItem = mouseOverElement.MenuItem as ConsoleMenuItem;
          }
       }
 
@@ -751,6 +770,8 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       private void PrintSelector(ElementInfo element)
       {
+  
+
          var foreground = element.IsMouseOver ? Theme.MouseOverForeground : Theme.Selector.GetForeground(element.IsSelected, element.Disabled);
          var background = element.IsMouseOver ? Theme.MouseOverBackground : Theme.Selector.GetBackground(element.IsSelected, element.Disabled);
 
@@ -766,6 +787,9 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       private void RefreshMenuItem(ConsoleMenuItem itemToUpdate, bool isSelected, bool showHint = false)
       {
+         if (itemToUpdate == null)
+            return;
+
          ElementInfo elementToUpdate;
          if (elements.TryGetValue(itemToUpdate, out elementToUpdate))
          {
@@ -783,7 +807,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       {
          if (SelectedItem == null)
          {
-            SelectedItem = root.Items.FirstOrDefault();
+            SelectedItem = root.Items.OfType<ConsoleMenuItem>().FirstOrDefault();
          }
          else
          {
@@ -795,7 +819,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
             else
             {
                if (CircularSelection)
-                  SelectedItem = root.Items.FirstOrDefault();
+                  SelectedItem = root.Items.OfType<ConsoleMenuItem>().FirstOrDefault();
             }
          }
       }
@@ -804,7 +828,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       {
          if (SelectedItem == null)
          {
-            SelectedItem = root.Items.LastOrDefault();
+            SelectedItem = root.Items.OfType<ConsoleMenuItem>().LastOrDefault();
          }
          else
          {
@@ -814,7 +838,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
                if (previousItem == root)
                {
                   if (CircularSelection)
-                     SelectedItem = root.Items.LastOrDefault();
+                     SelectedItem = root.Items.OfType<ConsoleMenuItem>().LastOrDefault();
                }
                else
                {
@@ -866,10 +890,10 @@ namespace ConsoLovers.ConsoleToolkit.Menu
                SelectedItem = SelectedItem.Parent;
                break;
             case ConsoleKey.Home:
-               SelectedItem = root.Items.FirstOrDefault();
+               SelectedItem = root.Items.OfType<ConsoleMenuItem>().FirstOrDefault();
                return;
             case ConsoleKey.End:
-               SelectedItem = elements.Values.LastOrDefault()?.MenuItem;
+               SelectedItem = elements.Values.LastOrDefault()?.MenuItem as ConsoleMenuItem; ;
                return;
          }
 
@@ -879,7 +903,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          ElementInfo element;
          if (indexMap.TryGetValue(input, out element))
          {
-            SelectedItem = element.MenuItem;
+            SelectedItem = element.MenuItem as ConsoleMenuItem; ;
 
             if (ExecuteOnIndexSelection && SelectedItem != null)
             {

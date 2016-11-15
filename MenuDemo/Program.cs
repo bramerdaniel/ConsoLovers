@@ -119,6 +119,7 @@ namespace MenuDemo
             chooseBlueTheme,
             chooseRedTheme,
             choosePinkTheme,
+            new ConsoleMenuSeperator(),
             chooseCrazyTheme,
             chooseDefaultTheme,
             new ConsoleMenuItem("Bahama", m => m.Menu.Theme = ConsoleMenuThemes.Bahama),
@@ -236,6 +237,7 @@ namespace MenuDemo
          menu.Add(CreatMouseSelectionMenu(menu));
          menu.Add(CreatIndexMenuItemsMenu(menu.IndexMenuItems));
          menu.Add(CreatClearOnExecutionMenu(menu.ClearOnExecution));
+         menu.Add(new ConsoleMenuSeperator());
          menu.Add(CreateSelectorMenu(menu));
          menu.Add(CreatExecuteOnIndexSelectionMenu(menu));
          menu.Add(new ConsoleMenuItem("Disabled without command"));

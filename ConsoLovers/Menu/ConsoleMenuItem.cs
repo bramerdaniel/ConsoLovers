@@ -12,7 +12,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
    using System.Linq;
 
    [DebuggerDisplay("{Text}")]
-   public class ConsoleMenuItem
+   public class ConsoleMenuItem : PrintableItem
    {
       #region Constants and Fields
 
@@ -26,11 +26,9 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       private bool isExpanded;
 
-      private List<ConsoleMenuItem> items;
+      private List<PrintableItem> items;
 
       private bool loadingChildren = false;
-
-      private ConsoleMenu menu;
 
       private string text;
 
@@ -46,10 +44,10 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          execute = SwapExpand;
       }
 
-      public ConsoleMenuItem(string text, params ConsoleMenuItem[] children)
+      public ConsoleMenuItem(string text, params PrintableItem[] children)
          : this(text)
       {
-         items = new List<ConsoleMenuItem>(children.Length);
+         items = new List<PrintableItem>(children.Length);
          foreach (var child in children)
          {
             child.Parent = this;
@@ -110,11 +108,11 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          }
       }
 
-      public List<ConsoleMenuItem> Items
+      public List<PrintableItem> Items
       {
          get
          {
-            return items ?? (items = new List<ConsoleMenuItem>());
+            return items ?? (items = new List<PrintableItem>());
          }
 
          private set
@@ -122,23 +120,6 @@ namespace ConsoLovers.ConsoleToolkit.Menu
             items = value;
          }
       }
-
-      /// <summary>Gets the <see cref="ConsoleMenu"/> the item is part of.</summary>
-      public ConsoleMenu Menu
-      {
-         get
-         {
-            return menu ?? Parent?.Menu;
-         }
-
-         internal set
-         {
-            menu = value;
-         }
-      }
-
-      /// <summary>Gets the menu the item is part of.</summary>
-      public ConsoleMenuItem Parent { get; internal set; }
 
       public bool ReturnsToMenu { get; set; } = true;
 
@@ -203,7 +184,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
             try
             {
                loadingChildren = true;
-               items = new List<ConsoleMenuItem>(5);
+               items = new List<PrintableItem>(5);
                foreach (var child in loadChildren())
                {
                   child.Parent = this;
@@ -225,7 +206,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
          if (recursive)
          {
-            foreach (var item in Items)
+            foreach (var item in Items.OfType<ConsoleMenuItem>())
             {
                if (item.HasChildren && item.CanExpand())
                   item.ExpandInternal(true, false);
@@ -258,28 +239,40 @@ namespace ConsoLovers.ConsoleToolkit.Menu
             return null;
 
          var currentIndex = Parent.items.IndexOf(this);
-         if (currentIndex <= 0)
+         if (currentIndex == 0)
             return Parent;
 
-         var previous = Parent.items[currentIndex - 1];
-         if (previous.IsExpanded)
+         var previousIndex = currentIndex - 1;
+
+         while (previousIndex >= 0)
          {
-            var item = previous.items.Last();
-            while (item.IsExpanded)
+            var previous = Parent.items[previousIndex] as ConsoleMenuItem;
+            if (previous != null)
             {
-               item = item.Items.Last();
+               if (previous.IsExpanded)
+               {
+                  var item = previous.items.OfType<ConsoleMenuItem>().Last();
+                  while (item.IsExpanded)
+                  {
+                     item = item.Items.OfType<ConsoleMenuItem>().Last();
+                  }
+
+                  return item;
+               }
+
+               return previous;
             }
 
-            return item;
+            previousIndex--;
          }
 
-         return previous;
+         return Parent;
       }
 
       private ConsoleMenuItem Next(bool firstChildWhenExpanded)
       {
          if (firstChildWhenExpanded && IsExpanded && HasChildren)
-            return items?.FirstOrDefault();
+            return items?.OfType<ConsoleMenuItem>().FirstOrDefault();
 
          if (Parent == null || Parent.items == null)
             return null;
@@ -287,10 +280,16 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          var currentIndex = Parent.items.IndexOf(this);
          var nextIndex = currentIndex + 1;
 
-         if (nextIndex >= Parent.items.Count)
-            return Parent.Next(false);
+         while (nextIndex < Parent.items.Count)
+         {
+            var item = Parent.items[nextIndex] as ConsoleMenuItem;
+            if (item != null)
+               return item;
 
-         return Parent.items[nextIndex];
+            nextIndex++;
+         }
+
+         return Parent.Next(false);
       }
 
       private void SwapExpand(ConsoleMenuItem sender)
@@ -309,5 +308,31 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       }
 
       #endregion
+   }
+
+   public class PrintableItem
+   {
+      private ConsoleMenu menu;
+
+      /// <summary>Gets the <see cref="ConsoleMenu"/> the item is part of.</summary>
+      public ConsoleMenu Menu
+      {
+         get
+         {
+            return menu ?? Parent?.Menu;
+         }
+
+         internal set
+         {
+            menu = value;
+         }
+      }
+
+      /// <summary>Gets the menu the item is part of.</summary>
+      public ConsoleMenuItem Parent { get; internal set; }
+   }
+
+   public class ConsoleMenuSeperator : PrintableItem
+   {
    }
 }
