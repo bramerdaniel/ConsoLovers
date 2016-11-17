@@ -1,48 +1,28 @@
-﻿//jmedved.com
-
-using Microsoft.Win32.SafeHandles;
-using System;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Program.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2016
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace ConsoleMouseSample
 {
+   using System;
    using System.Drawing;
-   using System.Reflection;
-   using System.Threading;
+   using System.Runtime.InteropServices;
 
    using ConsoLovers.ConsoleToolkit.Console;
    using ConsoLovers.ConsoleToolkit.InputHandler;
 
    class App
    {
-      private static void ColorSimulation()
-      {
-         foreach (PropertyInfo property in typeof(Color).GetProperties(BindingFlags.Static | BindingFlags.Public))
-            if (property.PropertyType == typeof(Color))
-            {
-               var value = (Color)property.GetValue(null);
-               Write(property.Name, value);
-               Thread.Sleep(1000);
-            }
-
-      }
-
-      private static void Write(string text, Color value)
-      {
-         new ColorMapper().Write(text, value);
-      }
+      #region Methods
 
       static void Main(string[] args)
       {
-         ColorSimulation();
-
          var listener = new ConsoleInputHandler();
          listener.MouseMoved += OnMouseMoved;
          listener.MouseDoubleClicked += OnMouseDoubleClicked;
          listener.MouseWheelChanged += OnMouseWheelChanged;
-         listener.KeyEvent += OnKeyEvent;
          listener.KeyDown += OnKeyDown;
          listener.Start();
          listener.Wait();
@@ -68,7 +48,6 @@ namespace ConsoleMouseSample
          //menu.Add(new ConsoleMenuItem("Exit", x => Environment.Exit(0)));
          //menu.Show();
 
-
          Console.ReadKey();
 
          //Console.WriteLine("This is a test");
@@ -76,9 +55,30 @@ namespace ConsoleMouseSample
          // ProcessMouseInputs();
       }
 
-      private static void OnMouseWheelChanged(object sender, MouseEventArgs e)
+      private static void OnKeyDown(object sender, KeyEventArgs e)
       {
-         Console.Beep();
+         Console.SetCursorPosition(0, 0);
+         //Console.WriteLine($"    bKeyDown  .......:  {KeyEvent.bKeyDown,5}  ");
+         //Console.WriteLine($"    wRepeatCount ....:   {KeyEvent.wRepeatCount,4:0}  ");
+         //Console.WriteLine($"    wVirtualKeyCode .:   {KeyEvent.wVirtualKeyCode,4:0}  ");
+         //Console.WriteLine($"    dwControlKeyState: 0x{KeyEvent.dwControlKeyState:X4}  ");
+         Console.WriteLine();
+         Console.WriteLine($" ConsoleKey: .....:     {e.Key.ToString().PadRight(10)}  ");
+         Console.WriteLine($" KeyChar .........:     {e.KeyChar}  ");
+         Console.WriteLine($" Modifiers .........:   {e.ControlKeys.ToString().PadRight(Console.WindowWidth - 10)}  ");
+      }
+
+      private static void OnKeyEvent(KEY_EVENT_RECORD KeyEvent)
+      {
+         Console.SetCursorPosition(0, 6);
+         Console.WriteLine("Key event  ");
+         Console.WriteLine($"    bKeyDown  .......:  {KeyEvent.bKeyDown,5}  ");
+         Console.WriteLine($"    wRepeatCount ....:   {KeyEvent.wRepeatCount,4:0}  ");
+         Console.WriteLine($"    wVirtualKeyCode .:   {KeyEvent.wVirtualKeyCode,4:0}  ");
+         Console.WriteLine($"    uChar ...........:      {KeyEvent.UnicodeChar}  ");
+         Console.WriteLine($"    dwControlKeyState: 0x{KeyEvent.dwControlKeyState:X4}  ");
+         var consoleKey = (ConsoleKey)KeyEvent.wVirtualKeyCode;
+         Console.WriteLine($"    ConsoleKey: .....:   {consoleKey.ToString().PadRight(10)}  ");
       }
 
       private static void OnMouseDoubleClicked(object sender, MouseEventArgs e)
@@ -90,6 +90,17 @@ namespace ConsoleMouseSample
             Console.Write("#");
             Console.ResetColor();
          }
+      }
+
+      private static void OnMouseEvent(MOUSE_EVENT_RECORD MouseEvent)
+      {
+         Console.SetCursorPosition(0, 0);
+         Console.WriteLine("Mouse event");
+         Console.WriteLine($"    X ...............:   {MouseEvent.dwMousePosition.X,4:0}  ");
+         Console.WriteLine($"    Y ...............:   {MouseEvent.dwMousePosition.Y,4:0}  ");
+         Console.WriteLine($"    dwButtonState ...: 0x{MouseEvent.dwButtonState:X4}  ");
+         Console.WriteLine($"    dwControlKeyState: 0x{MouseEvent.dwControlKeyState:X4}  ");
+         Console.WriteLine($"    dwEventFlags ....: 0x{MouseEvent.dwEventFlags:X4}  ");
       }
 
       private static void OnMouseMoved(object sender, MouseEventArgs e)
@@ -116,130 +127,34 @@ namespace ConsoleMouseSample
 
          Console.SetCursorPosition(0, 0);
          Console.Write($"X: {e.WindowLeft}, Y: {e.WindowTop}".PadLeft(Console.WindowWidth - 1));
-
       }
 
-      private static void OnKeyEvent(KEY_EVENT_RECORD KeyEvent)
+      private static void OnMouseWheelChanged(object sender, MouseEventArgs e)
       {
-         Console.SetCursorPosition(0, 6);
-         Console.WriteLine("Key event  ");
-         Console.WriteLine($"    bKeyDown  .......:  {KeyEvent.bKeyDown,5}  ");
-         Console.WriteLine($"    wRepeatCount ....:   {KeyEvent.wRepeatCount,4:0}  ");
-         Console.WriteLine($"    wVirtualKeyCode .:   {KeyEvent.wVirtualKeyCode,4:0}  ");
-         Console.WriteLine($"    uChar ...........:      {KeyEvent.UnicodeChar}  ");
-         Console.WriteLine($"    dwControlKeyState: 0x{KeyEvent.dwControlKeyState:X4}  ");
-         var consoleKey = (ConsoleKey)KeyEvent.wVirtualKeyCode;
-         Console.WriteLine($"    ConsoleKey: .....:   {consoleKey.ToString().PadRight(10)}  ");
+         Console.Beep();
       }
 
-      private static void OnKeyDown(object sender, KeyEventArgs e)
+      private static void Write(string text, Color value)
       {
-         Console.SetCursorPosition(0, 0);
-         //Console.WriteLine($"    bKeyDown  .......:  {KeyEvent.bKeyDown,5}  ");
-         //Console.WriteLine($"    wRepeatCount ....:   {KeyEvent.wRepeatCount,4:0}  ");
-         //Console.WriteLine($"    wVirtualKeyCode .:   {KeyEvent.wVirtualKeyCode,4:0}  ");
-         //Console.WriteLine($"    dwControlKeyState: 0x{KeyEvent.dwControlKeyState:X4}  ");
-         Console.WriteLine();
-         Console.WriteLine($" ConsoleKey: .....:     {e.Key.ToString().PadRight(10)}  ");
-         Console.WriteLine($" KeyChar .........:     {e.KeyChar}  ");
-         Console.WriteLine($" Modifiers .........:   {e.ControlKeys.ToString().PadRight(Console.WindowWidth - 10)}  ");
-
+         new ColorMapper().Write(text, value);
       }
 
-      private static void OnMouseEvent(MOUSE_EVENT_RECORD MouseEvent)
-      {
-         Console.SetCursorPosition(0, 0);
-         Console.WriteLine("Mouse event");
-         Console.WriteLine($"    X ...............:   {MouseEvent.dwMousePosition.X,4:0}  ");
-         Console.WriteLine($"    Y ...............:   {MouseEvent.dwMousePosition.Y,4:0}  ");
-         Console.WriteLine($"    dwButtonState ...: 0x{MouseEvent.dwButtonState:X4}  ");
-         Console.WriteLine($"    dwControlKeyState: 0x{MouseEvent.dwControlKeyState:X4}  ");
-         Console.WriteLine($"    dwEventFlags ....: 0x{MouseEvent.dwEventFlags:X4}  ");
-
-      }
-
-
-
+      #endregion
    }
 
    public sealed class ColorMapper
    {
-      [StructLayout(LayoutKind.Sequential)]
-      private struct COORD
-      {
-         internal short X;
-         internal short Y;
-      }
+      #region Constants and Fields
 
-      [StructLayout(LayoutKind.Sequential)]
-      private struct SMALL_RECT
-      {
-         internal short Left;
-         internal short Top;
-         internal short Right;
-         internal short Bottom;
-      }
+      const int STD_OUTPUT_HANDLE = -11; // per WinBase.h
 
-      [StructLayout(LayoutKind.Sequential)]
-      private struct COLORREF
-      {
-         private uint ColorDWORD;
+      private static readonly IntPtr INVALID_HANDLE_VALUE = new IntPtr(-1); // per WinBase.h
 
-         internal COLORREF(Color color)
-         {
-            ColorDWORD = (uint)color.R + (((uint)color.G) << 8) + (((uint)color.B) << 16);
-         }
+      #endregion
 
-         internal COLORREF(uint r, uint g, uint b)
-         {
-            ColorDWORD = r + (g << 8) + (b << 16);
-         }
-      }
+      #region Public Methods and Operators
 
-      [StructLayout(LayoutKind.Sequential)]
-      private struct CONSOLE_SCREEN_BUFFER_INFO_EX
-      {
-         internal int cbSize;
-         internal COORD dwSize;
-         internal COORD dwCursorPosition;
-         internal ushort wAttributes;
-         internal SMALL_RECT srWindow;
-         internal COORD dwMaximumWindowSize;
-         internal ushort wPopupAttributes;
-         internal bool bFullscreenSupported;
-         internal COLORREF black;
-         internal COLORREF darkBlue;
-         internal COLORREF darkGreen;
-         internal COLORREF darkCyan;
-         internal COLORREF darkRed;
-         internal COLORREF darkMagenta;
-         internal COLORREF darkYellow;
-         internal COLORREF gray;
-         internal COLORREF darkGray;
-         internal COLORREF blue;
-         internal COLORREF green;
-         internal COLORREF cyan;
-         internal COLORREF red;
-         internal COLORREF magenta;
-         internal COLORREF yellow;
-         internal COLORREF white;
-      }
-
-      const int STD_OUTPUT_HANDLE = -11;                                       // per WinBase.h
-      private static readonly IntPtr INVALID_HANDLE_VALUE = new IntPtr(-1);    // per WinBase.h
-
-      [DllImport("kernel32.dll", SetLastError = true)]
-      private static extern IntPtr GetStdHandle(int nStdHandle);
-
-      [DllImport("kernel32.dll", SetLastError = true)]
-      private static extern bool GetConsoleScreenBufferInfoEx(IntPtr hConsoleOutput, ref CONSOLE_SCREEN_BUFFER_INFO_EX csbe);
-
-      [DllImport("kernel32.dll", SetLastError = true)]
-      private static extern bool SetConsoleScreenBufferInfoEx(IntPtr hConsoleOutput, ref CONSOLE_SCREEN_BUFFER_INFO_EX csbe);
-
-      /// <summary>
-      /// Maps a System.Drawing.Color to a System.ConsoleColor.
-      /// </summary>
+      /// <summary>Maps a System.Drawing.Color to a System.ConsoleColor.</summary>
       /// <param name="oldColor">The color to be replaced.</param>
       /// <param name="newColor">The color to be mapped.</param>
       public void MapColor(ConsoleColor oldColor, Color newColor)
@@ -248,12 +163,32 @@ namespace ConsoleMouseSample
          MapColor(oldColor, newColor.R, newColor.G, newColor.B);
       }
 
+      public void Write(string text, Color value)
+      {
+         MapColor(ConsoleColor.Black, value);
+         Console.ForegroundColor = ConsoleColor.Cyan;
+         Console.WriteLine(text);
+      }
+
+      #endregion
+
+      #region Methods
+
+      [DllImport("kernel32.dll", SetLastError = true)]
+      private static extern bool GetConsoleScreenBufferInfoEx(IntPtr hConsoleOutput, ref CONSOLE_SCREEN_BUFFER_INFO_EX csbe);
+
+      [DllImport("kernel32.dll", SetLastError = true)]
+      private static extern IntPtr GetStdHandle(int nStdHandle);
+
+      [DllImport("kernel32.dll", SetLastError = true)]
+      private static extern bool SetConsoleScreenBufferInfoEx(IntPtr hConsoleOutput, ref CONSOLE_SCREEN_BUFFER_INFO_EX csbe);
+
       private void MapColor(ConsoleColor color, uint r, uint g, uint b)
       {
          CONSOLE_SCREEN_BUFFER_INFO_EX csbe = new CONSOLE_SCREEN_BUFFER_INFO_EX();
-         csbe.cbSize = (int)Marshal.SizeOf(csbe);                    // 96 = 0x60
+         csbe.cbSize = (int)Marshal.SizeOf(csbe); // 96 = 0x60
 
-         IntPtr hConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);    // 7
+         IntPtr hConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE); // 7
          if (hConsoleOutput == INVALID_HANDLE_VALUE)
          {
             throw new ColorMappingException(Marshal.GetLastWin32Error());
@@ -327,11 +262,94 @@ namespace ConsoleMouseSample
          }
       }
 
-      public void Write(string text, Color value)
+      #endregion
+
+      [StructLayout(LayoutKind.Sequential)]
+      private struct COLORREF
       {
-         MapColor(ConsoleColor.Black, value);
-         Console.ForegroundColor = ConsoleColor.Cyan;
-         Console.WriteLine(text);
+         private uint ColorDWORD;
+
+         internal COLORREF(Color color)
+         {
+            ColorDWORD = (uint)color.R + (((uint)color.G) << 8) + (((uint)color.B) << 16);
+         }
+
+         internal COLORREF(uint r, uint g, uint b)
+         {
+            ColorDWORD = r + (g << 8) + (b << 16);
+         }
+      }
+
+      [StructLayout(LayoutKind.Sequential)]
+      private struct CONSOLE_SCREEN_BUFFER_INFO_EX
+      {
+         internal int cbSize;
+
+         internal COORD dwSize;
+
+         internal COORD dwCursorPosition;
+
+         internal ushort wAttributes;
+
+         internal SMALL_RECT srWindow;
+
+         internal COORD dwMaximumWindowSize;
+
+         internal ushort wPopupAttributes;
+
+         internal bool bFullscreenSupported;
+
+         internal COLORREF black;
+
+         internal COLORREF darkBlue;
+
+         internal COLORREF darkGreen;
+
+         internal COLORREF darkCyan;
+
+         internal COLORREF darkRed;
+
+         internal COLORREF darkMagenta;
+
+         internal COLORREF darkYellow;
+
+         internal COLORREF gray;
+
+         internal COLORREF darkGray;
+
+         internal COLORREF blue;
+
+         internal COLORREF green;
+
+         internal COLORREF cyan;
+
+         internal COLORREF red;
+
+         internal COLORREF magenta;
+
+         internal COLORREF yellow;
+
+         internal COLORREF white;
+      }
+
+      [StructLayout(LayoutKind.Sequential)]
+      private struct COORD
+      {
+         internal short X;
+
+         internal short Y;
+      }
+
+      [StructLayout(LayoutKind.Sequential)]
+      private struct SMALL_RECT
+      {
+         internal short Left;
+
+         internal short Top;
+
+         internal short Right;
+
+         internal short Bottom;
       }
    }
 }

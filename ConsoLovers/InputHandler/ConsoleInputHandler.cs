@@ -38,8 +38,6 @@ namespace ConsoLovers.ConsoleToolkit.InputHandler
 
       #region Public Events
 
-      public event ConsoleKeyEvent KeyEvent;
-
       public event EventHandler<MouseEventArgs> MouseDoubleClicked;
 
       public event EventHandler<MouseEventArgs> MouseClicked;
@@ -124,17 +122,13 @@ namespace ConsoLovers.ConsoleToolkit.InputHandler
                               MouseWheelChanged?.Invoke(this, CreateEventArgs(mouseEvent));
                            }
 
-                           // MouseEvent?.Invoke(record[0].MouseEvent);
                            break;
                         case INPUT_RECORD.KEY_EVENT:
                            var keyEvent = record[0].KeyEvent;
 
                            if (keyEvent.bKeyDown)
-                           {
                               KeyDown?.Invoke(this, CreateEventArgs(keyEvent));
-                           }
 
-                           KeyEvent?.Invoke(keyEvent);
                            break;
                         case INPUT_RECORD.WINDOW_BUFFER_SIZE_EVENT:
                            WindowBufferSizeEvent?.Invoke(record[0].WindowBufferSizeEvent);

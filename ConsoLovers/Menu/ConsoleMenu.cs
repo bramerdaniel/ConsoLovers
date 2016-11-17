@@ -635,7 +635,8 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          if (mouseOverElement != null)
          {
             SelectedItem = mouseOverElement.MenuItem as ConsoleMenuItem;
-            Execute(SelectedItem);
+            if (SelectedItem != null)
+               Execute(SelectedItem);
          }
       }
 
@@ -770,7 +771,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       private void PrintSelector(ElementInfo element)
       {
-  
+
 
          var foreground = element.IsMouseOver ? Theme.MouseOverForeground : Theme.Selector.GetForeground(element.IsSelected, element.Disabled);
          var background = element.IsMouseOver ? Theme.MouseOverBackground : Theme.Selector.GetBackground(element.IsSelected, element.Disabled);

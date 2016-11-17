@@ -89,6 +89,7 @@
     <Compile Include="Console\TextPattern.cs" />
     <Compile Include="Console\TextPatternCollection.cs" />
     <Compile Include="ICanShowMenu.cs" />
+    <Compile Include="IInputMask.cs" />
     <Compile Include="InputHandler\ButtonStates.cs" />
     <Compile Include="InputHandler\ConsoleInputHandler.cs" />
     <Compile Include="InputHandler\ConsoleModes.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="InputHandler\MouseEventArgs.cs" />
     <Compile Include="InputHandler\MOUSE_EVENT_RECORD.cs" />
     <Compile Include="InputHandler\WINDOW_BUFFER_SIZE_RECORD.cs" />
+    <Compile Include="InputMask.cs" />
     <Compile Include="Menu\ConsoleInputEventArgs.cs" />
     <Compile Include="Menu\ConsoleMenuInputHandler.cs" />
     <Compile Include="Menu\ConsoleMenu.cs" />
@@ -126,6 +128,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Contracts\SelectionStrech.cs" />
     <Compile Include="SubMenuBuilder.cs" />
+    <Compile Include="Todo\Class1.cs" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Icon.ico" />
