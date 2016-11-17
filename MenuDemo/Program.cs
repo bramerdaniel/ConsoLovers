@@ -64,7 +64,7 @@ namespace MenuDemo
          userName = null;
       }
 
-      private static ConsoleMenuItem CreatCircularSelectionMenu(ConsoleMenu menu)
+      private static ConsoleMenuItem CreateCircularSelectionMenu(ConsoleMenu menu)
       {
          return new ConsoleMenuItem(
             $"CircularSelection = {menu.CircularSelection}",
@@ -75,7 +75,7 @@ namespace MenuDemo
             });
       }
 
-      private static ConsoleMenuItem CreatMouseSelectionMenu(ConsoleMenu menu)
+      private static ConsoleMenuItem CreateMouseSelectionMenu(ConsoleMenu menu)
       {
          return new ConsoleMenuItem("Mouse mode",
             new ConsoleMenuItem("Disabled", x => x.Menu.MouseMode = MouseMode.Disabled),
@@ -83,7 +83,7 @@ namespace MenuDemo
             new ConsoleMenuItem("Hover", x => x.Menu.MouseMode = MouseMode.Hover));
       }
 
-      private static ConsoleMenuItem CreatClearOnExecutionMenu(bool initialValue)
+      private static ConsoleMenuItem CreateClearOnExecutionMenu(bool initialValue)
       {
          return new ConsoleMenuItem(
             $"ClearOnExecution = {initialValue}",
@@ -124,7 +124,7 @@ namespace MenuDemo
             chooseDefaultTheme,
             new ConsoleMenuItem("Bahama", m => m.Menu.Theme = ConsoleMenuThemes.Bahama),
             new ConsoleMenuItem("CloseOptions", new ConsoleMenuItem("Exit application but use a long long name", x => Environment.Exit(0))),
-            new ConsoleMenuItem("A disabled menu ittem using a long name"));
+            new ConsoleMenuItem("A disabled menu item using a long name"));
       }
 
       private static ConsoleMenuItem CreateSelectionStrechMenu()
@@ -154,7 +154,7 @@ namespace MenuDemo
                }));
       }
 
-      private static ConsoleMenuItem CreatExecuteOnIndexSelectionMenu(ConsoleMenu menu)
+      private static ConsoleMenuItem CreateExecuteOnIndexSelectionMenu(ConsoleMenu menu)
       {
          return new ConsoleMenuItem(
             $"ExecuteOnIndexSelection = {menu.ExecuteOnIndexSelection}",
@@ -165,7 +165,7 @@ namespace MenuDemo
             });
       }
 
-      private static ConsoleMenuItem CreatIndexMenuItemsMenu(bool initialValue)
+      private static ConsoleMenuItem CreateIndexMenuItemsMenu(bool initialValue)
       {
          return new ConsoleMenuItem(
             $"IndexMenuItems = {initialValue}",
@@ -233,13 +233,13 @@ namespace MenuDemo
          // menu.Expander = new ExpanderDescription { Collapsed = "►", Expanded = "▼" };
          menu.Add(CreateColorMenu());
          menu.Add(CreateSelectionStrechMenu());
-         menu.Add(CreatCircularSelectionMenu(menu));
-         menu.Add(CreatMouseSelectionMenu(menu));
-         menu.Add(CreatIndexMenuItemsMenu(menu.IndexMenuItems));
-         menu.Add(CreatClearOnExecutionMenu(menu.ClearOnExecution));
+         menu.Add(CreateCircularSelectionMenu(menu));
+         menu.Add(CreateMouseSelectionMenu(menu));
+         menu.Add(CreateIndexMenuItemsMenu(menu.IndexMenuItems));
+         menu.Add(CreateClearOnExecutionMenu(menu.ClearOnExecution));
          menu.Add(new ConsoleMenuSeperator());
          menu.Add(CreateSelectorMenu(menu));
-         menu.Add(CreatExecuteOnIndexSelectionMenu(menu));
+         menu.Add(CreateExecuteOnIndexSelectionMenu(menu));
          menu.Add(new ConsoleMenuItem("Disabled without command"));
          menu.Add(
             new ConsoleMenuItem(
