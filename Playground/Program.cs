@@ -1,44 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Program.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2016
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Playground
 {
-   using ConsoLovers.ConsoleToolkit;
-   using ConsoLovers.ConsoleToolkit.Console;
-   using ConsoLovers.ConsoleToolkit.Menu;
+   using System;
+   using System.Runtime.InteropServices;
+
+   using Microsoft.Win32.SafeHandles;
 
    class Program
    {
-      static void Main(string[] args)
+      #region Constants and Fields
+
+      private const UInt32 STD_OUTPUT_HANDLE = unchecked((UInt32)(-11));
+
+      private static SafeFileHandle _safeFileHandle;
+
+      #endregion
+
+      #region Methods
+
+      [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+      private static extern IntPtr GetStdHandle(UInt32 type);
+
+      static void Main()
       {
-         string password;
-
-
-         Console.Write("Enter your password : ");
-         var mask = '#';
-         var length = 8;
-         var placeHolder = '.';
-         password = new InputMask().ReadLine(mask, length, placeHolder);
-         Console.WriteLine($"Password: {password}");
-
-         Console.Write("Enter your password : ");
-         password = new InputMask().ReadLine(6, '.');
-         Console.WriteLine($"Password: {password}");
-
-
-         Console.Write("Enter exit : ");
-         new InputMask { MaskingCompleted = WhenInputIsExit }.Read(4, '.');
-         Console.WriteLine($" ==> return");
-
-         Console.ReadLine();
       }
 
-      private static bool WhenInputIsExit(ConsoleKeyInfo key, string input)
-      {
-         return input == "exit";
-      }
+      [DllImport("kernel32.dll", SetLastError = true)]
+      private static extern bool WriteConsoleOutput
+      (SafeFileHandle hConsoleOutput, InputConsoleBox.CharInfo[] lpBuffer, InputConsoleBox.Coord dwBufferSize, InputConsoleBox.Coord dwBufferCoord,
+         ref InputConsoleBox.SmallRect lpWriteRegion);
+
+      #endregion
    }
 }

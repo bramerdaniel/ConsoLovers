@@ -1,2 +1,0 @@
-﻿1. Implement shortcut selection  for letters (e.g. 1a)
-2. Finish ConsoleMenuBuilder

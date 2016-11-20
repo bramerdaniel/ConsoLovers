@@ -12,7 +12,7 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
    {
       #region Methods
 
-      protected ArgumentEngine GetTarget()
+      protected CommandLineEngine GetTarget()
       {
          return Setup.ArgumentEngine().Done();
       }

@@ -7,7 +7,6 @@
 namespace ConsoLovers.ConsoleToolkit.Console
 {
    using System;
-   using System.Collections.Concurrent;
    using System.Collections.Generic;
    using System.Drawing;
    using System.Linq;
@@ -17,55 +16,14 @@ namespace ConsoLovers.ConsoleToolkit.Console
    {
       #region Constants and Fields
 
-      // Note that if you set ConsoleColor.Black to a different color, then the background of the
-      // console will change as a side-effect!  The index of Black (in the ConsoleColor definition) is 0,
-      // so avoid that index.
-      private const int INITIAL_COLOR_CHANGE_COUNT_VALUE = 1;
-
       // Limitation of the Windows console window.
       private const int MAX_COLOR_CHANGES = 16;
-
-      private static readonly Color blackEquivalent = Color.FromArgb(0, 0, 0);
-
-      private static readonly Color blueEquivalent = Color.FromArgb(0, 0, 255);                          
-
-      private static readonly Color cyanEquivalent = Color.FromArgb(0, 255, 255);
-
-      private static readonly Color darkBlueEquivalent = Color.FromArgb(0, 0, 128);
-
-      private static readonly Color darkCyanEquivalent = Color.FromArgb(0, 128, 128);
-
-      private static readonly Color darkGrayEquivalent = Color.FromArgb(128, 128, 128);
-
-      private static readonly Color darkGreenEquivalent = Color.FromArgb(0, 128, 0);
-
-      private static readonly Color darkMagentaEquivalent = Color.FromArgb(128, 0, 128);
-
-      private static readonly Color darkRedEquivalent = Color.FromArgb(128, 0, 0);
-
-      private static readonly Color darkYellowEquivalent = Color.FromArgb(128, 128, 0);
-
-      private static readonly Color grayEquivalent = Color.FromArgb(192, 192, 192);
-
-      private static readonly Color greenEquivalent = Color.FromArgb(0, 255, 0);
-
-      private static readonly Color magentaEquivalent = Color.FromArgb(255, 0, 255);
-
-      private static readonly Color redEquivalent = Color.FromArgb(255, 0, 0);
-
-      private static readonly Color whiteEquivalent = Color.FromArgb(255, 255, 255);
 
       private static readonly string WRITE_TRAILER = "";
 
       private static readonly string WRITELINE_TRAILER = "\r\n";
 
-      private static readonly Color yellowEquivalent = Color.FromArgb(255, 255, 0);
-
-      private readonly ColorManager colorManager;
-
-      private readonly ColorManagerFactory colorManagerFactory;
-
-      private readonly ColorStore colorStore;
+      private readonly ConsoleColorManager colorManager;
 
       #endregion
 
@@ -80,31 +38,6 @@ namespace ConsoLovers.ConsoleToolkit.Console
          {
             writeAction(item.Target, item.Color);
          }
-      }
-
-      private ColorStore GetColorStore()
-      {
-         ConcurrentDictionary<Color, ConsoleColor> colorMap = new ConcurrentDictionary<Color, ConsoleColor>();
-         ConcurrentDictionary<ConsoleColor, Color> consoleColorMap = new ConcurrentDictionary<ConsoleColor, Color>();
-
-         consoleColorMap.TryAdd(ConsoleColor.Black, blackEquivalent);
-         consoleColorMap.TryAdd(ConsoleColor.Blue, blueEquivalent);
-         consoleColorMap.TryAdd(ConsoleColor.Cyan, cyanEquivalent);
-         consoleColorMap.TryAdd(ConsoleColor.DarkBlue, darkBlueEquivalent);
-         consoleColorMap.TryAdd(ConsoleColor.DarkCyan, darkCyanEquivalent);
-         consoleColorMap.TryAdd(ConsoleColor.DarkGray, darkGrayEquivalent);
-         consoleColorMap.TryAdd(ConsoleColor.DarkGreen, darkGreenEquivalent);
-         consoleColorMap.TryAdd(ConsoleColor.DarkMagenta, darkMagentaEquivalent);
-         consoleColorMap.TryAdd(ConsoleColor.DarkRed, darkRedEquivalent);
-         consoleColorMap.TryAdd(ConsoleColor.DarkYellow, darkYellowEquivalent);
-         consoleColorMap.TryAdd(ConsoleColor.Gray, grayEquivalent);
-         consoleColorMap.TryAdd(ConsoleColor.Green, greenEquivalent);
-         consoleColorMap.TryAdd(ConsoleColor.Magenta, magentaEquivalent);
-         consoleColorMap.TryAdd(ConsoleColor.Red, redEquivalent);
-         consoleColorMap.TryAdd(ConsoleColor.White, whiteEquivalent);
-         consoleColorMap.TryAdd(ConsoleColor.Yellow, yellowEquivalent);
-
-         return new ColorStore(colorMap, consoleColorMap);
       }
 
       private Figlet GetFiglet(FigletFont font = null)

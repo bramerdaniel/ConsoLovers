@@ -27,9 +27,7 @@ namespace ConsoLovers.ConsoleToolkit.Console
 
       private ColoredConsole()
       {
-         colorStore = GetColorStore();
-         colorManagerFactory = new ColorManagerFactory();
-         colorManager = colorManagerFactory.GetManager(colorStore, MAX_COLOR_CHANGES, INITIAL_COLOR_CHANGE_COUNT_VALUE);
+         colorManager = new ConsoleColorManager();
 
          Console.CancelKeyPress += OnConsoleCancelKeyPress;
       }

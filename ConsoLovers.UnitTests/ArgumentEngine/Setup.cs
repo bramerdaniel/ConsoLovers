@@ -34,9 +34,9 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
    }
    public class ArgumentEngineSetup
    {
-      public ArgumentEngine Done()
+      public CommandLineEngine Done()
       {
-         return new ArgumentEngine();
+         return new CommandLineEngine();
       }
    }
 }

@@ -33,7 +33,7 @@ public class InputConsoleBox
        ref SmallRect lpWriteRegion);
 
    [StructLayout(LayoutKind.Sequential)]
-   private struct Coord
+   public struct Coord
    {
       public short X;
       public short Y;
@@ -46,7 +46,7 @@ public class InputConsoleBox
    };
 
    [StructLayout(LayoutKind.Explicit)]
-   private struct CharUnion
+   public struct CharUnion
    {
       [FieldOffset(0)]
       public char UnicodeChar;
@@ -55,7 +55,7 @@ public class InputConsoleBox
    }
 
    [StructLayout(LayoutKind.Explicit)]
-   private struct CharInfo
+   public struct CharInfo
    {
       [FieldOffset(0)]
       public CharUnion Char;
@@ -71,7 +71,7 @@ public class InputConsoleBox
    }
 
    [StructLayout(LayoutKind.Sequential)]
-   private struct SmallRect
+   public struct SmallRect
    {
       public short Left;
       public short Top;

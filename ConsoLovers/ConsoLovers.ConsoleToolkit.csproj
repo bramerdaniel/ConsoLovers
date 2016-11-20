@@ -53,7 +53,7 @@
     <Compile Include="CommandLineArguments\CommandLineArgumentParser.cs" />
     <Compile Include="CommandLineArguments\CommandLineAttribute.cs" />
     <Compile Include="CommandLineArguments\CommandLineAttributeException.cs" />
-    <Compile Include="CommandLineArguments\ArgumentEngine.cs" />
+    <Compile Include="CommandLineArguments\CommandLineEngine.cs" />
     <Compile Include="CommandLineArguments\HelpTextAttribute.cs" />
     <Compile Include="CommandLineArguments\IArgumentMapper.cs" />
     <Compile Include="CommandLineArguments\MapperBase.cs" />
@@ -138,7 +138,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Icon.ico" />
-    <Content Include="Todo.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ConsoLovers.nuspec" />
