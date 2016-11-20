@@ -207,6 +207,7 @@ namespace MenuDemo
 
       static void Main(string[] args)
       {
+         Console.Title = "ConsoleMenuExplorer";
          // ConsoleWindow.HideMinimizeAndMaximizeButtons();
          ConsoleWindow.DisableMinimize();
          ConsoleWindow.DisableMaximize();
