@@ -68,6 +68,8 @@
     <Compile Include="Console\ColorMapper.cs" />
     <Compile Include="Console\ColorMappingException.cs" />
     <Compile Include="Console\ColorStore.cs" />
+    <Compile Include="Console\ConsoleColorEquivalents.cs" />
+    <Compile Include="Console\ConsoleColorManager.cs" />
     <Compile Include="Console\DefaultFonts.cs" />
     <Compile Include="Console\ExtensionMethods.cs" />
     <Compile Include="Console\Figlet.cs" />
@@ -75,6 +77,7 @@
     <Compile Include="Console\Formatter.cs" />
     <Compile Include="Console\FrequencyBasedColorAlternator.cs" />
     <Compile Include="Console\GradientGenerator.cs" />
+    <Compile Include="Console\IMappingAction.cs" />
     <Compile Include="Console\IPrototypable.cs" />
     <Compile Include="Console\MatchLocation.cs" />
     <Compile Include="Console\Pattern.cs" />
@@ -104,11 +107,14 @@
     <Compile Include="InputHandler\MOUSE_EVENT_RECORD.cs" />
     <Compile Include="InputHandler\WINDOW_BUFFER_SIZE_RECORD.cs" />
     <Compile Include="InputMask.cs" />
+    <Compile Include="Menu\ColoredConsoleMenu.cs" />
     <Compile Include="Menu\ConsoleInputEventArgs.cs" />
-    <Compile Include="Menu\ConsoleMenuInputHandler.cs" />
     <Compile Include="Menu\ConsoleMenu.cs" />
+    <Compile Include="Menu\ConsoleMenuBase.cs" />
+    <Compile Include="Menu\ConsoleMenuInputHandler.cs" />
     <Compile Include="ConsoleMenuBuilder.cs" />
     <Compile Include="Menu\ConsoleMenuItem.cs" />
+    <Compile Include="Menu\ConsoleMenuSeperator.cs" />
     <Compile Include="Menu\ConsoleMenuThemes.cs" />
     <Compile Include="Menu\ElementInfo.cs" />
     <Compile Include="Menu\ExceptionEventArgs.cs" />

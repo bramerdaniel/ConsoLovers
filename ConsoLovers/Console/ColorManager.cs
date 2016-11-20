@@ -53,7 +53,7 @@ namespace ConsoLovers.ConsoleToolkit.Console
       /// <returns>The corresponding System.Drawing.Color.</returns>
       public Color GetColor(ConsoleColor color)
       {
-         return colorStore.ConsoleColors[color];
+         return colorStore[color];
       }
 
       /// <summary>Gets the ConsoleColor mapped to the System.Drawing.Color provided as an argument.</summary>
@@ -84,22 +84,20 @@ namespace ConsoLovers.ConsoleToolkit.Console
       {
          if (!CanChangeColor())
          {
-            return colorStore.Colors.Last().Value;
+            return colorStore.LastConsoleColor();
          }
-         else
+
+         if (!colorStore.ContainsColor(color))
          {
-            if (colorStore.RequiresUpdate(color))
-            {
-               ConsoleColor oldColor = (ConsoleColor)colorChangeCount;
+            ConsoleColor oldColor = (ConsoleColor)colorChangeCount;
 
-               colorMapper.MapColor(oldColor, color);
-               colorStore.Update(color, oldColor);
+            colorMapper.MapColor(oldColor, color);
+            colorStore.Update(color, oldColor);
 
-               colorChangeCount++;
-            }
-
-            return colorStore.Colors[color];
+            colorChangeCount++;
          }
+
+         return colorStore[color];
       }
 
       #endregion

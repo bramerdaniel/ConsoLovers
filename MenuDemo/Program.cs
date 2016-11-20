@@ -37,7 +37,7 @@ namespace MenuDemo
 
       private static void ChangeMenu()
       {
-         var menu = new ConsoleMenu { Header = "This is a sub menu", Selector = ">>" };
+         var menu = new ColoredConsoleMenu{ Header = "This is a sub menu", Selector = ">>" , Theme = ConsoleMenuThemes.Bahama};
          menu.Add(new ConsoleMenuItem("Go home", ShowProgress));
          menu.Add(new ConsoleMenuItem("Go to bed", InsertName));
          menu.Add(new ConsoleMenuItem("Back to main menu", x => menu.Close()));
@@ -64,7 +64,7 @@ namespace MenuDemo
          userName = null;
       }
 
-      private static ConsoleMenuItem CreateCircularSelectionMenu(ConsoleMenu menu)
+      private static ConsoleMenuItem CreateCircularSelectionMenu(ColoredConsoleMenu menu)
       {
          return new ConsoleMenuItem(
             $"CircularSelection = {menu.CircularSelection}",
@@ -75,7 +75,7 @@ namespace MenuDemo
             });
       }
 
-      private static ConsoleMenuItem CreateMouseSelectionMenu(ConsoleMenu menu)
+      private static ConsoleMenuItem CreateMouseSelectionMenu(ColoredConsoleMenu menu)
       {
          return new ConsoleMenuItem("Mouse mode",
             new ConsoleMenuItem("Disabled", x => x.Menu.MouseMode = MouseMode.Disabled),
@@ -109,11 +109,11 @@ namespace MenuDemo
          crazyTheme.HeaderForeground = Color.Black;
          crazyTheme.HeaderBackground = Color.Yellow;
 
-         var chooseDefaultTheme = new ConsoleMenuItem("Default", m => m.Menu.Theme = new MenuColorTheme());
-         var chooseBlueTheme = new ConsoleMenuItem("Blue", m => m.Menu.Theme = ConsoleMenuThemes.Blue);
-         var chooseRedTheme = new ConsoleMenuItem("Red", m => m.Menu.Theme = ConsoleMenuThemes.Red);
-         var choosePinkTheme = new ConsoleMenuItem("Pink", m => m.Menu.Theme = ConsoleMenuThemes.Pink);
-         var chooseCrazyTheme = new ConsoleMenuItem("Crazy", m => m.Menu.Theme = crazyTheme);
+         var chooseDefaultTheme = new ConsoleMenuItem("Default", m => ((ColoredConsoleMenu)m.Menu).Theme = new MenuColorTheme());
+         var chooseBlueTheme = new ConsoleMenuItem("Blue", m => ((ColoredConsoleMenu)m.Menu).Theme = ConsoleMenuThemes.Blue);
+         var chooseRedTheme = new ConsoleMenuItem("Red", m => ((ColoredConsoleMenu)m.Menu).Theme = ConsoleMenuThemes.Red);
+         var choosePinkTheme = new ConsoleMenuItem("Pink", m => ((ColoredConsoleMenu)m.Menu).Theme = ConsoleMenuThemes.Pink);
+         var chooseCrazyTheme = new ConsoleMenuItem("Crazy", m => ((ColoredConsoleMenu)m.Menu).Theme = crazyTheme);
          return new ConsoleMenuItem(
             "Choose color theme",
             chooseBlueTheme,
@@ -122,7 +122,7 @@ namespace MenuDemo
             new ConsoleMenuSeperator(),
             chooseCrazyTheme,
             chooseDefaultTheme,
-            new ConsoleMenuItem("Bahama", m => m.Menu.Theme = ConsoleMenuThemes.Bahama),
+            new ConsoleMenuItem("Bahama", m => ((ColoredConsoleMenu)m.Menu).Theme = ConsoleMenuThemes.Bahama),
             new ConsoleMenuItem("CloseOptions", new ConsoleMenuItem("Exit application but use a long long name", x => Environment.Exit(0))),
             new ConsoleMenuItem("A disabled menu item using a long name"));
       }
@@ -136,7 +136,7 @@ namespace MenuDemo
             new ConsoleMenuItem("FullLine", x => x.Menu.SelectionStrech = SelectionStrech.FullLine));
       }
 
-      private static ConsoleMenuItem CreateSelectorMenu(ConsoleMenu menu)
+      private static ConsoleMenuItem CreateSelectorMenu(ColoredConsoleMenu menu)
       {
          return new ConsoleMenuItem(
             "Change selector",
@@ -154,7 +154,7 @@ namespace MenuDemo
                }));
       }
 
-      private static ConsoleMenuItem CreateExecuteOnIndexSelectionMenu(ConsoleMenu menu)
+      private static ConsoleMenuItem CreateExecuteOnIndexSelectionMenu(ColoredConsoleMenu menu)
       {
          return new ConsoleMenuItem(
             $"ExecuteOnIndexSelection = {menu.ExecuteOnIndexSelection}",
@@ -181,7 +181,7 @@ namespace MenuDemo
          throw new InvalidOperationException("Some invalid operartion was performed");
       }
 
-      private static void HandleCrash(ConsoleMenu menu)
+      private static void HandleCrash(ColoredConsoleMenu menu)
       {
          menu.ExecutionError += OnError;
       }
@@ -227,7 +227,7 @@ namespace MenuDemo
 
 
 
-         var menu = new ConsoleMenu { Header = header, Footer = footer, CircularSelection = false, Selector = "» ", Theme = ConsoleMenuThemes.Bahama };
+         var menu = new ColoredConsoleMenu { Header = header, Footer = footer, CircularSelection = false, Selector = "» " };
 
          menu.SelectionStrech = SelectionStrech.UnifiedLength;
          // menu.Expander = new ExpanderDescription { Collapsed = "►", Expanded = "▼" };

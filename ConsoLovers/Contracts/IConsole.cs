@@ -8,6 +8,8 @@ namespace ConsoLovers.ConsoleToolkit.Contracts
       ConsoleKeyInfo ReadKey();
 
       void Clear();
+
+      void Clear(ConsoleColor color);
       
       int CursorLeft { get; set; }
 
@@ -15,9 +17,9 @@ namespace ConsoLovers.ConsoleToolkit.Contracts
 
       int CursorTop { get; set; }
 
-      Color ForegroundColor { get; set; }
+      ConsoleColor ForegroundColor { get; set; }
 
-      Color BackgroundColor { get; set; }
+      ConsoleColor BackgroundColor { get; set; }
 
       void WriteLine();
 

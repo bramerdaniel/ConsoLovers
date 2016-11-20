@@ -27,7 +27,7 @@ namespace ConsoleMouseSample
          listener.Start();
          listener.Wait();
 
-         //var menu = new ConsoleMenu { Header = "Mouse demo", CircularSelection = false, Selector = "» ", Theme = ConsoleMenuThemes.Bahama };
+         //var menu = new ColoredConsoleMenu { Header = "Mouse demo", CircularSelection = false, Selector = "» ", Theme = ConsoleMenuThemes.Bahama };
 
          //menu.SelectionStrech = SelectionStrech.UnifiedLength;
          //menu.Add(new ConsoleMenuItem("Disabled without command"));

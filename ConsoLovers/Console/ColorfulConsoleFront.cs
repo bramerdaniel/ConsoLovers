@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="ColorfulConsoleFront.cs" company="ConsoLovers">
-//   Copyright (c) ConsoLovers  2015 - 2016
+//    Copyright (c) ConsoLovers  2015 - 2016
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -51,20 +51,217 @@ namespace ConsoLovers.ConsoleToolkit.Console
          Console.ResetColor();
       }
 
+      public void WriteLine(bool value)
+      {
+         Console.WriteLine(value);
+      }
+
+      public void WriteLine(bool value, Color color)
+      {
+         WriteInColor(Console.WriteLine, value, color);
+      }
+
+      public void WriteLine(char value)
+      {
+         Console.WriteLine(value);
+      }
+
+      public void WriteLine(char value, Color color)
+      {
+         WriteInColor(Console.WriteLine, value, color);
+      }
+
+      public void WriteLine(char[] value)
+      {
+         Console.WriteLine(value);
+      }
+
+      public void WriteLine(char[] value, Color color)
+      {
+         WriteInColor(Console.WriteLine, value, color);
+      }
+
+      public void WriteLine(decimal value)
+      {
+         Console.WriteLine(value);
+      }
+
+      public void WriteLine(decimal value, Color color)
+      {
+         WriteInColor(Console.WriteLine, value, color);
+      }
+
+      public void WriteLine(double value)
+      {
+         Console.WriteLine(value);
+      }
+
+      public void WriteLine(double value, Color color)
+      {
+         WriteInColor(Console.WriteLine, value, color);
+      }
+
+      public void WriteLine(float value)
+      {
+         Console.WriteLine(value);
+      }
+
+      public void WriteLine(float value, Color color)
+      {
+         WriteInColor(Console.WriteLine, value, color);
+      }
+
+      public void WriteLine(int value)
+      {
+         Console.WriteLine(value);
+      }
+
+      public void WriteLine(int value, Color color)
+      {
+         WriteInColor(Console.WriteLine, value, color);
+      }
+
+      public void WriteLine(long value)
+      {
+         Console.WriteLine(value);
+      }
+
+      public void WriteLine(long value, Color color)
+      {
+         WriteInColor(Console.WriteLine, value, color);
+      }
+
+      public void WriteLine(object value)
+      {
+         Console.WriteLine(value);
+      }
+
+      public void WriteLine(object value, Color color)
+      {
+         WriteInColor(Console.WriteLine, value, color);
+      }
+
+      public void WriteLine(string value, Color color)
+      {
+         WriteInColor(Console.WriteLine, value, color);
+      }
+
+      public void WriteLine(uint value)
+      {
+         Console.WriteLine(value);
+      }
+
+      public void WriteLine(uint value, Color color)
+      {
+         WriteInColor(Console.WriteLine, value, color);
+      }
+
+      public void WriteLine(ulong value)
+      {
+         Console.WriteLine(value);
+      }
+
+      public void WriteLine(ulong value, Color color)
+      {
+         WriteInColor(Console.WriteLine, value, color);
+      }
+
+      public void WriteLine(string format, object arg0)
+      {
+         Console.WriteLine(format, arg0);
+      }
+
+      public void WriteLine(string format, object arg0, Color color)
+      {
+         WriteInColor(Console.WriteLine, format, arg0, color);
+      }
+
+      public void WriteLine(string format, params object[] args)
+      {
+         Console.WriteLine(format, args);
+      }
+
+      public void WriteLine(string format, Color color, params object[] args)
+      {
+         WriteInColor(Console.WriteLine, format, args, color);
+      }
+
+      public void WriteLine(char[] buffer, int index, int count)
+      {
+         Console.WriteLine(buffer, index, count);
+      }
+
+      public void WriteLine(char[] buffer, int index, int count, Color color)
+      {
+         WriteChunkInColor(Console.WriteLine, buffer, index, count, color);
+      }
+
+      public void WriteLine(string format, object arg0, object arg1)
+      {
+         Console.WriteLine(format, arg0, arg1);
+      }
+
+      public void WriteLine(string format, object arg0, object arg1, Color color)
+      {
+         WriteInColor(Console.WriteLine, format, arg0, arg1, color);
+      }
+
+      public void WriteLine(string format, object arg0, object arg1, object arg2)
+      {
+         Console.WriteLine(format, arg0, arg1, arg2);
+      }
+
+      public void WriteLine(string format, object arg0, object arg1, object arg2, Color color)
+      {
+         WriteInColor(Console.WriteLine, format, arg0, arg1, arg2, color);
+      }
+
+      public void WriteLine(string format, object arg0, object arg1, object arg2, object arg3)
+      {
+         Console.WriteLine(format, arg0, arg1, arg2, arg3);
+      }
+
+      public void WriteLine(string format, object arg0, object arg1, object arg2, object arg3, Color color)
+      {
+         // NOTE: The Intellisense for this overload of System.ColoredConsole.WriteLine is misleading, as the C# compiler
+         //       actually resolves this overload to System.ColoredConsole.WriteLine(string format, object[] args)!
+
+         WriteInColor(Console.WriteLine, format, new[] { arg0, arg1, arg2, arg3 }, color);
+      }
+
       #endregion
 
       #region IConsole Members
 
-      public Color BackgroundColor
+      ConsoleColor IConsole.ForegroundColor
       {
          get
          {
-            return colorManager.GetColor(Console.BackgroundColor);
+            return Console.ForegroundColor;
          }
          set
          {
-            Console.BackgroundColor = colorManager.GetConsoleColor(value);
+            Console.ForegroundColor = value;
          }
+      }
+
+      ConsoleColor IConsole.BackgroundColor
+      {
+         get
+         {
+            return Console.BackgroundColor;
+         }
+         set
+         {
+            Console.BackgroundColor = value;
+         }
+      }
+
+      public void Clear(ConsoleColor color)
+      {
+         Console.BackgroundColor = color;
+         Console.Clear();
+         Console.ResetColor();
       }
 
       public int CursorLeft
@@ -88,18 +285,6 @@ namespace ConsoLovers.ConsoleToolkit.Console
          set
          {
             Console.CursorTop = value;
-         }
-      }
-
-      public Color ForegroundColor
-      {
-         get
-         {
-            return colorManager.GetColor(Console.ForegroundColor);
-         }
-         set
-         {
-            Console.ForegroundColor = colorManager.GetConsoleColor(value);
          }
       }
 
@@ -156,6 +341,18 @@ namespace ConsoLovers.ConsoleToolkit.Console
 
       public static IColoredConsole Instance => instance ?? (instance = new ColoredConsole());
 
+      public Color BackgroundColor
+      {
+         get
+         {
+            return colorManager.GetColor(Console.BackgroundColor);
+         }
+         set
+         {
+            Console.BackgroundColor = colorManager.GetConsoleColor(value);
+         }
+      }
+
       public int BufferHeight
       {
          get
@@ -207,6 +404,18 @@ namespace ConsoLovers.ConsoleToolkit.Console
       }
 
       public TextWriter Error => Console.Error;
+
+      public Color ForegroundColor
+      {
+         get
+         {
+            return colorManager.GetColor(Console.ForegroundColor);
+         }
+         set
+         {
+            Console.ForegroundColor = colorManager.GetConsoleColor(value);
+         }
+      }
 
       public TextReader In => Console.In;
 
@@ -325,8 +534,8 @@ namespace ConsoLovers.ConsoleToolkit.Console
       }
 
       public void MoveBufferArea
-         (int sourceLeft, int sourceTop, int sourceWidth, int sourceHeight, int targetLeft, int targetTop, char sourceChar, ConsoleColor sourceForeColor,
-            ConsoleColor sourceBackColor)
+      (int sourceLeft, int sourceTop, int sourceWidth, int sourceHeight, int targetLeft, int targetTop, char sourceChar, ConsoleColor sourceForeColor,
+         ConsoleColor sourceBackColor)
       {
          Console.MoveBufferArea(sourceLeft, sourceTop, sourceWidth, sourceHeight, targetLeft, targetTop, sourceChar, sourceForeColor, sourceBackColor);
       }
@@ -771,184 +980,6 @@ namespace ConsoLovers.ConsoleToolkit.Console
       public void WriteFormatted(string format, Formatter arg0, Formatter arg1, Formatter arg2, Formatter arg3, Color defaultColor)
       {
          WriteInColorFormatted(WRITE_TRAILER, format, new[] { arg0, arg1, arg2, arg3 }, defaultColor);
-      }
-
-      public void WriteLine(bool value)
-      {
-         Console.WriteLine(value);
-      }
-
-      public void WriteLine(bool value, Color color)
-      {
-         WriteInColor(Console.WriteLine, value, color);
-      }
-
-      public void WriteLine(char value)
-      {
-         Console.WriteLine(value);
-      }
-
-      public void WriteLine(char value, Color color)
-      {
-         WriteInColor(Console.WriteLine, value, color);
-      }
-
-      public void WriteLine(char[] value)
-      {
-         Console.WriteLine(value);
-      }
-
-      public void WriteLine(char[] value, Color color)
-      {
-         WriteInColor(Console.WriteLine, value, color);
-      }
-
-      public void WriteLine(decimal value)
-      {
-         Console.WriteLine(value);
-      }
-
-      public void WriteLine(decimal value, Color color)
-      {
-         WriteInColor(Console.WriteLine, value, color);
-      }
-
-      public void WriteLine(double value)
-      {
-         Console.WriteLine(value);
-      }
-
-      public void WriteLine(double value, Color color)
-      {
-         WriteInColor(Console.WriteLine, value, color);
-      }
-
-      public void WriteLine(float value)
-      {
-         Console.WriteLine(value);
-      }
-
-      public void WriteLine(float value, Color color)
-      {
-         WriteInColor(Console.WriteLine, value, color);
-      }
-
-      public void WriteLine(int value)
-      {
-         Console.WriteLine(value);
-      }
-
-      public void WriteLine(int value, Color color)
-      {
-         WriteInColor(Console.WriteLine, value, color);
-      }
-
-      public void WriteLine(long value)
-      {
-         Console.WriteLine(value);
-      }
-
-      public void WriteLine(long value, Color color)
-      {
-         WriteInColor(Console.WriteLine, value, color);
-      }
-
-      public void WriteLine(object value)
-      {
-         Console.WriteLine(value);
-      }
-
-      public void WriteLine(object value, Color color)
-      {
-         WriteInColor(Console.WriteLine, value, color);
-      }
-
-      public void WriteLine(string value, Color color)
-      {
-         WriteInColor(Console.WriteLine, value, color);
-      }
-
-      public void WriteLine(uint value)
-      {
-         Console.WriteLine(value);
-      }
-
-      public void WriteLine(uint value, Color color)
-      {
-         WriteInColor(Console.WriteLine, value, color);
-      }
-
-      public void WriteLine(ulong value)
-      {
-         Console.WriteLine(value);
-      }
-
-      public void WriteLine(ulong value, Color color)
-      {
-         WriteInColor(Console.WriteLine, value, color);
-      }
-
-      public void WriteLine(string format, object arg0)
-      {
-         Console.WriteLine(format, arg0);
-      }
-
-      public void WriteLine(string format, object arg0, Color color)
-      {
-         WriteInColor(Console.WriteLine, format, arg0, color);
-      }
-
-      public void WriteLine(string format, params object[] args)
-      {
-         Console.WriteLine(format, args);
-      }
-
-      public void WriteLine(string format, Color color, params object[] args)
-      {
-         WriteInColor(Console.WriteLine, format, args, color);
-      }
-
-      public void WriteLine(char[] buffer, int index, int count)
-      {
-         Console.WriteLine(buffer, index, count);
-      }
-
-      public void WriteLine(char[] buffer, int index, int count, Color color)
-      {
-         WriteChunkInColor(Console.WriteLine, buffer, index, count, color);
-      }
-
-      public void WriteLine(string format, object arg0, object arg1)
-      {
-         Console.WriteLine(format, arg0, arg1);
-      }
-
-      public void WriteLine(string format, object arg0, object arg1, Color color)
-      {
-         WriteInColor(Console.WriteLine, format, arg0, arg1, color);
-      }
-
-      public void WriteLine(string format, object arg0, object arg1, object arg2)
-      {
-         Console.WriteLine(format, arg0, arg1, arg2);
-      }
-
-      public void WriteLine(string format, object arg0, object arg1, object arg2, Color color)
-      {
-         WriteInColor(Console.WriteLine, format, arg0, arg1, arg2, color);
-      }
-
-      public void WriteLine(string format, object arg0, object arg1, object arg2, object arg3)
-      {
-         Console.WriteLine(format, arg0, arg1, arg2, arg3);
-      }
-
-      public void WriteLine(string format, object arg0, object arg1, object arg2, object arg3, Color color)
-      {
-         // NOTE: The Intellisense for this overload of System.ColoredConsole.WriteLine is misleading, as the C# compiler
-         //       actually resolves this overload to System.ColoredConsole.WriteLine(string format, object[] args)!
-
-         WriteInColor(Console.WriteLine, format, new[] { arg0, arg1, arg2, arg3 }, color);
       }
 
       public void WriteLineAlternating(ColorAlternator alternator)
