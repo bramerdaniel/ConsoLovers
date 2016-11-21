@@ -60,6 +60,7 @@
     <Compile Include="CommandLineArguments\MissingCommandLineArgumentException.cs" />
     <Compile Include="CommandLineArguments\OptionAttribute.cs" />
     <Compile Include="ConsoleApplication.cs" />
+    <Compile Include="ConsoleMessageBox.cs" />
     <Compile Include="Console\ColorAlternator.cs" />
     <Compile Include="Console\ColorExtensions.cs" />
     <Compile Include="Console\ColorfulConsoleBack.cs" />
