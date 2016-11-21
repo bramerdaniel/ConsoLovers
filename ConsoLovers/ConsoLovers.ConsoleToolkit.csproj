@@ -59,6 +59,7 @@
     <Compile Include="CommandLineArguments\MapperBase.cs" />
     <Compile Include="CommandLineArguments\MissingCommandLineArgumentException.cs" />
     <Compile Include="CommandLineArguments\OptionAttribute.cs" />
+    <Compile Include="ConsoleApplication.cs" />
     <Compile Include="Console\ColorAlternator.cs" />
     <Compile Include="Console\ColorExtensions.cs" />
     <Compile Include="Console\ColorfulConsoleBack.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="Console\TextPattern.cs" />
     <Compile Include="Console\TextPatternCollection.cs" />
     <Compile Include="ICanShowMenu.cs" />
+    <Compile Include="IInputBox.cs" />
     <Compile Include="IInputMask.cs" />
     <Compile Include="InputHandler\ButtonStates.cs" />
     <Compile Include="InputHandler\ConsoleInputHandler.cs" />
@@ -106,6 +108,7 @@
     <Compile Include="InputHandler\MouseEventArgs.cs" />
     <Compile Include="InputHandler\MOUSE_EVENT_RECORD.cs" />
     <Compile Include="InputHandler\WINDOW_BUFFER_SIZE_RECORD.cs" />
+    <Compile Include="InputBox.cs" />
     <Compile Include="InputMask.cs" />
     <Compile Include="Menu\ColoredConsoleMenu.cs" />
     <Compile Include="Menu\ConsoleInputEventArgs.cs" />

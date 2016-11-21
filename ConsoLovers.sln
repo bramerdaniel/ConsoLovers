@@ -17,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DemoApplications", "DemoApp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InputMaskDemo", "DemoApplications\InputMaskDemo\InputMaskDemo.csproj", "{E9093FDB-BB21-4CD9-8A40-0C263366BB6E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InputBoxDemo", "InputBoxDemo\InputBoxDemo.csproj", "{58701FB8-1CFA-408B-9673-7C459EE1CED3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,10 @@ Global
 		{E9093FDB-BB21-4CD9-8A40-0C263366BB6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E9093FDB-BB21-4CD9-8A40-0C263366BB6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E9093FDB-BB21-4CD9-8A40-0C263366BB6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58701FB8-1CFA-408B-9673-7C459EE1CED3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58701FB8-1CFA-408B-9673-7C459EE1CED3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58701FB8-1CFA-408B-9673-7C459EE1CED3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58701FB8-1CFA-408B-9673-7C459EE1CED3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -54,5 +60,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{E3B5C7F4-39BA-44DE-8124-43CECC4DA671} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
 		{E9093FDB-BB21-4CD9-8A40-0C263366BB6E} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
+		{58701FB8-1CFA-408B-9673-7C459EE1CED3} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
 	EndGlobalSection
 EndGlobal

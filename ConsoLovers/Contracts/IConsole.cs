@@ -32,11 +32,17 @@ namespace ConsoLovers.ConsoleToolkit.Contracts
 
       ConsoleKeyInfo ReadKey();
 
+      ConsoleKeyInfo ReadKey(bool intercept);
+
+      string ReadLine();
+
       void ResetColor();
 
       void SetCursorPosition(int left, int top);
 
       void Write(string value);
+
+      void Write(char value);
 
       void WriteLine();
 
