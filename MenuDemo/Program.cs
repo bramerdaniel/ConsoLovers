@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="Program.cs" company="ConsoLovers">
-//   Copyright (c) ConsoLovers  2015 - 2016
+//    Copyright (c) ConsoLovers  2015 - 2016
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -12,7 +12,6 @@ namespace MenuDemo
    using System.Reflection;
    using System.Threading;
 
-   using ConsoLovers.ConsoleToolkit.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Console;
    using ConsoLovers.ConsoleToolkit.Contracts;
    using ConsoLovers.ConsoleToolkit.Menu;
@@ -35,15 +34,15 @@ namespace MenuDemo
          return userName != null;
       }
 
-      private static void ChangeMenu()
+      private static void ColorSimulation(ConsoleMenuItem obj)
       {
-         var menu = new ColoredConsoleMenu{ Header = "This is a sub menu", Selector = ">>" , Theme = ConsoleMenuThemes.Bahama};
-         menu.Add(new ConsoleMenuItem("Go home", ShowProgress));
-         menu.Add(new ConsoleMenuItem("Go to bed", InsertName));
-         menu.Add(new ConsoleMenuItem("Back to main menu", x => menu.Close()));
-         menu.Theme.MenuItem.SelectedForeground = Color.Green;
-         menu.Theme.MenuItem.SelectedBackground = Color.Red;
-         menu.Show();
+         foreach (PropertyInfo property in typeof(Color).GetProperties(BindingFlags.Static | BindingFlags.Public))
+            if (property.PropertyType == typeof(Color))
+            {
+               var value = (Color)property.GetValue(null);
+               ColoredConsole.Instance.WriteLine(property.Name, value);
+               Thread.Sleep(1000);
+            }
       }
 
       private static void ConnectToServer(ConsoleMenuItem sender)
@@ -64,7 +63,7 @@ namespace MenuDemo
          userName = null;
       }
 
-      private static ConsoleMenuItem CreateCircularSelectionMenu(ColoredConsoleMenu menu)
+      private static ConsoleMenuItem CreateCircularSelectionMenu(ConsoleMenuBase menu)
       {
          return new ConsoleMenuItem(
             $"CircularSelection = {menu.CircularSelection}",
@@ -73,14 +72,6 @@ namespace MenuDemo
                x.Menu.CircularSelection = !x.Menu.CircularSelection;
                x.Text = $"CircularSelection = {x.Menu.CircularSelection}";
             });
-      }
-
-      private static ConsoleMenuItem CreateMouseSelectionMenu(ColoredConsoleMenu menu)
-      {
-         return new ConsoleMenuItem("Mouse mode",
-            new ConsoleMenuItem("Disabled", x => x.Menu.MouseMode = MouseMode.Disabled),
-            new ConsoleMenuItem("Select", x => x.Menu.MouseMode = MouseMode.Select),
-            new ConsoleMenuItem("Hover", x => x.Menu.MouseMode = MouseMode.Hover));
       }
 
       private static ConsoleMenuItem CreateClearOnExecutionMenu(bool initialValue)
@@ -127,34 +118,7 @@ namespace MenuDemo
             new ConsoleMenuItem("A disabled menu item using a long name"));
       }
 
-      private static ConsoleMenuItem CreateSelectionStrechMenu()
-      {
-         return new ConsoleMenuItem(
-            "Change selection strech",
-            new ConsoleMenuItem("Disabled", x => x.Menu.SelectionStrech = SelectionStrech.None),
-            new ConsoleMenuItem("UnifiedLength", x => x.Menu.SelectionStrech = SelectionStrech.UnifiedLength),
-            new ConsoleMenuItem("FullLine", x => x.Menu.SelectionStrech = SelectionStrech.FullLine));
-      }
-
-      private static ConsoleMenuItem CreateSelectorMenu(ColoredConsoleMenu menu)
-      {
-         return new ConsoleMenuItem(
-            "Change selector",
-            new ConsoleMenuItem("Disabled", x => x.Menu.Selector = string.Empty),
-            new ConsoleMenuItem("Arrow ( => )", x => x.Menu.Selector = "=>"),
-            new ConsoleMenuItem("Star ( * )", x => x.Menu.Selector = "*"),
-            new ConsoleMenuItem("Big Double ( >> )", x => x.Menu.Selector = ">>"),
-            new ConsoleMenuItem("Small Double ( » )", x => x.Menu.Selector = "»"),
-            new ConsoleMenuItem(
-               "Enter custom selector",
-               x =>
-               {
-                  Console.WriteLine("Enter selector");
-                  menu.Selector = Console.ReadLine();
-               }));
-      }
-
-      private static ConsoleMenuItem CreateExecuteOnIndexSelectionMenu(ColoredConsoleMenu menu)
+      private static ConsoleMenuItem CreateExecuteOnIndexSelectionMenu(ConsoleMenuBase menu)
       {
          return new ConsoleMenuItem(
             $"ExecuteOnIndexSelection = {menu.ExecuteOnIndexSelection}",
@@ -176,12 +140,48 @@ namespace MenuDemo
             });
       }
 
+      private static ConsoleMenuItem CreateMouseSelectionMenu()
+      {
+         return new ConsoleMenuItem(
+            "Mouse mode",
+            new ConsoleMenuItem("Disabled", x => x.Menu.MouseMode = MouseMode.Disabled),
+            new ConsoleMenuItem("Select", x => x.Menu.MouseMode = MouseMode.Select),
+            new ConsoleMenuItem("Hover", x => x.Menu.MouseMode = MouseMode.Hover));
+      }
+
+      private static ConsoleMenuItem CreateSelectionStrechMenu()
+      {
+         return new ConsoleMenuItem(
+            "Change selection strech",
+            new ConsoleMenuItem("Disabled", x => x.Menu.SelectionStrech = SelectionStrech.None),
+            new ConsoleMenuItem("UnifiedLength", x => x.Menu.SelectionStrech = SelectionStrech.UnifiedLength),
+            new ConsoleMenuItem("FullLine", x => x.Menu.SelectionStrech = SelectionStrech.FullLine));
+      }
+
+      private static ConsoleMenuItem CreateSelectorMenu(ConsoleMenuBase menu)
+      {
+         return new ConsoleMenuItem(
+            "Change selector",
+            new ConsoleMenuItem("Disabled", x => x.Menu.Selector = string.Empty),
+            new ConsoleMenuItem("Arrow ( => )", x => x.Menu.Selector = "=>"),
+            new ConsoleMenuItem("Star ( * )", x => x.Menu.Selector = "*"),
+            new ConsoleMenuItem("Big Double ( >> )", x => x.Menu.Selector = ">>"),
+            new ConsoleMenuItem("Small Double ( » )", x => x.Menu.Selector = "»"),
+            new ConsoleMenuItem(
+               "Enter custom selector",
+               x =>
+               {
+                  Console.WriteLine("Enter selector");
+                  menu.Selector = Console.ReadLine();
+               }));
+      }
+
       private static void DoCrash(ConsoleMenuItem sender)
       {
          throw new InvalidOperationException("Some invalid operartion was performed");
       }
 
-      private static void HandleCrash(ColoredConsoleMenu menu)
+      private static void HandleCrash(ConsoleMenuBase menu)
       {
          menu.ExecutionError += OnError;
       }
@@ -212,7 +212,6 @@ namespace MenuDemo
          ConsoleWindow.DisableMinimize();
          ConsoleWindow.DisableMaximize();
 
-
          ////ShowArgs(args);
          ////ShowArgs(new CommandLineArgumentParser().NormalizeArguments(args));
 
@@ -226,8 +225,6 @@ namespace MenuDemo
 
          var footer = Environment.NewLine + "THIS COULD BE YOUR FOOTER";
 
-
-
          var menu = new ColoredConsoleMenu { Header = header, Footer = footer, CircularSelection = false, Selector = "» " };
 
          menu.SelectionStrech = SelectionStrech.UnifiedLength;
@@ -235,7 +232,7 @@ namespace MenuDemo
          menu.Add(CreateColorMenu());
          menu.Add(CreateSelectionStrechMenu());
          menu.Add(CreateCircularSelectionMenu(menu));
-         menu.Add(CreateMouseSelectionMenu(menu));
+         menu.Add(CreateMouseSelectionMenu());
          menu.Add(CreateIndexMenuItemsMenu(menu.IndexMenuItems));
          menu.Add(CreateClearOnExecutionMenu(menu.ClearOnExecution));
          menu.Add(new ConsoleMenuSeperator());
@@ -260,29 +257,6 @@ namespace MenuDemo
          menu.Add(new ConsoleMenuItem("Close menu", x => menu.Close()));
          menu.Add(new ConsoleMenuItem("Exit", x => Environment.Exit(0)));
          menu.Show();
-      }
-
-      private static void ColorSimulation(ConsoleMenuItem obj)
-      {
-         foreach (PropertyInfo property in typeof(Color).GetProperties(BindingFlags.Static | BindingFlags.Public))
-            if (property.PropertyType == typeof(Color))
-            {
-               var value = (Color)property.GetValue(null);
-               ColoredConsole.Instance.WriteLine(property.Name, value);
-               Thread.Sleep(1000);
-            }
-
-      }
-
-      private static void ShowArgs(IEnumerable<string> args)
-      {
-         Console.WriteLine("Arguments:");
-         foreach (var arg in args)
-         {
-            Console.WriteLine("   {0}", arg);
-         }
-
-         Console.ReadLine();
       }
 
       private static void OnError(object sender, ExceptionEventArgs e)

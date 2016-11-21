@@ -422,9 +422,9 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       protected abstract ConsoleColor GetMouseOverForeground();
 
-      protected abstract ConsoleColor GetSelectorBackground(bool isSelected, bool disabled);
+      protected abstract ConsoleColor GetSelectorBackground(bool isSelected, bool disabled, bool mouseOver);
 
-      protected abstract ConsoleColor GetSelectorForeground(bool isSelected, bool disabled);
+      protected abstract ConsoleColor GetSelectorForeground(bool isSelected, bool disabled, bool mouseOver);
 
       private static string DisabledHint(ConsoleMenuItem menuItem)
       {
@@ -799,8 +799,8 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       private void PrintSelector(ElementInfo element)
       {
-         var foreground = element.IsMouseOver ? GetMouseOverForeground() : GetSelectorForeground(element.IsSelected, element.Disabled);
-         var background = element.IsMouseOver ? GetMouseOverBackground() : GetSelectorBackground(element.IsSelected, element.Disabled);
+         var foreground =  GetSelectorForeground(element.IsSelected, element.Disabled, element.IsMouseOver);
+         var background =  GetSelectorBackground(element.IsSelected, element.Disabled, element.IsMouseOver);
 
          if (element.IsSelected)
          {

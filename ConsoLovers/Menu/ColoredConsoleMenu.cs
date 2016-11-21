@@ -136,12 +136,12 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          return colorManager.GetConsoleColor(Theme.MouseOverForeground);
       }
 
-      protected override ConsoleColor GetSelectorBackground(bool isSelected, bool disabled)
+      protected override ConsoleColor GetSelectorBackground(bool isSelected, bool disabled, bool mouseOver)
       {
          return colorManager.GetConsoleColor(Theme.Selector.GetBackground(isSelected, disabled));
       }
 
-      protected override ConsoleColor GetSelectorForeground(bool isSelected, bool disabled)
+      protected override ConsoleColor GetSelectorForeground(bool isSelected, bool disabled, bool mouseOver)
       {
          return colorManager.GetConsoleColor(Theme.Selector.GetForeground(isSelected, disabled));
       }

@@ -12,7 +12,9 @@ namespace ConsoLovers.ConsoleToolkit.Menu
    {
       #region Constants and Fields
 
-      ConsoleColor background = ConsoleColor.Black;
+      ConsoleColor sharedBackground = ConsoleColor.Black;
+
+      private ConsoleColor sharedForeground = ConsoleColor.Gray;
 
       #endregion
 
@@ -20,13 +22,14 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       protected override ConsoleColor GetConsoleBackground()
       {
-         return background;
+         return sharedBackground;
       }
 
       protected override ConsoleColor GetExpanderBackground(bool isSelected, bool disabled, bool mouseOver)
       {
+
+
          return isSelected ? ConsoleColor.White : ConsoleColor.Black;
-         // Theme.Expander.GetBackground(element.IsSelected, element.Disabled);
       }
 
       protected override ConsoleColor GetExpanderForeground(bool isSelected, bool disabled, bool mouseOver)
@@ -36,44 +39,40 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       protected override ConsoleColor GetFooterBackground()
       {
-         // return Theme.FooterBackground;
-         return background;
+         return sharedBackground;
       }
 
       protected override ConsoleColor GetFooterForeground()
       {
-         return ConsoleColor.Green;
+         return sharedForeground;
       }
 
       protected override ConsoleColor GetHeaderBackground()
       {
-         return background;
+         return sharedBackground;
       }
 
       protected override ConsoleColor GetHeaderForeground()
       {
-         return ConsoleColor.Red;
-         // return Theme.FooterForeground;
+         return sharedForeground;
       }
 
       protected override ConsoleColor GetHintBackground(bool isSelected, bool disabled)
       {
          return ConsoleColor.Red;
-         // Theme.Hint.GetBackground(menuItem.IsSelected, menuItem.Disabled
       }
 
       protected override ConsoleColor GetHintForeground(bool isSelected, bool disabled)
       {
-         return ConsoleColor.Green;
-         // Theme.Hint.GetForeground(menuItem.IsSelected, menuItem.Disabled)
+         return ConsoleColor.White;
       }
 
       protected override ConsoleColor GetMenuItemBackground(bool isSelected, bool disabled, bool mouseOver)
       {
-         if (mouseOver)
+         if (mouseOver && !isSelected)
             return GetMouseOverBackground();
 
-         return isSelected ? ConsoleColor.White : ConsoleColor.Black;
+         return isSelected ? ConsoleColor.White : sharedBackground;
       }
 
       protected override ConsoleColor GetMenuItemForeground(bool isSelected, bool disabled, bool mouseOver)
@@ -94,12 +93,15 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          return ConsoleColor.Black;
       }
 
-      protected override ConsoleColor GetSelectorBackground(bool isSelected, bool disabled)
+      protected override ConsoleColor GetSelectorBackground(bool isSelected, bool disabled, bool mouseOver)
       {
+         if (mouseOver && !isSelected)
+            return GetMouseOverBackground();
+
          return isSelected ? ConsoleColor.White : ConsoleColor.Black;
       }
 
-      protected override ConsoleColor GetSelectorForeground(bool isSelected, bool disabled)
+      protected override ConsoleColor GetSelectorForeground(bool isSelected, bool disabled, bool mouseOver)
       {
          return ConsoleColor.Black;
       }
@@ -109,7 +111,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          if (disabled)
             return ConsoleColor.DarkGray;
 
-         return isSelected ? ConsoleColor.Black : ConsoleColor.White;
+         return isSelected ? ConsoleColor.Black : ConsoleColor.Gray;
       }
 
       #endregion
