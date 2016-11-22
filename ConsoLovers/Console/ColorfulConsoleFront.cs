@@ -219,6 +219,52 @@ namespace ConsoLovers.ConsoleToolkit.Console
          Console.WriteLine(format, arg0, arg1, arg2, arg3);
       }
 
+      public void Write(string value, ConsoleColor foreground)
+      {
+         var original = Console.ForegroundColor;
+         Console.ForegroundColor = foreground;
+
+         Console.Write(value);
+
+         Console.ForegroundColor = original;
+      }
+
+      public void Write(string value, ConsoleColor foreground, ConsoleColor background)
+      {
+         var foregroundColor = Console.ForegroundColor;
+         var backgroundColor = Console.BackgroundColor;
+         Console.ForegroundColor = foreground;
+         Console.BackgroundColor = background;
+
+         Console.Write(value);
+
+         Console.ForegroundColor = foregroundColor;
+         Console.BackgroundColor = backgroundColor;
+      }
+
+      public void WriteLine(string value, ConsoleColor foreground)
+      {
+         var foregroundColor = Console.ForegroundColor;
+         Console.ForegroundColor = foreground;
+
+         Console.WriteLine(value);
+
+         Console.ForegroundColor = foregroundColor;
+      }
+
+      public void WriteLine(string value, ConsoleColor foreground, ConsoleColor background)
+      {
+         var foregroundColor = Console.ForegroundColor;
+         var backgroundColor = Console.BackgroundColor;
+         Console.ForegroundColor = foreground;
+         Console.BackgroundColor = background;
+
+         Console.WriteLine(value);
+
+         Console.ForegroundColor = foregroundColor;
+         Console.BackgroundColor = backgroundColor;
+      }
+
       public void WriteLine(string format, object arg0, object arg1, object arg2, object arg3, Color color)
       {
          // NOTE: The Intellisense for this overload of System.ColoredConsole.WriteLine is misleading, as the C# compiler

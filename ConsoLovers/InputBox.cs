@@ -22,12 +22,12 @@ namespace ConsoLovers.ConsoleToolkit
       #region Constants and Fields
 
       public InputBox()
-         : this(ColoredConsole.Instance)
+         : this(new ConsoleProxy())
       {
       }
 
       public InputBox(string label)
-         : this(ColoredConsole.Instance)
+         : this(new ConsoleProxy())
       {
          Label = new InputLabel(label);
       }
@@ -284,10 +284,7 @@ namespace ConsoLovers.ConsoleToolkit
 
       public void Print()
       {
-         console.ForegroundColor = Foreground;
-         console.BackgroundColor = Background;
-         console.Write(Text);
-         console.ResetColor();
+         console.Write(Text, Foreground, Background);
       }
    }
 }

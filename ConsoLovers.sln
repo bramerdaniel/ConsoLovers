@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InputBoxDemo", "InputBoxDem
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageBoxDemo", "MessageBoxDemo\MessageBoxDemo.csproj", "{A9610E16-D4B1-4492-BEB4-8FEADF0D2796}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExceptionFormatterDemo", "ExceptionFormatterDemo\ExceptionFormatterDemo.csproj", "{543F910E-1FD6-401C-A15A-070D8F17C380}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{A9610E16-D4B1-4492-BEB4-8FEADF0D2796}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9610E16-D4B1-4492-BEB4-8FEADF0D2796}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A9610E16-D4B1-4492-BEB4-8FEADF0D2796}.Release|Any CPU.Build.0 = Release|Any CPU
+		{543F910E-1FD6-401C-A15A-070D8F17C380}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{543F910E-1FD6-401C-A15A-070D8F17C380}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{543F910E-1FD6-401C-A15A-070D8F17C380}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{543F910E-1FD6-401C-A15A-070D8F17C380}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -68,5 +74,6 @@ Global
 		{E9093FDB-BB21-4CD9-8A40-0C263366BB6E} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
 		{58701FB8-1CFA-408B-9673-7C459EE1CED3} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
 		{A9610E16-D4B1-4492-BEB4-8FEADF0D2796} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
+		{543F910E-1FD6-401C-A15A-070D8F17C380} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
 	EndGlobalSection
 EndGlobal

@@ -7,6 +7,7 @@
 namespace ConsoLovers.ConsoleToolkit.Contracts
 {
    using System;
+   using System.Drawing;
 
    public interface IConsole
    {
@@ -83,5 +84,13 @@ namespace ConsoLovers.ConsoleToolkit.Contracts
       void WriteLine(string format, object arg0, object arg1, object arg2, object arg3);
 
       #endregion
+
+      void Write(string value, ConsoleColor foreground, ConsoleColor background);
+
+      void Write(string value, ConsoleColor foreground);
+
+      void WriteLine(string value, ConsoleColor foreground);
+
+      void WriteLine(string value, ConsoleColor foreground, ConsoleColor background);
    }
 }

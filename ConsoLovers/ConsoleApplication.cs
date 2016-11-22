@@ -10,6 +10,6 @@ namespace ConsoLovers.ConsoleToolkit
 
    public abstract class ConsoleApplication
    {
-      public static IConsole Console => ColoredConsole.Instance;
+      public static IConsole Console { get; } = new ConsoleProxy();
    }
 }

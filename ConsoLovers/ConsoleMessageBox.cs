@@ -24,40 +24,78 @@ namespace ConsoLovers.ConsoleToolkit
       }
 
       public int Height { get; set; } = 10;
+      public Margin Margin { get; set; } = new Margin(5);
 
       public ConsoleMessageBoxResult Show(string text)
       {
          console.Clear();
          var totalWidth = 50;
+         for (int i = 0; i < Margin.Top; i++)
+            console.WriteLine();
+         //console.Write("╔".PadRight(totalWidth, '═'));
+         //console.WriteLine("╗");
 
-         console.Write("╔".PadRight(totalWidth, '═'));
-         console.WriteLine("╗");
+         console.Write(string.Empty.PadRight(Margin.Left));
+         console.Write("█".PadRight(totalWidth, '█'));
+         console.WriteLine("█");
 
          for (int i = 0; i < Height; i++)
          {
-            console.Write("║".PadRight(totalWidth, ' '));
-            console.WriteLine("║");
+            console.Write(string.Empty.PadRight(Margin.Left));
+            console.Write("█".PadRight(totalWidth, ' '));
+            console.WriteLine("█");
          }
 
-         console.Write("╠".PadRight(totalWidth, '═'));
-         console.WriteLine("╣");
+         console.Write(string.Empty.PadRight(Margin.Left));
 
-         for (int i = 0; i < 3; i++)
+         console.Write("█".PadRight(totalWidth, '█'));
+         console.WriteLine("█");
+
+         for (int i = 0; i < 1; i++)
          {
-            console.Write("║");
-            console.Write(string.Empty.PadRight(49, ' '));
-            console.WriteLine("║");
+            console.Write(string.Empty.PadRight(Margin.Left));
+            console.Write("█".PadRight(totalWidth, ' '));
+            console.WriteLine("█");
          }
 
-         console.Write("╚".PadRight(totalWidth, '═'));
-         console.WriteLine("╝");
+         console.Write(string.Empty.PadRight(Margin.Left));
+         console.Write("█".PadRight(totalWidth - 20, ' '));
+         console.Write("OK");
+         console.WriteLine("█".PadLeft(19));
 
-         console.Write("█");
+         for (int i = 0; i < 1; i++)
+         {
+            console.Write(string.Empty.PadRight(Margin.Left));
+            console.Write("█".PadRight(totalWidth, ' '));
+            console.WriteLine("█");
+         }
+
+         console.Write(string.Empty.PadRight(Margin.Left));
+
+         console.Write("█".PadRight(totalWidth, '█'));
+
+         console.WriteLine("█");
 
 
          return ConsoleMessageBoxResult.None;
       }
 
+   }
+
+   public class Margin
+   {
+      public Margin(int all)
+      {
+         Left = 5;
+         Top = 5;
+         Right = 5;
+         Bottom = 5;
+      }
+
+      public int Left { get; set; }
+      public int Top { get; set; }
+      public int Right { get; set; }
+      public int Bottom { get; set; }
    }
 
    public enum ConsoleMessageBoxResult

@@ -93,6 +93,8 @@
     <Compile Include="Console\TextFormatter.cs" />
     <Compile Include="Console\TextPattern.cs" />
     <Compile Include="Console\TextPatternCollection.cs" />
+    <Compile Include="Contracts\ConsoleProxy.cs" />
+    <Compile Include="ExceptionFormatter.cs" />
     <Compile Include="ICanShowMenu.cs" />
     <Compile Include="IInputBox.cs" />
     <Compile Include="IInputMask.cs" />
