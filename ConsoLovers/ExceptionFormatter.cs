@@ -20,8 +20,11 @@ namespace ConsoLovers.ConsoleToolkit
       {
       }
 
-      private ExceptionFormatter(IConsole console)
+      private ExceptionFormatter([NotNull] IConsole console)
       {
+         if (console == null)
+            throw new ArgumentNullException(nameof(console));
+
          this.console = console;
       }
 

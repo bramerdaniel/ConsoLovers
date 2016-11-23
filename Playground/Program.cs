@@ -7,34 +7,88 @@
 namespace Playground
 {
    using System;
-   using System.Runtime.InteropServices;
+   using System.ComponentModel;
+   using System.Linq;
+   using System.Threading;
 
-   using Microsoft.Win32.SafeHandles;
+   using ConsoLovers.ConsoleToolkit;
+   using ConsoLovers.ConsoleToolkit.CommandLineArguments;
 
-   class Program
+   public class Program : IRunable,  IArgumentInitializer<Arguments>, IExeptionHandler
    {
-      #region Constants and Fields
-
-      private const UInt32 STD_OUTPUT_HANDLE = unchecked((UInt32)(-11));
-
-      private static SafeFileHandle _safeFileHandle;
-
-      #endregion
+      private Arguments arguments;
 
       #region Methods
 
-      [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-      private static extern IntPtr GetStdHandle(UInt32 type);
-
-      static void Main()
+      private static void Main(string[] args)
       {
+         ConsoleApplicationManager.Run<OnlyInterfacesUsed>(args);
+         ConsoleApplicationManager.Run<AppAndParameters>(args);
+         ConsoleApplicationManager.RunThis(args);
       }
 
-      [DllImport("kernel32.dll", SetLastError = true)]
-      private static extern bool WriteConsoleOutput
-      (SafeFileHandle hConsoleOutput, InputConsoleBox.CharInfo[] lpBuffer, InputConsoleBox.Coord dwBufferSize, InputConsoleBox.Coord dwBufferCoord,
-         ref InputConsoleBox.SmallRect lpWriteRegion);
-
       #endregion
+
+      public void Run()
+      {
+         Console.WriteLine("Application is running with path : " + arguments.Path);
+         for (int i = 0; i < 5; i++)
+         {
+            Console.WriteLine("Some complex logic");
+            Thread.Sleep(300);
+         }
+
+         throw new InvalidOperationException("The developer of this complex logic did not expect this error");
+      }
+
+      public Arguments CreateArguments()
+      {
+         arguments = new Arguments();
+         return arguments;
+      }
+
+      public void Initialize(Arguments instance ,string[] args)
+      {
+         instance.Path = args.FirstOrDefault();
+      }
+
+      public bool ExceptionHandled(Exception exception)
+      {
+         return true;
+      }
+   }
+
+   internal class OnlyInterfacesUsed : IRunable, IArgumentInitializer<OnlyInterfacesUsed>
+   {
+      [Argument("Path")]
+      public string  Path { get; set; }
+
+      public void Run()
+      {
+         Console.WriteLine("Application is running with path: " + Path);
+         Console.ReadLine();
+      }
+
+      public OnlyInterfacesUsed CreateArguments()
+      {
+         return this;
+      }
+
+      public void Initialize(OnlyInterfacesUsed instance, string[] args)
+      {
+         instance.Path = args.FirstOrDefault();
+      }
+   }
+
+   internal class AppAndParameters : ConsoleApplicationWith<AppAndParameters>
+   {
+      [Argument("Path")]
+      public string Path { get; set; }
+
+      public override void Run()
+      {
+         Console.WriteLine("Application is running with path: " + Path);
+         Console.ReadLine();
+      }
    }
 }

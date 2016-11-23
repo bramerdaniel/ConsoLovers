@@ -107,6 +107,30 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          return mapper.Map(arguments);
       }
 
+      /// <summary>Maps the specified arguments to given object of the given type.</summary>
+      /// <typeparam name="T">The type of the class to map the argument to.</typeparam>
+      /// <param name="args">The arguments that should be mapped to the instance.</param>
+      /// <param name="instance">The instance of <see cref="T"/> the args should be mapped to.</param>
+      /// <returns>The created instance of the arguments class.</returns>
+      public T Map<T>(string[] args, T instance)
+      {
+         return Map(args, instance, false);
+      }
+
+      /// <summary>Maps the specified arguments to given object of the given type.</summary>
+      /// <typeparam name="T">The type of the class to map the argument to.</typeparam>
+      /// <param name="args">The arguments that should be mapped to the instance.</param>
+      /// <param name="instance">The instance of <see cref="T"/> the args should be mapped to.</param>
+      /// <param name="caseSensitive">if set to <c>true</c> the parameters are treated case sensitive.</param>
+      /// <returns>The created instance of the arguments class.</returns>
+      public T Map<T>(string[] args, T instance, bool caseSensitive)
+      {
+         var arguments = ArgumentParser.ParseArguments(args, caseSensitive);
+         var mapper = new ArgumentMapper<T>();
+
+         return mapper.Map(arguments, instance);
+      }
+
       /// <summary>Prints the help to the <see cref="Console"/>.</summary>
       /// <typeparam name="T">Type of the argument class to print the help for </typeparam>
       /// <param name="resourceManager">The resource manager that will be used for localization.</param>
