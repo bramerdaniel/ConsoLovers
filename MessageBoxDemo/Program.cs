@@ -8,7 +8,7 @@ namespace MessageBoxDemo
 {
    using ConsoLovers.ConsoleToolkit;
 
-   class Program : ConsoleApplication
+   class Program 
    {
       static void Main(string[] args)
       {

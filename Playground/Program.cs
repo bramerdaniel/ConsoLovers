@@ -14,7 +14,7 @@ namespace Playground
    using ConsoLovers.ConsoleToolkit;
    using ConsoLovers.ConsoleToolkit.CommandLineArguments;
 
-   public class Program : IRunable,  IArgumentInitializer<Arguments>, IExeptionHandler
+   public class Program : IApplication,  IArgumentInitializer<Arguments>, IExeptionHandler
    {
       private Arguments arguments;
 
@@ -22,8 +22,8 @@ namespace Playground
 
       private static void Main(string[] args)
       {
-         ConsoleApplicationManager.Run<OnlyInterfacesUsed>(args);
-         ConsoleApplicationManager.Run<AppAndParameters>(args);
+         new ConsoleApplicationManager<OnlyInterfacesUsed>().Run(args);
+         new ConsoleApplicationManager<AppAndParameters>().Run(args);
          ConsoleApplicationManager.RunThis(args);
       }
 
@@ -52,13 +52,13 @@ namespace Playground
          instance.Path = args.FirstOrDefault();
       }
 
-      public bool ExceptionHandled(Exception exception)
+      public bool HandleException(Exception exception)
       {
          return true;
       }
    }
 
-   internal class OnlyInterfacesUsed : IRunable, IArgumentInitializer<OnlyInterfacesUsed>
+   internal class OnlyInterfacesUsed : IApplication, IArgumentInitializer<OnlyInterfacesUsed>
    {
       [Argument("Path")]
       public string  Path { get; set; }
@@ -85,7 +85,7 @@ namespace Playground
       [Argument("Path")]
       public string Path { get; set; }
 
-      public override void Run()
+      public override void RunWith(AppAndParameters arguments)
       {
          Console.WriteLine("Application is running with path: " + Path);
          Console.ReadLine();

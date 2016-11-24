@@ -1,13 +1,12 @@
 ﻿namespace InputBoxDemo
 {
    using System;
-   using System.Linq;
 
    using ConsoLovers.ConsoleToolkit;
 
-   class Program : ConsoleApplication
+   class Program
    {
-      static void Main(string[] args)
+      static void Main()
       {
          var text = new InputBox("Enter some long text: ").ReadLine();
          Console.WriteLine(text);
@@ -34,7 +33,8 @@
 
             if (Enum.TryParse(colors[0], out background))
             {
-               if (colors.Length > 1 && Enum.TryParse(colors[1], out foreground));
+               if (colors.Length > 1)
+                  Enum.TryParse(colors[1], out foreground);
 
                continue;
             }

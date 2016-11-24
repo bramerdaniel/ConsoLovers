@@ -8,26 +8,26 @@ namespace ConsoLovers.ConsoleToolkit
 {
    using System;
    using System.Diagnostics;
+   using System.Reflection;
 
-   public static class ConsoleApplicationManager
+   public class ConsoleApplicationManager<T> : ConsoleApplicationManager
+      where T : IApplication
    {
       #region Public Methods and Operators
 
-      public static void Run<T>(string[] args) where T : IRunable
+      public T Run(string[] args)
       {
-         Run(typeof(T), args);
+         return (T)Run(typeof(T), args);
       }
 
-      public static void Run(Type applicationType, string[] args)
-      {
-         var application = CreateApplicationInstance(applicationType);
+      #endregion
+   }
 
-         InitializeInstance(applicationType, application, args);
+   public class ConsoleApplicationManager
+   {
+      #region Public Methods and Operators
 
-         RunInstance(application, args);
-      }
-
-      /// <summary>Runs the caller class. Caller must implement at least the <see cref="IRunable"/> interface</summary>
+      /// <summary>Runs the caller class. Caller must implement at least the <see cref="IApplication"/> interface</summary>
       /// <param name="args">The arguments to run the caller with.</param>
       /// <exception cref="System.InvalidOperationException">Application type could not be detected from stack trace.</exception>
       public static void RunThis(string[] args)
@@ -37,37 +37,74 @@ namespace ConsoLovers.ConsoleToolkit
          if (applicationType == null)
             throw new InvalidOperationException("Application type could not be detected from stack trace.");
 
-         Run(applicationType, args);
+         new ConsoleApplicationManager().Run(applicationType, args);
+      }
+
+      /// <summary>Creates and runs an application of the given type with the given arguments.</summary>
+      /// <param name="applicationType">Type of the application.</param>
+      /// <param name="args">The arguments.</param>
+      /// <returns>The application </returns>
+      public IApplication Run(Type applicationType, string[] args)
+      {
+         var application = CreateApplication(applicationType);
+
+         try
+         {
+            InitializeApplication(applicationType, application, args);
+            return RunApplication(application);
+         }
+         catch (Exception exception)
+         {
+            var handler = application as IExeptionHandler;
+            if (handler == null || !handler.HandleException(exception))
+               throw;
+
+            return application;
+         }
       }
 
       #endregion
 
       #region Methods
 
-      internal static void InitializeInstance(Type applicationType, IRunable application, string[] args)
+      internal static void InitializeApplication(Type applicationType, IApplication application, string[] args)
       {
-         Type argumentType;
-         if (IsArgumentInitializer(applicationType, out argumentType))
+         try
          {
-            var methodInfo = applicationType.GetMethod("CreateArguments"); // TODO Ensure functionality with unit tests
-            var argumentsInstance = methodInfo.Invoke(application, null);
+            Type argumentType;
+            if (IsArgumentInitializer(applicationType, out argumentType))
+            {
+               var methodInfo = applicationType.GetMethod("CreateArguments"); // TODO Ensure functionality with unit tests
+               var argumentsInstance = methodInfo.Invoke(application, null);
 
-            var initialize = applicationType.GetMethod("Initialize");
-            initialize.Invoke(application, new[] { argumentsInstance, args });
+               var initialize = applicationType.GetMethod("Initialize");
+               initialize.Invoke(application, new[] { argumentsInstance, args });
+            }
+         }
+         catch (TargetInvocationException ex)
+         {
+            if (ex.InnerException != null)
+               throw ex.InnerException;
+            throw;
          }
       }
 
-      private static IRunable CreateApplicationInstance(Type type)
+      /// <summary>Creates the instance of the application to run. 
+      /// Override this method to create the <see cref="IApplication"/> instance by your own.</summary>
+      /// <param name="type">The type of the application to run.</param>
+      /// <returns>The created uninitialized application</returns>
+      /// <exception cref="System.InvalidOperationException"></exception>
+      protected virtual IApplication CreateApplication(Type type)
       {
          var instance = Activator.CreateInstance(type);
          if (instance == null)
             throw new InvalidOperationException($"Could not create instance of type {type.FullName}");
 
-         var runable = instance as IRunable;
-         if (runable == null)
-            throw new InvalidOperationException($"The application type {type.Name} to run must inherit the {typeof(IRunable).Name} interface");
+         var application = instance as IApplication;
+         if (application == null)
+            throw new InvalidOperationException($"The application type {type.Name} to run must inherit the {typeof(IApplication).Name} interface");
 
-         return runable;
+         return application;
       }
 
       private static bool IsArgumentInitializer(Type applicationType, out Type argumentType)
@@ -85,18 +122,10 @@ namespace ConsoLovers.ConsoleToolkit
          return false;
       }
 
-      private static void RunInstance(IRunable application, string[] args)
+      private static IApplication RunApplication(IApplication application)
       {
-         try
-         {
-            application.Run();
-         }
-         catch (Exception exception)
-         {
-            var handler = application as IExeptionHandler;
-            if (handler == null || !handler.ExceptionHandled(exception))
-               throw;
-         }
+         application.Run();
+         return application;
       }
 
       #endregion

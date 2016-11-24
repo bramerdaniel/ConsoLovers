@@ -14,7 +14,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
    using System.Text;
 
    /// <summary>Main class that us is used for processing command line arguments</summary>
-   public class CommandLineEngine
+   public class CommandLineEngine : ICommandLineEngine
    {
       #region Public Properties
 
@@ -24,11 +24,11 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
       #region Public Methods and Operators
 
-      /// <summary>Prints the help to the <see cref="Console"/>.</summary>
+      /// <summary>Prints the help to the <see cref="Console" />.</summary>
       /// <typeparam name="T">Type of the argument class to print the help for</typeparam>
       /// <param name="resourceManager">The resource manager that will be used for localization.</param>
       /// <param name="consoleWidth">Width of the console.</param>
-      /// <returns>A <see cref="StringBuilder"/> containing the formatted help text.</returns>
+      /// <returns>A <see cref="StringBuilder" /> containing the formatted help text.</returns>
       public StringBuilder FormatHelp<T>(ResourceManager resourceManager, int consoleWidth)
       {
          var stringBuilder = new StringBuilder();
@@ -137,6 +137,12 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       public void PrintHelp<T>(ResourceManager resourceManager)
       {
          var argumentHelps = GetHelp<T>(resourceManager).ToList();
+         if (argumentHelps.Count == 0)
+         {
+            Console.WriteLine("No HelpTextAttributes found for help generation.");
+            return;
+         }
+
          int longestNameWidth = argumentHelps.Select(a => a.PropertyName.Length).Max() + 2;
          int longestAliasWidth = argumentHelps.Select(a => a.AliasString.Length).Max() + 4;
          var consoleWidth = Console.WindowWidth;
@@ -223,5 +229,54 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       }
 
       #endregion
+   }
+
+   public interface ICommandLineEngine
+   {
+      /// <summary>Gets the help information for the class of the given type.</summary>
+      /// <typeparam name="T">The argument class for creating the help for</typeparam>
+      /// <param name="resourceManager">The resource manager that will be used for localization</param>
+      /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ArgumentHelp"/></returns>
+      IEnumerable<ArgumentHelp> GetHelp<T>(ResourceManager resourceManager);
+
+      /// <summary>Maps the specified arguments to a class of the given type.</summary>
+      /// <typeparam name="T">The type of the class to map the argument to.</typeparam>
+      /// <param name="args">The arguments.</param>
+      /// <returns>The created instance of the arguments class.</returns>
+      T Map<T>(string[] args);
+
+      /// <summary>Maps the specified arguments to given object of the given type.</summary>
+      /// <typeparam name="T">The type of the class to map the argument to.</typeparam>
+      /// <param name="args">The arguments that should be mapped to the instance.</param>
+      /// <param name="caseSensitive">if set to <c>true</c> the parameters are treated case sensitive.</param>
+      /// <returns>The created instance of the arguments class.</returns>
+      T Map<T>(string[] args, bool caseSensitive);
+
+      /// <summary>Maps the specified arguments to given object of the given type.</summary>
+      /// <typeparam name="T">The type of the class to map the argument to.</typeparam>
+      /// <param name="args">The arguments that should be mapped to the instance.</param>
+      /// <param name="instance">The instance of <see cref="T"/> the args should be mapped to.</param>
+      /// <returns>The created instance of the arguments class.</returns>
+      T Map<T>(string[] args, T instance);
+
+      /// <summary>Maps the specified arguments to given object of the given type.</summary>
+      /// <typeparam name="T">The type of the class to map the argument to.</typeparam>
+      /// <param name="args">The arguments that should be mapped to the instance.</param>
+      /// <param name="instance">The instance of <see cref="T"/> the args should be mapped to.</param>
+      /// <param name="caseSensitive">if set to <c>true</c> the parameters are treated case sensitive.</param>
+      /// <returns>The created instance of the arguments class.</returns>
+      T Map<T>(string[] args, T instance, bool caseSensitive);
+
+      /// <summary>Prints the help to the <see cref="Console"/>.</summary>
+      /// <typeparam name="T">Type of the argument class to print the help for </typeparam>
+      /// <param name="resourceManager">The resource manager that will be used for localization.</param>
+      void PrintHelp<T>(ResourceManager resourceManager);
+
+      /// <summary>Prints the help to the <see cref="Console" />.</summary>
+      /// <typeparam name="T">Type of the argument class to print the help for</typeparam>
+      /// <param name="resourceManager">The resource manager that will be used for localization.</param>
+      /// <param name="consoleWidth">Width of the console.</param>
+      /// <returns>A <see cref="StringBuilder" /> containing the formatted help text.</returns>
+      StringBuilder FormatHelp<T>(ResourceManager resourceManager, int consoleWidth);
    }
 }
