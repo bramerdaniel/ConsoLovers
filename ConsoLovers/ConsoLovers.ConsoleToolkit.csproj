@@ -141,6 +141,7 @@
     <Compile Include="Contracts\SelectionStrech.cs" />
     <Compile Include="SubMenuBuilder.cs" />
     <Compile Include="Todo\Class1.cs" />
+    <Compile Include="Utils\MatrixEffect.cs" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Icon.ico" />
