@@ -12,6 +12,7 @@ namespace MatrixDemo
    {
       static void Main(string[] args)
       {
+         Console.ForegroundColor = ConsoleColor.Red;
          var matrixEffect = new MatrixEffect
          {
             Text = $"You entered the matrix !{Environment.NewLine}Take the red to pill you leave{Environment.NewLine}or the blue pill to stay{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}Test",

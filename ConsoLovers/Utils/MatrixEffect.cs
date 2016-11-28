@@ -8,8 +8,9 @@ namespace ConsoLovers.ConsoleToolkit.Utils
 {
    using System;
    using System.Collections.Generic;
-   using System.Linq;
    using System.Threading;
+
+   using ConsoLovers.ConsoleToolkit.Console;
 
    public class MatrixEffect
    {
@@ -23,6 +24,8 @@ namespace ConsoLovers.ConsoleToolkit.Utils
 
       private ConsoleColor initialForeground;
 
+      private string[] lines;
+
       private string text;
 
       private Thread thread;
@@ -30,8 +33,6 @@ namespace ConsoLovers.ConsoleToolkit.Utils
       private int? xPosition;
 
       private int? yPosition;
-
-      private string[] lines;
 
       #endregion
 
@@ -51,7 +52,7 @@ namespace ConsoLovers.ConsoleToolkit.Utils
          }
          set
          {
-            if(text == value)
+            if (text == value)
                return;
 
             text = value;
@@ -92,6 +93,12 @@ namespace ConsoLovers.ConsoleToolkit.Utils
             yPosition = value;
          }
       }
+
+      #endregion
+
+      #region Properties
+
+      internal IConsoleBuffer Buffer { get; } = new ConsoleBuffer();
 
       #endregion
 
@@ -171,28 +178,9 @@ namespace ConsoLovers.ConsoleToolkit.Utils
          return Console.WindowWidth / 2 - longestLine / 2 - 1;
       }
 
-      private int LongestLine()
-      {
-         int longestLine = 0;
-         foreach (var line in Text.Split(new[] { Environment.NewLine }, StringSplitOptions.None))
-            longestLine = Math.Max(longestLine, line.Length);
-
-         return longestLine;
-      }
-
-      private string[] GetLines()
-      {
-         return lines ?? (lines = Text.Split(new[] { Environment.NewLine }, StringSplitOptions.None));
-      }
-
-      private int LineCount()
-      {
-         return GetLines().Length;
-      }
-
       private int ComputeYPosition()
       {
-         return Console.WindowHeight / 2 - 1 - LineCount() / 2 ;
+         return Console.WindowHeight / 2 - 1 - LineCount() / 2;
       }
 
       private void Draw_Text(int xPos, int yPos, IList<string> texts)
@@ -257,23 +245,28 @@ namespace ConsoLovers.ConsoleToolkit.Utils
          var y = TextYPosition;
          var longestLine = LongestLine();
 
-         var oldColor = Console.ForegroundColor;
-         Console.ForegroundColor = TextForeground;
+         //var oldColor = Console.ForegroundColor;
+         //Console.ForegroundColor = TextForeground;
 
          foreach (var line in GetLines())
          {
-            var xx = x + (longestLine - line.Length) /2;
+            var xx = x + (longestLine - line.Length) / 2;
             if (!string.IsNullOrWhiteSpace(line))
             {
-
-               Console.SetCursorPosition(xx, y);
-               Console.Write(line);
+               Buffer.WriteLine(xx, y, line, TextForeground, false);
+               //Console.SetCursorPosition(xx, y);
+               //Console.Write(line);
             }
 
             y++;
          }
 
-         Console.ForegroundColor = oldColor;
+         //Console.ForegroundColor = oldColor;
+      }
+
+      private string[] GetLines()
+      {
+         return lines ?? (lines = Text.Split(new[] { Environment.NewLine }, StringSplitOptions.None));
       }
 
       private void Initialize(out int width, out int height, out int[] y, out int[] l)
@@ -292,6 +285,20 @@ namespace ConsoLovers.ConsoleToolkit.Utils
          }
       }
 
+      private int LineCount()
+      {
+         return GetLines().Length;
+      }
+
+      private int LongestLine()
+      {
+         int longestLine = 0;
+         foreach (var line in Text.Split(new[] { Environment.NewLine }, StringSplitOptions.None))
+            longestLine = Math.Max(longestLine, line.Length);
+
+         return longestLine;
+      }
+
       private void MatrixStep(int width, int height, int[] y, int[] l)
       {
          int x;
@@ -299,34 +306,47 @@ namespace ConsoLovers.ConsoleToolkit.Utils
 
          for (x = 0; x < width; ++x)
          {
+            ConsoleColor color;
             if (x % 11 == 10)
             {
                if (!thistime)
                   continue;
 
-               Console.ForegroundColor = AdditionalColor;
+               color = AdditionalColor;
             }
             else
             {
-               Console.ForegroundColor = MatrixColor;
-               Console.SetCursorPosition(x, InBoxY(y[x] - 2 - l[x] / 40 * 2, height));
-               Console.Write(GetRandomChar());
+               // Console.ForegroundColor = MatrixColor;
+               var top = InBoxY(y[x] - 2 - l[x] / 40 * 2, height);
+               var left = x;
+               Write(left, top, GetRandomChar().ToString(), MatrixColor);
+               //Console.SetCursorPosition(left, top);
+               //Console.Write(GetRandomChar());
 
-               // Thread.Sleep(TimeSpan.FromMilliseconds(0.5));
+               // Thread.SpinWait(100000);
                if (Text != null)
                   DrawText();
 
                // Draw_Text(17, 19, CreateTextOutput().ToList());
 
-               Console.ForegroundColor = MatrixDrawingColor;
+               color = MatrixDrawingColor;
             }
 
-            Console.SetCursorPosition(x, y[x]);
-            Console.Write(GetRandomChar());
+            Write(x, y[x], GetRandomChar().ToString(), color);
+            //Console.SetCursorPosition(x, y[x]);
+            //Console.Write(GetRandomChar());
+
             y[x] = InBoxY(y[x] + 1, height);
-            Console.SetCursorPosition(x, InBoxY(y[x] - l[x], height));
-            Console.Write(" ");
+
+            Write(x, InBoxY(y[x] - l[x], height), " ", color);
+            //Console.SetCursorPosition(x, InBoxY(y[x] - l[x], height));
+            //Console.Write(" ");
          }
+      }
+
+      private void Write(int left, int top, string character, ConsoleColor foreground)
+      {
+         Buffer.WriteLine(left, top, character, foreground, false);
       }
 
       #endregion
