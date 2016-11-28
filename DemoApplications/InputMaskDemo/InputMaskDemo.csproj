@@ -50,7 +50,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ConsoLovers\ConsoLovers.ConsoleToolkit.csproj">
+    <ProjectReference Include="..\..\ConsoLovers.ConsoleToolkit\ConsoLovers.ConsoleToolkit.csproj">
       <Project>{A001404C-4752-48B0-B28A-2EA524E49ADB}</Project>
       <Name>ConsoLovers.ConsoleToolkit</Name>
     </ProjectReference>
