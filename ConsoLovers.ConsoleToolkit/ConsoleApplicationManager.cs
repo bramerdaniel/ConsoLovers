@@ -46,6 +46,7 @@ namespace ConsoLovers.ConsoleToolkit
       /// <returns>The application </returns>
       public IApplication Run(Type applicationType, string[] args)
       {
+         ApplyAttributes(applicationType);
          var application = CreateApplication(applicationType);
 
          try
@@ -61,6 +62,13 @@ namespace ConsoLovers.ConsoleToolkit
 
             return application;
          }
+      }
+
+      private static void ApplyAttributes(Type applicationType)
+      {
+         var title = applicationType.GetCustomAttribute(typeof(ConsoleWindowTitleAttribute)) as ConsoleWindowTitleAttribute;
+         if (title != null)
+            System.Console.Title = title.Title;
       }
 
       #endregion

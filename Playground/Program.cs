@@ -13,6 +13,7 @@ namespace Playground
 
    using ConsoLovers.ConsoleToolkit;
    using ConsoLovers.ConsoleToolkit.CommandLineArguments;
+   using ConsoLovers.ConsoleToolkit.Console;
 
    public class Program : IApplication,  IArgumentInitializer<Arguments>, IExeptionHandler
    {
@@ -22,8 +23,6 @@ namespace Playground
 
       private static void Main(string[] args)
       {
-         new ConsoleApplicationManager<OnlyInterfacesUsed>().Run(args);
-         new ConsoleApplicationManager<AppAndParameters>().Run(args);
          ConsoleApplicationManager.RunThis(args);
       }
 
@@ -31,6 +30,19 @@ namespace Playground
 
       public void Run()
       {
+         var left = new Random((int)DateTime.Now.Ticks);
+         var top = new Random((int)DateTime.Now.Ticks + 200);
+         var buffer = new ConsoleBuffer();
+         buffer.ReadonlySections[10, 10] = true;
+         buffer.ReadonlySections[11, 11] = true;
+         buffer.ReadonlySections[11, 10] = true;
+         buffer.ReadonlySections[10, 11] = true;
+
+         while (true)
+         {
+            buffer.WriteLine(left.Next(0, Console.BufferWidth - 1), top.Next(0, Console.BufferHeight - 1), '#', ConsoleColor.Green, ConsoleColor.Blue);
+         }
+
          Console.WriteLine("Application is running with path : " + arguments.Path);
          for (int i = 0; i < 5; i++)
          {

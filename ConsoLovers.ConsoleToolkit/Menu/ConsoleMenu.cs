@@ -27,8 +27,6 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       protected override ConsoleColor GetExpanderBackground(bool isSelected, bool disabled, bool mouseOver)
       {
-
-
          return isSelected ? ConsoleColor.White : ConsoleColor.Black;
       }
 

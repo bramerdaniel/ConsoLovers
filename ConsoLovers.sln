@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCopyDemo", "DemoApplicatio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MouseInputDemo", "DemoApplications\MouseInputDemo\MouseInputDemo.csproj", "{E7BE477E-90BD-4BE9-ADD0-0A09D98546CC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleBufferDemo", "ConsoleBufferDemo\ConsoleBufferDemo.csproj", "{9871FEC7-7A7C-4AA3-9444-8F9630414127}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +79,10 @@ Global
 		{E7BE477E-90BD-4BE9-ADD0-0A09D98546CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7BE477E-90BD-4BE9-ADD0-0A09D98546CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E7BE477E-90BD-4BE9-ADD0-0A09D98546CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9871FEC7-7A7C-4AA3-9444-8F9630414127}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9871FEC7-7A7C-4AA3-9444-8F9630414127}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9871FEC7-7A7C-4AA3-9444-8F9630414127}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9871FEC7-7A7C-4AA3-9444-8F9630414127}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -90,5 +96,6 @@ Global
 		{A9610E16-D4B1-4492-BEB4-8FEADF0D2796} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
 		{E96031E2-12C5-4303-8F8B-D71FA4AEF9A2} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
 		{E7BE477E-90BD-4BE9-ADD0-0A09D98546CC} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
+		{9871FEC7-7A7C-4AA3-9444-8F9630414127} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
 	EndGlobalSection
 EndGlobal
