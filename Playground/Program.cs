@@ -1,13 +1,13 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="Program.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2016
+//    Copyright (c) ConsoLovers  2015 - 2017
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace Playground
 {
    using System;
-   using System.ComponentModel;
+   using System.IO;
    using System.Linq;
    using System.Threading;
 
@@ -15,18 +15,31 @@ namespace Playground
    using ConsoLovers.ConsoleToolkit.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Console;
 
-   public class Program : IApplication,  IArgumentInitializer<Arguments>, IExeptionHandler
+   public class Program
    {
+      #region Constants and Fields
+
       private Arguments arguments;
 
-      #region Methods
+      #endregion
 
-      private static void Main(string[] args)
+      #region Public Methods and Operators
+
+      public Arguments CreateArguments()
       {
-         ConsoleApplicationManager.RunThis(args);
+         arguments = new Arguments();
+         return arguments;
       }
 
-      #endregion
+      public bool HandleException(Exception exception)
+      {
+         return true;
+      }
+
+      public void Initialize(Arguments instance, string[] args)
+      {
+         instance.Path = args.FirstOrDefault();
+      }
 
       public void Run()
       {
@@ -53,33 +66,59 @@ namespace Playground
          throw new InvalidOperationException("The developer of this complex logic did not expect this error");
       }
 
-      public Arguments CreateArguments()
+      #endregion
+
+      #region Methods
+
+      private static void Main(string[] args)
       {
-         arguments = new Arguments();
-         return arguments;
+         new ConsoleApplicationManager().Run(typeof(MyProgramLogic), args);
       }
 
-      public void Initialize(Arguments instance ,string[] args)
+      #endregion
+   }
+
+   internal class MyProgramLogic : ConsoleApplicationWith<MyArguments>
+   {
+      #region Public Methods and Operators
+
+      /// <summary>Entry point for  non static logic.</summary>
+      /// <param name="arguments">The arguments.</param>
+      public override void RunWith(MyArguments arguments)
       {
-         instance.Path = args.FirstOrDefault();
+         if (!File.Exists(arguments.Path))
+            Console.WriteLine("Path must point to an existing file");
+
+         // some cool logic...
       }
 
-      public bool HandleException(Exception exception)
-      {
-         return true;
-      }
+      #endregion
+   }
+
+   // The arguments class your args are mapped to
+   internal class MyArguments
+   {
+      #region Public Properties
+
+      [Argument("Path", "p")]
+      public string Path { get; set; }
+
+      #endregion
    }
 
    internal class OnlyInterfacesUsed : IApplication, IArgumentInitializer<OnlyInterfacesUsed>
    {
-      [Argument("Path")]
-      public string  Path { get; set; }
+      #region IApplication Members
 
       public void Run()
       {
          Console.WriteLine("Application is running with path: " + Path);
          Console.ReadLine();
       }
+
+      #endregion
+
+      #region IArgumentInitializer<OnlyInterfacesUsed> Members
 
       public OnlyInterfacesUsed CreateArguments()
       {
@@ -90,17 +129,34 @@ namespace Playground
       {
          instance.Path = args.FirstOrDefault();
       }
+
+      #endregion
+
+      #region Public Properties
+
+      [Argument("Path")]
+      public string Path { get; set; }
+
+      #endregion
    }
 
    internal class AppAndParameters : ConsoleApplicationWith<AppAndParameters>
    {
+      #region Public Properties
+
       [Argument("Path")]
       public string Path { get; set; }
+
+      #endregion
+
+      #region Public Methods and Operators
 
       public override void RunWith(AppAndParameters arguments)
       {
          Console.WriteLine("Application is running with path: " + Path);
          Console.ReadLine();
       }
+
+      #endregion
    }
 }
