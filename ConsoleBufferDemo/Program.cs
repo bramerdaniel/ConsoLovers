@@ -24,6 +24,7 @@ namespace ConsoleBufferDemo
       private int direction = 1;
 
       string firstText = "THIS IS DIRECTLY WRITTEN THE BUFFER";
+
       string secondText = "WHILE YOU STILL CAN TYPE YOUR TEXT!";
 
       #endregion

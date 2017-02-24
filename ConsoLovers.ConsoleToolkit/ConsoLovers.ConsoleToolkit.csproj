@@ -145,7 +145,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Contracts\SelectionStrech.cs" />
     <Compile Include="SubMenuBuilder.cs" />
-    <Compile Include="Todo\Class1.cs" />
     <Compile Include="Utils\MatrixEffect.cs" />
   </ItemGroup>
   <ItemGroup>

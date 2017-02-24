@@ -15,7 +15,6 @@ namespace ConsoLovers.ConsoleToolkit
       public ConsoleMessageBox()
          : this(ColoredConsole.Instance)
       {
-
       }
 
       internal ConsoleMessageBox(IConsole console)

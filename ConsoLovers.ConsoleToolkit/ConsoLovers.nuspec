@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>ConsoLovers.ConsoleToolkit</id>
-    <version>0.3.0.0</version>
+    <version>1.0.0.0</version>
     <title>ConsoLovers.ConsoleToolkit</title>
     <authors>danielbramer</authors>
     <owners>danielbramer</owners>
@@ -12,15 +12,16 @@
     <description>$description$</description>
     <releaseNotes>
        - Fixed color in default menu
-       
+
        Most important classes are:
        - ConsoleMenu
        - ColoredConsoleMenu
        - ConsoleColorManager
        - CommandLineEngine
-       - InputMask
+       - InputBox
+       - ConsoleBuffer
     </releaseNotes>
     <copyright>Copyright 2016</copyright>
-    <tags>Console Shell Menu ConsoleMenu ConsoleToolkit .Net Password CommandLineAgrument CommandLineAgruments CommandLineParser</tags>
+    <tags>Console Shell Menu ConsoleMenu ConsoleToolkit .Net Password CommandLineAgrument CommandLineArguments CommandLineParser</tags>
   </metadata>
 </package>
