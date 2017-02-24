@@ -8,10 +8,16 @@
    {
       static void Main()
       {
-         int inty = new InputBox("Enter an integer: ").ReadLine<int>();
+         int inty = new InputBox<int>("Enter an integer: ").ReadLine();
          Console.WriteLine(inty);
 
-         var text = new InputBox("Enter some long text: ").ReadLine();
+         double douby = new InputBox<double>("Enter an double: ").ReadLine();
+         Console.WriteLine(douby);
+
+         bool booly = new InputBox<bool>("Enter an bool : ").ReadLine();
+         Console.WriteLine(booly);
+
+         var text = new InputBox<string>("Enter some long text: ").ReadLine();
          Console.WriteLine(text);
 
          ConsoleColor background = ConsoleColor.White;
@@ -19,7 +25,7 @@
 
          while (true)
          {
-            var inputBox = new InputBox
+            var inputBox = new InputBox<string>
             {
                Label = new InputLabel("Enter some text: ")
                {

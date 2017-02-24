@@ -42,7 +42,7 @@ namespace ConsoleBufferDemo
 
 
          Console.SetCursorPosition(0, 2);
-         while (new InputBox("Enter any text: ").ReadLine(4, '.') != "exit")
+         while (new InputBox<string>("Enter any text: ").ReadLine(4, '.') != "exit")
             Console.WriteLine("Enter exit if you want to leave !", ConsoleColor.Cyan);
       }
 

@@ -7,12 +7,15 @@
 namespace ConsoLovers.ConsoleToolkit
 {
    using System;
+   using System.Globalization;
    using System.Text;
 
    using ConsoLovers.ConsoleToolkit.Contracts;
 
    /// <summary>Helper class for creating a</summary>
-   public class InputBox : IInputBox
+   /// <typeparam name="T">The type of the expected input</typeparam>
+   /// <seealso cref="ConsoLovers.ConsoleToolkit.IInputBox"/>
+   public class InputBox<T> : IInputBox
    {
       #region Constants and Fields
 
@@ -32,13 +35,13 @@ namespace ConsoLovers.ConsoleToolkit
 
       #region Constructors and Destructors
 
-      /// <summary>Initializes a new instance of the <see cref="InputBox"/> class.</summary>
+      /// <summary>Initializes a new instance of the <see cref="InputBox{T}"/> class.</summary>
       public InputBox()
          : this(new ConsoleProxy())
       {
       }
 
-      /// <summary>Initializes a new instance of the <see cref="InputBox"/> class.</summary>
+      /// <summary>Initializes a new instance of the <see cref="InputBox{T}"/> class.</summary>
       /// <param name="label">The label.</param>
       public InputBox(string label)
          : this(new ConsoleProxy())
@@ -46,7 +49,7 @@ namespace ConsoLovers.ConsoleToolkit
          Label = new InputLabel(label);
       }
 
-      /// <summary>Initializes a new instance of the <see cref="InputBox"/> class.</summary>
+      /// <summary>Initializes a new instance of the <see cref="InputBox{T}"/> class.</summary>
       /// <param name="label">The label.</param>
       /// <param name="initialValue">The initial value.</param>
       public InputBox(string label, string initialValue)
@@ -55,7 +58,7 @@ namespace ConsoLovers.ConsoleToolkit
          InitialValue = initialValue;
       }
 
-      /// <summary>Initializes a new instance of the <see cref="InputBox"/> class.</summary>
+      /// <summary>Initializes a new instance of the <see cref="InputBox{T}"/> class.</summary>
       /// <param name="console">The console.</param>
       internal InputBox(IConsole console)
       {
@@ -117,7 +120,7 @@ namespace ConsoLovers.ConsoleToolkit
       /// <returns>The input as string</returns>
       public string Read()
       {
-         return ReadInternal<string>(defaultLength, defaultPlaceHolder, false);
+         return ReadInternal(defaultLength, defaultPlaceHolder, false);
       }
 
       /// <summary>Reads the following input with the given mask and inserts a newline.</summary>
@@ -126,7 +129,7 @@ namespace ConsoLovers.ConsoleToolkit
       /// <returns>The input as string</returns>
       public string Read(int length, char placeHolder)
       {
-         return ReadInternal<string>(length, placeHolder, false);
+         return ReadInternal(length, placeHolder, false);
       }
 
       /// <summary>Reads the following input with the given mask and inserts a newline.</summary>
@@ -134,78 +137,56 @@ namespace ConsoLovers.ConsoleToolkit
       /// <returns>The input as string</returns>
       public string Read(int length)
       {
-         return ReadInternal<string>(length, defaultPlaceHolder, false);
+         return ReadInternal(length, defaultPlaceHolder, false);
       }
 
       /// <summary>Reads the following input with the default mask of * and inserts a newline.</summary>
-      /// <typeparam name="T">The type of the expected return value</typeparam>
       /// <returns>The input as value of type <see cref="T"/></returns>
-      public T ReadLine<T>()
+      public T ReadLine()
       {
-         return ReadLine(s => (T)Convert.ChangeType(s, typeof(T)));
+         return ReadLine(s => (T)Convert.ChangeType(s, typeof(T), CultureInfo.InvariantCulture));
       }
 
       /// <summary>Reads the following input with the default mask of * and inserts a newline.</summary>
-      /// <typeparam name="T">The type of the expected return value</typeparam>
       /// <param name="converterFunction">The converter function to get a value from the input string.</param>
       /// <returns>The input as value of type <see cref="T"/></returns>
-      public T ReadLine<T>(Func<string, T> converterFunction)
+      public T ReadLine(Func<string, T> converterFunction)
       {
          return ConvertedValue(defaultLength, defaultPlaceHolder, converterFunction);
       }
 
-      /// <summary>Reads the following input with the default mask of * and inserts a newline.</summary>
-      /// <returns>The input as string</returns>
-      public string ReadLine()
-      {
-         return ReadInternal<string>(defaultLength, defaultPlaceHolder, true);
-      }
-
       /// <summary>Reads the following input with the given mask and inserts a newline.</summary>
-      /// <typeparam name="T">The type of the expected return value</typeparam>
       /// <param name="length">The allowed length of the masked input.</param>
       /// <param name="placeHolder">The place holder that should be used for remaining input length.</param>
       /// <returns>The input as value of type <see cref="T"/></returns>
-      public T ReadLine<T>(int length, char placeHolder)
+      public T ReadLine(int length, char placeHolder)
       {
          return ReadLine(length, placeHolder, s => (T)Convert.ChangeType(s, typeof(T)));
       }
 
       /// <summary>Reads the following input with the given mask and inserts a newline.</summary>
-      /// <typeparam name="T">The type of the expected return value</typeparam>
       /// <param name="length">The allowed length of the masked input.</param>
       /// <param name="placeHolder">The place holder that should be used for remaining input length.</param>
       /// <param name="converterFunction">The converter function to get a value from the input string.</param>
       /// <returns>The input as value of type <see cref="T"/></returns>
-      public T ReadLine<T>(int length, char placeHolder, Func<string, T> converterFunction)
+      public T ReadLine(int length, char placeHolder, Func<string, T> converterFunction)
       {
          return ConvertedValue(length, placeHolder, converterFunction);
       }
 
       /// <summary>Reads the following input with the given mask and inserts a newline.</summary>
       /// <param name="length">The allowed length of the masked input.</param>
-      /// <param name="placeHolder">The place holder that should be used for remaining input length.</param>
-      /// <returns>The input as string</returns>
-      public string ReadLine(int length, char placeHolder)
-      {
-         return ReadInternal<string>(length, placeHolder, true);
-      }
-
-      /// <summary>Reads the following input with the given mask and inserts a newline.</summary>
-      /// <typeparam name="T">The type of the expected return value</typeparam>
-      /// <param name="length">The allowed length of the masked input.</param>
       /// <returns>The input as value of type <see cref="T"/></returns>
-      public T ReadLine<T>(int length)
+      public T ReadLine(int length)
       {
          return ReadLine(length, s => (T)Convert.ChangeType(s, typeof(T)));
       }
 
       /// <summary>Reads the following input with the given mask and inserts a newline.</summary>
-      /// <typeparam name="T">The type of the expected return value</typeparam>
       /// <param name="length">The allowed length of the masked input.</param>
       /// <param name="converterFunction">The converter function to get a value from the input string.</param>
       /// <returns>The input as value of type <see cref="T"/></returns>
-      public T ReadLine<T>(int length, Func<string, T> converterFunction)
+      public T ReadLine(int length, Func<string, T> converterFunction)
       {
          return ConvertedValue(length, defaultPlaceHolder, converterFunction);
       }
@@ -233,13 +214,13 @@ namespace ConsoLovers.ConsoleToolkit
          MoveCursor(-abs, leftPadding);
       }
 
-      private T ConvertedValue<T>(int length, char placeHolder, Func<string, T> converterFunction)
+      private T ConvertedValue(int length, char placeHolder, Func<string, T> converterFunction)
       {
          while (true)
          {
             try
             {
-               var stringValue = ReadInternal<T>(length, placeHolder, true);
+               var stringValue = ReadInternal(length, placeHolder, true);
                var value = converterFunction(stringValue);
 
                return value;
@@ -258,7 +239,7 @@ namespace ConsoLovers.ConsoleToolkit
          Console.SetCursorPosition(allowedMoves, Console.CursorTop);
       }
 
-      private string ReadInternal<T>(int length, char placeHolder, bool newline)
+      private string ReadInternal(int length, char placeHolder, bool newline)
       {
          Label?.Print();
 
@@ -291,7 +272,7 @@ namespace ConsoLovers.ConsoleToolkit
                continue;
             }
 
-            if (IsValidInput(key) && ValidForType<T>(key))
+            if (IsValidInput(key) && ValidForType(key))
             {
                if (length > 0 && length <= resultBuilder.Length)
                   continue;
@@ -303,14 +284,6 @@ namespace ConsoLovers.ConsoleToolkit
                   return ReturnResult(newline, resultBuilder);
             }
          }
-      }
-
-      private bool ValidForType<T>(ConsoleKeyInfo key)
-      {
-         if (typeof(T) == typeof(int))
-            return char.IsDigit(key.KeyChar);
-
-         return true;
       }
 
       private string ReturnResult(bool newline, StringBuilder resultBuilder)
@@ -330,6 +303,23 @@ namespace ConsoLovers.ConsoleToolkit
          originalBackground = Console.BackgroundColor;
          Console.BackgroundColor = Background;
          Console.ForegroundColor = Foreground;
+      }
+
+      private bool ValidForType(ConsoleKeyInfo key)
+      {
+         if (typeof(T) == typeof(int))
+            return char.IsDigit(key.KeyChar);
+
+         if (typeof(T) == typeof(double))
+            return char.IsDigit(key.KeyChar) || key.KeyChar == '.';
+
+         if (typeof(T) == typeof(bool))
+         {
+            var lower = char.ToLower(key.KeyChar);
+            return lower == 't' || lower == 'r' || lower == 'u' || lower == 'e' || lower == 'f' || lower == 'a' || lower == 'l' || lower == 's';
+         }
+
+         return true;
       }
 
       #endregion
