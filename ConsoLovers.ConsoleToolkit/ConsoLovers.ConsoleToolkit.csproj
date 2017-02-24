@@ -48,6 +48,7 @@
     <Compile Include="Console\IConsoleBuffer.cs" />
     <Compile Include="Console\Win32Console.cs" />
     <Compile Include="IConsoleApplication.cs" />
+    <Compile Include="InputLabel.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="CommandLineArguments\ArgumentAttribute.cs" />
     <Compile Include="CommandLineArguments\ArgumentHelp.cs" />

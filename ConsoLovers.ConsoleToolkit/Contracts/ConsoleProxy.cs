@@ -1,18 +1,29 @@
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ConsoleProxy.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2017
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
+
 namespace ConsoLovers.ConsoleToolkit.Contracts
 {
    using System;
 
-   /// <summary>The most simple implementation of the <see cref="IConsole"/> interface that is forwarding all calls directly to the <see cref="Console"/>, and provides some extra features
+   /// <summary>
+   ///    The most simple implementation of the <see cref="IConsole"/> interface that is forwarding all calls directly to the <see cref="Console"/>, and provides some extra
+   ///    features
    /// </summary>
-   /// <seealso cref="ConsoLovers.ConsoleToolkit.Contracts.IConsole" />
+   /// <seealso cref="ConsoLovers.ConsoleToolkit.Contracts.IConsole"/>
    public class ConsoleProxy : IConsole
    {
+      #region IConsole Members
+
       public ConsoleColor BackgroundColor
       {
          get
          {
             return Console.BackgroundColor;
          }
+
          set
          {
             Console.BackgroundColor = value;
@@ -25,6 +36,7 @@ namespace ConsoLovers.ConsoleToolkit.Contracts
          {
             return Console.CursorLeft;
          }
+
          set
          {
             Console.CursorLeft = value;
@@ -37,6 +49,7 @@ namespace ConsoLovers.ConsoleToolkit.Contracts
          {
             return Console.CursorTop;
          }
+
          set
          {
             Console.CursorTop = value;
@@ -49,6 +62,7 @@ namespace ConsoLovers.ConsoleToolkit.Contracts
          {
             return Console.ForegroundColor;
          }
+
          set
          {
             Console.ForegroundColor = value;
@@ -61,6 +75,7 @@ namespace ConsoLovers.ConsoleToolkit.Contracts
          {
             return Console.WindowWidth;
          }
+
          set
          {
             Console.WindowWidth = value;
@@ -252,7 +267,6 @@ namespace ConsoLovers.ConsoleToolkit.Contracts
 
       public void WriteLine(string format, object arg0, object arg1, object arg2)
       {
-
          Console.WriteLine(format, arg0, arg1, arg2);
       }
 
@@ -260,5 +274,7 @@ namespace ConsoLovers.ConsoleToolkit.Contracts
       {
          Console.WriteLine(format, arg0, arg1, arg2, arg3);
       }
+
+      #endregion
    }
 }

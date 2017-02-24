@@ -8,6 +8,9 @@
    {
       static void Main()
       {
+         int inty = new InputBox("Enter an integer: ").ReadLine<int>();
+         Console.WriteLine(inty);
+
          var text = new InputBox("Enter some long text: ").ReadLine();
          Console.WriteLine(text);
 
