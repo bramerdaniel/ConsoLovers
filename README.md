@@ -5,10 +5,10 @@ The ConsoLovers.ConsoleToolkit is a collection of several independant tools that
 </p>
 
 ## Main features are:
-* A [ConsoleMenu](https://github.com/bramerdaniel/ConsoLovers/blob/master/ConsoLovers/Menu/ConsoleMenu.cs) that supports Keyboard and Mouse selection.
+* A [ConsoleMenu](https://github.com/bramerdaniel/ConsoLovers/blob/master/ConsoLovers.ConsoleToolkit/Menu/ConsoleMenu.cs) that supports Keyboard and Mouse selection.
   The menu is extremely customizable, supports color themes, index navigation and much more...
 * A CommandLineEngine that offers parsing of command line arguments and mapping them to properties of a class 
-* A [MaskedInput](https://github.com/bramerdaniel/ConsoLovers/blob/master/ConsoLovers/InputMask.cs) class that can be used for password scenarios.
+* A [InputBox](https://github.com/bramerdaniel/ConsoLovers/blob/master/ConsoLovers.ConsoleToolkit/InputBox.cs) class that can be used for password scenarios.
 
 ## Usage
 The ConsoleToolkit is also available on nuget [here](https://www.nuget.org/packages/ConsoLovers.ConsoleToolkit)
