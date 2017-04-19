@@ -43,7 +43,9 @@
   <ItemGroup>
     <Compile Include="ConsoleApplicationManager.cs" />
     <Compile Include="ConsoleApplicationWith.cs" />
+    <Compile Include="ConsoleWindowHeightAttribute.cs" />
     <Compile Include="ConsoleWindowTitleAttribute.cs" />
+    <Compile Include="ConsoleWindowWidthAttribute.cs" />
     <Compile Include="Console\ConsoleBuffer.cs" />
     <Compile Include="Console\IConsoleBuffer.cs" />
     <Compile Include="Console\Win32Console.cs" />

@@ -69,6 +69,28 @@ namespace ConsoLovers.ConsoleToolkit
          var title = applicationType.GetCustomAttribute(typeof(ConsoleWindowTitleAttribute)) as ConsoleWindowTitleAttribute;
          if (title != null)
             System.Console.Title = title.Title;
+
+         try
+         {
+            var height = applicationType.GetCustomAttribute(typeof(ConsoleWindowHeightAttribute)) as ConsoleWindowHeightAttribute;
+            if (height != null)
+               System.Console.WindowHeight = height.ConsoleHeight;
+         }
+         catch
+         {
+            // ignored
+         }
+
+         try
+         {
+            var width = applicationType.GetCustomAttribute(typeof(ConsoleWindowWidthAttribute)) as ConsoleWindowWidthAttribute;
+            if (width != null)
+               System.Console.WindowWidth = width.ConsoleWidth;
+         }
+         catch
+         {
+            // ignored
+         }
       }
 
       #endregion
