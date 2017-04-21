@@ -34,7 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ShellProgressBar, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ShellProgressBar.3.0.0.0\lib\NET4\ShellProgressBar.dll</HintPath>
+      <HintPath>..\..\packages\ShellProgressBar.3.0.0.0\lib\NET4\ShellProgressBar.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
