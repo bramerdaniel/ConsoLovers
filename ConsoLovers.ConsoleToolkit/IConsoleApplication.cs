@@ -23,6 +23,7 @@ namespace ConsoLovers.ConsoleToolkit
    {
       #region Public Methods and Operators
 
+      /// <summary>Runs the application .</summary>
       void Run();
 
       #endregion
