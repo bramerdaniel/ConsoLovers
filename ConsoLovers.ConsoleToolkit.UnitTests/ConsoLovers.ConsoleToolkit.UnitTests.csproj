@@ -68,7 +68,15 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="ArgumentEngine\ApplicationArgs.cs" />
+    <Compile Include="ArgumentEngine\ArgumentEngineSetup.cs" />
+    <Compile Include="ArgumentEngine\ArgumentInfoTests.cs" />
+    <Compile Include="ArgumentEngine\ArgumentMapperSetup.cs" />
+    <Compile Include="ArgumentEngine\CommandLinerParserSetup.cs" />
+    <Compile Include="ArgumentEngine\CommandMapperTests.cs" />
     <Compile Include="ArgumentEngine\CovertValueTests.cs" />
+    <Compile Include="ArgumentEngine\EngineFactorySetup.cs" />
+    <Compile Include="ArgumentEngine\ExecuteArgs.cs" />
     <Compile Include="ArgumentEngine\Map.cs" />
     <Compile Include="ArgumentEngine\MapArgumentTests.cs" />
     <Compile Include="ArgumentEngine\MapCommandTests.cs" />
@@ -76,7 +84,27 @@
     <Compile Include="ArgumentEngine\EngineTestBase.cs" />
     <Compile Include="ArgumentEngine\Setup.cs" />
     <Compile Include="Class1.cs" />
+    <Compile Include="DIContainer\AttributePropertySelectionStrategyTests.cs" />
+    <Compile Include="DIContainer\AttributSelectionStrategyTests.cs" />
+    <Compile Include="DIContainer\CombinedSelectionStrategyTests.cs" />
+    <Compile Include="DIContainer\ContainerTests.cs" />
+    <Compile Include="DIContainer\LifetimeContextTests.cs" />
+    <Compile Include="DIContainer\MostParametersSelectionStrategyTests.cs" />
+    <Compile Include="DIContainer\Testclasses\Demo.cs" />
+    <Compile Include="DIContainer\Testclasses\HaveDependancies.cs" />
+    <Compile Include="DIContainer\Testclasses\IDemo.cs" />
+    <Compile Include="DIContainer\Testclasses\IHaveDependencies.cs" />
+    <Compile Include="DIContainer\Testclasses\MultipleConstructorAttributes.cs" />
+    <Compile Include="DIContainer\Testclasses\NoAttributes.cs" />
+    <Compile Include="DIContainer\Testclasses\NoDependanceAttribute.cs" />
+    <Compile Include="DIContainer\Testclasses\ObjectToBuild.cs" />
+    <Compile Include="DIContainer\Testclasses\OneAttribute.cs" />
+    <Compile Include="DIContainer\Testclasses\PropertyInjection.cs" />
+    <Compile Include="DIContainer\Testclasses\Simple.cs" />
+    <Compile Include="DIContainer\Testclasses\TestServiceProvider.cs" />
     <Compile Include="Map.cs" />
+    <Compile Include="MapWithCommands.cs" />
+    <Compile Include="MapWithGeneticCommands.cs" />
     <Compile Include="Menu\WriteMenu.cs" />
     <Compile Include="NormalizeArguments.cs" />
     <Compile Include="Parse.cs" />

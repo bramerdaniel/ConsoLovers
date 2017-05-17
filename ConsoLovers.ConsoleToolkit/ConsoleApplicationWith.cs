@@ -13,9 +13,9 @@ namespace ConsoLovers.ConsoleToolkit
 
    /// <summary>Base class for console applications with command line parameters</summary>
    /// <typeparam name="T">The type of the parameter class</typeparam>
-   /// <seealso cref="ConsoLovers.ConsoleToolkit.IApplication{T}" />
-   /// <seealso cref="ConsoLovers.ConsoleToolkit.IArgumentInitializer{T}" />
-   /// <seealso cref="ConsoLovers.ConsoleToolkit.IExeptionHandler" />
+   /// <seealso cref="ConsoLovers.ConsoleToolkit.IApplication{T}"/>
+   /// <seealso cref="ConsoLovers.ConsoleToolkit.IArgumentInitializer{T}"/>
+   /// <seealso cref="ConsoLovers.ConsoleToolkit.IExeptionHandler"/>
    public abstract class ConsoleApplicationWith<T> : IApplication<T>, IArgumentInitializer<T>, IExeptionHandler
       where T : class
 
@@ -24,20 +24,25 @@ namespace ConsoLovers.ConsoleToolkit
 
       private T arguments;
 
-
       #endregion
 
       #region IApplication Members
 
       public virtual void Run()
       {
+         ICommand command;
+         if (TryGetCommand(arguments, out command))
+         {
+            command.Execute();
+         }
+
          if (HasArguments)
          {
-            RunWithoutArguments();
+            RunWith(arguments);
          }
          else
          {
-            RunWith(arguments);
+            RunWithoutArguments();
          }
       }
 
@@ -94,14 +99,14 @@ namespace ConsoLovers.ConsoleToolkit
 
       public static IConsole Console { get; } = new ConsoleProxy();
 
+      /// <summary>Gets a value indicating whether this application was called with arguments.</summary>
+      public bool HasArguments { get; private set; }
+
       #endregion
 
       #region Properties
 
       protected ICommandLineEngine CommandLineEngine { get; set; } = new CommandLineEngine();
-
-      /// <summary>Gets a value indicating whether this application was called with arguments.</summary>
-      public bool HasArguments { get; private set; }
 
       #endregion
 
@@ -128,6 +133,25 @@ namespace ConsoLovers.ConsoleToolkit
       {
          Console.WriteLine(waitText);
          Console.ReadLine();
+      }
+
+      private bool TryGetCommand(T args, out ICommand command)
+      {
+         foreach (var propertyInfo in typeof(T).GetProperties())
+         {
+            if (propertyInfo.PropertyType.GetInterface(typeof(ICommand).FullName) != null)
+            {
+               var value = propertyInfo.GetValue(args) as ICommand;
+               if (value != null)
+               {
+                  command = value;
+                  return true;
+               }
+            }
+         }
+
+         command = null;
+         return false;
       }
 
       #endregion

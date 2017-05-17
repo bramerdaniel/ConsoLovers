@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="CommandAttribute.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2016
+//    Copyright (c) ConsoLovers  2015 - 2017
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -10,7 +10,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
    using System.Text;
 
    /// <summary>Attribute for defining a command line options (boolean flags)</summary>
-   [AttributeUsage(AttributeTargets.Property, Inherited = true, AllowMultiple = true)]
+   [AttributeUsage(AttributeTargets.Property, Inherited = true, AllowMultiple = false)]
    public class CommandAttribute : CommandLineAttribute
    {
       #region Constructors and Destructors
@@ -42,6 +42,9 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       #endregion
 
       #region Public Properties
+
+      /// <summary>Gets or sets a value indicating whether this command is the default command and is used when no command is specified.</summary>
+      public bool IsDefaultCommand { get; set; }
 
       /// <summary>Gets or sets a value indicating whether the command is optional.</summary>
       public bool Optional { get; set; }

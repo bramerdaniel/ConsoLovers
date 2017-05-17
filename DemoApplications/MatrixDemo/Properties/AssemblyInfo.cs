@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("MatrixDemo")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("KUKA Roboter GmbH")]
+[assembly: AssemblyCompany("ConsoLovers")]
 [assembly: AssemblyProduct("MatrixDemo")]
-[assembly: AssemblyCopyright("Copyright © KUKA Roboter GmbH 2016")]
+[assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

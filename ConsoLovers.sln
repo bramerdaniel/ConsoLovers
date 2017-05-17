@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MouseInputDemo", "DemoAppli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleBufferDemo", "ConsoleBufferDemo\ConsoleBufferDemo.csproj", "{9871FEC7-7A7C-4AA3-9444-8F9630414127}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandLineEngineDemo", "CommandLineEngineDemo\CommandLineEngineDemo.csproj", "{88539BCD-2FFB-41ED-BF95-1C97D0073975}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,10 @@ Global
 		{9871FEC7-7A7C-4AA3-9444-8F9630414127}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9871FEC7-7A7C-4AA3-9444-8F9630414127}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9871FEC7-7A7C-4AA3-9444-8F9630414127}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88539BCD-2FFB-41ED-BF95-1C97D0073975}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88539BCD-2FFB-41ED-BF95-1C97D0073975}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88539BCD-2FFB-41ED-BF95-1C97D0073975}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88539BCD-2FFB-41ED-BF95-1C97D0073975}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -97,5 +103,6 @@ Global
 		{E96031E2-12C5-4303-8F8B-D71FA4AEF9A2} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
 		{E7BE477E-90BD-4BE9-ADD0-0A09D98546CC} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
 		{9871FEC7-7A7C-4AA3-9444-8F9630414127} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
+		{88539BCD-2FFB-41ED-BF95-1C97D0073975} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
 	EndGlobalSection
 EndGlobal

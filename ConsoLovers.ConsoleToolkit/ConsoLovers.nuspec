@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>ConsoLovers.ConsoleToolkit</id>
-    <version>1.0.0.1</version>
+    <version>1.0.0.2</version>
     <title>ConsoLovers.ConsoleToolkit</title>
     <authors>danielbramer</authors>
     <owners>danielbramer</owners>
@@ -21,6 +21,8 @@
        - CommandLineEngine
        - InputBox
        - ConsoleBuffer
+       - ConsoleApplicationWith{T}
+       - ConsoleApplicationManager
     </releaseNotes>
     <copyright>Copyright 2016</copyright>
     <tags>Console Shell Menu ConsoleMenu ConsoleToolkit .Net Password CommandLineAgrument CommandLineArguments CommandLineParser InputBox</tags>

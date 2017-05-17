@@ -10,6 +10,8 @@ namespace ConsoLovers.ConsoleToolkit
    using System.Diagnostics;
    using System.Reflection;
 
+   using ConsoLovers.ConsoleToolkit.CommandLineArguments;
+
    public class ConsoleApplicationManager<T> : ConsoleApplicationManager
       where T : IApplication
    {
@@ -119,6 +121,8 @@ namespace ConsoLovers.ConsoleToolkit
          }
       }
 
+      protected IEngineFactory EngineFactory { get; set; } = new EngineFactory();
+
       /// <summary>Creates the instance of the application to run. 
       /// Override this method to create the <see cref="IApplication"/> instance by your own.</summary>
       /// <param name="type">The type of the application to run.</param>
@@ -126,7 +130,7 @@ namespace ConsoLovers.ConsoleToolkit
       /// <exception cref="System.InvalidOperationException"></exception>
       protected virtual IApplication CreateApplication(Type type)
       {
-         var instance = Activator.CreateInstance(type);
+         var instance = EngineFactory.CreateApplication(type);
          if (instance == null)
             throw new InvalidOperationException($"Could not create instance of type {type.FullName}");
 

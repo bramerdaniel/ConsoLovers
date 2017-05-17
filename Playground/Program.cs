@@ -14,6 +14,7 @@ namespace Playground
    using ConsoLovers.ConsoleToolkit;
    using ConsoLovers.ConsoleToolkit.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Console;
+   using ConsoLovers.ConsoleToolkit.Contracts;
 
    public class Program
    {
@@ -72,6 +73,8 @@ namespace Playground
 
       private static void Main(string[] args)
       {
+         new ConsoleProxy().WaitForKey(ConsoleKey.Escape);
+
          new ConsoleApplicationManager().Run(typeof(MyProgramLogic), args);
       }
 

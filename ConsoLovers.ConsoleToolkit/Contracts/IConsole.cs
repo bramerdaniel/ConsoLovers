@@ -23,6 +23,12 @@ namespace ConsoLovers.ConsoleToolkit.Contracts
 
       int WindowWidth { get; set; }
 
+      int WindowHeight{ get; set; }
+
+      int LargestWindowHeight { get; }
+
+      int LargestWindowWidth { get; }
+
       #endregion
 
       #region Public Methods and Operators
@@ -94,5 +100,7 @@ namespace ConsoLovers.ConsoleToolkit.Contracts
       void WriteLine(string value, ConsoleColor foreground, ConsoleColor background);
 
       void Beep();
+
+      void WaitForKey(ConsoleKey key);
    }
 }

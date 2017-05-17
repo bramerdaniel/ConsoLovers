@@ -41,6 +41,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandLineArguments\ArgumentClassInfo.cs" />
+    <Compile Include="CommandLineArguments\Extensions.cs" />
+    <Compile Include="CommandLineArguments\GenericCommand.cs" />
+    <Compile Include="CommandLineArguments\Command.cs" />
+    <Compile Include="CommandLineArguments\CommandMapper.cs" />
+    <Compile Include="CommandLineArguments\ICommand.cs" />
+    <Compile Include="CommandLineArguments\ICommandLineEngine.cs" />
+    <Compile Include="CommandLineArguments\IEngineFactory.cs" />
+    <Compile Include="CommandLineArguments\EngineFactory.cs" />
     <Compile Include="ConsoleApplicationManager.cs" />
     <Compile Include="ConsoleApplicationWith.cs" />
     <Compile Include="ConsoleWindowHeightAttribute.cs" />
@@ -49,6 +58,30 @@
     <Compile Include="Console\ConsoleBuffer.cs" />
     <Compile Include="Console\IConsoleBuffer.cs" />
     <Compile Include="Console\Win32Console.cs" />
+    <Compile Include="DIContainer\Container.cs" />
+    <Compile Include="DIContainer\ContainerEntry.cs" />
+    <Compile Include="DIContainer\ContainerOptions.cs" />
+    <Compile Include="DIContainer\DependencyAttribute.cs" />
+    <Compile Include="DIContainer\FluentSyntax.cs" />
+    <Compile Include="DIContainer\IContainer.cs" />
+    <Compile Include="DIContainer\IExtendedContainer.cs" />
+    <Compile Include="DIContainer\IFluentInterface.cs" />
+    <Compile Include="DIContainer\ILifetimeContext.cs" />
+    <Compile Include="DIContainer\ILifetimeContextFactory.cs" />
+    <Compile Include="DIContainer\InjectionConstructorAttribute.cs" />
+    <Compile Include="DIContainer\Lifetime.cs" />
+    <Compile Include="DIContainer\LifetimeContext.cs" />
+    <Compile Include="DIContainer\LifetimeContextFactory.cs" />
+    <Compile Include="DIContainer\MostParametersSelectionStrategy.cs" />
+    <Compile Include="DIContainer\RegistrationException.cs" />
+    <Compile Include="DIContainer\Strategies\AttributePropertySelectionStrategy.cs" />
+    <Compile Include="DIContainer\Strategies\AttributSelectionStrategy.cs" />
+    <Compile Include="DIContainer\Strategies\CombinedSelectionStrategy.cs" />
+    <Compile Include="DIContainer\Strategies\ConstructorSelectionStrategies.cs" />
+    <Compile Include="DIContainer\Strategies\ConstructorSelectionStrategy.cs" />
+    <Compile Include="DIContainer\Strategies\PropertySelectionStrategies.cs" />
+    <Compile Include="DIContainer\Strategies\PropertySelectionStrategy.cs" />
+    <Compile Include="DIContainer\Strategies\ReflectionExtensions.cs" />
     <Compile Include="IConsoleApplication.cs" />
     <Compile Include="InputLabel.cs" />
     <Compile Include="Properties\Annotations.cs" />
