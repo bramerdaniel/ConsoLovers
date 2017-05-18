@@ -8,9 +8,11 @@ namespace ConsoLovers.ConsoleToolkit.DIContainer
 {
    using System;
    using System.Collections.Generic;
+   using System.Diagnostics;
    using System.Linq;
 
    /// <summary>Helper class that is representing an container entry</summary>
+   [DebuggerDisplay("{Name} => {ServiceType}")]
    public class ContainerEntry : IContainerEntry
    {
       #region Constants and Fields

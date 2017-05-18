@@ -4,13 +4,23 @@
 
    using ConsoLovers.ConsoleToolkit.DIContainer;
 
+   using JetBrains.Annotations;
+
    public class EngineFactory : IEngineFactory
    {
       private readonly IContainer container;
 
       public EngineFactory()
+         :this(new Container())
       {
-         container = new Container();
+      }
+
+      public EngineFactory([NotNull] IContainer container)
+      {
+         if (container == null)
+            throw new ArgumentNullException(nameof(container));
+         this.container = container;
+
          container.Register<IEngineFactory>(this).WithLifetime(Lifetime.Singleton);
          container.Register<ICommandLineEngine, CommandLineEngine>().WithLifetime(Lifetime.Singleton);
       }

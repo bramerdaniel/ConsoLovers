@@ -87,6 +87,7 @@
     <Compile Include="DIContainer\Strategies\PropertySelectionStrategies.cs" />
     <Compile Include="DIContainer\Strategies\PropertySelectionStrategy.cs" />
     <Compile Include="DIContainer\Strategies\ReflectionExtensions.cs" />
+    <Compile Include="FluentConsoleApplicationManager.cs" />
     <Compile Include="IConsoleApplication.cs" />
     <Compile Include="InputLabel.cs" />
     <Compile Include="Properties\Annotations.cs" />
@@ -191,7 +192,9 @@
     <Resource Include="Resources\Icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ConsoLovers.nuspec" />
+    <None Include="ConsoLovers.nuspec">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

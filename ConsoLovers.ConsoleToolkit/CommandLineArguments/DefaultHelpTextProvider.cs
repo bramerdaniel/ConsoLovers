@@ -15,7 +15,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
    using JetBrains.Annotations;
 
-   internal class DefaultHelpTextProvider : IHelpTextProvider
+   public class DefaultHelpTextProvider : IHelpTextProvider
    {
       #region Constants and Fields
 
@@ -27,7 +27,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
       #region IHelpTextProvider Members
 
-      public void WriteHeader()
+      public virtual void WriteHeader()
       {
          if (type.IsCommandType())
          {
@@ -43,11 +43,6 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          }
 
 
-      }
-
-      public void WriteNoHelpAvailable()
-      {
-         Console.WriteLine("No HelpTextAttributes found for help generation.");
       }
 
       private static string GetArgumentName(PropertyInfo info, ArgumentAttribute argumentAttribute, OptionAttribute optionAttribute, CommandAttribute commandAttribute)
@@ -149,7 +144,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       }
 
 
-      public void WriteArguments()
+      public virtual void WriteArguments()
       {
          var consoleWidth = GetConsoleWidth();
 
@@ -181,13 +176,13 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          }
       }
 
-      public void Initialize(Type helpType, ResourceManager resourceManager)
+      public virtual void Initialize(Type helpType, ResourceManager resourceManager)
       {
          type = helpType;
          this.resourceManager = resourceManager;
       }
 
-      public void WriteFooter()
+      public virtual void WriteFooter()
       {
       }
 

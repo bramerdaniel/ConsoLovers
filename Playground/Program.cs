@@ -74,8 +74,7 @@ namespace Playground
       private static void Main(string[] args)
       {
          new ConsoleProxy().WaitForKey(ConsoleKey.Escape);
-
-         new ConsoleApplicationManager().Run(typeof(MyProgramLogic), args);
+         ConsoleApplicationManager.For<MyProgramLogic>().Run(args);
       }
 
       #endregion

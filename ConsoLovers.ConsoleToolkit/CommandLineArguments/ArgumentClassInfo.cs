@@ -19,8 +19,6 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
       public bool? hasCommands;
 
-      private readonly Type argumentType;
-
       private List<CommandInfo> commandInfos;
 
       private List<ParameterInfo> properties;
@@ -34,7 +32,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          if (argumentType == null)
             throw new ArgumentNullException(nameof(argumentType));
 
-         this.argumentType = argumentType;
+         ArgumentType = argumentType;
          Initialize();
       }
 
@@ -43,7 +41,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       #region Public Properties
 
       /// <summary>Gets the type of the class containing the argument definitions.</summary>
-      public Type ArgumentType => argumentType;
+      public Type ArgumentType { get; }
 
       public IReadOnlyCollection<CommandInfo> CommandInfos => commandInfos;
 
@@ -97,7 +95,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          commandInfos = new List<CommandInfo>();
          properties = new List<ParameterInfo>();
 
-         foreach (var propertyInfo in argumentType.GetProperties(BindingFlags.Instance | BindingFlags.Public))
+         foreach (var propertyInfo in ArgumentType.GetProperties(BindingFlags.Instance | BindingFlags.Public))
          {
             var attributes = (CommandLineAttribute[])propertyInfo.GetCustomAttributes(typeof(CommandLineAttribute), true);
             if (attributes.Any())

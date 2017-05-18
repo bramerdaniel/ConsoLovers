@@ -58,7 +58,7 @@ namespace ConsoLovers.ConsoleToolkit
          bool continueExecution = false;
          ICommand command;
 
-         if (TryGetCommand(arguments, out command))
+         if (TryGetCommand(out command))
             continueExecution = RunWithCommand(command);
 
          if(continueExecution)
@@ -92,7 +92,7 @@ namespace ConsoLovers.ConsoleToolkit
          return Activator.CreateInstance<T>();
       }
 
-      public void Initialize(T instance, string[] args)
+      public virtual void Initialize(T instance, string[] args)
       {
          HasArguments = args != null && args.Length > 0;
          arguments = CommandLineEngine.Map(args, instance);
@@ -161,13 +161,13 @@ namespace ConsoLovers.ConsoleToolkit
          Console.ReadLine();
       }
 
-      private bool TryGetCommand(T args, out ICommand command)
+      protected bool TryGetCommand(out ICommand command)
       {
          foreach (var propertyInfo in typeof(T).GetProperties())
          {
             if (propertyInfo.PropertyType.GetInterface(typeof(ICommand).FullName) != null)
             {
-               var value = propertyInfo.GetValue(args) as ICommand;
+               var value = propertyInfo.GetValue(arguments) as ICommand;
                if (value != null)
                {
                   command = value;
