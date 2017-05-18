@@ -21,9 +21,9 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
       private readonly Type argumentType;
 
-      private List<CommandArgumentInfo> commandProperties;
+      private List<CommandInfo> commandInfos;
 
-      private List<ArgumentInfo> properties;
+      private List<ParameterInfo> properties;
 
       #endregion
 
@@ -42,46 +42,84 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
       #region Public Properties
 
-      public IReadOnlyCollection<CommandArgumentInfo> CommandProperties => commandProperties;
+      /// <summary>Gets the type of the class containing the argument definitions.</summary>
+      public Type ArgumentType => argumentType;
 
-      public bool HasCommands => CommandProperties.Any();
+      public IReadOnlyCollection<CommandInfo> CommandInfos => commandInfos;
 
-      public IReadOnlyCollection<ArgumentInfo> Properties => properties;
+      public bool HasCommands => CommandInfos.Any();
+
+      public CommandInfo HelpCommand { get; private set; }
+
+      public IReadOnlyCollection<ParameterInfo> Properties => properties;
+
+      #endregion
+
+      #region Public Methods and Operators
+
+      public ParameterInfo GetParameterInfo(string name)
+      {
+         foreach (var parmeterInfo in Properties)
+         {
+            if (parmeterInfo.Identifiers.Any(identifier => string.Equals(name, identifier, StringComparison.InvariantCultureIgnoreCase)))
+               return parmeterInfo;
+         }
+
+         return null;
+      }
 
       #endregion
 
       #region Methods
 
+      private static ParameterInfo CreateInfo(PropertyInfo propertyInfo, CommandLineAttribute[] attributes)
+      {
+         foreach (var attribute in attributes)
+         {
+            var commandAttribute = attribute as CommandAttribute;
+            if (commandAttribute != null)
+               return new CommandInfo(propertyInfo, commandAttribute);
+
+            var argumentAttribute = attribute as ArgumentAttribute;
+            if (argumentAttribute != null)
+               return new ArgumentInfo(propertyInfo, argumentAttribute);
+
+            var optionAttribute = attribute as OptionAttribute;
+            if (optionAttribute != null)
+               return new OptionInfo(propertyInfo, optionAttribute);
+         }
+
+         return null;
+      }
+
       private void Initialize()
       {
-         commandProperties = new List<CommandArgumentInfo>();
-         properties = new List<ArgumentInfo>();
+         commandInfos = new List<CommandInfo>();
+         properties = new List<ParameterInfo>();
 
          foreach (var propertyInfo in argumentType.GetProperties(BindingFlags.Instance | BindingFlags.Public))
          {
-            var attributes = propertyInfo.GetCustomAttributes(typeof(CommandAttribute), true);
+            var attributes = (CommandLineAttribute[])propertyInfo.GetCustomAttributes(typeof(CommandLineAttribute), true);
             if (attributes.Any())
-               properties.Add(new ArgumentInfo { PropertyInfo = propertyInfo });
+            {
+               var parameterInfo = CreateInfo(propertyInfo, attributes);
+               properties.Add(parameterInfo);
 
-            var commandAttributes = attributes.OfType<CommandAttribute>().ToArray();
-            if (commandAttributes.Any())
-               commandProperties.Add(new CommandArgumentInfo { PropertyInfo = propertyInfo, CommandAttribute = commandAttributes.FirstOrDefault() });
+               var commandInfo = parameterInfo as CommandInfo;
+               if (commandInfo != null)
+               {
+                  commandInfos.Add(commandInfo);
+                  if (IsHelpCommand(propertyInfo))
+                     HelpCommand = commandInfo;
+               }
+            }
          }
       }
 
-      #endregion
-   }
-
-   public class CommandArgumentInfo : ArgumentInfo
-   {
-      public CommandAttribute CommandAttribute { get; set; }
-   }
-
-   public class ArgumentInfo
-   {
-      #region Public Properties
-      public PropertyInfo PropertyInfo { get; set; }
-
+      private bool IsHelpCommand(PropertyInfo propertyInfo)
+      {
+         return propertyInfo.PropertyType == typeof(HelpCommand);
+      }
 
       #endregion
    }

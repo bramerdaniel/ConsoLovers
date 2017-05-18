@@ -20,13 +20,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
    /// <summary>Main class that us is used for processing command line arguments</summary>
    public class CommandLineEngine : ICommandLineEngine
    {
-      #region ICommandLineEngine Members
-
-      internal CommandLineEngine()
-         :this(new EngineFactory())
-      {
-         
-      }
+      #region Constructors and Destructors
 
       [InjectionConstructor]
       public CommandLineEngine([NotNull] IEngineFactory engineFactory)
@@ -36,6 +30,15 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
          EngineFactory = engineFactory;
       }
+
+      internal CommandLineEngine()
+         : this(new EngineFactory())
+      {
+      }
+
+      #endregion
+
+      #region ICommandLineEngine Members
 
       /// <summary>Prints the help to the <see cref="Console"/>.</summary>
       /// <typeparam name="T">Type of the argument class to print the help for</typeparam>
@@ -77,24 +80,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ArgumentHelp"/></returns>
       public IEnumerable<ArgumentHelp> GetHelp<T>(ResourceManager resourceManager)
       {
-         PropertyInfo[] properties = typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public);
-         foreach (PropertyInfo info in properties)
-         {
-            var argumentAttribute = (ArgumentAttribute)info.GetCustomAttributes(typeof(ArgumentAttribute), true).FirstOrDefault();
-            var optionAttribute = (OptionAttribute)info.GetCustomAttributes(typeof(OptionAttribute), true).FirstOrDefault();
-            var commandAttribute = (CommandAttribute)info.GetCustomAttributes(typeof(CommandAttribute), true).FirstOrDefault();
-            var helpText = (HelpTextAttribute)info.GetCustomAttributes(typeof(HelpTextAttribute), true).FirstOrDefault();
-            if (helpText != null)
-            {
-               yield return new ArgumentHelp
-               {
-                  PropertyName = GetArgumentName(info, argumentAttribute, optionAttribute, commandAttribute),
-                  Aliases = GetAliases(argumentAttribute, optionAttribute, commandAttribute),
-                  UnlocalizedDescription = helpText.Description,
-                  LocalizedDescription = resourceManager?.GetString(helpText.ResourceKey)
-               };
-            }
-         }
+         return GetHelpForProperties(typeof(T), resourceManager);
       }
 
       /// <summary>Maps the specified arguments to a class of the given type.</summary>
@@ -125,7 +111,8 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       /// <param name="args">The arguments that should be mapped to the instance.</param>
       /// <param name="instance">The instance of <see cref="T"/> the args should be mapped to.</param>
       /// <returns>The created instance of the arguments class.</returns>
-      public T Map<T>(string[] args, T instance) where T : class
+      public T Map<T>(string[] args, T instance)
+         where T : class
       {
          return Map(args, instance, false);
       }
@@ -150,35 +137,47 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       /// <param name="resourceManager">The resource manager that will be used for localization.</param>
       public void PrintHelp<T>(ResourceManager resourceManager)
       {
-         var argumentHelps = GetHelp<T>(resourceManager).ToList();
-         if (argumentHelps.Count == 0)
-         {
-            Console.WriteLine("No HelpTextAttributes found for help generation.");
-            return;
-         }
+         PrintHelp(typeof(T), resourceManager);
+      }
 
-         int longestNameWidth = argumentHelps.Select(a => a.PropertyName.Length).Max() + 2;
-         int longestAliasWidth = argumentHelps.Select(a => a.AliasString.Length).Max() + 4;
-         var consoleWidth = Console.WindowWidth;
+      public void PrintHelp([NotNull] Type argumentType, ResourceManager resourceManager)
+      {
+         var helpTextProvider = GetGelpTextProvider(argumentType);
+         helpTextProvider.Initialize(argumentType, resourceManager);
 
-         int descriptionWidth = consoleWidth - longestNameWidth - longestAliasWidth;
-         int leftWidth = consoleWidth - descriptionWidth;
+         helpTextProvider.WriteHeader();
+         helpTextProvider.WriteArguments();
 
-         foreach (ArgumentHelp argumentHelp in argumentHelps)
-         {
-            var name = $"-{argumentHelp.PropertyName}".PadRight(longestNameWidth);
-            var aliasString = $"[{argumentHelp.AliasString}]".PadRight(longestAliasWidth);
+         //var argumentHelps = GetHelpForProperties(argumentType, resourceManager).ToList();
+         //if (argumentHelps.Count == 0)
+         //{
+         //   helpTextProvider.WriteNoHelpAvailable();
 
-            Console.Write("{0}{1}", name, aliasString);
+         //   return;
+         //}
 
-            var descriptionLines = GetWrappedStrings(argumentHelp.Description, descriptionWidth).ToList();
+         //int longestNameWidth = argumentHelps.Select(a => a.PropertyName.Length).Max() + 2;
+         //int longestAliasWidth = argumentHelps.Select(a => a.AliasString.Length).Max() + 4;
 
-            Console.WriteLine(descriptionLines[0]);
-            foreach (var part in descriptionLines.Skip(1))
-            {
-               Console.WriteLine(" ".PadLeft(leftWidth) + part);
-            }
-         }
+         //int descriptionWidth = consoleWidth - longestNameWidth - longestAliasWidth;
+         //int leftWidth = consoleWidth - descriptionWidth;
+
+
+         //foreach (ArgumentHelp argumentHelp in argumentHelps)
+         //{
+         //   var name = $"-{argumentHelp.PropertyName}".PadRight(longestNameWidth);
+         //   var aliasString = $"[{argumentHelp.AliasString}]".PadRight(longestAliasWidth);
+
+         //   Console.Write("{0}{1}", name, aliasString);
+
+         //   var descriptionLines = GetWrappedStrings(argumentHelp.Description, descriptionWidth).ToList();
+
+         //   Console.WriteLine(descriptionLines[0]);
+         //   foreach (var part in descriptionLines.Skip(1))
+         //      Console.WriteLine(" ".PadLeft(leftWidth) + part);
+         //}
+
+         helpTextProvider.WriteFooter();
       }
 
       #endregion
@@ -187,8 +186,61 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
       public CommandLineArgumentParser ArgumentParser { get; set; } = new CommandLineArgumentParser();
 
+      #endregion
+
+      #region Properties
+
       /// <summary>Gets the mapper factory.</summary>
       internal IEngineFactory EngineFactory { get; set; }
+
+      #endregion
+
+      #region Public Methods and Operators
+
+      public string GetHelpForClass([NotNull] Type argumentType, ResourceManager resourceManager)
+      {
+         if (argumentType == null)
+            throw new ArgumentNullException(nameof(argumentType));
+
+         var helpText = (HelpTextAttribute)argumentType.GetCustomAttributes(typeof(HelpTextAttribute), true).FirstOrDefault();
+         if (helpText != null)
+         {
+            if (resourceManager == null)
+               return helpText.Description;
+            resourceManager.GetString(helpText.ResourceKey);
+         }
+
+         return null;
+      }
+
+      /// <summary>Gets the help information for the class of the given type.</summary>
+      /// <param name="argumentType">The argument class for creating the help for</param>
+      /// <param name="resourceManager">The resource manager that will be used for localization</param>
+      /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ArgumentHelp"/></returns>
+      public IEnumerable<ArgumentHelp> GetHelpForProperties([NotNull] Type argumentType, ResourceManager resourceManager)
+      {
+         if (argumentType == null)
+            throw new ArgumentNullException(nameof(argumentType));
+
+         PropertyInfo[] properties = argumentType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+         foreach (PropertyInfo info in properties)
+         {
+            var argumentAttribute = (ArgumentAttribute)info.GetCustomAttributes(typeof(ArgumentAttribute), true).FirstOrDefault();
+            var optionAttribute = (OptionAttribute)info.GetCustomAttributes(typeof(OptionAttribute), true).FirstOrDefault();
+            var commandAttribute = (CommandAttribute)info.GetCustomAttributes(typeof(CommandAttribute), true).FirstOrDefault();
+            var helpText = (HelpTextAttribute)info.GetCustomAttributes(typeof(HelpTextAttribute), true).FirstOrDefault();
+            if (helpText != null)
+            {
+               yield return new ArgumentHelp
+               {
+                  PropertyName = GetArgumentName(info, argumentAttribute, optionAttribute, commandAttribute),
+                  Aliases = GetAliases(argumentAttribute, optionAttribute, commandAttribute),
+                  UnlocalizedDescription = helpText.Description,
+                  LocalizedDescription = resourceManager?.GetString(helpText.ResourceKey)
+               };
+            }
+         }
+      }
 
       #endregion
 
@@ -223,6 +275,18 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          return primaryName.ToLowerInvariant();
       }
 
+      private static int GetConsoleWidth()
+      {
+         try
+         {
+            return Console.WindowWidth;
+         }
+         catch
+         {
+            return 140;
+         }
+      }
+
       private static IEnumerable<string> GetWrappedStrings(string text, int maxLength)
       {
          if (text.Length < maxLength)
@@ -249,6 +313,14 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          }
 
          yield return builder.ToString();
+      }
+
+      private IHelpTextProvider GetGelpTextProvider(Type argumentType)
+      {
+         var type = (argumentType.GetCustomAttribute(typeof(HelpTextProviderAttribute)) as HelpTextProviderAttribute)?.Type;
+         var provider = type != null ? EngineFactory.CreateInstance(type) as IHelpTextProvider : new DefaultHelpTextProvider();
+
+         return provider;
       }
 
       #endregion

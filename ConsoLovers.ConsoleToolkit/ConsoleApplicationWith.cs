@@ -10,6 +10,9 @@ namespace ConsoLovers.ConsoleToolkit
 
    using ConsoLovers.ConsoleToolkit.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Contracts;
+   using ConsoLovers.ConsoleToolkit.DIContainer;
+
+   using JetBrains.Annotations;
 
    /// <summary>Base class for console applications with command line parameters</summary>
    /// <typeparam name="T">The type of the parameter class</typeparam>
@@ -22,7 +25,29 @@ namespace ConsoLovers.ConsoleToolkit
    {
       #region Constants and Fields
 
+      private readonly IEngineFactory factory;
+
       private T arguments;
+
+      private ICommandLineEngine commandLineEngine;
+
+      #endregion
+
+      #region Constructors and Destructors
+
+      protected ConsoleApplicationWith()
+         : this(new EngineFactory())
+      {
+      }
+
+      [InjectionConstructor]
+      protected ConsoleApplicationWith([NotNull] IEngineFactory factory)
+      {
+         if (factory == null)
+            throw new ArgumentNullException(nameof(factory));
+
+         this.factory = factory;
+      }
 
       #endregion
 
@@ -30,19 +55,22 @@ namespace ConsoLovers.ConsoleToolkit
 
       public virtual void Run()
       {
+         bool continueExecution = false;
          ICommand command;
-         if (TryGetCommand(arguments, out command))
-         {
-            command.Execute();
-         }
 
-         if (HasArguments)
+         if (TryGetCommand(arguments, out command))
+            continueExecution = RunWithCommand(command);
+
+         if(continueExecution)
          {
-            RunWith(arguments);
-         }
-         else
-         {
-            RunWithoutArguments();
+            if (HasArguments)
+            {
+               RunWith(arguments);
+            }
+            else
+            {
+               RunWithoutArguments();
+            }
          }
       }
 
@@ -99,21 +127,19 @@ namespace ConsoLovers.ConsoleToolkit
 
       public static IConsole Console { get; } = new ConsoleProxy();
 
+      protected ICommandLineEngine CommandLineEngine => commandLineEngine ?? (commandLineEngine = factory.CreateInstance<CommandLineEngine>());
+
       /// <summary>Gets a value indicating whether this application was called with arguments.</summary>
       public bool HasArguments { get; private set; }
 
       #endregion
 
-      #region Properties
-
-      protected ICommandLineEngine CommandLineEngine { get; set; } = new CommandLineEngine();
-
-      #endregion
-
       #region Public Methods and Operators
 
-      public static void WriteException(Exception exception)
+      public virtual bool RunWithCommand(ICommand command)
       {
+         command.Execute();
+         return false;
       }
 
       #endregion

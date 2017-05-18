@@ -83,7 +83,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       /// <exception cref="InvalidDataException">Option attribute can only be applied to boolean properties</exception>
       public T Map(IDictionary<string, CommandLineArgument> arguments)
       {
-         var instance = engineFactory.CreateArgumentInstance<T>();
+         var instance = engineFactory.CreateInstance<T>();
          return Map(arguments, instance);
       }
    }

@@ -42,10 +42,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandLineArguments\ArgumentClassInfo.cs" />
+    <Compile Include="CommandLineArguments\DefaultHelpTextProvider.cs" />
+    <Compile Include="CommandLineArguments\HelpTextProviderAttribute.cs" />
+    <Compile Include="CommandLineArguments\IHelpTextProvider.cs" />
+    <Compile Include="CommandLineArguments\ParameterInfo.cs" />
+    <Compile Include="CommandLineArguments\CommandInfo.cs" />
     <Compile Include="CommandLineArguments\Extensions.cs" />
     <Compile Include="CommandLineArguments\GenericCommand.cs" />
-    <Compile Include="CommandLineArguments\Command.cs" />
     <Compile Include="CommandLineArguments\CommandMapper.cs" />
+    <Compile Include="CommandLineArguments\HelpCommand.cs" />
     <Compile Include="CommandLineArguments\ICommand.cs" />
     <Compile Include="CommandLineArguments\ICommandLineEngine.cs" />
     <Compile Include="CommandLineArguments\IEngineFactory.cs" />

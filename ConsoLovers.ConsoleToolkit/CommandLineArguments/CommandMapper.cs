@@ -10,6 +10,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
    using System.Collections.Generic;
    using System.IO;
    using System.Linq;
+   using System.Reflection;
 
    using JetBrains.Annotations;
 
@@ -39,6 +40,11 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       public T Map(IDictionary<string, CommandLineArgument> arguments, T instance)
       {
          var argumentInfo = new ArgumentClassInfo(typeof(T));
+         if (ArgumentsContainHelpRequest(arguments, argumentInfo))
+         {
+            MapHelpOnly(instance, argumentInfo, arguments);
+            return instance;
+         }
 
          if (argumentInfo.HasCommands)
             MapCommands(instance, argumentInfo, arguments);
@@ -52,6 +58,37 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          return instance;
       }
 
+      private void MapHelpOnly(T instance, ArgumentClassInfo argumentInfo, IDictionary<string, CommandLineArgument> arguments)
+      {
+         var helpCommand = engineFactory.CreateInstance<HelpCommand>();
+         helpCommand.Arguments = new HelpArguments { ArgumentInfos = argumentInfo, ArgumentDictionary = arguments };
+         argumentInfo.HelpCommand.PropertyInfo.SetValue(instance, helpCommand);
+      }
+
+      private static bool ArgumentsContainHelpRequest(IDictionary<string, CommandLineArgument> arguments, ArgumentClassInfo argumentInfo)
+      {
+         if (argumentInfo.HelpCommand == null)
+            return false;
+
+         var helpCommandName = argumentInfo.HelpCommand.Attribute.Name;
+         if (arguments.ContainsKey(helpCommandName))
+         {
+            arguments.Remove(helpCommandName);
+            return true;
+         }
+
+         foreach (var aliase in argumentInfo.HelpCommand.Attribute.Aliases)
+         {
+            if (arguments.ContainsKey(aliase))
+            {
+               arguments.Remove(aliase);
+               return true;
+            }
+         }
+
+         return false;
+      }
+
       /// <summary>Maps the give argument dictionary to a new created instance.</summary>
       /// <param name="arguments">The arguments to map.</param>
       /// <returns>The instance of the class, the command line argument were mapped to</returns>
@@ -59,7 +96,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       /// <exception cref="InvalidDataException">Option attribute can only be applied to boolean properties</exception>
       public T Map(IDictionary<string, CommandLineArgument> arguments)
       {
-         var instance = engineFactory.CreateArgumentInstance<T>();
+         var instance = engineFactory.CreateInstance<T>();
          return Map(arguments, instance);
       }
 
@@ -67,13 +104,13 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
       #region Methods
 
-      private static CommandArgumentInfo GetCommandByName(ArgumentClassInfo argumentInfo, string commandName, IDictionary<string, CommandLineArgument> arguments)
+      private static CommandInfo GetCommandByName(ArgumentClassInfo argumentInfo, string commandName, IDictionary<string, CommandLineArgument> arguments)
       {
          if (commandName != null)
          {
-            foreach (var command in argumentInfo.CommandProperties)
+            foreach (var command in argumentInfo.CommandInfos)
             {
-               var commandAttribute = command.CommandAttribute;
+               var commandAttribute = command.Attribute;
 
                if (IsEqual(commandAttribute.Name, commandName))
                {
@@ -92,7 +129,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
             }
          }
 
-         return argumentInfo.CommandProperties.FirstOrDefault(c => c.CommandAttribute.IsDefaultCommand);
+         return argumentInfo.CommandInfos.FirstOrDefault(c => c.Attribute.IsDefaultCommand);
       }
 
       private static CommandLineArgument GetFirstArgument(IDictionary<string, CommandLineArgument> arguments)
@@ -112,32 +149,41 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          return string.Equals(declaredNameOrAlias, givenName, StringComparison.InvariantCultureIgnoreCase);
       }
 
-      private object CreateCommandInstance(CommandArgumentInfo commandArgumentInfo, IDictionary<string, CommandLineArgument> arguments)
+      private object CreateCommandInstance(CommandInfo commandInfo, IDictionary<string, CommandLineArgument> arguments)
       {
-         var commandType = commandArgumentInfo.PropertyInfo.PropertyType;
+         var commandType = commandInfo.PropertyInfo.PropertyType;
          if (!ImplementsICommand(commandType))
             throw new ArgumentException(
-               $"The type '{commandType}' of the property '{commandArgumentInfo.PropertyInfo.Name}' does not implemente the {typeof(ICommand).FullName} interface");
+               $"The type '{commandType}' of the property '{commandInfo.PropertyInfo.Name}' does not implemente the {typeof(ICommand).FullName} interface");
 
          Type argumentType;
          if (TryGetArgumentType(commandType, out argumentType))
          {
-            var argumentInstance = engineFactory.CreateArgumentInstance(argumentType);
+            var argumentInstance = engineFactory.CreateInstance(argumentType);
 
             var mapperType = typeof(ArgumentMapper<>);
             Type[] typeArgs = { argumentType };
             var genericType = mapperType.MakeGenericType(typeArgs);
-            object mapper = engineFactory.CreateArgumentInstance(genericType);
+            object mapper = engineFactory.CreateInstance(genericType);
 
-            var methodInfo = genericType.GetMethod("Map", new[] { typeof(IDictionary<string, CommandLineArgument>), argumentType });
-            methodInfo.Invoke(mapper, new[] { arguments, argumentInstance });
+            try
+            {
+               var methodInfo = genericType.GetMethod("Map", new[] { typeof(IDictionary<string, CommandLineArgument>), argumentType });
+               methodInfo.Invoke(mapper, new[] { arguments, argumentInstance });
+            }
+            catch (TargetInvocationException e)
+            {
+               var exception = e.InnerException as CommandLineArgumentException;
+               if (exception != null)
+                  throw exception;
+            }
 
-            var command = engineFactory.CreateArgumentInstance(commandType);
+            var command = engineFactory.CreateInstance(commandType);
             commandType.GetProperty("Arguments").SetValue(command, argumentInstance);
             return command;
          }
 
-         return engineFactory.CreateArgumentInstance(commandType);
+         return engineFactory.CreateInstance(commandType);
       }
 
       private bool TryGetArgumentType(Type commandType, out Type argumentType)

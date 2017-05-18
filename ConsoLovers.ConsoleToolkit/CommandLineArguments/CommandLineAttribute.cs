@@ -1,12 +1,13 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="CommandLineAttribute.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2016
+//    Copyright (c) ConsoLovers  2015 - 2017
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 {
    using System;
+   using System.Collections.Generic;
    using System.Xml.Serialization;
 
    /// <summary>Base attribute class for the usage with the <see cref="ArgumentMapper{T}"/> class.</summary>
@@ -41,6 +42,21 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       /// <summary>Gets the name of the argument.</summary>
       [XmlIgnore]
       public string Name { get; set; }
+
+      #endregion
+
+      #region Public Methods and Operators
+
+      public IEnumerable<string> GetIdentifiers()
+      {
+         yield return Name;
+
+         if (Aliases != null)
+         {
+            foreach (var aliase in Aliases)
+               yield return aliase;
+         }
+      }
 
       #endregion
    }

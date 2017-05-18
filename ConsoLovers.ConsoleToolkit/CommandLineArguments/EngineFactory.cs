@@ -12,6 +12,7 @@
       {
          container = new Container();
          container.Register<IEngineFactory>(this).WithLifetime(Lifetime.Singleton);
+         container.Register<ICommandLineEngine, CommandLineEngine>().WithLifetime(Lifetime.Singleton);
       }
 
       public virtual IArgumentMapper<T> CreateMapper<T>()
@@ -21,18 +22,13 @@
          return info.HasCommands ? (IArgumentMapper<T>)new CommandMapper<T>(this) : new ArgumentMapper<T>(this);
       }
 
-      public T CreateArgumentInstance<T>()
+      public T CreateInstance<T>()
          where T : class
       {
          return container.Create<T>();
       }
 
-      public object CreateArgumentInstance(Type type)
-      {
-         return container.Create(type);
-      }
-
-      public object CreateApplication(Type type)
+      public object CreateInstance(Type type)
       {
          return container.Create(type);
       }

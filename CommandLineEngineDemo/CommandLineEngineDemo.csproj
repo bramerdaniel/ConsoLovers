@@ -43,6 +43,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands.cs" />
+    <Compile Include="CrashCommand.cs" />
+    <Compile Include="CustomHelpCommand.cs" />
+    <Compile Include="CustomizedArgumentsHelpCommand.cs" />
+    <Compile Include="CustomizedHelpArgs.cs" />
+    <Compile Include="ExecuteArgs.cs" />
+    <Compile Include="ExecuteCommand.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

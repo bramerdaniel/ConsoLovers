@@ -22,13 +22,11 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       /// <summary>Creates an instance of the given argument type.</summary>
       /// <typeparam name="T">The type of the arguments</typeparam>
       /// <returns>The created instance</returns>
-      T CreateArgumentInstance<T>() where T : class;
+      T CreateInstance<T>() where T : class;
 
-      object CreateArgumentInstance(Type type);
+      object CreateInstance(Type type);
 
       #endregion
-
-      object CreateApplication(Type type);
    }
 
 

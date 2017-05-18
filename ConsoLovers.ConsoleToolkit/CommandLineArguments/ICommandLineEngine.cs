@@ -47,6 +47,11 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       /// <param name="resourceManager">The resource manager that will be used for localization.</param>
       void PrintHelp<T>(ResourceManager resourceManager);
 
+      /// <summary>Prints the help to the <see cref="Console"/>.</summary>
+      /// <param name="argumentType">Type of the argument class to print the help for</param>
+      /// <param name="resourceManager">The resource manager that will be used for localization.</param>
+      void PrintHelp(Type argumentType, ResourceManager resourceManager);
+
       /// <summary>Prints the help to the <see cref="Console" />.</summary>
       /// <typeparam name="T">Type of the argument class to print the help for</typeparam>
       /// <param name="resourceManager">The resource manager that will be used for localization.</param>

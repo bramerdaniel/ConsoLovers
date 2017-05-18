@@ -3,19 +3,26 @@
 //    Copyright (c) ConsoLovers  2015 - 2017
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 {
    using System;
+   using System.Linq;
 
    public static class Extensions
    {
-      public static bool Implements<T>(this Type type) where T : class
-      {
-         var interfaceType = typeof(T);
-         if ((interfaceType == null) || !interfaceType.IsInterface)
-            throw new ArgumentException("Only interfaces can be 'implemented'.");
+      #region Public Methods and Operators
 
-         return type.IsAssignableFrom(interfaceType);
+      public static bool IsCommandType(this Type type)
+      {
+         var command = type.GetInterface(typeof(ICommand).FullName);
+         if (command != null)
+            return true;
+
+         command = type.GetInterface(typeof(ICommand<>).FullName);
+         return command != null;
       }
+
+      #endregion
    }
 }

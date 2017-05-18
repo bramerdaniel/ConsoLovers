@@ -4,8 +4,10 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
+namespace ConsoLovers.UnitTests.ArgumentEngine
 {
+   using ConsoLovers.ConsoleToolkit.CommandLineArguments;
+
    /// <summary>Base class for a command that does not required any arguments</summary>
    /// <seealso cref="ConsoLovers.ConsoleToolkit.CommandLineArguments.ICommand"/>
    public class Command : ICommand

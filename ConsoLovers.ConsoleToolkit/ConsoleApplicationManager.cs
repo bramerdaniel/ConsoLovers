@@ -49,6 +49,7 @@ namespace ConsoLovers.ConsoleToolkit
       public IApplication Run(Type applicationType, string[] args)
       {
          ApplyAttributes(applicationType);
+
          var application = CreateApplication(applicationType);
 
          try
@@ -130,7 +131,7 @@ namespace ConsoLovers.ConsoleToolkit
       /// <exception cref="System.InvalidOperationException"></exception>
       protected virtual IApplication CreateApplication(Type type)
       {
-         var instance = EngineFactory.CreateApplication(type);
+         var instance = EngineFactory.CreateInstance(type);
          if (instance == null)
             throw new InvalidOperationException($"Could not create instance of type {type.FullName}");
 
