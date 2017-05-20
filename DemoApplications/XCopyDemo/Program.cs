@@ -6,6 +6,8 @@ namespace XCopyDemo
 
    using ConsoLovers.ConsoleToolkit;
 
+   [ConsoleWindowWidth(120)]
+   [ConsoleWindowHeight(80)]
    class Program : ConsoleApplicationWith<CopyArguments>
    {
       // Call it with different arguments

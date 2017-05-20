@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>ConsoLovers.ConsoleToolkit</id>
-    <version>1.0.0.0</version>
+    <version>2.0.0-beta</version>
     <title>ConsoLovers.ConsoleToolkit</title>
     <authors>danielbramer</authors>
     <owners>danielbramer</owners>
@@ -12,6 +12,7 @@
     <description>$description$</description>
     <releaseNotes>
        - Fixed color in default menu
+       - Added posibility for ConsoleApplication's to react on calls without arguments 
 
        Most important classes are:
        - ConsoleMenu
@@ -20,8 +21,10 @@
        - CommandLineEngine
        - InputBox
        - ConsoleBuffer
+       - ConsoleApplicationWith{T}
+       - ConsoleApplicationManager
     </releaseNotes>
     <copyright>Copyright 2016</copyright>
-    <tags>Console Shell Menu ConsoleMenu ConsoleToolkit .Net Password CommandLineAgrument CommandLineArguments CommandLineParser</tags>
+    <tags>Console Shell Menu ConsoleMenu ConsoleToolkit .Net Password CommandLineAgrument CommandLineArguments CommandLineParser InputBox</tags>
   </metadata>
 </package>

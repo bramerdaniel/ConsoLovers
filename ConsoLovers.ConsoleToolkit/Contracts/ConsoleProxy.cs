@@ -82,6 +82,22 @@ namespace ConsoLovers.ConsoleToolkit.Contracts
          }
       }
 
+      public int WindowHeight
+      {
+         get
+         {
+            return Console.WindowHeight;
+         }
+
+         set
+         {
+            Console.WindowHeight = value;
+         }
+      }
+
+      public int LargestWindowHeight => Console.LargestWindowHeight;
+      public int LargestWindowWidth => Console.LargestWindowWidth;
+
       public void Clear()
       {
          Console.Clear();
@@ -188,6 +204,13 @@ namespace ConsoLovers.ConsoleToolkit.Contracts
       public void Beep()
       {
          Console.Beep();
+      }
+
+      public void WaitForKey(ConsoleKey key)
+      {
+         while (ReadKey(true).Key != key)
+         {
+         }
       }
 
       public void WriteLine(bool value)

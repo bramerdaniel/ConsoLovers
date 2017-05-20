@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="CommandLineEngine.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2016
+//    Copyright (c) ConsoLovers  2015 - 2017
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -13,22 +13,38 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
    using System.Resources;
    using System.Text;
 
+   using ConsoLovers.ConsoleToolkit.DIContainer;
+
+   using JetBrains.Annotations;
+
    /// <summary>Main class that us is used for processing command line arguments</summary>
    public class CommandLineEngine : ICommandLineEngine
    {
-      #region Public Properties
+      #region Constructors and Destructors
 
-      public CommandLineArgumentParser ArgumentParser { get; set; } = new CommandLineArgumentParser();
+      [InjectionConstructor]
+      public CommandLineEngine([NotNull] IEngineFactory engineFactory)
+      {
+         if (engineFactory == null)
+            throw new ArgumentNullException(nameof(engineFactory));
+
+         EngineFactory = engineFactory;
+      }
+
+      internal CommandLineEngine()
+         : this(new EngineFactory())
+      {
+      }
 
       #endregion
 
-      #region Public Methods and Operators
+      #region ICommandLineEngine Members
 
-      /// <summary>Prints the help to the <see cref="Console" />.</summary>
+      /// <summary>Prints the help to the <see cref="Console"/>.</summary>
       /// <typeparam name="T">Type of the argument class to print the help for</typeparam>
       /// <param name="resourceManager">The resource manager that will be used for localization.</param>
       /// <param name="consoleWidth">Width of the console.</param>
-      /// <returns>A <see cref="StringBuilder" /> containing the formatted help text.</returns>
+      /// <returns>A <see cref="StringBuilder"/> containing the formatted help text.</returns>
       public StringBuilder FormatHelp<T>(ResourceManager resourceManager, int consoleWidth)
       {
          var stringBuilder = new StringBuilder();
@@ -64,25 +80,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ArgumentHelp"/></returns>
       public IEnumerable<ArgumentHelp> GetHelp<T>(ResourceManager resourceManager)
       {
-         PropertyInfo[] properties = typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public);
-         foreach (PropertyInfo info in properties)
-         {
-            var argumentAttribute = (ArgumentAttribute)info.GetCustomAttributes(typeof(ArgumentAttribute), true).FirstOrDefault();
-            var optionAttribute = (OptionAttribute)info.GetCustomAttributes(typeof(OptionAttribute), true).FirstOrDefault();
-            var commandAttribute = (CommandAttribute)info.GetCustomAttributes(typeof(CommandAttribute), true).FirstOrDefault();
-            var helpText = (HelpTextAttribute)info.GetCustomAttributes(typeof(HelpTextAttribute), true).FirstOrDefault();
-            if (helpText != null)
-            {
-               yield return
-                  new ArgumentHelp
-                  {
-                     PropertyName = GetArgumentName(info, argumentAttribute, optionAttribute, commandAttribute),
-                     Aliases = GetAliases(argumentAttribute, optionAttribute, commandAttribute),
-                     UnlocalizedDescription = helpText.Description,
-                     LocalizedDescription = resourceManager?.GetString(helpText.ResourceKey)
-                  };
-            }
-         }
+         return GetHelpForProperties(typeof(T), resourceManager);
       }
 
       /// <summary>Maps the specified arguments to a class of the given type.</summary>
@@ -90,6 +88,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       /// <param name="args">The arguments.</param>
       /// <returns>The created instance of the arguments class.</returns>
       public T Map<T>(string[] args)
+         where T : class
       {
          return Map<T>(args, false);
       }
@@ -100,10 +99,10 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       /// <param name="caseSensitive">if set to <c>true</c> the parameters are treated case sensitive.</param>
       /// <returns>The created instance of the arguments class.</returns>
       public T Map<T>(string[] args, bool caseSensitive)
+         where T : class
       {
          var arguments = ArgumentParser.ParseArguments(args, caseSensitive);
-         var mapper = new ArgumentMapper<T>();
-
+         var mapper = EngineFactory.CreateMapper<T>();
          return mapper.Map(arguments);
       }
 
@@ -113,6 +112,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       /// <param name="instance">The instance of <see cref="T"/> the args should be mapped to.</param>
       /// <returns>The created instance of the arguments class.</returns>
       public T Map<T>(string[] args, T instance)
+         where T : class
       {
          return Map(args, instance, false);
       }
@@ -124,9 +124,10 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       /// <param name="caseSensitive">if set to <c>true</c> the parameters are treated case sensitive.</param>
       /// <returns>The created instance of the arguments class.</returns>
       public T Map<T>(string[] args, T instance, bool caseSensitive)
+         where T : class
       {
          var arguments = ArgumentParser.ParseArguments(args, caseSensitive);
-         var mapper = new ArgumentMapper<T>();
+         var mapper = EngineFactory.CreateMapper<T>();
 
          return mapper.Map(arguments, instance);
       }
@@ -136,33 +137,107 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       /// <param name="resourceManager">The resource manager that will be used for localization.</param>
       public void PrintHelp<T>(ResourceManager resourceManager)
       {
-         var argumentHelps = GetHelp<T>(resourceManager).ToList();
-         if (argumentHelps.Count == 0)
+         PrintHelp(typeof(T), resourceManager);
+      }
+
+      public void PrintHelp([NotNull] Type argumentType, ResourceManager resourceManager)
+      {
+         var helpTextProvider = GetGelpTextProvider(argumentType);
+         helpTextProvider.Initialize(argumentType, resourceManager);
+
+         helpTextProvider.WriteHeader();
+         helpTextProvider.WriteArguments();
+
+         //var argumentHelps = GetHelpForProperties(argumentType, resourceManager).ToList();
+         //if (argumentHelps.Count == 0)
+         //{
+         //   helpTextProvider.WriteNoHelpAvailable();
+
+         //   return;
+         //}
+
+         //int longestNameWidth = argumentHelps.Select(a => a.PropertyName.Length).Max() + 2;
+         //int longestAliasWidth = argumentHelps.Select(a => a.AliasString.Length).Max() + 4;
+
+         //int descriptionWidth = consoleWidth - longestNameWidth - longestAliasWidth;
+         //int leftWidth = consoleWidth - descriptionWidth;
+
+
+         //foreach (ArgumentHelp argumentHelp in argumentHelps)
+         //{
+         //   var name = $"-{argumentHelp.PropertyName}".PadRight(longestNameWidth);
+         //   var aliasString = $"[{argumentHelp.AliasString}]".PadRight(longestAliasWidth);
+
+         //   Console.Write("{0}{1}", name, aliasString);
+
+         //   var descriptionLines = GetWrappedStrings(argumentHelp.Description, descriptionWidth).ToList();
+
+         //   Console.WriteLine(descriptionLines[0]);
+         //   foreach (var part in descriptionLines.Skip(1))
+         //      Console.WriteLine(" ".PadLeft(leftWidth) + part);
+         //}
+
+         helpTextProvider.WriteFooter();
+      }
+
+      #endregion
+
+      #region Public Properties
+
+      public CommandLineArgumentParser ArgumentParser { get; set; } = new CommandLineArgumentParser();
+
+      #endregion
+
+      #region Properties
+
+      /// <summary>Gets the mapper factory.</summary>
+      internal IEngineFactory EngineFactory { get; set; }
+
+      #endregion
+
+      #region Public Methods and Operators
+
+      public string GetHelpForClass([NotNull] Type argumentType, ResourceManager resourceManager)
+      {
+         if (argumentType == null)
+            throw new ArgumentNullException(nameof(argumentType));
+
+         var helpText = (HelpTextAttribute)argumentType.GetCustomAttributes(typeof(HelpTextAttribute), true).FirstOrDefault();
+         if (helpText != null)
          {
-            Console.WriteLine("No HelpTextAttributes found for help generation.");
-            return;
+            if (resourceManager == null)
+               return helpText.Description;
+            resourceManager.GetString(helpText.ResourceKey);
          }
 
-         int longestNameWidth = argumentHelps.Select(a => a.PropertyName.Length).Max() + 2;
-         int longestAliasWidth = argumentHelps.Select(a => a.AliasString.Length).Max() + 4;
-         var consoleWidth = Console.WindowWidth;
+         return null;
+      }
 
-         int descriptionWidth = consoleWidth - longestNameWidth - longestAliasWidth;
-         int leftWidth = consoleWidth - descriptionWidth;
+      /// <summary>Gets the help information for the class of the given type.</summary>
+      /// <param name="argumentType">The argument class for creating the help for</param>
+      /// <param name="resourceManager">The resource manager that will be used for localization</param>
+      /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ArgumentHelp"/></returns>
+      public IEnumerable<ArgumentHelp> GetHelpForProperties([NotNull] Type argumentType, ResourceManager resourceManager)
+      {
+         if (argumentType == null)
+            throw new ArgumentNullException(nameof(argumentType));
 
-         foreach (ArgumentHelp argumentHelp in argumentHelps)
+         PropertyInfo[] properties = argumentType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+         foreach (PropertyInfo info in properties)
          {
-            var name = $"-{argumentHelp.PropertyName}".PadRight(longestNameWidth);
-            var aliasString = $"[{argumentHelp.AliasString}]".PadRight(longestAliasWidth);
-
-            Console.Write("{0}{1}", name, aliasString);
-
-            var descriptionLines = GetWrappedStrings(argumentHelp.Description, descriptionWidth).ToList();
-
-            Console.WriteLine(descriptionLines[0]);
-            foreach (var part in descriptionLines.Skip(1))
+            var argumentAttribute = (ArgumentAttribute)info.GetCustomAttributes(typeof(ArgumentAttribute), true).FirstOrDefault();
+            var optionAttribute = (OptionAttribute)info.GetCustomAttributes(typeof(OptionAttribute), true).FirstOrDefault();
+            var commandAttribute = (CommandAttribute)info.GetCustomAttributes(typeof(CommandAttribute), true).FirstOrDefault();
+            var helpText = (HelpTextAttribute)info.GetCustomAttributes(typeof(HelpTextAttribute), true).FirstOrDefault();
+            if (helpText != null)
             {
-               Console.WriteLine(" ".PadLeft(leftWidth) + part);
+               yield return new ArgumentHelp
+               {
+                  PropertyName = GetArgumentName(info, argumentAttribute, optionAttribute, commandAttribute),
+                  Aliases = GetAliases(argumentAttribute, optionAttribute, commandAttribute),
+                  UnlocalizedDescription = helpText.Description,
+                  LocalizedDescription = resourceManager?.GetString(helpText.ResourceKey)
+               };
             }
          }
       }
@@ -200,6 +275,18 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          return primaryName.ToLowerInvariant();
       }
 
+      private static int GetConsoleWidth()
+      {
+         try
+         {
+            return Console.WindowWidth;
+         }
+         catch
+         {
+            return 140;
+         }
+      }
+
       private static IEnumerable<string> GetWrappedStrings(string text, int maxLength)
       {
          if (text.Length < maxLength)
@@ -228,55 +315,14 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          yield return builder.ToString();
       }
 
+      private IHelpTextProvider GetGelpTextProvider(Type argumentType)
+      {
+         var type = (argumentType.GetCustomAttribute(typeof(HelpTextProviderAttribute)) as HelpTextProviderAttribute)?.Type;
+         var provider = type != null ? EngineFactory.CreateInstance(type) as IHelpTextProvider : new DefaultHelpTextProvider();
+
+         return provider;
+      }
+
       #endregion
-   }
-
-   public interface ICommandLineEngine
-   {
-      /// <summary>Gets the help information for the class of the given type.</summary>
-      /// <typeparam name="T">The argument class for creating the help for</typeparam>
-      /// <param name="resourceManager">The resource manager that will be used for localization</param>
-      /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ArgumentHelp"/></returns>
-      IEnumerable<ArgumentHelp> GetHelp<T>(ResourceManager resourceManager);
-
-      /// <summary>Maps the specified arguments to a class of the given type.</summary>
-      /// <typeparam name="T">The type of the class to map the argument to.</typeparam>
-      /// <param name="args">The arguments.</param>
-      /// <returns>The created instance of the arguments class.</returns>
-      T Map<T>(string[] args);
-
-      /// <summary>Maps the specified arguments to given object of the given type.</summary>
-      /// <typeparam name="T">The type of the class to map the argument to.</typeparam>
-      /// <param name="args">The arguments that should be mapped to the instance.</param>
-      /// <param name="caseSensitive">if set to <c>true</c> the parameters are treated case sensitive.</param>
-      /// <returns>The created instance of the arguments class.</returns>
-      T Map<T>(string[] args, bool caseSensitive);
-
-      /// <summary>Maps the specified arguments to given object of the given type.</summary>
-      /// <typeparam name="T">The type of the class to map the argument to.</typeparam>
-      /// <param name="args">The arguments that should be mapped to the instance.</param>
-      /// <param name="instance">The instance of <see cref="T"/> the args should be mapped to.</param>
-      /// <returns>The created instance of the arguments class.</returns>
-      T Map<T>(string[] args, T instance);
-
-      /// <summary>Maps the specified arguments to given object of the given type.</summary>
-      /// <typeparam name="T">The type of the class to map the argument to.</typeparam>
-      /// <param name="args">The arguments that should be mapped to the instance.</param>
-      /// <param name="instance">The instance of <see cref="T"/> the args should be mapped to.</param>
-      /// <param name="caseSensitive">if set to <c>true</c> the parameters are treated case sensitive.</param>
-      /// <returns>The created instance of the arguments class.</returns>
-      T Map<T>(string[] args, T instance, bool caseSensitive);
-
-      /// <summary>Prints the help to the <see cref="Console"/>.</summary>
-      /// <typeparam name="T">Type of the argument class to print the help for </typeparam>
-      /// <param name="resourceManager">The resource manager that will be used for localization.</param>
-      void PrintHelp<T>(ResourceManager resourceManager);
-
-      /// <summary>Prints the help to the <see cref="Console" />.</summary>
-      /// <typeparam name="T">Type of the argument class to print the help for</typeparam>
-      /// <param name="resourceManager">The resource manager that will be used for localization.</param>
-      /// <param name="consoleWidth">Width of the console.</param>
-      /// <returns>A <see cref="StringBuilder" /> containing the formatted help text.</returns>
-      StringBuilder FormatHelp<T>(ResourceManager resourceManager, int consoleWidth);
    }
 }

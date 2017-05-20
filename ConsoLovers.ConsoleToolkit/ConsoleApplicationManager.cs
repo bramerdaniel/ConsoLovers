@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="ConsoleApplicationManager.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2016
+//    Copyright (c) ConsoLovers  2015 - 2017
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -9,6 +9,10 @@ namespace ConsoLovers.ConsoleToolkit
    using System;
    using System.Diagnostics;
    using System.Reflection;
+
+   using ConsoLovers.ConsoleToolkit.CommandLineArguments;
+
+   using JetBrains.Annotations;
 
    public class ConsoleApplicationManager<T> : ConsoleApplicationManager
       where T : IApplication
@@ -21,11 +25,49 @@ namespace ConsoLovers.ConsoleToolkit
       }
 
       #endregion
+
+      internal ConsoleApplicationManager([NotNull] IEngineFactory factory)
+         : base(factory)
+      {
+      }
+
+      internal ConsoleApplicationManager()
+         : base(new EngineFactory())
+      {
+      }
    }
 
    public class ConsoleApplicationManager
    {
+      #region Constructors and Destructors
+
+      protected internal ConsoleApplicationManager([NotNull] IEngineFactory factory)
+      {
+         if (factory == null)
+            throw new ArgumentNullException(nameof(factory));
+
+         EngineFactory = factory;
+      }
+
+      #endregion
+
+      #region Properties
+
+      protected IEngineFactory EngineFactory { get; }
+
+      #endregion
+
       #region Public Methods and Operators
+
+      public static FluentConsoleApplicationManager For<T>()
+      {
+         return new FluentConsoleApplicationManager(typeof(T));
+      }
+
+      public static FluentConsoleApplicationManager For(Type applicationType)
+      {
+         return new FluentConsoleApplicationManager(applicationType);
+      }
 
       /// <summary>Runs the caller class. Caller must implement at least the <see cref="IApplication"/> interface</summary>
       /// <param name="args">The arguments to run the caller with.</param>
@@ -37,7 +79,7 @@ namespace ConsoLovers.ConsoleToolkit
          if (applicationType == null)
             throw new InvalidOperationException("Application type could not be detected from stack trace.");
 
-         new ConsoleApplicationManager().Run(applicationType, args);
+         ConsoleApplicationManager.For(applicationType).Run(args);
       }
 
       /// <summary>Creates and runs an application of the given type with the given arguments.</summary>
@@ -47,6 +89,7 @@ namespace ConsoLovers.ConsoleToolkit
       public IApplication Run(Type applicationType, string[] args)
       {
          ApplyAttributes(applicationType);
+
          var application = CreateApplication(applicationType);
 
          try
@@ -62,13 +105,6 @@ namespace ConsoLovers.ConsoleToolkit
 
             return application;
          }
-      }
-
-      private static void ApplyAttributes(Type applicationType)
-      {
-         var title = applicationType.GetCustomAttribute(typeof(ConsoleWindowTitleAttribute)) as ConsoleWindowTitleAttribute;
-         if (title != null)
-            System.Console.Title = title.Title;
       }
 
       #endregion
@@ -97,14 +133,13 @@ namespace ConsoLovers.ConsoleToolkit
          }
       }
 
-      /// <summary>Creates the instance of the application to run. 
-      /// Override this method to create the <see cref="IApplication"/> instance by your own.</summary>
+      /// <summary>Creates the instance of the application to run. Override this method to create the <see cref="IApplication"/> instance by your own.</summary>
       /// <param name="type">The type of the application to run.</param>
       /// <returns>The created uninitialized application</returns>
       /// <exception cref="System.InvalidOperationException"></exception>
       protected virtual IApplication CreateApplication(Type type)
       {
-         var instance = Activator.CreateInstance(type);
+         var instance = EngineFactory.CreateInstance(type);
          if (instance == null)
             throw new InvalidOperationException($"Could not create instance of type {type.FullName}");
 
@@ -113,6 +148,35 @@ namespace ConsoLovers.ConsoleToolkit
             throw new InvalidOperationException($"The application type {type.Name} to run must inherit the {typeof(IApplication).Name} interface");
 
          return application;
+      }
+
+      private static void ApplyAttributes(Type applicationType)
+      {
+         var title = applicationType.GetCustomAttribute(typeof(ConsoleWindowTitleAttribute)) as ConsoleWindowTitleAttribute;
+         if (title != null)
+            System.Console.Title = title.Title;
+
+         try
+         {
+            var height = applicationType.GetCustomAttribute(typeof(ConsoleWindowHeightAttribute)) as ConsoleWindowHeightAttribute;
+            if (height != null)
+               System.Console.WindowHeight = height.ConsoleHeight;
+         }
+         catch
+         {
+            // ignored
+         }
+
+         try
+         {
+            var width = applicationType.GetCustomAttribute(typeof(ConsoleWindowWidthAttribute)) as ConsoleWindowWidthAttribute;
+            if (width != null)
+               System.Console.WindowWidth = width.ConsoleWidth;
+         }
+         catch
+         {
+            // ignored
+         }
       }
 
       private static bool IsArgumentInitializer(Type applicationType, out Type argumentType)

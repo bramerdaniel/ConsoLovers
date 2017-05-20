@@ -269,6 +269,11 @@ namespace ConsoLovers.ConsoleToolkit.Console
          Console.Beep();
       }
 
+      public void WaitForKey(ConsoleKey key)
+      {
+         while (ReadKey(false).Key != key) ;
+      }
+
       public void WriteLine(string format, object arg0, object arg1, object arg2, object arg3, Color color)
       {
          // NOTE: The Intellisense for this overload of System.ColoredConsole.WriteLine is misleading, as the C# compiler

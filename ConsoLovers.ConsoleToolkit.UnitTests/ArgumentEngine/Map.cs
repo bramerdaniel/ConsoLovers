@@ -25,7 +25,7 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
       [TestMethod]
       public void CaseSensitiveArgumentTest()
       {
-         var target = new ArgumentMapper<Arguments>();
+         var target = Setup.ArgumentMapper().ForType<Arguments>().Done();
          var dictionary = new Dictionary<string, CommandLineArgument>(StringComparer.InvariantCulture) { { "first", new CommandLineArgument { Value = "45" } } };
          var result = target.Map(dictionary);
 
@@ -37,7 +37,7 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
       [TestMethod]
       public void EnsureArgumentsAreMappedCorrectly()
       {
-         var target = new ArgumentMapper<Arguments>();
+         var target = Setup.ArgumentMapper().ForType<Arguments>().Done();
          var dictionary = new Dictionary<string, CommandLineArgument>(StringComparer.InvariantCultureIgnoreCase) { { "First", new CommandLineArgument { Value = "45" } }, { "sec", new CommandLineArgument { Value = "true" } }, { "3rd", new CommandLineArgument { Value = "Nick O'Teen" } } };
          var result = target.Map(dictionary);
 
@@ -51,20 +51,20 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
       [TestMethod]
       public void EnsureMultipleSameAliasesAreDetected()
       {
-         var target = new ArgumentMapper<InvalidAliases>();
+         var target = Setup.ArgumentMapper().ForType<InvalidAliases>().Done();
          target.Invoking(t => t.Map(new Dictionary<string, CommandLineArgument>())).ShouldThrow<CommandLineAttributeException>();
 
-         var target2 = new ArgumentMapper<InvalidNameAliases>();
+         var target2 = Setup.ArgumentMapper().ForType<InvalidNameAliases>().Done();
          target2.Invoking(t => t.Map(new Dictionary<string, CommandLineArgument>())).ShouldThrow<CommandLineAttributeException>();
-
-         var target3 = new ArgumentMapper<InvalidOptionArgument>();
+         
+         var target3 = Setup.ArgumentMapper().ForType<InvalidOptionArgument>().Done();
          target3.Invoking(t => t.Map(new Dictionary<string, CommandLineArgument>())).ShouldThrow<CommandLineAttributeException>();
       }
 
       [TestMethod]
       public void EnsureOptionsAreMappedCorrectly()
       {
-         var target = new ArgumentMapper<Options>();
+         var target = Setup.ArgumentMapper().ForType<Options>().Done();
          var dictionary = new Dictionary<string, CommandLineArgument>(StringComparer.InvariantCultureIgnoreCase) { { "First", new CommandLineArgument { Value = "true" } }, { "sec", new CommandLineArgument { Value = "true" } }, { "3rd", new CommandLineArgument { Value = "true" } } };
          var result = target.Map(dictionary);
 
@@ -78,7 +78,7 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
       [TestMethod]
       public void EnsureOptionsAreMappedCorrectlyEvenForNullOrEmptyEntries()
       {
-         var target = new ArgumentMapper<Options>();
+         var target = Setup.ArgumentMapper().ForType<Options>().Done();
          var dictionary = new Dictionary<string, CommandLineArgument>(StringComparer.InvariantCultureIgnoreCase) { { "First", new CommandLineArgument() }, { "sec", new CommandLineArgument { Value = string.Empty } }, { "3rd", new CommandLineArgument() } };
          Options result = target.Map(dictionary);
 
@@ -92,7 +92,7 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
       [TestMethod]
       public void EnsureUnsusedArgumentStaysInTheArgumentsDictionary()
       {
-         var target = new ArgumentMapper<Arguments>();
+         var target = Setup.ArgumentMapper().ForType<Arguments>().Done();
          var dictionary = new Dictionary<string, CommandLineArgument>(StringComparer.InvariantCultureIgnoreCase) { { "First", new CommandLineArgument { Value = "45" } }, { "invalid", new CommandLineArgument { Value = "45" } } };
          var result = target.Map(dictionary);
 
@@ -105,7 +105,7 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
       [TestMethod]
       public void EnsureUnsusedOptionStaysInTheArgumentsDictionary()
       {
-         var target = new ArgumentMapper<Options>();
+         var target = Setup.ArgumentMapper().ForType<Options>().Done();
          var dictionary = new Dictionary<string, CommandLineArgument>(StringComparer.InvariantCultureIgnoreCase)
          {
             { "First", new CommandLineArgument() },

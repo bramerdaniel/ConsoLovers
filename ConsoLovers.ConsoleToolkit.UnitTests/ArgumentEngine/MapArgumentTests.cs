@@ -29,8 +29,8 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
             { "RequiredArgument", new CommandLineArgument { Value = "RequiredArgumentValue" } }
          };
 
-         var argumentMapper = new ArgumentMapper<ArgumentTestClass>();
-         var result = argumentMapper.Map(dictionary, commandTestClass);
+         var target = Setup.ArgumentMapper().ForType<ArgumentTestClass>().Done();
+         var result = target.Map(dictionary, commandTestClass);
 
          Assert.AreEqual(result.NamedArgument, "TheNameValue");
       }
@@ -45,7 +45,7 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
             { "RequiredArgument", new CommandLineArgument { Value = "RequiredArgumentValue" } }
          };
 
-         var argumentMapper = new ArgumentMapper<ArgumentTestClass>();
+         var argumentMapper = Setup.ArgumentMapper().ForType<ArgumentTestClass>().Done();
          var result = argumentMapper.Map(dictionary, commandTestClass);
 
          Assert.AreEqual(result.NamedArgument, "TheNameValue");
@@ -56,7 +56,8 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
       {
          var commandTestClass = new ArgumentTestClass();
          var dictionary = new Dictionary<string, CommandLineArgument>();
-         var argumentMapper = new ArgumentMapper<ArgumentTestClass>();
+
+         var argumentMapper = Setup.ArgumentMapper().ForType<ArgumentTestClass>().Done();
          argumentMapper.Invoking(x => x.Map(dictionary, commandTestClass)).ShouldThrow<MissingCommandLineArgumentException>();
       }
 
@@ -71,7 +72,7 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
             { "TrimmedArgument", new CommandLineArgument { Value = "TrimmedArgumentValue" } },
             { "RequiredArgument", new CommandLineArgument { Value = "RequiredArgumentValue" } }
          };
-         var argumentMapper = new ArgumentMapper<ArgumentTestClass>();
+         var argumentMapper = Setup.ArgumentMapper().ForType<ArgumentTestClass>().Done();
          var result = argumentMapper.Map(dictionary, commandTestClass);
 
          Assert.AreEqual(result.SimpleArgument, "\"SimpleArgumentValue\"");
@@ -90,7 +91,7 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
             { "RequiredArgument", new CommandLineArgument { Value = "RequiredArgumentValue" } }
          };
 
-         var argumentMapper = new ArgumentMapper<ArgumentTestClass>();
+         var argumentMapper = Setup.ArgumentMapper().ForType<ArgumentTestClass>().Done();
          var result = argumentMapper.Map(dictionary, commandTestClass);
 
          Assert.AreEqual(result.TrimmedArgument, "UntrimmedValue");

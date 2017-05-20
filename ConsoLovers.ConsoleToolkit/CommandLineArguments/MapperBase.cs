@@ -47,7 +47,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          CommandLineArgument argument;
          if (arguments.TryGetValue(propertyName, out argument))
          {
-            stringValue = GetValue(argument.Value, attribute, trim);
+            stringValue = GetValue(argument.Value, trim);
 
             propertyInfo.SetValue(instance, ConvertValue(propertyInfo.PropertyType, stringValue, (t, v) => CreateErrorMessage(t, v, propertyName)), null);
             arguments.Remove(propertyName);
@@ -58,7 +58,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          {
             if (arguments.TryGetValue(alias, out argument))
             {
-               stringValue = GetValue(argument.Value, attribute, trim);
+               stringValue = GetValue(argument.Value, trim);
 
                propertyInfo.SetValue(instance, ConvertValue(propertyInfo.PropertyType, stringValue, (t, v) => CreateErrorMessage(t, v, propertyName)), null);
                arguments.Remove(alias);
@@ -124,9 +124,8 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          return $"The value {value} of parameter {name} can not be converted into the expected type {targetType.FullName}";
       }
 
-      private static string GetValue(string originalValue, CommandLineAttribute attribute, bool trim)
+      private static string GetValue(string originalValue, bool trim)
       {
-         originalValue = attribute is CommandAttribute ? attribute.Name : originalValue;
          return trim ? originalValue.Trim('"', '\'') : originalValue;
       }
 

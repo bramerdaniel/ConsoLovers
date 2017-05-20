@@ -20,56 +20,6 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
    {
       #region Public Methods and Operators
 
-      [TestMethod]
-      public void AliasCommandUsageTest()
-      {
-         var commandTestClass = new CommandTestClass();
-         var dictionary = new Dictionary<string, CommandLineArgument> { { "B", new CommandLineArgument { Value = "true" } } };
-         var argumentMapper = new ArgumentMapper<CommandTestClass>();
-         var result = argumentMapper.Map(dictionary, commandTestClass);
-         Assert.AreEqual(result.TheCommand, TestCommandType.Backup);
-      }
-
-      [TestMethod]
-      public void MultipleCommandUsageErrorTest()
-      {
-         var commandTestClass = new CommandTestClass();
-         var dictionary = new Dictionary<string, CommandLineArgument> { { "Backup", new CommandLineArgument { Value = "true" } }, { "Restore", new CommandLineArgument { Value = "true" } } };
-         var argumentMapper = new ArgumentMapper<CommandTestClass>();
-         argumentMapper.Invoking(x => x.Map(dictionary, commandTestClass)).ShouldThrow<CommandLineArgumentException>().WithMessage(
-            "The command 'Backup|Init|Restore' must be used exclusive.");
-      }
-
-      [TestMethod]
-      public void MultipleSameCommandUsageErrorTest()
-      {
-         var commandTestClass = new CommandTestClass();
-         var dictionary = new Dictionary<string, CommandLineArgument> { { "Backup", new CommandLineArgument { Value = "true" } }, { "B", new CommandLineArgument { Value = "true" } } };
-         var argumentMapper = new ArgumentMapper<CommandTestClass>();
-         argumentMapper.Invoking(x => x.Map(dictionary, commandTestClass)).ShouldThrow<CommandLineArgumentException>().WithMessage(
-            "Multiple aruments for 'Backup'-command is not allowed.");
-      }
-
-      [TestMethod]
-      public void NoCommandUsageErrorTest()
-      {
-         var commandTestClass = new CommandTestClass();
-         var dictionary = new Dictionary<string, CommandLineArgument>();
-         var argumentMapper = new ArgumentMapper<CommandTestClass>();
-         argumentMapper.Invoking(x => x.Map(dictionary, commandTestClass)).ShouldThrow<CommandLineArgumentException>().WithMessage(
-            "The command 'Backup|Init|Restore' must be used.");
-      }
-
-      [TestMethod]
-      public void SingleCommandUsageTest()
-      {
-         var commandTestClass = new CommandTestClass();
-         var dictionary = new Dictionary<string, CommandLineArgument> { { "Backup", new CommandLineArgument { Value = "true" } } };
-         var argumentMapper = new ArgumentMapper<CommandTestClass>();
-         var result = argumentMapper.Map(dictionary, commandTestClass);
-         Assert.AreEqual(result.TheCommand, TestCommandType.Backup);
-      }
-
       #endregion
    }
 
@@ -77,8 +27,6 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
    {
       #region Public Properties
 
-      [Command("Backup", "B")]
-      [Command("Init", "I")]
       [Command("Restore", "R")]
       public TestCommandType TheCommand { get; set; }
 

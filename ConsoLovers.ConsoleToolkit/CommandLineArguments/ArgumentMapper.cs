@@ -12,11 +12,23 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
    using System.Linq;
    using System.Reflection;
 
+   using JetBrains.Annotations;
+
    /// <summary>Class that can map a dictionary to an instance of a class, filling the properties.</summary>
    /// <typeparam name="T">The type of the class to create</typeparam>
    public class ArgumentMapper<T> : MapperBase, IArgumentMapper<T>
+      where T : class
    {
+      private readonly IEngineFactory engineFactory;
+
       #region Public Methods and Operators
+
+      public ArgumentMapper([NotNull] IEngineFactory engineFactory)
+      {
+         if (engineFactory == null)
+            throw new ArgumentNullException(nameof(engineFactory));
+         this.engineFactory = engineFactory;
+      }
 
       public T Map(IDictionary<string, CommandLineArgument> arguments, T instance)
       {
@@ -41,34 +53,6 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
                {
                   propertyInfo.SetValue(instance, ConvertValue(propertyInfo.PropertyType, argument.Name, (t, v) => CreateErrorMessage(t, v, argument.Name)), null);
                }
-
-               continue;
-            }
-
-            var commandAttributes = propertyInfo.GetCustomAttributes(typeof(CommandAttribute), true);
-            if (commandAttributes.Any())
-            {
-               var commandCount = 0;
-               bool optional = false;
-               var attributes = commandAttributes.Cast<CommandAttribute>().ToArray();
-
-               foreach (var commandAttribute in attributes)
-               {
-                  optional |= commandAttribute.Optional;
-                  EnsureUnique<T>(usedNames, commandAttribute, propertyInfo);
-                  if (SetPropertyValue(instance, propertyInfo, arguments, commandAttribute))
-                     commandCount++;
-               }
-
-               if (commandCount == 1)
-                  continue;
-
-               var attributeStrings = attributes.Select(a => a.Name).OrderBy(n => n).Aggregate((acc, cur) => acc + "|" + cur);
-
-               if (commandCount > 1)
-                  throw new CommandLineArgumentException($"The command '{attributeStrings}' must be used exclusive.");
-               if (!optional)
-                  throw new CommandLineArgumentException($"The command '{attributeStrings}' must be used.");
 
                continue;
             }
@@ -99,7 +83,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       /// <exception cref="InvalidDataException">Option attribute can only be applied to boolean properties</exception>
       public T Map(IDictionary<string, CommandLineArgument> arguments)
       {
-         var instance = Activator.CreateInstance<T>();
+         var instance = engineFactory.CreateInstance<T>();
          return Map(arguments, instance);
       }
    }

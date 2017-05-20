@@ -1,13 +1,11 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="Setup.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2016
+//    Copyright (c) ConsoLovers  2015 - 2017
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace ConsoLovers.UnitTests.ArgumentEngine
 {
-   using ConsoLovers.ConsoleToolkit.CommandLineArguments;
-
    public class Setup
    {
       #region Public Methods and Operators
@@ -17,26 +15,21 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
          return new ArgumentEngineSetup();
       }
 
-      #endregion
-
       public static CommandLinerParserSetup CommandLineArgumentParser()
       {
          return new CommandLinerParserSetup();
       }
-   }
 
-   public class CommandLinerParserSetup
-   {
-      public CommandLineArgumentParser Done()
+      public static EngineFactorySetup EngineFactory()
       {
-         return new CommandLineArgumentParser();
+         return new EngineFactorySetup();
       }
-   }
-   public class ArgumentEngineSetup
-   {
-      public CommandLineEngine Done()
+
+      #endregion
+
+      public static ArgumentMapperSetup ArgumentMapper()
       {
-         return new CommandLineEngine();
+         return new ArgumentMapperSetup();
       }
    }
 }
