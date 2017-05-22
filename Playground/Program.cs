@@ -127,7 +127,7 @@ namespace Playground
          return this;
       }
 
-      public void Initialize(OnlyInterfacesUsed instance, string[] args)
+      public void InitializeArguments(OnlyInterfacesUsed instance, string[] args)
       {
          instance.Path = args.FirstOrDefault();
       }

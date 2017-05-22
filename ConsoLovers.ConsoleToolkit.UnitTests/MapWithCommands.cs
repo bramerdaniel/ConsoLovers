@@ -24,24 +24,6 @@ namespace ConsoLovers.UnitTests
       #region Public Methods and Operators
 
       [TestMethod]
-      public void EnsureDefaultCommandIsUsed()
-      {
-         var arguments = GetTarget().Map<ApplicationCommandsWithDefault>(new[] { "-Path=C:\\Path\\File.txt", "-silent" });
-
-         arguments.ExecuteMany.Should().BeNull();
-         arguments.Execute.Should().NotBeNull();
-      }
-
-      [TestMethod]
-      public void EnsureDefaultCommandIsUsedEvenWithoutArguments()
-      {
-         var arguments = GetTarget().Map<ApplicationCommandsWithDefault>(new string[] { });
-
-         arguments.ExecuteMany.Should().BeNull();
-         arguments.Execute.Should().NotBeNull();
-      }
-
-      [TestMethod]
       public void EnsureEvenPrivateCommandsCanBeSet()
       {
          var arguments = GetTarget().Map<ImutableCommands>(new[] { "execute", "help" });

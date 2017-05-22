@@ -2,34 +2,29 @@
 {
    using System;
 
+   using ConsoLovers.ConsoleToolkit.Contracts;
    using ConsoLovers.ConsoleToolkit.DIContainer;
 
    using JetBrains.Annotations;
 
-   public class EngineFactory : IEngineFactory
+   public class Factory : IDependencyInjectionContainer
    {
       private readonly IContainer container;
 
-      public EngineFactory()
+      public Factory()
          :this(new Container())
       {
       }
 
-      public EngineFactory([NotNull] IContainer container)
+      public Factory([NotNull] IContainer container)
       {
          if (container == null)
             throw new ArgumentNullException(nameof(container));
          this.container = container;
 
-         container.Register<IEngineFactory>(this).WithLifetime(Lifetime.Singleton);
+         container.Register<IDependencyInjectionContainer>(this).WithLifetime(Lifetime.Singleton);
          container.Register<ICommandLineEngine, CommandLineEngine>().WithLifetime(Lifetime.Singleton);
-      }
-
-      public virtual IArgumentMapper<T> CreateMapper<T>()
-         where T : class
-      {
-         var info = new ArgumentClassInfo(typeof(T));
-         return info.HasCommands ? (IArgumentMapper<T>)new CommandMapper<T>(this) : new ArgumentMapper<T>(this);
+         container.Register<IConsole>(new ConsoleProxy()).WithLifetime(Lifetime.Singleton);
       }
 
       public T CreateInstance<T>()
@@ -41,6 +36,17 @@
       public object CreateInstance(Type type)
       {
          return container.Create(type);
+      }
+
+      public T Resolve<T>()
+         where T : class
+      {
+         return container.Resolve<T>();
+      }
+
+      public object Resolve(Type type)
+      {
+         return container.Resolve(type);
       }
    }
 }

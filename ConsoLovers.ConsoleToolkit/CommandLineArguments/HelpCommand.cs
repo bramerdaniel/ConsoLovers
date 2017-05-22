@@ -7,7 +7,6 @@
 namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 {
    using System;
-   using System.Collections.Generic;
    using System.Linq;
    using System.Resources;
 
@@ -15,7 +14,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
    using JetBrains.Annotations;
 
-   public class HelpCommand : ICommand<HelpArguments>
+   public class HelpCommand : ICommand<HelpCommandArguments>
    {
       #region Constants and Fields
 
@@ -51,7 +50,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
       #region ICommand<HelpArguments> Members
 
-      public HelpArguments Arguments { get; set; }
+      public HelpCommandArguments Arguments { get; set; }
 
       #endregion
 
@@ -87,19 +86,15 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
             return;
          }
 
-         engine.PrintHelp(parameterInfo.ParameterType, resourceManager);
+         if (parameterInfo.ParameterType.IsPrimitive)
+         {
+            engine.PrintHelp(parameterInfo.PropertyInfo, resourceManager);
+         }
+         else
+         {
+            engine.PrintHelp(parameterInfo.ParameterType, resourceManager);
+         }
       }
-
-      #endregion
-   }
-
-   public class HelpArguments
-   {
-      #region Public Properties
-
-      public IDictionary<string, CommandLineArgument> ArgumentDictionary { get; set; }
-
-      public ArgumentClassInfo ArgumentInfos { get; set; }
 
       #endregion
    }

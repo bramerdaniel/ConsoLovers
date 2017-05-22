@@ -8,6 +8,8 @@ namespace ConsoLovers.ConsoleToolkit
 {
    using System;
 
+   using ConsoLovers.ConsoleToolkit.CommandLineArguments;
+
    public interface IConsoleApplication : IApplication
    {
       #region Public Methods and Operators
@@ -60,7 +62,7 @@ namespace ConsoLovers.ConsoleToolkit
       /// <summary>Initializes the given instance with the command line arguments array.</summary>
       /// <param name="instance">The instance to fill.</param>
       /// <param name="args">The arguments to use.</param>
-      void Initialize(T instance, string[] args);
+      void InitializeArguments(T instance, string[] args);
 
       #endregion
    }

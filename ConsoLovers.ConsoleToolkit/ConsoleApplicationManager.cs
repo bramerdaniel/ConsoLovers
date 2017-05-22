@@ -11,12 +11,25 @@ namespace ConsoLovers.ConsoleToolkit
    using System.Reflection;
 
    using ConsoLovers.ConsoleToolkit.CommandLineArguments;
-
-   using JetBrains.Annotations;
+   using ConsoLovers.ConsoleToolkit.DIContainer;
 
    public class ConsoleApplicationManager<T> : ConsoleApplicationManager
       where T : IApplication
    {
+      #region Constructors and Destructors
+
+      internal ConsoleApplicationManager(Func<Type, object> createApplication)
+         : base(createApplication)
+      {
+      }
+
+      internal ConsoleApplicationManager()
+         : this(new Factory().CreateInstance)
+      {
+      }
+
+      #endregion
+
       #region Public Methods and Operators
 
       public T Run(string[] args)
@@ -25,48 +38,39 @@ namespace ConsoLovers.ConsoleToolkit
       }
 
       #endregion
-
-      internal ConsoleApplicationManager([NotNull] IEngineFactory factory)
-         : base(factory)
-      {
-      }
-
-      internal ConsoleApplicationManager()
-         : base(new EngineFactory())
-      {
-      }
    }
 
    public class ConsoleApplicationManager
    {
       #region Constructors and Destructors
 
-      protected internal ConsoleApplicationManager([NotNull] IEngineFactory factory)
+      protected internal ConsoleApplicationManager(Func<Type, object> createApplication)
       {
-         if (factory == null)
-            throw new ArgumentNullException(nameof(factory));
-
-         EngineFactory = factory;
+         CreateApplication = createApplication ?? Activator.CreateInstance;
       }
+
+      #endregion
+
+      #region Public Properties
+
+      protected Func<Type, object> CreateApplication { get; }
 
       #endregion
 
       #region Properties
 
-      protected IEngineFactory EngineFactory { get; }
-
       #endregion
 
       #region Public Methods and Operators
 
-      public static FluentConsoleApplicationManager For<T>()
+      public static ConsoleApplicationBootstrapper For<T>()
       {
-         return new FluentConsoleApplicationManager(typeof(T));
+         return new ConsoleApplicationBootstrapper(typeof(T));
       }
 
-      public static FluentConsoleApplicationManager For(Type applicationType)
+      public static ConsoleApplicationBootstrapper For(Type applicationType)
       {
-         return new FluentConsoleApplicationManager(applicationType);
+         return new ConsoleApplicationBootstrapper(applicationType);
       }
 
       /// <summary>Runs the caller class. Caller must implement at least the <see cref="IApplication"/> interface</summary>
@@ -90,7 +94,7 @@ namespace ConsoLovers.ConsoleToolkit
       {
          ApplyAttributes(applicationType);
 
-         var application = CreateApplication(applicationType);
+         var application = CreateApplicationInternal(applicationType);
 
          try
          {
@@ -111,7 +115,7 @@ namespace ConsoLovers.ConsoleToolkit
 
       #region Methods
 
-      internal static void InitializeApplication(Type applicationType, IApplication application, string[] args)
+      internal void InitializeApplication(Type applicationType, IApplication application, string[] args)
       {
          try
          {
@@ -121,7 +125,10 @@ namespace ConsoLovers.ConsoleToolkit
                var methodInfo = applicationType.GetMethod("CreateArguments"); // TODO Ensure functionality with unit tests
                var argumentsInstance = methodInfo.Invoke(application, null);
 
-               var initialize = applicationType.GetMethod("Initialize");
+               var initialize = applicationType.GetMethod("InitializeArguments");
+               if (initialize == null)
+                  throw new InvalidOperationException($"The InitializeArguments method of the {typeof(IArgumentInitializer<>).FullName} could not be found.");
+
                initialize.Invoke(application, new[] { argumentsInstance, args });
             }
          }
@@ -137,9 +144,9 @@ namespace ConsoLovers.ConsoleToolkit
       /// <param name="type">The type of the application to run.</param>
       /// <returns>The created uninitialized application</returns>
       /// <exception cref="System.InvalidOperationException"></exception>
-      protected virtual IApplication CreateApplication(Type type)
+      private IApplication CreateApplicationInternal(Type type)
       {
-         var instance = EngineFactory.CreateInstance(type);
+         var instance = CreateApplication(type);
          if (instance == null)
             throw new InvalidOperationException($"Could not create instance of type {type.FullName}");
 

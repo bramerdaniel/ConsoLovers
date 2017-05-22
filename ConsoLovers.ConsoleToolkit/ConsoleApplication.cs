@@ -8,6 +8,7 @@ namespace ConsoLovers.ConsoleToolkit
 {
    using System;
 
+   using ConsoLovers.ConsoleToolkit.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Contracts;
 
    public abstract class ConsoleApplication : IConsoleApplication

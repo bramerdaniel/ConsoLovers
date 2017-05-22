@@ -12,7 +12,7 @@ namespace CommandLineEngineDemo
    using ConsoLovers.ConsoleToolkit.CommandLineArguments;
 
    [HelpTextProvider(typeof(CustomHelpCommand))]
-   internal class CustomHelpCommand : ICommand, IHelpTextProvider
+   internal class CustomHelpCommand : ICommand, IHelpProvider
    {
       #region ICommand Members
 
@@ -30,7 +30,14 @@ namespace CommandLineEngineDemo
       {
       }
 
-      public void WriteArguments()
+      public void PrintHelp()
+      {
+         WriteHeader();
+         WriteContent();
+         WriteFooter();
+      }
+
+      public void WriteContent()
       {
          Console.WriteLine(@"This is the custom help, that was created by a ICommand that implements provides an IHelpTextProvider");
       }

@@ -8,6 +8,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 {
    using System;
    using System.Linq;
+   using System.Reflection;
 
    public static class Extensions
    {
@@ -21,6 +22,11 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
          command = type.GetInterface(typeof(ICommand<>).FullName);
          return command != null;
+      }
+
+      public static T GetAttribute<T>(this PropertyInfo propertyInfo) where T : Attribute
+      {
+         return propertyInfo.GetCustomAttributes(typeof(T), true).FirstOrDefault() as T;
       }
 
       #endregion

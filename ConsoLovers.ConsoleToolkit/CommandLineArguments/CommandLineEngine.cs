@@ -23,7 +23,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       #region Constructors and Destructors
 
       [InjectionConstructor]
-      public CommandLineEngine([NotNull] IEngineFactory engineFactory)
+      public CommandLineEngine([NotNull] IDependencyInjectionContainer engineFactory)
       {
          if (engineFactory == null)
             throw new ArgumentNullException(nameof(engineFactory));
@@ -31,8 +31,8 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          EngineFactory = engineFactory;
       }
 
-      internal CommandLineEngine()
-         : this(new EngineFactory())
+      public CommandLineEngine()
+         : this(new Factory())
       {
       }
 
@@ -102,7 +102,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          where T : class
       {
          var arguments = ArgumentParser.ParseArguments(args, caseSensitive);
-         var mapper = EngineFactory.CreateMapper<T>();
+         var mapper = CreateMapper<T>();
          return mapper.Map(arguments);
       }
 
@@ -127,7 +127,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          where T : class
       {
          var arguments = ArgumentParser.ParseArguments(args, caseSensitive);
-         var mapper = EngineFactory.CreateMapper<T>();
+         var mapper = CreateMapper<T>();
 
          return mapper.Map(arguments, instance);
       }
@@ -140,44 +140,16 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          PrintHelp(typeof(T), resourceManager);
       }
 
-      public void PrintHelp([NotNull] Type argumentType, ResourceManager resourceManager)
+      public void PrintHelp([NotNull] Type type, ResourceManager resourceManager)
       {
-         var helpTextProvider = GetGelpTextProvider(argumentType);
-         helpTextProvider.Initialize(argumentType, resourceManager);
+         var helpTextProvider = GetHelpTextProvider(type, resourceManager);
+         helpTextProvider.PrintHelp();
+      }
 
-         helpTextProvider.WriteHeader();
-         helpTextProvider.WriteArguments();
-
-         //var argumentHelps = GetHelpForProperties(argumentType, resourceManager).ToList();
-         //if (argumentHelps.Count == 0)
-         //{
-         //   helpTextProvider.WriteNoHelpAvailable();
-
-         //   return;
-         //}
-
-         //int longestNameWidth = argumentHelps.Select(a => a.PropertyName.Length).Max() + 2;
-         //int longestAliasWidth = argumentHelps.Select(a => a.AliasString.Length).Max() + 4;
-
-         //int descriptionWidth = consoleWidth - longestNameWidth - longestAliasWidth;
-         //int leftWidth = consoleWidth - descriptionWidth;
-
-
-         //foreach (ArgumentHelp argumentHelp in argumentHelps)
-         //{
-         //   var name = $"-{argumentHelp.PropertyName}".PadRight(longestNameWidth);
-         //   var aliasString = $"[{argumentHelp.AliasString}]".PadRight(longestAliasWidth);
-
-         //   Console.Write("{0}{1}", name, aliasString);
-
-         //   var descriptionLines = GetWrappedStrings(argumentHelp.Description, descriptionWidth).ToList();
-
-         //   Console.WriteLine(descriptionLines[0]);
-         //   foreach (var part in descriptionLines.Skip(1))
-         //      Console.WriteLine(" ".PadLeft(leftWidth) + part);
-         //}
-
-         helpTextProvider.WriteFooter();
+      public void PrintHelp(PropertyInfo propertyInfo, ResourceManager resourceManager)
+      {
+         var helpTextProvider = GetHelpTextProvider(propertyInfo, resourceManager);
+         helpTextProvider.PrintHelp();
       }
 
       #endregion
@@ -191,7 +163,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       #region Properties
 
       /// <summary>Gets the mapper factory.</summary>
-      internal IEngineFactory EngineFactory { get; set; }
+      internal IDependencyInjectionContainer EngineFactory { get; set; }
 
       #endregion
 
@@ -275,18 +247,6 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          return primaryName.ToLowerInvariant();
       }
 
-      private static int GetConsoleWidth()
-      {
-         try
-         {
-            return Console.WindowWidth;
-         }
-         catch
-         {
-            return 140;
-         }
-      }
-
       private static IEnumerable<string> GetWrappedStrings(string text, int maxLength)
       {
          if (text.Length < maxLength)
@@ -315,12 +275,37 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          yield return builder.ToString();
       }
 
-      private IHelpTextProvider GetGelpTextProvider(Type argumentType)
+      private IArgumentMapper<T> CreateMapper<T>()
+         where T : class
       {
-         var type = (argumentType.GetCustomAttribute(typeof(HelpTextProviderAttribute)) as HelpTextProviderAttribute)?.Type;
-         var provider = type != null ? EngineFactory.CreateInstance(type) as IHelpTextProvider : new DefaultHelpTextProvider();
+         var info = new ArgumentClassInfo(typeof(T));
+         return info.HasCommands ? (IArgumentMapper<T>)EngineFactory.CreateInstance<CommandMapper<T>>() : EngineFactory.CreateInstance<ArgumentMapper<T>>();
+      }
 
-         return provider;
+      private IHelpProvider GetHelpTextProvider(Type argumentType, ResourceManager resourceManager)
+      {
+         var providerType = (argumentType.GetCustomAttribute(typeof(HelpTextProviderAttribute)) as HelpTextProviderAttribute)?.Type;
+         if (providerType != null)
+         {
+            var provider = EngineFactory.CreateInstance(providerType) as IHelpProvider;
+            if (provider != null)
+               return provider;
+         }
+
+         return new TypeHelpProvider(argumentType, resourceManager);
+      }
+
+      private IHelpProvider GetHelpTextProvider(PropertyInfo propertyInfo, ResourceManager resourceManager)
+      {
+         var providerType = (propertyInfo.GetCustomAttribute(typeof(HelpTextProviderAttribute)) as HelpTextProviderAttribute)?.Type;
+         if (providerType != null)
+         {
+            var provider = EngineFactory.CreateInstance(providerType) as IHelpProvider;
+            if (provider != null)
+               return provider;
+         }
+
+         return new PropertyHelpProvider(propertyInfo, resourceManager);
       }
 
       #endregion

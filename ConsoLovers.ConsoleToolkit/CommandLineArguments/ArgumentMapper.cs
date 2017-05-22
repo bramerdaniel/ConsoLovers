@@ -19,11 +19,11 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
    public class ArgumentMapper<T> : MapperBase, IArgumentMapper<T>
       where T : class
    {
-      private readonly IEngineFactory engineFactory;
+      private readonly IDependencyInjectionContainer engineFactory;
 
       #region Public Methods and Operators
 
-      public ArgumentMapper([NotNull] IEngineFactory engineFactory)
+      public ArgumentMapper([NotNull] IDependencyInjectionContainer engineFactory)
       {
          if (engineFactory == null)
             throw new ArgumentNullException(nameof(engineFactory));

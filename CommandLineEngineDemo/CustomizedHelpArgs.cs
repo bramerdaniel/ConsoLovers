@@ -6,32 +6,16 @@
    using ConsoLovers.ConsoleToolkit.CommandLineArguments;
 
    [HelpTextProvider(typeof(CustomizedHelpArgs))]
-   internal class CustomizedHelpArgs : IHelpTextProvider
+   internal class CustomizedHelpArgs : IHelpProvider
    {
       #region IHelpTextProvider Members
 
-      public void Initialize(Type helpType, ResourceManager resourceManager)
-      {
-      }
-
-      public void WriteArguments()
-      {
-         Console.WriteLine($"this help was creates by the {typeof(CustomizedHelpArgs).Name} class");
-      }
-
-      public void WriteFooter()
-      {
-      }
-
-      public void WriteHeader()
+      public void PrintHelp()
       {
          Console.WriteLine("Help for the arguments of the custom arguments command");
-         Console.WriteLine("----------------------------");
+         Console.WriteLine("------------------------------------------------------");
          Console.WriteLine();
-      }
-
-      public void WriteNoHelpAvailable()
-      {
+         Console.WriteLine($"this help was creates by the {typeof(CustomizedHelpArgs).Name} class");
       }
 
       #endregion

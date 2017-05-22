@@ -42,9 +42,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandLineArguments\ArgumentClassInfo.cs" />
-    <Compile Include="CommandLineArguments\DefaultHelpTextProvider.cs" />
+    <Compile Include="CommandLineArguments\HelpCommandArguments.cs" />
+    <Compile Include="CommandLineArguments\PropertyHelpProvider.cs" />
+    <Compile Include="CommandLineArguments\TypeHelpProvider.cs" />
     <Compile Include="CommandLineArguments\HelpTextProviderAttribute.cs" />
-    <Compile Include="CommandLineArguments\IHelpTextProvider.cs" />
+    <Compile Include="CommandLineArguments\IHelpProvider.cs" />
     <Compile Include="CommandLineArguments\ParameterInfo.cs" />
     <Compile Include="CommandLineArguments\CommandInfo.cs" />
     <Compile Include="CommandLineArguments\Extensions.cs" />
@@ -53,8 +55,8 @@
     <Compile Include="CommandLineArguments\HelpCommand.cs" />
     <Compile Include="CommandLineArguments\ICommand.cs" />
     <Compile Include="CommandLineArguments\ICommandLineEngine.cs" />
-    <Compile Include="CommandLineArguments\IEngineFactory.cs" />
-    <Compile Include="CommandLineArguments\EngineFactory.cs" />
+    <Compile Include="CommandLineArguments\IDependencyInjectionContainer.cs" />
+    <Compile Include="CommandLineArguments\Factory.cs" />
     <Compile Include="ConsoleApplicationManager.cs" />
     <Compile Include="ConsoleApplicationWith.cs" />
     <Compile Include="ConsoleWindowHeightAttribute.cs" />
@@ -87,7 +89,7 @@
     <Compile Include="DIContainer\Strategies\PropertySelectionStrategies.cs" />
     <Compile Include="DIContainer\Strategies\PropertySelectionStrategy.cs" />
     <Compile Include="DIContainer\Strategies\ReflectionExtensions.cs" />
-    <Compile Include="FluentConsoleApplicationManager.cs" />
+    <Compile Include="ConsoleApplicationBootstrapper.cs" />
     <Compile Include="IConsoleApplication.cs" />
     <Compile Include="InputLabel.cs" />
     <Compile Include="Properties\Annotations.cs" />
@@ -199,7 +201,8 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>IF $(ConfigurationName) == Release ($(SolutionDir)nuget.exe pack $(ProjectPath) -OutputDirectory $(TargetDir) -properties Configuration=Release -symbols)</PostBuildEvent>
+    <PostBuildEvent>IF $(ConfigurationName) == Release ($(SolutionDir)nuget.exe pack $(ProjectPath) -OutputDirectory $(TargetDir) -properties Configuration=Release -symbols)
+IF $(ConfigurationName) == Debug ($(SolutionDir)nuget.exe pack $(ProjectPath) -OutputDirectory $(TargetDir) -properties Configuration=Debug -symbols)</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

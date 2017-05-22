@@ -23,6 +23,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
    {
       #region Public Properties
 
+      /// <summary>Gets or sets the arguments that were specified for the command.</summary>
       T Arguments { get; set; }
 
       #endregion

@@ -25,9 +25,7 @@ namespace ConsoLovers.ConsoleToolkit
    {
       #region Constants and Fields
 
-      private readonly IEngineFactory factory;
-
-      private T arguments;
+      private readonly IDependencyInjectionContainer container;
 
       private ICommandLineEngine commandLineEngine;
 
@@ -36,17 +34,17 @@ namespace ConsoLovers.ConsoleToolkit
       #region Constructors and Destructors
 
       protected ConsoleApplicationWith()
-         : this(new EngineFactory())
+         : this(new Factory())
       {
       }
 
       [InjectionConstructor]
-      protected ConsoleApplicationWith([NotNull] IEngineFactory factory)
+      protected ConsoleApplicationWith([NotNull] IDependencyInjectionContainer container)
       {
-         if (factory == null)
-            throw new ArgumentNullException(nameof(factory));
+         if (container == null)
+            throw new ArgumentNullException(nameof(container));
 
-         this.factory = factory;
+         this.container = container;
       }
 
       #endregion
@@ -65,7 +63,7 @@ namespace ConsoLovers.ConsoleToolkit
          {
             if (HasArguments)
             {
-               RunWith(arguments);
+               RunWith(Arguments);
             }
             else
             {
@@ -82,6 +80,7 @@ namespace ConsoLovers.ConsoleToolkit
 
       #endregion
 
+     
       #region IArgumentInitializer<T> Members
 
       public virtual T CreateArguments()
@@ -92,11 +91,12 @@ namespace ConsoLovers.ConsoleToolkit
          return Activator.CreateInstance<T>();
       }
 
-      public virtual void Initialize(T instance, string[] args)
+      public virtual void InitializeArguments(T instance, string[] args)
       {
          HasArguments = args != null && args.Length > 0;
-         arguments = CommandLineEngine.Map(args, instance);
-         OnArgumentsInitialized(arguments);
+         Arguments = CommandLineEngine.Map(args, instance);
+
+         OnArgumentsInitialized();
       }
 
       #endregion
@@ -127,10 +127,12 @@ namespace ConsoLovers.ConsoleToolkit
 
       public static IConsole Console { get; } = new ConsoleProxy();
 
-      protected ICommandLineEngine CommandLineEngine => commandLineEngine ?? (commandLineEngine = factory.CreateInstance<CommandLineEngine>());
+      protected ICommandLineEngine CommandLineEngine => commandLineEngine ?? (commandLineEngine = container.CreateInstance<CommandLineEngine>());
 
       /// <summary>Gets a value indicating whether this application was called with arguments.</summary>
       public bool HasArguments { get; private set; }
+
+      protected T Arguments { get; private set; }
 
       #endregion
 
@@ -146,13 +148,14 @@ namespace ConsoLovers.ConsoleToolkit
 
       #region Methods
 
-      protected virtual void OnArgumentsInitialized(T ar)
+      /// <summary>Called when after the arguments were initialized. This is the first method the arguments can be accessed</summary>
+      protected virtual void OnArgumentsInitialized()
       {
       }
 
       protected virtual void RunWithoutArguments()
       {
-         RunWith(arguments);
+         RunWith(Arguments);
       }
 
       protected void WaitForEnter(string waitText = "Press ENTER to continue.")
@@ -167,7 +170,7 @@ namespace ConsoLovers.ConsoleToolkit
          {
             if (propertyInfo.PropertyType.GetInterface(typeof(ICommand).FullName) != null)
             {
-               var value = propertyInfo.GetValue(arguments) as ICommand;
+               var value = propertyInfo.GetValue(Arguments) as ICommand;
                if (value != null)
                {
                   command = value;

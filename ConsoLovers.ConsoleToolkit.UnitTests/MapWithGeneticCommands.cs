@@ -28,18 +28,6 @@ namespace ConsoLovers.UnitTests
       }
 
       [TestMethod]
-      public void EnsureDefaultCommandIsUsed()
-      {
-         var arguments = GetTarget().Map<ApplicationCommandsWithDefault>(new[] { "-Path=C:\\Path\\File.txt", "-silent" });
-
-         arguments.ExecuteMany.Should().BeNull();
-         arguments.Execute.Should().NotBeNull();
-         arguments.Execute.Arguments.Should().NotBeNull();
-
-         arguments.Execute.Arguments.Path.Should().Be("C:\\Path\\File.txt");
-         arguments.Execute.Arguments.Silent.Should().BeTrue();
-      }
-      [TestMethod]
       public void EnsureAliasesCanBeUsedForCommands()
       {
          var arguments = GetTarget().Map<ApplicationCommands>(new[] { "e", "-Path=C:\\Path\\File.txt", "-silent" });

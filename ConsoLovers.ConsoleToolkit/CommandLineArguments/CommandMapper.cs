@@ -19,18 +19,18 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
    {
       #region Constants and Fields
 
-      private readonly IEngineFactory engineFactory;
+      private readonly IDependencyInjectionContainer diContainer;
 
       #endregion
 
       #region Constructors and Destructors
 
-      public CommandMapper([NotNull] IEngineFactory engineFactory)
+      public CommandMapper([NotNull] IDependencyInjectionContainer diContainer)
       {
-         if (engineFactory == null)
-            throw new ArgumentNullException(nameof(engineFactory));
+         if (diContainer == null)
+            throw new ArgumentNullException(nameof(diContainer));
 
-         this.engineFactory = engineFactory;
+         this.diContainer = diContainer;
       }
 
       #endregion
@@ -51,7 +51,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
          if (arguments.Any())
          {
-            var defaultMapper = new ArgumentMapper<T>(engineFactory);
+            var defaultMapper = new ArgumentMapper<T>(diContainer);
             defaultMapper.Map(arguments, instance);
          }
 
@@ -60,8 +60,8 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
       private void MapHelpOnly(T instance, ArgumentClassInfo argumentInfo, IDictionary<string, CommandLineArgument> arguments)
       {
-         var helpCommand = engineFactory.CreateInstance<HelpCommand>();
-         helpCommand.Arguments = new HelpArguments { ArgumentInfos = argumentInfo, ArgumentDictionary = arguments };
+         var helpCommand = diContainer.CreateInstance<HelpCommand>();
+         helpCommand.Arguments = new HelpCommandArguments { ArgumentInfos = argumentInfo, ArgumentDictionary = arguments };
          argumentInfo.HelpCommand.PropertyInfo.SetValue(instance, helpCommand);
       }
 
@@ -70,18 +70,11 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          if (argumentInfo.HelpCommand == null)
             return false;
 
-         var helpCommandName = argumentInfo.HelpCommand.Attribute.Name;
-         if (arguments.ContainsKey(helpCommandName))
+         foreach (var identifier in argumentInfo.HelpCommand.Attribute.GetIdentifiers())
          {
-            arguments.Remove(helpCommandName);
-            return true;
-         }
-
-         foreach (var aliase in argumentInfo.HelpCommand.Attribute.Aliases)
-         {
-            if (arguments.ContainsKey(aliase))
+            if (arguments.ContainsKey(identifier))
             {
-               arguments.Remove(aliase);
+               arguments.Remove(identifier);
                return true;
             }
          }
@@ -96,7 +89,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       /// <exception cref="InvalidDataException">Option attribute can only be applied to boolean properties</exception>
       public T Map(IDictionary<string, CommandLineArgument> arguments)
       {
-         var instance = engineFactory.CreateInstance<T>();
+         var instance = diContainer.CreateInstance<T>();
          return Map(arguments, instance);
       }
 
@@ -129,7 +122,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
             }
          }
 
-         return argumentInfo.CommandInfos.FirstOrDefault(c => c.Attribute.IsDefaultCommand);
+         return null;
       }
 
       private static CommandLineArgument GetFirstArgument(IDictionary<string, CommandLineArgument> arguments)
@@ -153,18 +146,17 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       {
          var commandType = commandInfo.PropertyInfo.PropertyType;
          if (!ImplementsICommand(commandType))
-            throw new ArgumentException(
-               $"The type '{commandType}' of the property '{commandInfo.PropertyInfo.Name}' does not implemente the {typeof(ICommand).FullName} interface");
+            throw new ArgumentException($"The type '{commandType}' of the property '{commandInfo.PropertyInfo.Name}' does not implemente the {typeof(ICommand).FullName} interface");
 
          Type argumentType;
          if (TryGetArgumentType(commandType, out argumentType))
          {
-            var argumentInstance = engineFactory.CreateInstance(argumentType);
+            var argumentInstance = diContainer.CreateInstance(argumentType);
 
             var mapperType = typeof(ArgumentMapper<>);
             Type[] typeArgs = { argumentType };
             var genericType = mapperType.MakeGenericType(typeArgs);
-            object mapper = engineFactory.CreateInstance(genericType);
+            object mapper = diContainer.CreateInstance(genericType);
 
             try
             {
@@ -178,12 +170,16 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
                   throw exception;
             }
 
-            var command = engineFactory.CreateInstance(commandType);
-            commandType.GetProperty("Arguments").SetValue(command, argumentInstance);
+            var command = diContainer.CreateInstance(commandType);
+            var argumentsProperty = commandType.GetProperty("Arguments");
+            if (argumentsProperty == null)
+               throw new InvalidOperationException("The ICommand<T> implementation does not contain a Arguments property.");
+
+            argumentsProperty.SetValue(command, argumentInstance);
             return command;
          }
 
-         return engineFactory.CreateInstance(commandType);
+         return diContainer.CreateInstance(commandType);
       }
 
       private bool TryGetArgumentType(Type commandType, out Type argumentType)

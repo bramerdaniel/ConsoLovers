@@ -2,6 +2,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 {
    using System;
    using System.Collections.Generic;
+   using System.Reflection;
    using System.Resources;
    using System.Text;
 
@@ -51,6 +52,8 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       /// <param name="argumentType">Type of the argument class to print the help for</param>
       /// <param name="resourceManager">The resource manager that will be used for localization.</param>
       void PrintHelp(Type argumentType, ResourceManager resourceManager);
+
+      void PrintHelp(PropertyInfo propertyInfo, ResourceManager resourceManager);
 
       /// <summary>Prints the help to the <see cref="Console" />.</summary>
       /// <typeparam name="T">Type of the argument class to print the help for</typeparam>

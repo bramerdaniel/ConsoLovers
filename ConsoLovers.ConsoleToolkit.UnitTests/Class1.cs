@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace ConsoLovers.UnitTests
 {
    using ConsoLovers.ConsoleToolkit;
+   using ConsoLovers.ConsoleToolkit.CommandLineArguments;
 
    using FluentAssertions;
 
@@ -53,6 +54,7 @@ namespace ConsoLovers.UnitTests
             Initializer.Setup(x => x.CreateArguments()).Returns(TestParameters);
          }
 
+
          public void Run()
          {
             Mock.Object.Run();
@@ -64,7 +66,7 @@ namespace ConsoLovers.UnitTests
             return TestParameters;
          }
 
-         public void Initialize(TestArguments instance, string[] args)
+         public void InitializeArguments(TestArguments instance, string[] args)
          {
             TestParameters.Should().BeSameAs(instance);
             Args = args;

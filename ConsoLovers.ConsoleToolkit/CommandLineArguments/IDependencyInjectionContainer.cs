@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IMapperFactory.cs" company="ConsoLovers">
+// <copyright file="IDependencyInjectionContainer.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2017
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -8,26 +8,26 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 {
    using System;
 
-   /// <summary>Factory that is creating all instances the engine requires to work correctly (e.g. the <see cref="IArgumentMapper{T}"/>).</summary>
-   public interface IEngineFactory
+   /// <summary>Abstraction for a dependency injection container. This could be forwarded to the container of your choice.</summary>
+   public interface IDependencyInjectionContainer
    {
       #region Public Methods and Operators
-
-      /// <summary>Creates the <see cref="IArgumentMapper{T}"/> that is used.</summary>
-      /// <typeparam name="T">The generic typ the mapper should handle</typeparam>
-      /// <returns>The created mapper</returns>
-      IArgumentMapper<T> CreateMapper<T>()
-         where T : class;
 
       /// <summary>Creates an instance of the given argument type.</summary>
       /// <typeparam name="T">The type of the arguments</typeparam>
       /// <returns>The created instance</returns>
-      T CreateInstance<T>() where T : class;
+      T CreateInstance<T>()
+         where T : class;
 
+      /// <summary>Creates the instance by the given type.</summary>
+      /// <param name="type">The type.</param>
+      /// <returns>The created type</returns>
       object CreateInstance(Type type);
 
       #endregion
+
+      T Resolve<T>() where T : class;
+
+      object Resolve(Type type);
    }
-
-
 }

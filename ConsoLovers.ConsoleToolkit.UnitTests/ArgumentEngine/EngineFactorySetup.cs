@@ -12,9 +12,9 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
    {
       #region Public Methods and Operators
 
-      public EngineFactory Done()
+      public Factory Done()
       {
-         return new EngineFactory();
+         return new Factory();
       }
 
       #endregion
