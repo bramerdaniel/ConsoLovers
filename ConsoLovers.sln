@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Playground", "Playground\Playground.csproj", "{E2456525-5CEB-437A-9A4E-CA07C79191AA}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DemoApplications", "DemoApplications", "{33481418-C30A-4396-A3D8-70468C8EE8CA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InputMaskDemo", "DemoApplications\InputMaskDemo\InputMaskDemo.csproj", "{E9093FDB-BB21-4CD9-8A40-0C263366BB6E}"
@@ -27,7 +25,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCopyDemo", "DemoApplicatio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MouseInputDemo", "DemoApplications\MouseInputDemo\MouseInputDemo.csproj", "{E7BE477E-90BD-4BE9-ADD0-0A09D98546CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleBufferDemo", "ConsoleBufferDemo\ConsoleBufferDemo.csproj", "{9871FEC7-7A7C-4AA3-9444-8F9630414127}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Playground", "DemoApplications\Playground\Playground.csproj", "{E2456525-5CEB-437A-9A4E-CA07C79191AA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleBufferDemo", "DemoApplications\ConsoleBufferDemo\ConsoleBufferDemo.csproj", "{9871FEC7-7A7C-4AA3-9444-8F9630414127}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandLineEngineDemo", "CommandLineEngineDemo\CommandLineEngineDemo.csproj", "{88539BCD-2FFB-41ED-BF95-1C97D0073975}"
 EndProject
@@ -37,10 +37,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E2456525-5CEB-437A-9A4E-CA07C79191AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E2456525-5CEB-437A-9A4E-CA07C79191AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E2456525-5CEB-437A-9A4E-CA07C79191AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E2456525-5CEB-437A-9A4E-CA07C79191AA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E9093FDB-BB21-4CD9-8A40-0C263366BB6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E9093FDB-BB21-4CD9-8A40-0C263366BB6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E9093FDB-BB21-4CD9-8A40-0C263366BB6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -81,6 +77,10 @@ Global
 		{E7BE477E-90BD-4BE9-ADD0-0A09D98546CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7BE477E-90BD-4BE9-ADD0-0A09D98546CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E7BE477E-90BD-4BE9-ADD0-0A09D98546CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2456525-5CEB-437A-9A4E-CA07C79191AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2456525-5CEB-437A-9A4E-CA07C79191AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2456525-5CEB-437A-9A4E-CA07C79191AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2456525-5CEB-437A-9A4E-CA07C79191AA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9871FEC7-7A7C-4AA3-9444-8F9630414127}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9871FEC7-7A7C-4AA3-9444-8F9630414127}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9871FEC7-7A7C-4AA3-9444-8F9630414127}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -102,6 +102,7 @@ Global
 		{A9610E16-D4B1-4492-BEB4-8FEADF0D2796} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
 		{E96031E2-12C5-4303-8F8B-D71FA4AEF9A2} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
 		{E7BE477E-90BD-4BE9-ADD0-0A09D98546CC} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
+		{E2456525-5CEB-437A-9A4E-CA07C79191AA} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
 		{9871FEC7-7A7C-4AA3-9444-8F9630414127} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
 		{88539BCD-2FFB-41ED-BF95-1C97D0073975} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
 	EndGlobalSection
