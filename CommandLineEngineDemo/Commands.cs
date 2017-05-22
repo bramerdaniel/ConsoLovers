@@ -24,7 +24,7 @@ namespace CommandLineEngineDemo
       [HelpText("None", "This is the default help.")]
       public CustomizedArgumentsHelpCommand CustomArgumentHelp { get; set; }
 
-      [Command("Execute", "e")]
+      [Command("Execute", "e", IsDefaultCommand = true)]
       [HelpText("None", "Executes the command.")]
       public ExecuteCommand Execute { get; set; }
 

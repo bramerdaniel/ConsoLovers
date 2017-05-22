@@ -23,12 +23,6 @@ namespace CommandLineEngineDemo
          }
       }
 
-      public override bool RunWithCommand(ICommand command)
-      {
-         base.RunWithCommand(command);
-         return true;
-      }
-
       #endregion
 
       #region Methods

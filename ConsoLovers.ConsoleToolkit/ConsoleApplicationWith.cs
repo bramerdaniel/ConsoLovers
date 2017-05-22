@@ -7,6 +7,7 @@
 namespace ConsoLovers.ConsoleToolkit
 {
    using System;
+   using System.Linq;
 
    using ConsoLovers.ConsoleToolkit.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Contracts;
@@ -53,13 +54,8 @@ namespace ConsoLovers.ConsoleToolkit
 
       public virtual void Run()
       {
-         bool continueExecution = false;
-         ICommand command;
-
-         if (TryGetCommand(out command))
-            continueExecution = RunWithCommand(command);
-
-         if(continueExecution)
+         var commandExecuted = ExecuteCommand(true);
+         if (!commandExecuted)
          {
             if (HasArguments)
             {
@@ -80,7 +76,6 @@ namespace ConsoLovers.ConsoleToolkit
 
       #endregion
 
-     
       #region IArgumentInitializer<T> Members
 
       public virtual T CreateArguments()
@@ -93,6 +88,7 @@ namespace ConsoLovers.ConsoleToolkit
 
       public virtual void InitializeArguments(T instance, string[] args)
       {
+         Args = args;
          HasArguments = args != null && args.Length > 0;
          Arguments = CommandLineEngine.Map(args, instance);
 
@@ -127,26 +123,85 @@ namespace ConsoLovers.ConsoleToolkit
 
       public static IConsole Console { get; } = new ConsoleProxy();
 
-      protected ICommandLineEngine CommandLineEngine => commandLineEngine ?? (commandLineEngine = container.CreateInstance<CommandLineEngine>());
-
       /// <summary>Gets a value indicating whether this application was called with arguments.</summary>
       public bool HasArguments { get; private set; }
 
+      #endregion
+
+      #region Properties
+
       protected T Arguments { get; private set; }
+
+      protected ICommandLineEngine CommandLineEngine => commandLineEngine ?? (commandLineEngine = container.CreateInstance<CommandLineEngine>());
+
+      private string[] Args { get; set; }
 
       #endregion
 
       #region Public Methods and Operators
 
-      public virtual bool RunWithCommand(ICommand command)
+      public virtual void RunWithCommand(ICommand command)
       {
          command.Execute();
-         return false;
       }
 
       #endregion
 
       #region Methods
+
+      /// <summary>Executes the command that was specified in the command line arguments. 
+      /// If no argument was specified but the IsDefaultCommand property was set at one of the commands, a simulated command</summary>
+      /// <param name="useDefaultCommand">if set to <c>true</c> [use default command].</param>
+      /// <returns></returns>
+      protected virtual bool ExecuteCommand(bool useDefaultCommand)
+      {
+         ICommand command = GetCommand();
+         if (command != null)
+         {
+            RunWithCommand(command);
+            return true;
+         }
+
+         if (HasArguments && useDefaultCommand)
+         {
+            var defaultCommand = GetDefaultCommand();
+            if (defaultCommand != null)
+            {
+               RunWithCommand(defaultCommand);
+               return true;
+            }
+         }
+
+         return false;
+      }
+
+      protected ICommand GetCommand()
+      {
+         foreach (var propertyInfo in typeof(T).GetProperties())
+         {
+            if (propertyInfo.PropertyType.GetInterface(typeof(ICommand).FullName) != null)
+            {
+               var value = propertyInfo.GetValue(Arguments) as ICommand;
+               if (value != null)
+                  return value;
+            }
+         }
+
+         return null;
+      }
+
+      protected ICommand GetDefaultCommand()
+      {
+         CommandInfo defaultComand = new ArgumentClassInfo(typeof(T)).CommandInfos.FirstOrDefault(c => c.Attribute.IsDefaultCommand);
+         if (defaultComand == null)
+            return null;
+         
+         var originalArgs = Args.ToList();
+         originalArgs.Insert(0, defaultComand.Attribute.Name);
+
+         CommandLineEngine.Map(originalArgs.ToArray(), Arguments);
+         return defaultComand.PropertyInfo.GetValue(Arguments) as ICommand;
+      }
 
       /// <summary>Called when after the arguments were initialized. This is the first method the arguments can be accessed</summary>
       protected virtual void OnArgumentsInitialized()
@@ -162,25 +217,6 @@ namespace ConsoLovers.ConsoleToolkit
       {
          Console.WriteLine(waitText);
          Console.ReadLine();
-      }
-
-      protected bool TryGetCommand(out ICommand command)
-      {
-         foreach (var propertyInfo in typeof(T).GetProperties())
-         {
-            if (propertyInfo.PropertyType.GetInterface(typeof(ICommand).FullName) != null)
-            {
-               var value = propertyInfo.GetValue(Arguments) as ICommand;
-               if (value != null)
-               {
-                  command = value;
-                  return true;
-               }
-            }
-         }
-
-         command = null;
-         return false;
       }
 
       #endregion
