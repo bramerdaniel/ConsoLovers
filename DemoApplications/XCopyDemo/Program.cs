@@ -5,6 +5,7 @@ namespace XCopyDemo
    using System.IO;
 
    using ConsoLovers.ConsoleToolkit;
+   using ConsoLovers.ConsoleToolkit.CommandLineArguments;
 
    [ConsoleWindowWidth(120)]
    [ConsoleWindowHeight(80)]
@@ -63,6 +64,11 @@ namespace XCopyDemo
          }
 
          return false;
+      }
+
+      public Program(ICommandLineEngine commandLineEngine)
+         : base(commandLineEngine)
+      {
       }
    }
 }

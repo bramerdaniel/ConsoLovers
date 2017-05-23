@@ -24,7 +24,7 @@ namespace ConsoLovers.ConsoleToolkit
       }
 
       internal ConsoleApplicationManager()
-         : this(new Factory().CreateInstance)
+         : this(new DefaultFactory().CreateInstance)
       {
       }
 

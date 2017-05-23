@@ -26,26 +26,17 @@ namespace ConsoLovers.ConsoleToolkit
    {
       #region Constants and Fields
 
-      private readonly IDependencyInjectionContainer container;
-
-      private ICommandLineEngine commandLineEngine;
-
       #endregion
 
       #region Constructors and Destructors
 
-      protected ConsoleApplicationWith()
-         : this(new Factory())
-      {
-      }
-
       [InjectionConstructor]
-      protected ConsoleApplicationWith([NotNull] IDependencyInjectionContainer container)
+      protected ConsoleApplicationWith([NotNull] ICommandLineEngine commandLineEngine)
       {
-         if (container == null)
-            throw new ArgumentNullException(nameof(container));
+         if (commandLineEngine == null)
+            throw new ArgumentNullException(nameof(commandLineEngine));
 
-         this.container = container;
+         CommandLineEngine = commandLineEngine;
       }
 
       #endregion
@@ -132,7 +123,7 @@ namespace ConsoLovers.ConsoleToolkit
 
       protected T Arguments { get; private set; }
 
-      protected ICommandLineEngine CommandLineEngine => commandLineEngine ?? (commandLineEngine = container.CreateInstance<CommandLineEngine>());
+      protected ICommandLineEngine CommandLineEngine { get; }
 
       private string[] Args { get; set; }
 
@@ -155,14 +146,18 @@ namespace ConsoLovers.ConsoleToolkit
       /// <returns></returns>
       protected virtual bool ExecuteCommand(bool useDefaultCommand)
       {
-         ICommand command = GetCommand();
+         var applicationArguments = new ArgumentClassInfo(typeof(T));
+         if (!applicationArguments.HasCommands)
+            return false;
+
+         ICommand command = GetMappedCommand();
          if (command != null)
          {
             RunWithCommand(command);
             return true;
          }
 
-         if (HasArguments && useDefaultCommand)
+         if (useDefaultCommand)
          {
             var defaultCommand = GetDefaultCommand();
             if (defaultCommand != null)
@@ -175,7 +170,7 @@ namespace ConsoLovers.ConsoleToolkit
          return false;
       }
 
-      protected ICommand GetCommand()
+      protected ICommand GetMappedCommand()
       {
          foreach (var propertyInfo in typeof(T).GetProperties())
          {
@@ -192,7 +187,7 @@ namespace ConsoLovers.ConsoleToolkit
 
       protected ICommand GetDefaultCommand()
       {
-         CommandInfo defaultComand = new ArgumentClassInfo(typeof(T)).CommandInfos.FirstOrDefault(c => c.Attribute.IsDefaultCommand);
+         CommandInfo defaultComand = GetDefaultCommand(HasArguments);
          if (defaultComand == null)
             return null;
          
@@ -201,6 +196,15 @@ namespace ConsoLovers.ConsoleToolkit
 
          CommandLineEngine.Map(originalArgs.ToArray(), Arguments);
          return defaultComand.PropertyInfo.GetValue(Arguments) as ICommand;
+      }
+
+      private static CommandInfo GetDefaultCommand(bool withParameters)
+      {
+         var argumentClassInfo = new ArgumentClassInfo(typeof(T));
+         if (withParameters)
+            return argumentClassInfo.CommandInfos.FirstOrDefault(c => c.Attribute.IsDefaultCommand && c.ArgumentType != null);
+
+         return argumentClassInfo.CommandInfos.FirstOrDefault(c => c.Attribute.IsDefaultCommand && c.ArgumentType == null);
       }
 
       /// <summary>Called when after the arguments were initialized. This is the first method the arguments can be accessed</summary>

@@ -9,7 +9,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
    using System;
 
    /// <summary>Abstraction for a dependency injection container. This could be forwarded to the container of your choice.</summary>
-   public interface IDependencyInjectionContainer
+   public interface IObjectFactory
    {
       #region Public Methods and Operators
 

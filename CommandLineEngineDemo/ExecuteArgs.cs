@@ -16,7 +16,7 @@ namespace CommandLineEngineDemo
       #region Public Properties
 
       [Argument("Path", "p", Required = true)]
-      [HelpText("ExecuteArgs_PathHelp", "The path to the thing that should be executed.")]
+      [HelpText("The path to the thing that should be executed.", "ExecuteArgs_PathHelp")]
       public string Path { get; set; }
 
       #endregion

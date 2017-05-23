@@ -10,7 +10,7 @@ namespace CommandLineEngineDemo
 
    using ConsoLovers.ConsoleToolkit.CommandLineArguments;
 
-   [HelpText("None", "This is the detailed help for the crash command. Should you realy do that this was.")]
+   [HelpText("This is the detailed help for the crash command. Should you realy do that this was.", "None")]
    internal class CrashCommand : ICommand
    {
       #region ICommand Members

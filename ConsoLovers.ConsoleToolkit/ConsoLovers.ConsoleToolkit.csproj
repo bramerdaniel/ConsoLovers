@@ -55,8 +55,8 @@
     <Compile Include="CommandLineArguments\HelpCommand.cs" />
     <Compile Include="CommandLineArguments\ICommand.cs" />
     <Compile Include="CommandLineArguments\ICommandLineEngine.cs" />
-    <Compile Include="CommandLineArguments\IDependencyInjectionContainer.cs" />
-    <Compile Include="CommandLineArguments\Factory.cs" />
+    <Compile Include="CommandLineArguments\IObjectFactory.cs" />
+    <Compile Include="CommandLineArguments\DefaultFactory.cs" />
     <Compile Include="ConsoleApplicationManager.cs" />
     <Compile Include="ConsoleApplicationWith.cs" />
     <Compile Include="ConsoleWindowHeightAttribute.cs" />

@@ -13,27 +13,27 @@ namespace CommandLineEngineDemo
       #region Public Properties
 
       [Command("crash", "c")]
-      [HelpText("None", "Crashes the application for demo.")]
+      [HelpText("Crashes the application for demo.", "None")]
       public CrashCommand Crash { get; set; }
 
       [Command("CustomHelp", "ch")]
-      [HelpText("None", "This is the default help.")]
+      [HelpText("This is the default help.", "None")]
       public CustomHelpCommand CustomHelp { get; set; }
 
       [Command("CustomArgumentHelp", "cah")]
-      [HelpText("None", "This is the default help.")]
+      [HelpText("This is the default help.", "None")]
       public CustomizedArgumentsHelpCommand CustomArgumentHelp { get; set; }
 
       [Command("Execute", "e", IsDefaultCommand = true)]
-      [HelpText("None", "Executes the command.")]
+      [HelpText("Executes the command.", "None", Priority = 20)]
       public ExecuteCommand Execute { get; set; }
 
       [Command("Help", "?")]
-      [HelpText("None", "Displays the help you are watching at the moment.")]
+      [HelpText("Displays the help you are watching at the moment.", "None")]
       public HelpCommand Help { get; set; }
 
       [Option("Wait", "w")]
-      [HelpText("None", "Waits for key press")]
+      [HelpText("Waits for key press", "None")]
       public bool Wait { get; set; }
 
       #endregion

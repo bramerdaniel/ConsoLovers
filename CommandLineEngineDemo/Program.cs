@@ -34,5 +34,10 @@ namespace CommandLineEngineDemo
       }
 
       #endregion
+
+      public Program(ICommandLineEngine commandLineEngine)
+         : base(commandLineEngine)
+      {
+      }
    }
 }

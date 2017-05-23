@@ -85,6 +85,17 @@
     <Compile Include="ArgumentEngine\EngineTestBase.cs" />
     <Compile Include="ArgumentEngine\Setup.cs" />
     <Compile Include="Class1.cs" />
+    <Compile Include="ConsoleApplicationWithTests\Utils\ApplicationTestContext.cs" />
+    <Compile Include="ConsoleApplicationWithTests\Utils\ArgumentsTwoDefaultCommands.cs" />
+    <Compile Include="ConsoleApplicationWithTests\Utils\ArgumentsWithGenericDefaultCommand.cs" />
+    <Compile Include="ConsoleApplicationWithTests\Utils\ArgumentsWithGenericCommand.cs" />
+    <Compile Include="ConsoleApplicationWithTests\Utils\DefaultExecuteCommand.cs" />
+    <Compile Include="ConsoleApplicationWithTests\Utils\IApplicationVerification.cs" />
+    <Compile Include="ConsoleApplicationWithTests\Utils\ICommandVerification.cs" />
+    <Compile Include="ConsoleApplicationWithTests\Run.cs" />
+    <Compile Include="ConsoleApplicationWithTests\Utils\TestCommandArguments.cs" />
+    <Compile Include="ConsoleApplicationWithTests\Utils\TestApplication.cs" />
+    <Compile Include="ConsoleApplicationWithTests\Utils\GenericExecuteCommand.cs" />
     <Compile Include="DIContainer\AttributePropertySelectionStrategyTests.cs" />
     <Compile Include="DIContainer\AttributSelectionStrategyTests.cs" />
     <Compile Include="DIContainer\CombinedSelectionStrategyTests.cs" />

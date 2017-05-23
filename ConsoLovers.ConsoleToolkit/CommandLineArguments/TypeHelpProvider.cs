@@ -87,7 +87,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       {
          var consoleWidth = GetConsoleWidth();
 
-         var argumentHelps = GetHelpForProperties(type).ToList();
+         var argumentHelps = GetHelpForProperties(type).OrderByDescending(x => x.Priority).ToList();
          if (argumentHelps.Count == 0)
          {
             OnNoPropertyHelpAvailable();
@@ -168,7 +168,8 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
                   PropertyName = GetArgumentName(info, commandLineAttribute),
                   Aliases = GetAliases(commandLineAttribute),
                   UnlocalizedDescription = helpText.Description,
-                  LocalizedDescription = resourceManager?.GetString(helpText.ResourceKey)
+                  LocalizedDescription = resourceManager?.GetString(helpText.ResourceKey),
+                  Priority = helpText.Priority
                };
             }
          }

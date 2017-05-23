@@ -1,21 +1,19 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="EngineFactorySetup.cs" company="ConsoLovers">
+// <copyright file="ArgumentsWithGenericCommand.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2017
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.UnitTests.ArgumentEngine
+namespace ConsoLovers.UnitTests.ConsoleApplicationWithTests.Utils
 {
    using ConsoLovers.ConsoleToolkit.CommandLineArguments;
 
-   public class EngineFactorySetup
+   public class ArgumentsWithGenericCommand
    {
-      #region Public Methods and Operators
+      #region Public Properties
 
-      public DefaultFactory Done()
-      {
-         return new DefaultFactory();
-      }
+      [Command("Execute", "e")]
+      public GenericExecuteCommand Execute { get; set; }
 
       #endregion
    }

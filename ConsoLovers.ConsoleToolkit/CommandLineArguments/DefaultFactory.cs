@@ -7,22 +7,22 @@
 
    using JetBrains.Annotations;
 
-   public class Factory : IDependencyInjectionContainer
+   public class DefaultFactory : IObjectFactory
    {
       private readonly IContainer container;
 
-      public Factory()
+      public DefaultFactory()
          :this(new Container())
       {
       }
 
-      public Factory([NotNull] IContainer container)
+      public DefaultFactory([NotNull] IContainer container)
       {
          if (container == null)
             throw new ArgumentNullException(nameof(container));
          this.container = container;
 
-         container.Register<IDependencyInjectionContainer>(this).WithLifetime(Lifetime.Singleton);
+         container.Register<IObjectFactory>(this).WithLifetime(Lifetime.Singleton);
          container.Register<ICommandLineEngine, CommandLineEngine>().WithLifetime(Lifetime.Singleton);
          container.Register<IConsole>(new ConsoleProxy()).WithLifetime(Lifetime.Singleton);
       }

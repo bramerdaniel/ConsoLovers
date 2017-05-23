@@ -23,7 +23,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       #region Constructors and Destructors
 
       [InjectionConstructor]
-      public CommandLineEngine([NotNull] IDependencyInjectionContainer engineFactory)
+      public CommandLineEngine([NotNull] IObjectFactory engineFactory)
       {
          if (engineFactory == null)
             throw new ArgumentNullException(nameof(engineFactory));
@@ -32,7 +32,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       }
 
       public CommandLineEngine()
-         : this(new Factory())
+         : this(new DefaultFactory())
       {
       }
 
@@ -163,7 +163,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       #region Properties
 
       /// <summary>Gets the mapper factory.</summary>
-      internal IDependencyInjectionContainer EngineFactory { get; set; }
+      internal IObjectFactory EngineFactory { get; set; }
 
       #endregion
 

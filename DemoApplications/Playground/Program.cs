@@ -95,6 +95,11 @@ namespace Playground
       }
 
       #endregion
+
+      public MyProgramLogic(ICommandLineEngine commandLineEngine)
+         : base(commandLineEngine)
+      {
+      }
    }
 
    // The arguments class your args are mapped to
@@ -160,5 +165,10 @@ namespace Playground
       }
 
       #endregion
+
+      public AppAndParameters(ICommandLineEngine commandLineEngine)
+         : base(commandLineEngine)
+      {
+      }
    }
 }

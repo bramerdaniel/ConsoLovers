@@ -6,15 +6,15 @@
    {
       [IndexedArgument(0)]
       [Argument("SourceFile", "s", Required = true)]
-      [HelpText(null,"The path to the source file that should be copied")]
+      [HelpText("The path to the source file that should be copied", null)]
       public string SourceFile { get; set; }
 
       [IndexedArgument(1)]
       [Argument("DestinationFile", "d", Required = true)]
-      [HelpText(null, "The destination path where the file should be copied to")]
+      [HelpText("The destination path where the file should be copied to", null)]
       public string DestinationFile { get; set; }
 
-      [HelpText(null, "If set to true, an existing file will be overwritten. Otherwise it will fail.")]
+      [HelpText("If set to true, an existing file will be overwritten. Otherwise it will fail.", null)]
       [Option("OverrideExisting", "o")]
       public bool OverrideExisting { get; set; }
 

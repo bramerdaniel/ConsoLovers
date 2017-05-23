@@ -3,6 +3,7 @@
    using System;
 
    using ConsoLovers.ConsoleToolkit.CommandLineArguments;
+   using ConsoLovers.ConsoleToolkit.DIContainer;
 
    using JetBrains.Annotations;
 
@@ -24,15 +25,28 @@
       {
          if (applicationBuilder == null)
             throw new ArgumentNullException(nameof(applicationBuilder));
+         if (createApplication != null)
+            throw new InvalidOperationException("ApplicationBuilder function was already specified.");
 
          createApplication = applicationBuilder;
+         return this;
+      }
+
+      internal ConsoleApplicationBootstrapper UsingFactory([NotNull] IObjectFactory container)
+      {
+         if (container == null)
+            throw new ArgumentNullException(nameof(container));
+         if (createApplication != null)
+            throw new InvalidOperationException("ApplicationBuilder function was already specified.");
+
+         createApplication = container.CreateInstance;
          return this;
       }
 
       public void Run(string[] args)
       {
          if (createApplication == null)
-            createApplication = new Factory().CreateInstance;
+            createApplication = new DefaultFactory().CreateInstance;
 
          var applicationManager = new ConsoleApplicationManager(createApplication);
          applicationManager.Run(applicationType, args);

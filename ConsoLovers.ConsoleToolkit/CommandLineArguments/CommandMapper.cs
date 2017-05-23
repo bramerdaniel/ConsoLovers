@@ -19,13 +19,13 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
    {
       #region Constants and Fields
 
-      private readonly IDependencyInjectionContainer diContainer;
+      private readonly IObjectFactory diContainer;
 
       #endregion
 
       #region Constructors and Destructors
 
-      public CommandMapper([NotNull] IDependencyInjectionContainer diContainer)
+      public CommandMapper([NotNull] IObjectFactory diContainer)
       {
          if (diContainer == null)
             throw new ArgumentNullException(nameof(diContainer));

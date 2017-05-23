@@ -49,6 +49,9 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       /// <summary>Gets or sets the un localized description specified by the developer.</summary>
       public string UnlocalizedDescription { get; set; }
 
+      /// <summary>Gets or sets the order.</summary>
+      public int Priority { get; set; }
+
       #endregion
 
       #region Methods
