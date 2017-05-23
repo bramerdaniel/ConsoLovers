@@ -52,6 +52,9 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       /// <summary>Gets or sets the order.</summary>
       public int Priority { get; set; }
 
+      /// <summary>Gets or sets a value indicating whether this <see cref="ArgumentHelp"/> is required.</summary>
+      public bool Required{ get; set; }
+
       #endregion
 
       #region Methods

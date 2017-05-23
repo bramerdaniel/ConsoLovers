@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="TypeHelpTextProvider.cs" company="ConsoLovers">
+// <copyright file="TypeHelpProvider.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2017
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -26,21 +26,11 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
       private readonly Type type;
 
-      #endregion
-
-      #region Constructors and Destructors
-
       private IConsole console;
 
       #endregion
 
-      /// <summary>Gets the console that should be used.</summary>
-      protected IConsole Console => console ?? (console = CreateConsole());
-
-      protected virtual IConsole CreateConsole()
-      {
-         return new ConsoleProxy();
-      }
+      #region Constructors and Destructors
 
       public TypeHelpProvider([NotNull] Type type)
          : this(type, null)
@@ -57,24 +47,9 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          this.resourceManager = resourceManager;
       }
 
-      
-      #region IHelpTextProvider Members
+      #endregion
 
-      public virtual void WriteHeader()
-      {
-         if (type.IsCommandType())
-         {
-            Console.WriteLine("Help for the command");
-            Console.WriteLine();
-            return;
-         }
-
-         if (type.IsClass)
-         {
-            Console.WriteLine("Help for the command line arguments that are supported");
-            Console.WriteLine();
-         }
-      }
+      #region IHelpProvider Members
 
       public void PrintHelp()
       {
@@ -83,70 +58,16 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          WriteFooter();
       }
 
-      public virtual void WriteContent()
-      {
-         var consoleWidth = GetConsoleWidth();
+      #endregion
 
-         var argumentHelps = GetHelpForProperties(type).OrderByDescending(x => x.Priority).ToList();
-         if (argumentHelps.Count == 0)
-         {
-            OnNoPropertyHelpAvailable();
-            return;
-         }
+      #region Properties
 
-         int longestNameWidth = argumentHelps.Select(a => a.PropertyName.Length).Max() + 2;
-         int longestAliasWidth = argumentHelps.Select(a => a.AliasString.Length).Max() + 4;
-
-         int descriptionWidth = consoleWidth - longestNameWidth - longestAliasWidth;
-         int leftWidth = consoleWidth - descriptionWidth;
-
-         foreach (ArgumentHelp argumentHelp in argumentHelps)
-         {
-            BeforerArgument(argumentHelp);
-
-            var name = $"-{argumentHelp.PropertyName}".PadRight(longestNameWidth);
-            var aliasString = $"[{argumentHelp.AliasString}]".PadRight(longestAliasWidth);
-
-            Console.Write($"{name}{aliasString}");
-
-            var descriptionLines = GetWrappedStrings(argumentHelp.Description, descriptionWidth).ToList();
-
-            Console.WriteLine(descriptionLines[0]);
-            foreach (var part in descriptionLines.Skip(1))
-               Console.WriteLine(" ".PadLeft(leftWidth) + part);
-
-            AfterArgument(argumentHelp);
-         }
-      }
-
-      protected virtual void OnNoPropertyHelpAvailable()
-      {
-         Console.WriteLine("No help for the arguments available");
-      }
-
-      protected virtual void BeforerArgument(ArgumentHelp help)
-      {
-      }
-
-      protected virtual void AfterArgument(ArgumentHelp help)
-      {
-      }
-
-      public virtual void WriteFooter()
-      {
-      }
+      /// <summary>Gets the console that should be used.</summary>
+      protected IConsole Console => console ?? (console = CreateConsole());
 
       #endregion
 
       #region Public Methods and Operators
-
-      private static string[] GetAliases(CommandLineAttribute attribute)
-      {
-         if (attribute != null)
-            return attribute.Aliases;
-
-         return new string[0];
-      }
 
       /// <summary>Gets the help information for the class of the given type.</summary>
       /// <param name="argumentType">The argument class for creating the help for</param>
@@ -169,9 +90,55 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
                   Aliases = GetAliases(commandLineAttribute),
                   UnlocalizedDescription = helpText.Description,
                   LocalizedDescription = resourceManager?.GetString(helpText.ResourceKey),
-                  Priority = helpText.Priority
+                  Priority = helpText.Priority,
+                  Required = IsRequired(commandLineAttribute)
                };
             }
+         }
+      }
+
+      public virtual void WriteContent()
+      {
+         var consoleWidth = GetConsoleWidth();
+
+         var argumentHelps = GetHelpForProperties(type).OrderByDescending(x => x.Priority).ToList();
+         if (argumentHelps.Count == 0)
+         {
+            OnNoPropertyHelpAvailable();
+            return;
+         }
+
+         int longestNameWidth = argumentHelps.Select(a => a.PropertyName.Length).Max() + 2;
+         int longestAliasWidth = argumentHelps.Select(a => a.AliasString.Length).Max() + 4;
+
+         int descriptionWidth = consoleWidth - longestNameWidth - longestAliasWidth;
+         int leftWidth = consoleWidth - descriptionWidth;
+
+         foreach (ArgumentHelp argumentHelp in argumentHelps)
+         {
+            BeforerArgument(argumentHelp);
+            WriteArgument(argumentHelp, longestNameWidth, longestAliasWidth, descriptionWidth, leftWidth);
+            AfterArgument(argumentHelp);
+         }
+      }
+
+      public virtual void WriteFooter()
+      {
+      }
+
+      public virtual void WriteHeader()
+      {
+         if (type.IsCommandType())
+         {
+            Console.WriteLine("Help for the command");
+            Console.WriteLine();
+            return;
+         }
+
+         if (type.IsClass)
+         {
+            Console.WriteLine("Help for the command line arguments that are supported");
+            Console.WriteLine();
          }
       }
 
@@ -179,28 +146,17 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
       #region Methods
 
-      private static string[] GetAliases(ArgumentAttribute argumentAttribute, OptionAttribute optionAttribute, CommandAttribute commandAttribute)
+      protected virtual void AfterArgument(ArgumentHelp help)
       {
-         if (argumentAttribute != null)
-            return argumentAttribute.Aliases;
-
-         if (optionAttribute != null)
-            return optionAttribute.Aliases;
-
-         if (commandAttribute != null)
-            return commandAttribute.Aliases;
-
-         return new string[0];
       }
 
-      private static string GetArgumentName(PropertyInfo info, CommandLineAttribute commandLineAttribute)
+      protected virtual void BeforerArgument(ArgumentHelp help)
       {
-         string primaryName = info.Name;
+      }
 
-         if (commandLineAttribute?.Name != null)
-            return commandLineAttribute.Name.ToLowerInvariant();
-
-         return primaryName.ToLowerInvariant();
+      protected virtual IConsole CreateConsole()
+      {
+         return new ConsoleProxy();
       }
 
       protected int GetConsoleWidth()
@@ -213,6 +169,29 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          {
             return 140;
          }
+      }
+
+      protected virtual void OnNoPropertyHelpAvailable()
+      {
+         Console.WriteLine("No help for the arguments available");
+      }
+
+      private static string[] GetAliases(CommandLineAttribute attribute)
+      {
+         if (attribute != null)
+            return attribute.Aliases;
+
+         return new string[0];
+      }
+
+      private static string GetArgumentName(PropertyInfo info, CommandLineAttribute commandLineAttribute)
+      {
+         string primaryName = info.Name;
+
+         if (commandLineAttribute?.Name != null)
+            return commandLineAttribute.Name.ToLowerInvariant();
+
+         return primaryName.ToLowerInvariant();
       }
 
       private static IEnumerable<string> GetWrappedStrings(string text, int maxLength)
@@ -241,6 +220,32 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          }
 
          yield return builder.ToString();
+      }
+
+      protected virtual ConsoleColor GetNameForeground(ArgumentHelp info)
+      {
+         return info.Required ? ConsoleColor.Red : Console.ForegroundColor;
+      }
+
+      private bool IsRequired(CommandLineAttribute commandLineAttribute)
+      {
+         var attribute = commandLineAttribute as ArgumentAttribute;
+         return attribute != null && attribute.Required;
+      }
+
+      private void WriteArgument(ArgumentHelp argumentHelp, int longestNameWidth, int longestAliasWidth, int descriptionWidth, int leftWidth)
+      {
+         var name = $"-{argumentHelp.PropertyName}".PadRight(longestNameWidth);
+         var aliasString = $"[{argumentHelp.AliasString}]".PadRight(longestAliasWidth);
+
+         Console.Write(name, GetNameForeground(argumentHelp));
+         Console.Write(aliasString);
+
+         var descriptionLines = GetWrappedStrings(argumentHelp.Description, descriptionWidth).ToList();
+
+         Console.WriteLine(descriptionLines[0]);
+         foreach (var part in descriptionLines.Skip(1))
+            Console.WriteLine(" ".PadLeft(leftWidth) + part);
       }
 
       #endregion

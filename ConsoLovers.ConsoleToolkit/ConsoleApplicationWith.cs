@@ -172,6 +172,9 @@ namespace ConsoLovers.ConsoleToolkit
 
       protected ICommand GetMappedCommand()
       {
+         if (Arguments == null)
+            return null;
+
          foreach (var propertyInfo in typeof(T).GetProperties())
          {
             if (propertyInfo.PropertyType.GetInterface(typeof(ICommand).FullName) != null)

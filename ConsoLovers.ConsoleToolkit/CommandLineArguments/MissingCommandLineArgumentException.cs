@@ -14,7 +14,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       /// <summary>Initializes a new instance of the <see cref="MissingCommandLineArgumentException"/> class. Initializes a new instance of the <see cref="T:System.Exception"/> class.</summary>
       /// <param name="argument">The message that describes the error.</param>
       public MissingCommandLineArgumentException(string argument)
-         : base($"The command line argument {argument} is missing but is specified as required.")
+         : base($"The command line argument '{argument}' is missing but is specified as required.")
       {
          Argument = argument;
       }
