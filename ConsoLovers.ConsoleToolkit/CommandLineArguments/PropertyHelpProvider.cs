@@ -23,6 +23,8 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
       private readonly CommandLineAttribute commandLineAttribute;
 
+      private readonly DetailedHelpTextAttribute detailedHelpTextAttribute;
+
       private readonly HelpTextAttribute helpTextAttribute;
 
       [NotNull]
@@ -54,6 +56,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          this.resourceManager = resourceManager;
 
          commandLineAttribute = propertyInfo.GetAttribute<CommandLineAttribute>();
+         detailedHelpTextAttribute = propertyInfo.GetAttribute<DetailedHelpTextAttribute>();
          helpTextAttribute = propertyInfo.GetAttribute<HelpTextAttribute>();
       }
 
@@ -83,8 +86,18 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       /// <summary>Writes the content.</summary>
       public virtual void WriteContent()
       {
-         if (helpTextAttribute != null)
-            WriteHelpText(helpTextAttribute);
+         if (detailedHelpTextAttribute != null)
+         {
+            WriteHelpText(detailedHelpTextAttribute.ResourceKey, detailedHelpTextAttribute.Description);
+         }
+         else if (helpTextAttribute != null)
+         {
+            WriteHelpText(helpTextAttribute.ResourceKey, helpTextAttribute.Description);
+         }
+         else
+         {
+            WriteNoHelpTextAvailable();
+         }
       }
 
       /// <summary>Writes the footer.</summary>
@@ -108,36 +121,21 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          return new ConsoleProxy();
       }
 
-      /// <summary>Writes the help text that was specified with a <see cref="HelpTextAttribute"/>.</summary>
-      /// <param name="helpText">The help text.</param>
-      protected virtual void WriteHelpText(HelpTextAttribute helpText)
+      protected virtual void WriteNoHelpTextAvailable()
       {
-         if (resourceManager != null)
-         {
-            if (!string.IsNullOrEmpty(helpText.DetailedResourceKey))
-            {
-               var helpTextString = resourceManager.GetString(helpText.DetailedResourceKey);
-               Console.WriteLine($"- {helpTextString}");
-               return;
-            }
+      }
 
-            if (!string.IsNullOrEmpty(helpText.ResourceKey))
-            {
-               var helpTextString = resourceManager.GetString(helpText.ResourceKey);
-               Console.WriteLine($"- {helpTextString}");
-               return;
-            }
+      protected virtual void WriteHelpText(string resourceKey, string description)
+      {
+         if (resourceManager != null && !string.IsNullOrEmpty(resourceKey))
+         {
+            var helpTextString = resourceManager.GetString(resourceKey);
+            Console.WriteLine($"- {helpTextString}");
          }
-
-         if (!string.IsNullOrEmpty(helpText.DetailedDescription))
+         else
          {
-            Console.WriteLine($"- {helpText.DetailedDescription}");
-            return;
-         }
-
-         if (!string.IsNullOrEmpty(helpText.Description))
-         {
-            Console.WriteLine($"- {helpText.Description}");
+            if (description != null)
+               Console.WriteLine($"- {description}");
          }
       }
 

@@ -16,7 +16,8 @@ namespace CommandLineEngineDemo
       #region Public Properties
 
       [Argument("Path", "p", Required = true)]
-      [HelpText("The path to the thing that should be executed.", "Execute_Path_Help", DetailedResourceKey = nameof(Properties.Resources.Execute_Path_DetailedHelp))]
+      [HelpText("The path to the thing that should be executed.")]
+      [DetailedHelpText(ResourceKey = nameof(Properties.Resources.Execute_Path_DetailedHelp))]
       public string Path { get; set; }
 
       #endregion

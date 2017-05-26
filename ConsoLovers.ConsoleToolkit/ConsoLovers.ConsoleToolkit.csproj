@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="CommandLineArguments\ArgumentClassInfo.cs" />
     <Compile Include="CommandLineArguments\CommandLineArgument.cs" />
+    <Compile Include="CommandLineArguments\DetailedHelpTextAttribute.cs" />
     <Compile Include="CommandLineArguments\HelpCommandArguments.cs" />
     <Compile Include="CommandLineArguments\PropertyHelpProvider.cs" />
     <Compile Include="CommandLineArguments\TypeHelpProvider.cs" />

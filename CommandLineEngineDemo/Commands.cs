@@ -16,13 +16,13 @@ namespace CommandLineEngineDemo
       [HelpText("Crashes the application for demo.", "None")]
       public CrashCommand Crash { get; set; }
 
-      [Command("CustomHelp", "ch")]
-      [HelpText("This is the default help.", "None")]
-      public CustomHelpCommand CustomHelp { get; set; }
-
       [Command("CustomArgumentHelp", "cah")]
       [HelpText("This is the default help.", "None")]
       public CustomizedArgumentsHelpCommand CustomArgumentHelp { get; set; }
+
+      [Command("CustomHelp", "ch")]
+      [HelpText("This is the default help.", "None")]
+      public CustomHelpCommand CustomHelp { get; set; }
 
       [Command("Execute", "e", IsDefaultCommand = true)]
       [HelpText("Executes the command.", "None", Priority = 20)]
@@ -33,7 +33,8 @@ namespace CommandLineEngineDemo
       public HelpCommand Help { get; set; }
 
       [Option("Wait", "w")]
-      [HelpText("Waits for key press", "None", DetailedResourceKey = nameof(Properties.Resources.Wait_DetailedHelp))]
+      [HelpText("Waits for key press", "None")]
+      [DetailedHelpText(ResourceKey = nameof(Properties.Resources.Wait_DetailedHelp))]
       public bool Wait { get; set; }
 
       #endregion
