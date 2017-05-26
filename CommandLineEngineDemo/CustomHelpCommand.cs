@@ -7,6 +7,7 @@
 namespace CommandLineEngineDemo
 {
    using System;
+   using System.Reflection;
    using System.Resources;
 
    using ConsoLovers.ConsoleToolkit.CommandLineArguments;
@@ -26,11 +27,8 @@ namespace CommandLineEngineDemo
 
       #region IHelpTextProvider Members
 
-      public void Initialize(Type helpType, ResourceManager resourceManager)
-      {
-      }
 
-      public void PrintHelp()
+      private void PrintHelp()
       {
          WriteHeader();
          WriteContent();
@@ -59,5 +57,15 @@ namespace CommandLineEngineDemo
       }
 
       #endregion
+
+      public void PrintTypeHelp(Type type)
+      {
+         PrintHelp();
+      }
+
+      public void PrintPropertyHelp(PropertyInfo property)
+      {
+         PrintHelp();
+      }
    }
 }

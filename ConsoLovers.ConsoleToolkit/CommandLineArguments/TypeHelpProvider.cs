@@ -24,26 +24,19 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
       private readonly ResourceManager resourceManager;
 
-      private readonly Type type;
-
       private IConsole console;
 
       #endregion
 
       #region Constructors and Destructors
 
-      public TypeHelpProvider([NotNull] Type type)
-         : this(type, null)
+      public TypeHelpProvider()
       {
       }
 
       [InjectionConstructor]
-      public TypeHelpProvider([NotNull] Type type, [CanBeNull] ResourceManager resourceManager)
+      public TypeHelpProvider([CanBeNull] ResourceManager resourceManager)
       {
-         if (type == null)
-            throw new ArgumentNullException(nameof(type));
-
-         this.type = type;
          this.resourceManager = resourceManager;
       }
 
@@ -51,11 +44,29 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
       #region IHelpProvider Members
 
-      public void PrintHelp()
+      /// <summary>Prints the help.</summary>
+      /// <param name="type">Type of the argument.</param>
+      public void PrintTypeHelp(Type type)
       {
-         WriteHeader();
-         WriteContent();
-         WriteFooter();
+         var helpRequest = new TypeHelpRequest(type);
+
+         WriteTypeHeader(helpRequest);
+         WriteTypeContent(helpRequest);
+         WriteTypeFooter(helpRequest);
+      }
+
+      /// <summary>Prints the help for the given property.</summary>
+      /// <param name="property">The argument property.</param>
+      public void PrintPropertyHelp([NotNull] PropertyInfo property)
+      {
+         if (property == null)
+            throw new ArgumentNullException(nameof(property));
+
+         var helpRequest = new PropertyHelpRequest(property);
+
+         WritePropertyHeader(helpRequest);
+         WritePropertyContent(helpRequest);
+         WritePropertyFooter(helpRequest);
       }
 
       #endregion
@@ -89,7 +100,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
                   PropertyName = GetArgumentName(info, commandLineAttribute),
                   Aliases = GetAliases(commandLineAttribute),
                   UnlocalizedDescription = helpText.Description,
-                  LocalizedDescription = resourceManager?.GetString(helpText.ResourceKey),
+                  LocalizedDescription = CommandLineEngine.GetLocalizedDescription(resourceManager, helpText.ResourceKey),
                   Priority = helpText.Priority,
                   Required = IsRequired(commandLineAttribute)
                };
@@ -97,11 +108,11 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          }
       }
 
-      public virtual void WriteContent()
+      public virtual void WriteTypeContent(TypeHelpRequest helpRequest)
       {
          var consoleWidth = GetConsoleWidth();
 
-         var argumentHelps = GetHelpForProperties(type).OrderByDescending(x => x.Priority).ToList();
+         var argumentHelps = GetHelpForProperties(helpRequest.Type).OrderByDescending(x => x.Priority).ToList();
          if (argumentHelps.Count == 0)
          {
             OnNoPropertyHelpAvailable();
@@ -122,29 +133,27 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          }
       }
 
-      public virtual void WriteFooter()
+      /// <summary>Writes the footer for a type help request.</summary>
+      /// <param name="helpRequest"></param>
+      public virtual void WriteTypeFooter(TypeHelpRequest helpRequest)
       {
+         WriteSeparator();
       }
 
-      public virtual void WriteHeader()
+      public virtual void WriteTypeHeader(TypeHelpRequest helpRequest)
       {
-         if (type.IsCommandType())
+         if (helpRequest.Type.IsCommandType())
          {
-            Console.WriteLine($"Help for the '{GetCommandName()}' command");
+            Console.WriteLine($"Help for the '{GetCommandName(helpRequest.Type)}' command");
             Console.WriteLine();
             return;
          }
 
-         if (type.IsClass)
+         if (helpRequest.Type.IsClass)
          {
             Console.WriteLine("Help for the command line arguments that are supported");
             Console.WriteLine();
          }
-      }
-
-      private string GetCommandName()
-      {
-         return type.Name;
       }
 
       #endregion
@@ -176,9 +185,51 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          }
       }
 
+      protected virtual ConsoleColor GetNameForeground(ArgumentHelp info)
+      {
+         return info.Required ? ConsoleColor.Red : Console.ForegroundColor;
+      }
+
       protected virtual void OnNoPropertyHelpAvailable()
       {
          Console.WriteLine("No help for the arguments available");
+      }
+
+      protected virtual void WriteHelpText(string resourceKey, string description)
+      {
+         if (resourceManager != null && !string.IsNullOrEmpty(resourceKey))
+         {
+            var helpTextString = CommandLineEngine.GetLocalizedDescription(resourceManager, resourceKey);
+            Console.WriteLine($"- {helpTextString}");
+         }
+         else
+         {
+            if (description != null)
+               Console.WriteLine($"- {description}");
+         }
+      }
+
+      protected virtual void WriteNoHelpTextAvailable(PropertyHelpRequest property)
+      {
+      }
+
+      /// <summary>Writes the footer for a property help request.</summary>
+      /// <param name="property">The property the help was requested for.</param>
+      protected virtual void WritePropertyFooter(PropertyHelpRequest property)
+      {
+      }
+
+      /// <summary>Writes the header for a property help request.</summary>
+      /// <param name="helpRequest">The property.</param>
+      protected virtual void WritePropertyHeader(PropertyHelpRequest helpRequest)
+      {
+         Console.WriteLine($"Help for the {GetCommandLineTyp(helpRequest)} '{GetArgumentName(helpRequest)}'");
+         Console.WriteLine();
+      }
+
+      protected void WriteSeparator(char paddingChar = '-')
+      {
+         Console.WriteLine(string.Empty.PadRight(GetConsoleWidth(), paddingChar));
       }
 
       private static string[] GetAliases(CommandLineAttribute attribute)
@@ -227,9 +278,31 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          yield return builder.ToString();
       }
 
-      protected virtual ConsoleColor GetNameForeground(ArgumentHelp info)
+      private string GetArgumentName(PropertyHelpRequest request)
       {
-         return info.Required ? ConsoleColor.Red : Console.ForegroundColor;
+         string primaryName = request.Property.Name;
+
+         var attribute = request.CommandLineAttribute;
+         if (attribute?.Name != null)
+            return attribute.Name.ToLowerInvariant();
+
+         return primaryName.ToLowerInvariant();
+      }
+
+      private string GetCommandLineTyp(PropertyHelpRequest helpRequest)
+      {
+         if (helpRequest.CommandLineAttribute is OptionAttribute)
+            return "option";
+         if (helpRequest.CommandLineAttribute is ArgumentAttribute)
+            return "argument";
+         if (helpRequest.CommandLineAttribute is CommandAttribute)
+            return "command";
+         return "property";
+      }
+
+      private string GetCommandName(Type type)
+      {
+         return type.Name;
       }
 
       private bool IsRequired(CommandLineAttribute commandLineAttribute)
@@ -251,6 +324,22 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          Console.WriteLine(descriptionLines[0]);
          foreach (var part in descriptionLines.Skip(1))
             Console.WriteLine(" ".PadLeft(leftWidth) + part);
+      }
+
+      private void WritePropertyContent(PropertyHelpRequest property)
+      {
+         if (property.DetailedHelpTextAttribute != null)
+         {
+            WriteHelpText(property.DetailedHelpTextAttribute.ResourceKey, property.DetailedHelpTextAttribute.Description);
+         }
+         else if (property.HelpTextAttribute != null)
+         {
+            WriteHelpText(property.HelpTextAttribute.ResourceKey, property.HelpTextAttribute.Description);
+         }
+         else
+         {
+            WriteNoHelpTextAvailable(property);
+         }
       }
 
       #endregion

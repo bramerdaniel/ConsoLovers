@@ -7,6 +7,7 @@
 namespace CommandLineEngineDemo
 {
    using System;
+   using System.Reflection;
 
    using ConsoLovers.ConsoleToolkit.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Contracts;
@@ -23,7 +24,12 @@ namespace CommandLineEngineDemo
 
       #endregion
 
-      public void PrintHelp()
+      public void PrintTypeHelp(Type type)
+      {
+         new ConsoleProxy().WriteLine("This is the fancy help of a command without parameters.", ConsoleColor.Cyan);
+      }
+
+      public void PrintPropertyHelp(PropertyInfo property)
       {
          new ConsoleProxy().WriteLine("This is the fancy help of a command without parameters.", ConsoleColor.Cyan);
       }

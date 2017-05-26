@@ -23,12 +23,12 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       #region Constructors and Destructors
 
       [InjectionConstructor]
-      public CommandLineEngine([NotNull] IObjectFactory engineFactory)
+      public CommandLineEngine([NotNull] IObjectFactory objectFactory)
       {
-         if (engineFactory == null)
-            throw new ArgumentNullException(nameof(engineFactory));
+         if (objectFactory == null)
+            throw new ArgumentNullException(nameof(objectFactory));
 
-         EngineFactory = engineFactory;
+         ObjectFactory = objectFactory;
       }
 
       public CommandLineEngine()
@@ -143,13 +143,13 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       public void PrintHelp([NotNull] Type type, ResourceManager resourceManager)
       {
          var helpTextProvider = GetHelpTextProvider(type, resourceManager);
-         helpTextProvider.PrintHelp();
+         helpTextProvider.PrintTypeHelp(type);
       }
 
       public void PrintHelp(PropertyInfo propertyInfo, ResourceManager resourceManager)
       {
          var helpTextProvider = GetHelpTextProvider(propertyInfo, resourceManager);
-         helpTextProvider.PrintHelp();
+         helpTextProvider.PrintPropertyHelp(propertyInfo);
       }
 
       #endregion
@@ -162,8 +162,8 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
       #region Properties
 
-      /// <summary>Gets the mapper factory.</summary>
-      internal IObjectFactory EngineFactory { get; set; }
+      /// <summary>Gets the factory.</summary>
+      internal IObjectFactory ObjectFactory { get; set; }
 
       #endregion
 
@@ -178,8 +178,14 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          if (helpText != null)
          {
             if (resourceManager == null)
+            {
+               if (string.IsNullOrEmpty(helpText.Description))
+                  return helpText.ResourceKey ?? "NoResourceKeyOrDescription";
+
                return helpText.Description;
-            resourceManager.GetString(helpText.ResourceKey);
+            }
+
+            GetLocalizedDescription(resourceManager, helpText.ResourceKey);
          }
 
          return null;
@@ -208,7 +214,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
                   PropertyName = GetArgumentName(info, argumentAttribute, optionAttribute, commandAttribute),
                   Aliases = GetAliases(argumentAttribute, optionAttribute, commandAttribute),
                   UnlocalizedDescription = helpText.Description,
-                  LocalizedDescription = resourceManager?.GetString(helpText.ResourceKey)
+                  LocalizedDescription = GetLocalizedDescription(resourceManager, helpText.ResourceKey)
                };
             }
          }
@@ -247,6 +253,14 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          return primaryName.ToLowerInvariant();
       }
 
+      internal static string GetLocalizedDescription(ResourceManager resourceManager, string resourceKey)
+      {
+         if (resourceManager == null || resourceKey == null)
+            return null;
+
+         return resourceManager.GetString(resourceKey);
+      }
+
       private static IEnumerable<string> GetWrappedStrings(string text, int maxLength)
       {
          if (text.Length < maxLength)
@@ -279,7 +293,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          where T : class
       {
          var info = new ArgumentClassInfo(typeof(T));
-         return info.HasCommands ? (IArgumentMapper<T>)EngineFactory.CreateInstance<CommandMapper<T>>() : EngineFactory.CreateInstance<ArgumentMapper<T>>();
+         return info.HasCommands ? (IArgumentMapper<T>)ObjectFactory.CreateInstance<CommandMapper<T>>() : ObjectFactory.CreateInstance<ArgumentMapper<T>>();
       }
 
       private IHelpProvider GetHelpTextProvider(Type argumentType, ResourceManager resourceManager)
@@ -287,25 +301,25 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          var providerType = (argumentType.GetCustomAttribute(typeof(HelpTextProviderAttribute)) as HelpTextProviderAttribute)?.Type;
          if (providerType != null)
          {
-            var provider = EngineFactory.CreateInstance(providerType) as IHelpProvider;
+            var provider = ObjectFactory.CreateInstance(providerType) as IHelpProvider;
             if (provider != null)
                return provider;
          }
 
-         return new TypeHelpProvider(argumentType, resourceManager);
+         return new TypeHelpProvider(resourceManager);
       }
 
       private IHelpProvider GetHelpTextProvider(PropertyInfo propertyInfo, ResourceManager resourceManager)
       {
-         var providerType = (propertyInfo.GetCustomAttribute(typeof(HelpTextProviderAttribute)) as HelpTextProviderAttribute)?.Type;
-         if (providerType != null)
+         var propertyDeclaringType = (propertyInfo.DeclaringType.GetCustomAttribute(typeof(HelpTextProviderAttribute)) as HelpTextProviderAttribute)?.Type;
+         if (propertyDeclaringType != null)
          {
-            var provider = EngineFactory.CreateInstance(providerType) as IHelpProvider;
+            var provider = ObjectFactory.CreateInstance(propertyDeclaringType) as IHelpProvider;
             if (provider != null)
                return provider;
          }
 
-         return new PropertyHelpProvider(propertyInfo, resourceManager);
+         return new PropertyHelpProvider(resourceManager);
       }
 
       #endregion

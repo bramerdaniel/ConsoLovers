@@ -46,6 +46,7 @@
     <Compile Include="CommandLineArguments\DetailedHelpTextAttribute.cs" />
     <Compile Include="CommandLineArguments\HelpCommandArguments.cs" />
     <Compile Include="CommandLineArguments\PropertyHelpProvider.cs" />
+    <Compile Include="CommandLineArguments\PropertyHelpRequest.cs" />
     <Compile Include="CommandLineArguments\TypeHelpProvider.cs" />
     <Compile Include="CommandLineArguments\HelpTextProviderAttribute.cs" />
     <Compile Include="CommandLineArguments\IHelpProvider.cs" />
@@ -59,6 +60,7 @@
     <Compile Include="CommandLineArguments\ICommandLineEngine.cs" />
     <Compile Include="CommandLineArguments\IObjectFactory.cs" />
     <Compile Include="CommandLineArguments\DefaultFactory.cs" />
+    <Compile Include="CommandLineArguments\TypeHelpRequest.cs" />
     <Compile Include="ConsoleApplicationManager.cs" />
     <Compile Include="ConsoleApplicationWith.cs" />
     <Compile Include="ConsoleWindowHeightAttribute.cs" />

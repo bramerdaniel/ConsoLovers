@@ -1,6 +1,7 @@
 ﻿namespace CommandLineEngineDemo
 {
    using System;
+   using System.Reflection;
    using System.Resources;
 
    using ConsoLovers.ConsoleToolkit.CommandLineArguments;
@@ -35,5 +36,16 @@
       }
 
       #endregion
+
+      public void PrintTypeHelp(Type type)
+      {
+         PrintHelp();
+      }
+
+      public void PrintPropertyHelp(PropertyInfo property)
+      {
+
+         PrintHelp();
+      }
    }
 }

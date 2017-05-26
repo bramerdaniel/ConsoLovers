@@ -17,60 +17,66 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
    /// <summary><see cref="IHelpProvider"/> implementation for properties</summary>
    /// <seealso cref="IHelpProvider"/>
-   public class PropertyHelpProvider : IHelpProvider
+   internal class PropertyHelpProvider : IHelpProvider
    {
       #region Constants and Fields
 
-      private readonly CommandLineAttribute commandLineAttribute;
-
-      private readonly DetailedHelpTextAttribute detailedHelpTextAttribute;
-
-      private readonly HelpTextAttribute helpTextAttribute;
-
-      [NotNull]
-      private readonly PropertyInfo propertyInfo;
-
-      private readonly ResourceManager resourceManager;
+      private CommandLineAttribute commandLineAttribute;
 
       private IConsole console;
+
+      private DetailedHelpTextAttribute detailedHelpTextAttribute;
+
+      private HelpTextAttribute helpTextAttribute;
+
+      [NotNull]
+      private PropertyInfo propertyInfo;
 
       #endregion
 
       #region Constructors and Destructors
 
       /// <summary>Initializes a new instance of the <see cref="PropertyHelpProvider"/> class.</summary>
-      /// <param name="propertyInfo">The property information.</param>
-      public PropertyHelpProvider([NotNull] PropertyInfo propertyInfo)
-         : this(propertyInfo, null)
+      /// <param name="resourceManager">The resource manager.</param>
+      [InjectionConstructor]
+      public PropertyHelpProvider(ResourceManager resourceManager)
       {
+         ResourceManager = resourceManager;
       }
 
       /// <summary>Initializes a new instance of the <see cref="PropertyHelpProvider"/> class.</summary>
-      /// <param name="propertyInfo">The property information.</param>
-      /// <param name="resourceManager">The resource manager.</param>
-      /// <exception cref="System.ArgumentNullException">propertyInfo</exception>
-      [InjectionConstructor]
-      public PropertyHelpProvider([NotNull] PropertyInfo propertyInfo, [CanBeNull] ResourceManager resourceManager)
+      public PropertyHelpProvider()
+         : this(null)
       {
-         this.propertyInfo = propertyInfo ?? throw new ArgumentNullException(nameof(propertyInfo));
-         this.resourceManager = resourceManager;
-
-         commandLineAttribute = propertyInfo.GetAttribute<CommandLineAttribute>();
-         detailedHelpTextAttribute = propertyInfo.GetAttribute<DetailedHelpTextAttribute>();
-         helpTextAttribute = propertyInfo.GetAttribute<HelpTextAttribute>();
       }
 
       #endregion
 
       #region IHelpProvider Members
 
-      /// <summary>Prints the help.</summary>
-      public void PrintHelp()
+      public virtual void PrintTypeHelp(Type type)
       {
+         throw new NotSupportedException();
+      }
+
+      public virtual void PrintPropertyHelp(PropertyInfo property)
+      {
+         propertyInfo = property;
+         commandLineAttribute = propertyInfo.GetAttribute<CommandLineAttribute>();
+         detailedHelpTextAttribute = propertyInfo.GetAttribute<DetailedHelpTextAttribute>();
+         helpTextAttribute = propertyInfo.GetAttribute<HelpTextAttribute>();
+
          WriteHeader();
          WriteContent();
          WriteFooter();
       }
+
+      #endregion
+
+      #region Public Properties
+
+      /// <summary>Gets or sets the resource manager.</summary>
+      public ResourceManager ResourceManager { get; set; }
 
       #endregion
 
@@ -82,6 +88,14 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       #endregion
 
       #region Public Methods and Operators
+
+      /// <summary>Prints the help.</summary>
+      public void PrintHelp()
+      {
+         WriteHeader();
+         WriteContent();
+         WriteFooter();
+      }
 
       /// <summary>Writes the content.</summary>
       public virtual void WriteContent()
@@ -121,15 +135,11 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          return new ConsoleProxy();
       }
 
-      protected virtual void WriteNoHelpTextAvailable()
-      {
-      }
-
       protected virtual void WriteHelpText(string resourceKey, string description)
       {
-         if (resourceManager != null && !string.IsNullOrEmpty(resourceKey))
+         if (ResourceManager != null && !string.IsNullOrEmpty(resourceKey))
          {
-            var helpTextString = resourceManager.GetString(resourceKey);
+            var helpTextString = CommandLineEngine.GetLocalizedDescription(ResourceManager, resourceKey);
             Console.WriteLine($"- {helpTextString}");
          }
          else
@@ -137,6 +147,10 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
             if (description != null)
                Console.WriteLine($"- {description}");
          }
+      }
+
+      protected virtual void WriteNoHelpTextAvailable()
+      {
       }
 
       private string GetArgumentName()
