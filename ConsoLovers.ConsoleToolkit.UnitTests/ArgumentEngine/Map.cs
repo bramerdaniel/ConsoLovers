@@ -11,6 +11,7 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
    using System.Diagnostics.CodeAnalysis;
 
    using ConsoLovers.ConsoleToolkit.CommandLineArguments;
+   using ConsoLovers.UnitTests.Setups;
 
    using FluentAssertions;
 

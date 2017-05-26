@@ -11,6 +11,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
    using JetBrains.Annotations;
 
    /// <summary>Attribute for describing the help text for a command line arguments</summary>
+   [AttributeUsage(AttributeTargets.Property)]
    public class HelpTextAttribute : Attribute
    {
       #region Constructors and Destructors
@@ -20,10 +21,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       /// <param name="resourceKey">The resource key.</param>
       public HelpTextAttribute([NotNull] string description, string resourceKey)
       {
-         if (description == null)
-            throw new ArgumentNullException(nameof(description));
-         Description = description;
-
+         Description = description ?? throw new ArgumentNullException(nameof(description));
          ResourceKey = resourceKey;
       }
 
@@ -38,6 +36,12 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
       /// <summary>Gets the unlocalized description.</summary>
       public string Description { get; }
+
+      /// <summary>Gets or sets the not localized detailed description.</summary>
+      public string DetailedDescription { get; set; }
+
+      /// <summary>Gets or sets the resource key for the detailed description.</summary>
+      public string DetailedResourceKey { get; set; }
 
       /// <summary>Gets or sets the order that is used when displaying the help.</summary>
       public int Priority { get; set; }

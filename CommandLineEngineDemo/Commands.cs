@@ -33,7 +33,7 @@ namespace CommandLineEngineDemo
       public HelpCommand Help { get; set; }
 
       [Option("Wait", "w")]
-      [HelpText("Waits for key press", "None")]
+      [HelpText("Waits for key press", "None", DetailedResourceKey = nameof(Properties.Resources.Wait_DetailedHelp))]
       public bool Wait { get; set; }
 
       #endregion

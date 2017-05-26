@@ -6,8 +6,11 @@
 
 namespace CommandLineEngineDemo
 {
+   using System.Resources;
+
    using ConsoLovers.ConsoleToolkit;
    using ConsoLovers.ConsoleToolkit.CommandLineArguments;
+   using ConsoLovers.ConsoleToolkit.DIContainer;
 
    class Program : ConsoleApplicationWith<Commands>
    {
@@ -29,7 +32,10 @@ namespace CommandLineEngineDemo
 
       static void Main(string[] args)
       {
-         ConsoleApplicationManager.RunThis(args);
+         var container = new Container();
+         container.Register<ResourceManager>(Properties.Resources.ResourceManager).WithLifetime(Lifetime.Singleton);
+         var objectFactory = new DefaultFactory(container);
+         ConsoleApplicationManager.For<Program>().UsingFactory(objectFactory).Run(args);
          Console.ReadLine();
       }
 

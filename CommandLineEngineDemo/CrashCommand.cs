@@ -9,9 +9,10 @@ namespace CommandLineEngineDemo
    using System;
 
    using ConsoLovers.ConsoleToolkit.CommandLineArguments;
+   using ConsoLovers.ConsoleToolkit.Contracts;
 
-   [HelpText("This is the detailed help for the crash command. Should you realy do that this was.", "None")]
-   internal class CrashCommand : ICommand
+   [HelpTextProvider(typeof(CrashCommand))]
+   internal class CrashCommand : ICommand, IHelpProvider
    {
       #region ICommand Members
 
@@ -21,5 +22,10 @@ namespace CommandLineEngineDemo
       }
 
       #endregion
+
+      public void PrintHelp()
+      {
+         new ConsoleProxy().WriteLine("This is the fancy help of a command without parameters.", ConsoleColor.Cyan);
+      }
    }
 }

@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.UnitTests.ArgumentEngine
+namespace ConsoLovers.UnitTests.ArgumentEngine.TestData
 {
    using ConsoLovers.ConsoleToolkit.CommandLineArguments;
 
@@ -13,9 +13,11 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
       #region Public Properties
 
       [Argument("Path")]
+      [HelpText("PathHelp")]
       public string Path { get; set; }
 
       [Option("silent")]
+      [HelpText("SilentHelp")]
       public bool Silent { get; set; }
 
       #endregion

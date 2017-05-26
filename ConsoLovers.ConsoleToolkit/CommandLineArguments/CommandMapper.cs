@@ -14,29 +14,37 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
    using JetBrains.Annotations;
 
+   /// <summary><see cref="IArgumentMapper{T}"/> implementation that can also map commands</summary>
+   /// <typeparam name="T">The type of the argument class</typeparam>
+   /// <seealso cref="ConsoLovers.ConsoleToolkit.CommandLineArguments.MapperBase"/>
+   /// <seealso cref="ConsoLovers.ConsoleToolkit.CommandLineArguments.IArgumentMapper{T}"/>
    public class CommandMapper<T> : MapperBase, IArgumentMapper<T>
       where T : class
    {
       #region Constants and Fields
 
-      private readonly IObjectFactory diContainer;
+      private readonly IObjectFactory factory;
 
       #endregion
 
       #region Constructors and Destructors
 
-      public CommandMapper([NotNull] IObjectFactory diContainer)
+      /// <summary>Initializes a new instance of the <see cref="CommandMapper{T}"/> class.</summary>
+      /// <param name="factory">The factory the command mapper should use.</param>
+      /// <exception cref="System.ArgumentNullException">factory</exception>
+      public CommandMapper([NotNull] IObjectFactory factory)
       {
-         if (diContainer == null)
-            throw new ArgumentNullException(nameof(diContainer));
-
-         this.diContainer = diContainer;
+         this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
       }
 
       #endregion
 
       #region IArgumentMapper<T> Members
 
+      /// <summary>Maps the give argument dictionary to the given instance.</summary>
+      /// <param name="arguments">The arguments to map.</param>
+      /// <param name="instance">The instance to map the arguments to.</param>
+      /// <returns>The instance of the class, the command line argument were mapped to</returns>
       public T Map(IDictionary<string, CommandLineArgument> arguments, T instance)
       {
          var argumentInfo = new ArgumentClassInfo(typeof(T));
@@ -51,19 +59,27 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
          if (arguments.Any())
          {
-            var defaultMapper = new ArgumentMapper<T>(diContainer);
+            var defaultMapper = new ArgumentMapper<T>(factory);
             defaultMapper.Map(arguments, instance);
          }
 
          return instance;
       }
 
-      private void MapHelpOnly(T instance, ArgumentClassInfo argumentInfo, IDictionary<string, CommandLineArgument> arguments)
+      /// <summary>Maps the give argument dictionary to a new created instance.</summary>
+      /// <param name="arguments">The arguments to map.</param>
+      /// <returns>The instance of the class, the command line argument were mapped to</returns>
+      /// <exception cref="System.IO.InvalidDataException">Option attribute can only be applied to boolean properties</exception>
+      /// <exception cref="InvalidDataException">Option attribute can only be applied to boolean properties</exception>
+      public T Map(IDictionary<string, CommandLineArgument> arguments)
       {
-         var helpCommand = diContainer.CreateInstance<HelpCommand>();
-         helpCommand.Arguments = new HelpCommandArguments { ArgumentInfos = argumentInfo, ArgumentDictionary = arguments };
-         argumentInfo.HelpCommand.PropertyInfo.SetValue(instance, helpCommand);
+         var instance = factory.CreateInstance<T>();
+         return Map(arguments, instance);
       }
+
+      #endregion
+
+      #region Methods
 
       private static bool ArgumentsContainHelpRequest(IDictionary<string, CommandLineArgument> arguments, ArgumentClassInfo argumentInfo)
       {
@@ -81,21 +97,6 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
          return false;
       }
-
-      /// <summary>Maps the give argument dictionary to a new created instance.</summary>
-      /// <param name="arguments">The arguments to map.</param>
-      /// <returns>The instance of the class, the command line argument were mapped to</returns>
-      /// <exception cref="System.IO.InvalidDataException">Option attribute can only be applied to boolean properties</exception>
-      /// <exception cref="InvalidDataException">Option attribute can only be applied to boolean properties</exception>
-      public T Map(IDictionary<string, CommandLineArgument> arguments)
-      {
-         var instance = diContainer.CreateInstance<T>();
-         return Map(arguments, instance);
-      }
-
-      #endregion
-
-      #region Methods
 
       private static CommandInfo GetCommandByName(ArgumentClassInfo argumentInfo, string commandName, IDictionary<string, CommandLineArgument> arguments)
       {
@@ -146,17 +147,18 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       {
          var commandType = commandInfo.PropertyInfo.PropertyType;
          if (!ImplementsICommand(commandType))
-            throw new ArgumentException($"The type '{commandType}' of the property '{commandInfo.PropertyInfo.Name}' does not implemente the {typeof(ICommand).FullName} interface");
+            throw new ArgumentException(
+               $"The type '{commandType}' of the property '{commandInfo.PropertyInfo.Name}' does not implemente the {typeof(ICommand).FullName} interface");
 
          Type argumentType;
          if (TryGetArgumentType(commandType, out argumentType))
          {
-            var argumentInstance = diContainer.CreateInstance(argumentType);
+            var argumentInstance = factory.CreateInstance(argumentType);
 
             var mapperType = typeof(ArgumentMapper<>);
             Type[] typeArgs = { argumentType };
             var genericType = mapperType.MakeGenericType(typeArgs);
-            object mapper = diContainer.CreateInstance(genericType);
+            object mapper = factory.CreateInstance(genericType);
 
             try
             {
@@ -170,7 +172,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
                   throw exception;
             }
 
-            var command = diContainer.CreateInstance(commandType);
+            var command = factory.CreateInstance(commandType);
             var argumentsProperty = commandType.GetProperty("Arguments");
             if (argumentsProperty == null)
                throw new InvalidOperationException("The ICommand<T> implementation does not contain a Arguments property.");
@@ -179,7 +181,33 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
             return command;
          }
 
-         return diContainer.CreateInstance(commandType);
+         return factory.CreateInstance(commandType);
+      }
+
+      private bool ImplementsICommand(Type commandType)
+      {
+         return commandType.GetInterface(typeof(ICommand).FullName) != null;
+      }
+
+      private void MapCommands(T instance, ArgumentClassInfo argumentInfo, IDictionary<string, CommandLineArgument> arguments)
+      {
+         // Note: per definition the help command has to be the first command line argument
+         var firstArgument = GetFirstArgument(arguments);
+
+         // TODO make some checks here ???
+         var commandToCreate = GetCommandByName(argumentInfo, firstArgument?.Name, arguments);
+         if (commandToCreate == null)
+            return;
+
+         var command = CreateCommandInstance(commandToCreate, arguments);
+         commandToCreate.PropertyInfo.SetValue(instance, command, null);
+      }
+
+      private void MapHelpOnly(T instance, ArgumentClassInfo argumentInfo, IDictionary<string, CommandLineArgument> arguments)
+      {
+         var helpCommand = factory.CreateInstance<HelpCommand>();
+         helpCommand.Arguments = new HelpCommandArguments { ArgumentInfos = argumentInfo, ArgumentDictionary = arguments };
+         argumentInfo.HelpCommand.PropertyInfo.SetValue(instance, helpCommand);
       }
 
       private bool TryGetArgumentType(Type commandType, out Type argumentType)
@@ -193,26 +221,6 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
          argumentType = commandInterface.GenericTypeArguments[0];
          return true;
-      }
-
-      private bool ImplementsICommand(Type commandType)
-      {
-         return commandType.GetInterface(typeof(ICommand).FullName) != null;
-      }
-
-      private void MapCommands(T instance, ArgumentClassInfo argumentInfo, IDictionary<string, CommandLineArgument> arguments)
-      {
-         // Note: per definition the command has to be the first command line argument
-         var firstArgument = GetFirstArgument(arguments);
-
-         // TODO make some checks here ???
-
-         var commandToCreate = GetCommandByName(argumentInfo, firstArgument?.Name, arguments);
-         if (commandToCreate == null)
-            return;
-
-         var command = CreateCommandInstance(commandToCreate, arguments);
-         commandToCreate.PropertyInfo.SetValue(instance, command, null);
       }
 
       #endregion

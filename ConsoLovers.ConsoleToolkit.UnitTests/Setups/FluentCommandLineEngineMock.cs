@@ -1,21 +1,22 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="EngineTestBase.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2016
+// <copyright file="FluentCommandLineEngineMock.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2017
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.UnitTests.ArgumentEngine
+namespace ConsoLovers.UnitTests.Setups
 {
    using ConsoLovers.ConsoleToolkit.CommandLineArguments;
-   using ConsoLovers.UnitTests.Setups;
 
-   public class EngineTestBase
+   using Moq;
+
+   public class FluentCommandLineEngineMock
    {
-      #region Methods
+      #region Public Methods and Operators
 
-      protected CommandLineEngine GetTarget()
+      public ICommandLineEngine Done()
       {
-         return Setup.ArgumentEngine().Done();
+         return new Mock<ICommandLineEngine>().Object;
       }
 
       #endregion

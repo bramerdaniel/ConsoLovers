@@ -130,7 +130,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       {
          if (type.IsCommandType())
          {
-            Console.WriteLine("Help for the command");
+            Console.WriteLine($"Help for the '{GetCommandName()}' command");
             Console.WriteLine();
             return;
          }
@@ -140,6 +140,11 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
             Console.WriteLine("Help for the command line arguments that are supported");
             Console.WriteLine();
          }
+      }
+
+      private string GetCommandName()
+      {
+         return type.Name;
       }
 
       #endregion

@@ -4,8 +4,11 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.UnitTests.ArgumentEngine
+namespace ConsoLovers.UnitTests.Setups
 {
+   using ConsoLovers.ConsoleToolkit.CommandLineArguments;
+   using ConsoLovers.UnitTests.ArgumentEngine;
+
    public class Setup
    {
       #region Public Methods and Operators
@@ -13,6 +16,11 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
       public static ArgumentEngineSetup ArgumentEngine()
       {
          return new ArgumentEngineSetup();
+      }
+
+      public static ArgumentMapperSetup ArgumentMapper()
+      {
+         return new ArgumentMapperSetup();
       }
 
       public static CommandLinerParserSetup CommandLineArgumentParser()
@@ -25,11 +33,16 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
          return new EngineFactorySetup();
       }
 
+      public static MockSetup MockFor()
+      {
+         return new MockSetup();
+      }
+
       #endregion
 
-      public static ArgumentMapperSetup ArgumentMapper()
+      public static HelpCommandSetup HelpCommand()
       {
-         return new ArgumentMapperSetup();
+         return new HelpCommandSetup();
       }
    }
 }

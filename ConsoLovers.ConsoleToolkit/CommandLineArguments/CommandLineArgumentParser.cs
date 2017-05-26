@@ -170,17 +170,4 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
       #endregion
    }
-
-   public class CommandLineArgument
-   {
-      #region Public Properties
-
-      public int Index { get; set; }
-
-      public string Value { get; set; }
-
-      public string Name { get; set; }
-
-      #endregion
-   }
 }

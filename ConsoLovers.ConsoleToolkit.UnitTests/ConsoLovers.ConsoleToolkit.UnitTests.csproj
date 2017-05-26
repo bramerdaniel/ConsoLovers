@@ -68,7 +68,8 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="ArgumentEngine\ApplicationArgs.cs" />
+    <Compile Include="ArgumentEngine\HelpCommandTests\RootArgumentClass.cs" />
+    <Compile Include="ArgumentEngine\TestData\ApplicationArgs.cs" />
     <Compile Include="ArgumentEngine\ArgumentEngineSetup.cs" />
     <Compile Include="ArgumentEngine\ArgumentInfoTests.cs" />
     <Compile Include="ArgumentEngine\ArgumentMapperSetup.cs" />
@@ -77,13 +78,17 @@
     <Compile Include="ArgumentEngine\CommandMapperTests.cs" />
     <Compile Include="ArgumentEngine\CovertValueTests.cs" />
     <Compile Include="ArgumentEngine\EngineFactorySetup.cs" />
-    <Compile Include="ArgumentEngine\ExecuteArgs.cs" />
+    <Compile Include="ArgumentEngine\TestData\ExecuteArgs.cs" />
+    <Compile Include="Setups\FluentCommandLineEngineMock.cs" />
+    <Compile Include="ArgumentEngine\HelpCommandTests\Execute.cs" />
     <Compile Include="ArgumentEngine\Map.cs" />
     <Compile Include="ArgumentEngine\MapArgumentTests.cs" />
     <Compile Include="ArgumentEngine\MapCommandTests.cs" />
+    <Compile Include="Setups\HelpCommandSetup.cs" />
+    <Compile Include="Setups\MockSetup.cs" />
     <Compile Include="ArgumentEngine\ParserTestBase.cs" />
     <Compile Include="ArgumentEngine\EngineTestBase.cs" />
-    <Compile Include="ArgumentEngine\Setup.cs" />
+    <Compile Include="Setups\Setup.cs" />
     <Compile Include="Class1.cs" />
     <Compile Include="ConsoleApplicationWithTests\Utils\ApplicationTestContext.cs" />
     <Compile Include="ConsoleApplicationWithTests\Utils\ArgumentsTwoDefaultCommands.cs" />

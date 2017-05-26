@@ -10,12 +10,16 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
    using System.Linq;
    using System.Resources;
 
+   using ConsoLovers.ConsoleToolkit.Contracts;
    using ConsoLovers.ConsoleToolkit.DIContainer;
 
    using JetBrains.Annotations;
 
+   /// <summary>Implementation of the help command</summary>
    public class HelpCommand : ICommand<HelpCommandArguments>
    {
+      public IConsole Console { get; }
+
       #region Constants and Fields
 
       private readonly ICommandLineEngine engine;
@@ -26,13 +30,19 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
       #region Constructors and Destructors
 
+      /// <summary>
+      /// Initializes a new instance of the <see cref="HelpCommand" /> class.
+      /// </summary>
+      /// <param name="engine">The <see cref="ICommandLineEngine" /> that should be used.</param>
+      /// <param name="console">The console that should be used by the command.</param>
+      /// <param name="resourceManager">The resource manager.</param>
+      /// <exception cref="System.ArgumentNullException">engine</exception>
       [InjectionConstructor]
-      public HelpCommand([NotNull] ICommandLineEngine engine, [CanBeNull] ResourceManager resourceManager)
+      public HelpCommand([NotNull] ICommandLineEngine engine, [CanBeNull] IConsole console, [CanBeNull] ResourceManager resourceManager)
       {
-         if (engine == null)
-            throw new ArgumentNullException(nameof(engine));
+         this.engine = engine ?? throw new ArgumentNullException(nameof(engine));
 
-         this.engine = engine;
+         Console = console ?? new ConsoleProxy();
          this.resourceManager = resourceManager;
       }
 
@@ -40,31 +50,76 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
       #region ICommand Members
 
+      /// <summary>Executes this instance.</summary>
       public virtual void Execute()
       {
-         var helpRequest = Arguments.ArgumentDictionary.Values.FirstOrDefault()?.Name;
+         var helpRequest = Arguments.ArgumentDictionary.Values.OrderBy(x => x.Index).Select(x => x.Name).ToArray();
          PrintHelp(helpRequest);
       }
 
       #endregion
 
-      #region ICommand<HelpArguments> Members
+      #region ICommand<HelpCommandArguments> Members
 
       public HelpCommandArguments Arguments { get; set; }
 
       #endregion
 
-      #region Public Methods and Operators
+      #region Methods
 
-      public void PrintHelp(string helpRequest)
+      private void PrintArgumentHelp(ParameterInfo parameterInfo)
       {
-         if (helpRequest == null)
+         if (parameterInfo.ParameterType.IsPrimitive)
+         {
+            engine.PrintHelp(parameterInfo.PropertyInfo, resourceManager);
+         }
+         else
+         {
+            engine.PrintHelp(parameterInfo.ParameterType, resourceManager);
+         }
+      }
+
+      private void PrintCommandHelp(CommandInfo commandInfo, string argumentName)
+      {
+         if (!string.IsNullOrEmpty(argumentName))
+         {
+            if (commandInfo.ArgumentType != null)
+            {
+               var classInfo = new ArgumentClassInfo(commandInfo.ArgumentType);
+               var parameterInfo = classInfo.GetParameterInfo(argumentName);
+               if (parameterInfo != null)
+               {
+                  engine.PrintHelp(parameterInfo.PropertyInfo, resourceManager);
+                  return;
+               }
+            }
+            else
+            {
+               // TODO: Forward to help provider ???
+               Console.WriteLine("The command does not take any parameters. So no help could be found");
+               return;
+            }
+         }
+
+         if (commandInfo.ArgumentType != null)
+         {
+            engine.PrintHelp(commandInfo.ArgumentType, resourceManager);
+         }
+         else
+         {
+            engine.PrintHelp(commandInfo.PropertyInfo.PropertyType, resourceManager);
+         }
+      }
+
+      private void PrintHelp(params string[] helpRequest)
+      {
+         if (helpRequest == null || helpRequest.Length <= 0)
          {
             engine.PrintHelp(Arguments.ArgumentInfos.ArgumentType, resourceManager);
             return;
          }
 
-         var parameterInfo = Arguments.ArgumentInfos.GetParameterInfo(helpRequest);
+         var parameterInfo = Arguments.ArgumentInfos.GetParameterInfo(helpRequest[0]);
          if (parameterInfo == null)
          {
             Console.WriteLine("UnknownHelpRequest");
@@ -74,25 +129,11 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          var commandInfo = parameterInfo as CommandInfo;
          if (commandInfo != null)
          {
-            if (commandInfo.ArgumentType != null)
-            {
-               engine.PrintHelp(commandInfo.ArgumentType, resourceManager);
-            }
-            else
-            {
-               engine.PrintHelp(commandInfo.PropertyInfo.PropertyType, resourceManager);
-            }
-
-            return;
-         }
-
-         if (parameterInfo.ParameterType.IsPrimitive)
-         {
-            engine.PrintHelp(parameterInfo.PropertyInfo, resourceManager);
+            PrintCommandHelp(commandInfo, helpRequest.Length > 1 ? helpRequest[1] : null);
          }
          else
          {
-            engine.PrintHelp(parameterInfo.ParameterType, resourceManager);
+            PrintArgumentHelp(parameterInfo);
          }
       }
 

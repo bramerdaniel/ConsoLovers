@@ -1,6 +1,7 @@
 ﻿namespace ConsoLovers.UnitTests.ArgumentEngine
 {
    using ConsoLovers.ConsoleToolkit.CommandLineArguments;
+   using ConsoLovers.UnitTests.Setups;
 
    public class ArgumentMapperSetup
    {

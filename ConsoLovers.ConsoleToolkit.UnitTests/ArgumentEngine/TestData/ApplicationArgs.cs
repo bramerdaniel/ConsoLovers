@@ -1,4 +1,4 @@
-namespace ConsoLovers.UnitTests.ArgumentEngine
+namespace ConsoLovers.UnitTests.ArgumentEngine.TestData
 {
    using ConsoLovers.ConsoleToolkit.CommandLineArguments;
 

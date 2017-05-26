@@ -3,6 +3,8 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
    using System.Collections.Generic;
 
    using ConsoLovers.ConsoleToolkit.CommandLineArguments;
+   using ConsoLovers.UnitTests.ArgumentEngine.TestData;
+   using ConsoLovers.UnitTests.Setups;
 
    using FluentAssertions;
 

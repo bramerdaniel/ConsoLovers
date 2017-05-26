@@ -32,7 +32,7 @@
          return this;
       }
 
-      internal ConsoleApplicationBootstrapper UsingFactory([NotNull] IObjectFactory container)
+      public ConsoleApplicationBootstrapper UsingFactory([NotNull] IObjectFactory container)
       {
          if (container == null)
             throw new ArgumentNullException(nameof(container));
