@@ -28,6 +28,9 @@ namespace ConsoLovers.ConsoleToolkit
       /// <summary>Gets the height of the console window.</summary>
       public int ConsoleHeight { get; private set; }
 
+      /// <summary>Gets or sets a value indicating whether shrinking of the height is allowed.</summary>
+      public bool AllowShrink { get; set; } = true;
+
       #endregion
    }
 }

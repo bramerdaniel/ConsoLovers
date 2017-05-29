@@ -28,6 +28,9 @@ namespace ConsoLovers.ConsoleToolkit
       /// <summary>Gets the width of the console window.</summary>
       public int ConsoleWidth { get; }
 
+      /// <summary>Gets or sets a value indicating whether shrinking of the width is allowed.</summary>
+      public bool AllowShrink { get; set; } = true;
+
       #endregion
    }
 }
