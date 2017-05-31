@@ -16,7 +16,7 @@ The ConsoLovers.ConsoleToolkit is a collection of several independant tools that
    {
       private static void Main(string[] args)
       {
-         new ConsoleApplicationManager().Run(typeof(ProgramLogic), args);
+         new ConsoleApplicationManager().Run(typeof(MyProgramLogic), args);
       }
    }
    
