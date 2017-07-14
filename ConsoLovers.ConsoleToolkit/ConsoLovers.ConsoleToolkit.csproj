@@ -96,6 +96,13 @@
     <Compile Include="ConsoleApplicationBootstrapper.cs" />
     <Compile Include="IConsoleApplication.cs" />
     <Compile Include="InputLabel.cs" />
+    <Compile Include="Progress\ChildProgressBar.cs" />
+    <Compile Include="Progress\IProgressBar.cs" />
+    <Compile Include="Progress\ProgressBar.cs" />
+    <Compile Include="Progress\ProgressBarBase.cs" />
+    <Compile Include="Progress\ProgressBarHeight.cs" />
+    <Compile Include="Progress\ProgressBarOptions.cs" />
+    <Compile Include="Progress\StringExtensions.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="CommandLineArguments\ArgumentAttribute.cs" />
     <Compile Include="CommandLineArguments\ArgumentHelp.cs" />
