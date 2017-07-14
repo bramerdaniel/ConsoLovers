@@ -46,9 +46,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\ConsoLovers.ConsoleToolkit\ConsoLovers.ConsoleToolkit.csproj">
       <Project>{a001404c-4752-48b0-b28a-2ea524e49adb}</Project>
       <Name>ConsoLovers.ConsoleToolkit</Name>

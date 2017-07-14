@@ -12,6 +12,8 @@ namespace CommandLineEngineDemo
    using ConsoLovers.ConsoleToolkit.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.DIContainer;
 
+   [ConsoleWindowWidth(140)]
+   [ConsoleWindowHeight(60)]
    class Program : ConsoleApplicationWith<Commands>
    {
       #region Public Methods and Operators

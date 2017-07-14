@@ -146,10 +146,10 @@ namespace ConsoLovers.ConsoleToolkit
             var height = applicationType.GetCustomAttribute(typeof(ConsoleWindowHeightAttribute)) as ConsoleWindowHeightAttribute;
             if (height != null)
             {
-               if (System.Console.WindowWidth > height.ConsoleHeight && !height.AllowShrink)
+               if (System.Console.WindowHeight > height.ConsoleHeight && !height.AllowShrink)
                   return;
 
-               System.Console.WindowHeight = height.ConsoleHeight;
+               System.Console.WindowHeight = Math.Min(height.ConsoleHeight, System.Console.LargestWindowHeight);
             }
          }
          catch
@@ -165,7 +165,7 @@ namespace ConsoLovers.ConsoleToolkit
                if (System.Console.WindowWidth > width.ConsoleWidth && !width.AllowShrink)
                   return;
 
-               System.Console.WindowWidth = width.ConsoleWidth;
+               System.Console.WindowWidth = Math.Min(width.ConsoleWidth, System.Console.LargestWindowWidth);
             }
          }
          catch
@@ -198,6 +198,7 @@ namespace ConsoLovers.ConsoleToolkit
       /// <summary>Creates the instance of the application to run. Override this method to create the <see cref="IApplication"/> instance by your own.</summary>
       /// <param name="type">The type of the application to run.</param>
       /// <returns>The created uninitialized application</returns>
+      /// <exception cref="InvalidOperationException"></exception>
       /// <exception cref="System.InvalidOperationException"></exception>
       private IApplication CreateApplicationInternal(Type type)
       {
