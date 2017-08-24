@@ -62,7 +62,7 @@ namespace ConsoLovers.ConsoleToolkit.DIContainer
          }
 
          var factory = FactoryMethods.Pop();
-         return Container.Rename(this, name, factory);
+         return Container.CloneEntry(this, name, factory);
       }
 
       #endregion
@@ -70,7 +70,7 @@ namespace ConsoLovers.ConsoleToolkit.DIContainer
       #region Public Properties
 
       /// <summary>Gets the container.</summary>
-      public Container Container { get; private set; }
+      public Container Container { get; }
 
       /// <summary>Gets or sets the factory methods of the entry.</summary>
       public Stack<Func<IContainer, object>> FactoryMethods { get; set; }

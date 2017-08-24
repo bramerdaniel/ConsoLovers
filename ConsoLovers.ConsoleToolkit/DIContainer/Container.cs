@@ -85,10 +85,8 @@ namespace ConsoLovers.ConsoleToolkit.DIContainer
       /// <exception cref="TargetException">The object does not match the target type.-or-The property is an instance property, but obj /> is null. </exception>
       /// <exception cref="TargetParameterCountException">The number of parameters in index does not match the number of parameters the indexed property takes. </exception>
       /// <exception cref="MethodAccessException">There was an illegal attempt to access a private or protected method inside a class. </exception>
-      /// <exception cref="TargetInvocationException">
-      ///    An error occurred while setting the property value. For example, an index value specified for an indexed property is out of range. The
-      ///    <see cref="P:System.Exception.InnerException"/> property indicates the reason for the error.
-      /// </exception>
+      /// <exception cref="TargetInvocationException">An error occurred while setting the property value. For example, an index value specified for an indexed property is out of range. The
+      ///    <see cref="P:System.Exception.InnerException"/> property indicates the reason for the error.</exception>
       public void BuildUp(object instance)
       {
          BuildUp(instance, Options.PropertySelectionStrategy);
@@ -101,10 +99,8 @@ namespace ConsoLovers.ConsoleToolkit.DIContainer
       /// <exception cref="TargetException">The object does not match the target type.-or-The property is an instance property, but obj is null. </exception>
       /// <exception cref="TargetParameterCountException">The number of parameters in index does not match the number of parameters the indexed property takes. </exception>
       /// <exception cref="MethodAccessException">There was an illegal attempt to access a private or protected method inside a class. </exception>
-      /// <exception cref="TargetInvocationException">
-      ///    An error occurred while setting the property value. For example, an index value specified for an indexed property is out of range. The
-      ///    <see cref="P:System.Exception.InnerException"/> property indicates the reason for the error.
-      /// </exception>
+      /// <exception cref="TargetInvocationException">An error occurred while setting the property value. For example, an index value specified for an indexed property is out of range. The
+      ///    <see cref="P:System.Exception.InnerException"/> property indicates the reason for the error.</exception>
       public void BuildUp([NotNull] object instance, PropertySelectionStrategy strategy)
       {
          if (instance == null)
@@ -113,7 +109,7 @@ namespace ConsoLovers.ConsoleToolkit.DIContainer
          IEnumerable<PropertyInfo> injectables = strategy.SelectProperties(instance.GetType());
          foreach (var propertyInfo in injectables.ToList())
          {
-            var injectionInstance = Resolve(propertyInfo.PropertyType);
+            var injectionInstance = ResolveNamed(propertyInfo.PropertyType, ComputeName(propertyInfo));
             if (injectionInstance != null)
             {
                propertyInfo.SetValue(instance, injectionInstance, null);
@@ -200,6 +196,16 @@ namespace ConsoLovers.ConsoleToolkit.DIContainer
          return Register(service, c => implementation);
       }
 
+      /// <summary>Registers the instance at the container.</summary>
+      /// <param name="service">The service to register.</param>
+      /// <param name="implementation">The implementation of the service.</param>
+      /// <param name="name">The name.</param>
+      /// <returns>The registered container element used for fluent configuration</returns>
+      public IContainerEntry Register(Type service, object implementation, string name)
+      {
+         return RegisterNamed(service, c => implementation, name);
+      }
+
       /// <summary>Registers the service type with an implementation type.</summary>
       /// <typeparam name="T">The type of the service to register. </typeparam>
       /// <param name="implementation">The implementation of the service. </param>
@@ -221,13 +227,46 @@ namespace ConsoLovers.ConsoleToolkit.DIContainer
          return Register(typeof(TSer), typeof(TImpl));
       }
 
+      public IContainerEntry RegisterNamed<T>(object implementation, string name)
+         where T : class
+      {
+         return RegisterNamed(typeof(T), implementation, name);
+      }
+
+      public IContainerEntry RegisterNamed(Type service, object implementation, string name)
+      {
+         return RegisterNamed(service, c => implementation, name);
+      }
+
+      public IContainerEntry RegisterNamed<T>(Func<IContainer, object> handler, string name)
+         where T : class
+      {
+         return RegisterInternal(typeof(T), handler, name);
+      }
+
+      public IContainerEntry RegisterNamed<TService, TImplementation>(string name)
+         where TService : class where TImplementation : class
+      {
+         return RegisterNamed(typeof(TService), typeof(TImplementation), name);
+      }
+
+      public IContainerEntry RegisterNamed(Type service, Func<IContainer, object> handler, string name)
+      {
+         return RegisterInternal(service, handler, name);
+      }
+
       /// <summary>Registers the type at the container.</summary>
       /// <param name="service">The service type to register. </param>
       /// <param name="handler">The the function that constructs the object. </param>
       /// <returns>The registered container element used for fluent configuration </returns>
       public IContainerEntry Register(Type service, Func<IContainer, object> handler)
       {
-         var entry = GetOrCreateEntry(service, null);
+         return RegisterInternal(service, handler, null);
+      }
+
+      private IContainerEntry RegisterInternal(Type service, Func<IContainer, object> handler, string name)
+      {
+         var entry = GetOrCreateEntry(service, name);
          entry.FactoryMethods.Push(handler);
          return entry;
       }
@@ -249,6 +288,11 @@ namespace ConsoLovers.ConsoleToolkit.DIContainer
       public IContainerEntry Register(Type service, Type implementation)
       {
          return Register(service, c => BuildInstance(implementation, Options.ConstructorSelectionStrategy));
+      }
+
+      public IContainerEntry RegisterNamed(Type service, Type implementation, string name)
+      {
+         return RegisterNamed(service, c => BuildInstance(implementation, Options.ConstructorSelectionStrategy), name);
       }
 
       /// <summary>Resolves the registered implementation for the given type.</summary>
@@ -275,11 +319,9 @@ namespace ConsoLovers.ConsoleToolkit.DIContainer
       /// <exception cref="Exception">A delegate callback throws an exception.</exception>
       public IEnumerable<object> ResolveAll(Type service)
       {
-         var entry = GetEntry(service, null);
-         if (entry != null)
-         {
-            return entry.FactoryMethods.Select(x => x(this));
-         }
+         var typeEntries = entries.Where(x => x.ServiceType == service).ToArray();
+         if (typeEntries.Any())
+            return typeEntries.SelectMany(t => t.FactoryMethods.Select(x => x(this)));
 
          if (ServiceProvider != null)
          {
@@ -400,11 +442,13 @@ namespace ConsoLovers.ConsoleToolkit.DIContainer
       /// <param name="name">The name.</param>
       /// <param name="factory">The factory.</param>
       /// <returns>the fluent configuration followers</returns>
-      internal ILifetime Rename(ContainerEntry entry, string name, Func<IContainer, object> factory)
+      internal ILifetime CloneEntry(ContainerEntry entry, string name, Func<IContainer, object> factory)
       {
          var clone = entry.Clone();
          clone.FactoryMethods.Push(factory);
          clone.Name = name;
+         entries.Add(clone);
+
          return clone;
       }
 
@@ -470,8 +514,20 @@ namespace ConsoLovers.ConsoleToolkit.DIContainer
          if (constructor == null)
             return null;
 
-         args.AddRange(constructor.GetParameters().Select(info => ResolveNamed(info.ParameterType, null)));
+         args.AddRange(constructor.GetParameters().Select(info => ResolveNamed(info.ParameterType, ComputeName(info))));
          return args.ToArray();
+      }
+
+      private string ComputeName(ParameterInfo info)
+      {
+         var attribute = info.GetCustomAttribute(typeof(DependencyAttribute)) as DependencyAttribute;
+         return attribute?.Name;
+      }
+
+      private string ComputeName(PropertyInfo info)
+      {
+         var attribute = info.GetCustomAttribute(typeof(DependencyAttribute)) as DependencyAttribute;
+         return attribute?.Name;
       }
 
       private ContainerEntry GetEntry(Type service, string name)
@@ -491,6 +547,10 @@ namespace ConsoLovers.ConsoleToolkit.DIContainer
          {
             entry = new ContainerEntry(this) { ServiceType = service, Name = name };
             entries.Add(entry);
+         }
+         else
+         {
+            throw new InvalidOperationException($"An entry of type {service.FullName} was already registered with the name {name}.");
          }
 
          return entry;

@@ -81,8 +81,6 @@
     <Compile Include="DIContainer\ILifetimeContextFactory.cs" />
     <Compile Include="DIContainer\InjectionConstructorAttribute.cs" />
     <Compile Include="DIContainer\Lifetime.cs" />
-    <Compile Include="DIContainer\LifetimeContext.cs" />
-    <Compile Include="DIContainer\LifetimeContextFactory.cs" />
     <Compile Include="DIContainer\MostParametersSelectionStrategy.cs" />
     <Compile Include="DIContainer\RegistrationException.cs" />
     <Compile Include="DIContainer\Strategies\AttributePropertySelectionStrategy.cs" />

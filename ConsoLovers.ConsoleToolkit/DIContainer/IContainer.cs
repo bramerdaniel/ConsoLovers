@@ -88,6 +88,35 @@ namespace ConsoLovers.ConsoleToolkit.DIContainer
       IContainerEntry Register<TService, TImplementation>()
          where TService : class where TImplementation : class;
 
+      /// <summary>
+      /// Registers the service type with an implementation type.
+      /// </summary>
+      /// <typeparam name="T">The type of the service to register.</typeparam>
+      /// <param name="implementation">The implementation of the service.</param>
+      /// <param name="name">The name.</param>
+      /// <returns>
+      /// The registered container element used for fluent configuration
+      /// </returns>
+      IContainerEntry RegisterNamed<T>(object implementation, string name)
+         where T : class;
+
+      IContainerEntry RegisterNamed(Type service, object implementation, string name);
+
+      /// <summary>Registers the specified service type with the implementation type with the given name.</summary>
+      /// <param name="service">The service type.</param>
+      /// <param name="implementation">The implementation type.</param>
+      /// <param name="named">The named.</param>
+      /// <returns>The registered container element used for fluent configuration</returns>
+      IContainerEntry RegisterNamed(Type service, Type implementation, string named);
+
+      /// <summary>Registers the service type with the given name .</summary>
+      /// <typeparam name="TService">The type of the service to register.</typeparam>
+      /// <typeparam name="TImplementation">The type of the implementation for the type.</typeparam>
+      /// <param name="name">The name the dependency should be registered with.</param>
+      /// <returns>The registered container element used for fluent configuration</returns>
+      IContainerEntry RegisterNamed<TService, TImplementation>(string name)
+         where TService : class where TImplementation : class;
+
       /// <summary>Resolves the registered implementation for the given type.</summary>
       /// <param name="service">The service.</param>
       /// <returns>The resolved type</returns>

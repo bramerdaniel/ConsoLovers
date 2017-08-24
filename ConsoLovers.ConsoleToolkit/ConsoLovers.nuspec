@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>ConsoLovers.ConsoleToolkit</id>
-    <version>2.0.6</version>
+    <version>3.0.0-rc1</version>
     <title>ConsoLovers.ConsoleToolkit</title>
     <authors>danielbramer</authors>
     <owners>danielbramer</owners>
@@ -14,6 +14,7 @@
        - Fixed resizing error of ConsoleWindowHeigth and width attributes.
        - Fixed color in default menu
        - Added posibility for ConsoleApplication's to react on calls without arguments 
+       - Changed and improved dependency injection container
 
        Most important classes are:
        - ConsoleMenu

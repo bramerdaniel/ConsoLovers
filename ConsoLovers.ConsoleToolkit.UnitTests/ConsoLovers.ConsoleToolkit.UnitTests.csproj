@@ -79,6 +79,10 @@
     <Compile Include="ArgumentEngine\CovertValueTests.cs" />
     <Compile Include="ArgumentEngine\EngineFactorySetup.cs" />
     <Compile Include="ArgumentEngine\TestData\ExecuteArgs.cs" />
+    <Compile Include="DIContainer\BuildUp.cs" />
+    <Compile Include="DIContainer\Create.cs" />
+    <Compile Include="DIContainer\Testclasses\HaveNamedDependancies.cs" />
+    <Compile Include="DIContainer\Testclasses\ObjectWithNamedDependencies.cs" />
     <Compile Include="Setups\FluentCommandLineEngineMock.cs" />
     <Compile Include="ArgumentEngine\HelpCommandTests\Execute.cs" />
     <Compile Include="ArgumentEngine\Map.cs" />
@@ -105,7 +109,6 @@
     <Compile Include="DIContainer\AttributSelectionStrategyTests.cs" />
     <Compile Include="DIContainer\CombinedSelectionStrategyTests.cs" />
     <Compile Include="DIContainer\ContainerTests.cs" />
-    <Compile Include="DIContainer\LifetimeContextTests.cs" />
     <Compile Include="DIContainer\MostParametersSelectionStrategyTests.cs" />
     <Compile Include="DIContainer\Testclasses\Demo.cs" />
     <Compile Include="DIContainer\Testclasses\HaveDependancies.cs" />

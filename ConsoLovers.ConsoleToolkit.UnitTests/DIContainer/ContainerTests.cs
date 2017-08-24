@@ -31,70 +31,10 @@ namespace ConsoLovers.UnitTests.DIContainer
    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Reviewed. Suppression is OK here.")]
    public class ContainerTests
    {
-      #region Constants and Fields
-
-      private readonly MockRepository mock = new MockRepository(MockBehavior.Loose);
-
-      #endregion
-
       #region Public Methods and Operators
 
-      [TestMethod]
-      public void BuildUp_existing_object_instance()
-      {
-         IContainer container = new Container();
-         container.Register<IDemo>(new Demo(222));
-         ObjectToBuild otb = new ObjectToBuild();
-         container.BuildUp(otb);
 
-         // Normal property injection
-         otb.Demo.Should().NotBeNull();
-         otb.Demo.GetId().Should().Be(222);
 
-         // Property injection for container insself
-         otb.Container.Should().NotBeNull();
-         var demo = otb.Container.Resolve<IDemo>();
-         demo.Should().NotBeNull();
-         demo.GetId().Should().Be(222);
-      }
-
-      [TestMethod]
-      public void BuildUp_null_must_throw_ArgumentNullException()
-      {
-         IContainer container = new Container();
-         container.Invoking(c => c.BuildUp(null)).ShouldThrow<ArgumentNullException>();
-      }
-
-      [TestMethod]
-      public void BuildUp_existing_object_and_Inject_only_properties_with_attributes()
-      {
-         IContainer container = new Container();
-         container.Register<IDemo>(new Demo(222));
-         var injectionTarget = new PropertyInjection();
-         container.BuildUp(injectionTarget);
-
-         // Normal property injection
-         injectionTarget.Attribute.Should().NotBeNull();
-         injectionTarget.Attribute.GetId().Should().Be(222);
-
-         injectionTarget.NoAttribute.Should().BeNull();
-         injectionTarget.PrivateAttribute.Should().BeNull();
-
-         // Again with other selection strategy
-         container = new Container { Options = new ContainerOptions { PropertySelectionStrategy = PropertySelectionStrategies.AllWithDepencencyAttribute } };
-
-         container.Register<IDemo>(new Demo(666));
-         container.BuildUp(injectionTarget);
-
-         // Normal property injection
-         injectionTarget.Attribute.Should().NotBeNull();
-         injectionTarget.Attribute.GetId().Should().Be(666);
-         injectionTarget.NoAttribute.Should().BeNull();
-
-         // Now also privates were injected
-         injectionTarget.PrivateAttribute.Should().NotBeNull();
-         injectionTarget.Attribute.GetId().Should().Be(666);
-      }
 
       [TestMethod]
       public void Check_simple_generic_handler_registration()
@@ -118,12 +58,13 @@ namespace ConsoLovers.UnitTests.DIContainer
       }
 
       [TestMethod]
-      public void Resolve_an_IEnumerabl_of_registered_types()
+      public void ResolveAnIEnumerableOfRegisteredTypes()
       {
          Container container = new Container();
          container.Register<IDemo>(c => new Demo(0));
-         container.Register<IDemo>(c => new Demo(1));
-         container.Register<IDemo>(c => new Demo(2));
+         container.RegisterNamed<IDemo>(c => new Demo(1), "1");
+         container.RegisterNamed<IDemo>(c => new Demo(2), "2");
+
          var demoList = container.Resolve<IEnumerable<IDemo>>().ToList();
          for (int i = demoList.Count; i < 0; i--)
          {
@@ -135,13 +76,12 @@ namespace ConsoLovers.UnitTests.DIContainer
       public void Check_simple_generic_instance_registration_with_key()
       {
          Container container = new Container();
-         var demo1 = mock.Create<IDemo>();
-         demo1.Setup(d => d.Name).Returns("Demo1");
-         var demo2 = mock.Create<IDemo>();
-         demo2.Setup(d => d.Name).Returns("Demo2");
 
-         container.Register<IDemo>(demo1.Object).Named("d1");
-         container.Register<IDemo>(demo2.Object).Named("d2");
+         var demo1 = new Demo { Name = "Demo1" };
+         var demo2 = new Demo { Name = "Demo2" };
+
+         container.RegisterNamed<IDemo>(demo1, "d1");
+         container.RegisterNamed<IDemo>(demo2, "d2");
          var resolved1 = container.ResolveNamed<IDemo>("d1");
          resolved1.Name.Should().Be("Demo1");
          var resolved2 = container.ResolveNamed<IDemo>("d2");
@@ -165,13 +105,14 @@ namespace ConsoLovers.UnitTests.DIContainer
          Container container = new Container();
          container.Register<IDemo>(c => new Demo()).WithLifetime(Lifetime.Singleton);
 
-         var i1 = container.Resolve(typeof(IDemo));
-         var i2 = container.Resolve(typeof(IDemo));
-         i1.Should().BeSameAs(i2);
+         var firstInstance = container.Resolve(typeof(IDemo));
+         var secondInstance = container.Resolve(typeof(IDemo));
+         firstInstance.Should().BeSameAs(secondInstance);
 
-         i1 = container.Resolve<IDemo>();
-         i2 = container.Resolve<IDemo>();
-         i1.Should().BeSameAs(i2);
+         firstInstance = container.Resolve<IDemo>();
+         secondInstance = container.Resolve<IDemo>();
+
+         firstInstance.Should().BeSameAs(secondInstance);
       }
 
       [TestMethod]
@@ -219,89 +160,17 @@ namespace ConsoLovers.UnitTests.DIContainer
       public void Empty_container_should_return_empty_enumerable()
       {
          IContainer container = new Container();
-         var theDemo = container.ResolveAll<IDemo>();
+         var theDemo = container.ResolveAll<IDemo>().ToArray();
          theDemo.Should().NotBeNull();
          theDemo.Any().Should().BeFalse();
 
          IServiceProvider provider = new TestServiceProvider();
          container = new Container(provider);
-         var notResolvable = container.ResolveAll<IConvertible>();
+         var notResolvable = container.ResolveAll<IConvertible>().ToArray();
          notResolvable.Should().NotBeNull();
          notResolvable.Any().Should().BeFalse();
       }
 
-      [TestMethod]
-      public void Create_simple_object()
-      {
-         Container container = new Container();
-
-         // Normal method
-         var timespan = container.Create(typeof(Simple));
-         timespan.Should().NotBeNull();
-
-         // Generic implementation
-         timespan = container.Create<Simple>();
-         timespan.Should().NotBeNull();
-
-         // Normal method
-         var demo = (Demo)container.Create(typeof(Demo));
-         demo.Should().NotBeNull();
-
-         // Generic implementation
-         demo = container.Create<Demo>();
-         demo.Should().NotBeNull();
-         demo.GetId().Should().Be(0);
-      }
-
-      [TestMethod]
-      public void Create_simple_object_with_dependencies()
-      {
-         Container container = new Container();
-         var dependancies = container.Create<HaveDependancies>();
-         dependancies.Should().NotBeNull();
-         dependancies.Demo.Should().BeNull();
-
-         container.Register<IDemo, Demo>();
-         dependancies = container.Create<HaveDependancies>();
-         dependancies.Should().NotBeNull();
-         dependancies.Demo.Should().NotBeNull();
-      }
-
-      [TestMethod]
-      public void Create_simple_object_with_options()
-      {
-         Container container = new Container();
-
-         // Normal method
-         var simple = container.Create(typeof(Simple), new ContainerOptions { ConstructorSelectionStrategy = ConstructorSelectionStrategies.WithInjectionConstructorAttribute });
-         simple.Should().BeNull();
-
-         var noAtt = container.Create(
-            typeof(NoAttributes),
-            new ContainerOptions { ConstructorSelectionStrategy = ConstructorSelectionStrategies.WithInjectionConstructorAttribute });
-         noAtt.Should().BeNull();
-
-         var one = (OneAttribute)container.Create(
-            typeof(OneAttribute),
-            new ContainerOptions { ConstructorSelectionStrategy = ConstructorSelectionStrategies.WithInjectionConstructorAttribute });
-         one.Should().NotBeNull();
-         one.Id.Should().Be(1);
-
-         one = container.Create<OneAttribute>(new ContainerOptions { ConstructorSelectionStrategy = ConstructorSelectionStrategies.WithMostParameters });
-         one.Should().NotBeNull();
-         one.Id.Should().Be(0);
-
-         var multiple = container.Create<MultipleConstructorAttributes>(new ContainerOptions { ConstructorSelectionStrategy = ConstructorSelectionStrategies.WithMostParameters });
-         multiple.Should().NotBeNull();
-         multiple.Id.Should().Be(3);
-
-         var combinedSimple = container.Create<Simple>(new ContainerOptions { ConstructorSelectionStrategy = ConstructorSelectionStrategies.WithCombinedLogic });
-         combinedSimple.Should().NotBeNull();
-
-         var combined = container.Create<MultipleConstructorAttributes>(new ContainerOptions { ConstructorSelectionStrategy = ConstructorSelectionStrategies.WithCombinedLogic });
-         combined.Should().NotBeNull();
-         combined.Id.Should().Be(2);
-      }
 
       [TestMethod]
       public void Register_handler_for_interface()
@@ -325,7 +194,7 @@ namespace ConsoLovers.UnitTests.DIContainer
       public void Register_handler_with_key_for_interface()
       {
          Container container = new Container();
-         container.Register(typeof(IDemo), c => new Demo(12)).Named("key");
+         container.RegisterNamed(typeof(IDemo), c => new Demo(12), "key");
          var instance = (IDemo)container.Resolve(typeof(IDemo));
          instance.Should().BeNull();
 
@@ -336,7 +205,7 @@ namespace ConsoLovers.UnitTests.DIContainer
 
          // Generic
          container = new Container();
-         container.Register<IDemo>(c => new Demo(98)).Named("special");
+         container.RegisterNamed<IDemo>(c => new Demo(98), "special");
          instance = container.Resolve<IDemo>();
          instance.Should().BeNull();
 
@@ -364,7 +233,7 @@ namespace ConsoLovers.UnitTests.DIContainer
       public void Register_interface_with_type_named()
       {
          IContainer container = new Container();
-         container.Register(typeof(IDemo), typeof(Demo)).Named("key");
+         container.RegisterNamed(typeof(IDemo), typeof(Demo), "key");
          var demoContract = (IDemo)container.Resolve(typeof(IDemo));
          demoContract.Should().BeNull();
 
@@ -372,7 +241,7 @@ namespace ConsoLovers.UnitTests.DIContainer
          demoContract.Should().NotBeNull();
 
          container = new Container();
-         container.Register<IDemo, Demo>().Named("test");
+         container.RegisterNamed<IDemo, Demo>("test");
          demoContract = container.Resolve<IDemo>();
          demoContract.Should().BeNull();
          demoContract = container.ResolveNamed<IDemo>("test");
@@ -397,20 +266,15 @@ namespace ConsoLovers.UnitTests.DIContainer
       }
 
       [TestMethod]
-      public void Registering_an_singleton_twice_must_fail()
+      public void RegisterinAnSecondImplementationAsSingletonMustWork()
       {
-         try
-         {
-            Container container = new Container();
-            container.Register<IDemo>(c => new Demo()).WithLifetime(Lifetime.Singleton);
+         Container container = new Container();
 
-            container.Register<IDemo>(c => new Demo()).WithLifetime(Lifetime.Singleton);
+         container.Register<IDemo>(c => new Demo{ Name = "WithoutName" }).WithLifetime(Lifetime.Singleton);
+         container.RegisterNamed<IDemo>(c => new Demo { Name = "WithName" }, "Second").WithLifetime(Lifetime.Singleton);
 
-            Assert.Fail("Registration did not cause an error");
-         }
-         catch (RegistrationException)
-         {
-         }
+         container.Resolve<IDemo>().Name.Should().Be("WithoutName");
+         container.ResolveNamed<IDemo>("Second").Name.Should().Be("WithName");
       }
 
       [TestMethod]
@@ -419,7 +283,7 @@ namespace ConsoLovers.UnitTests.DIContainer
          Container container = new Container();
          container.Register<IDemo>(c => new Demo()).WithLifetime(Lifetime.Singleton);
 
-         container.Register<IDemo>(c => new Demo()).Named("other").WithLifetime(Lifetime.Singleton);
+         container.RegisterNamed<IDemo>(c => new Demo(), "other").WithLifetime(Lifetime.Singleton);
 
          var demo1 = container.Resolve<IDemo>();
          var demo2 = container.Resolve<IDemo>();
@@ -436,8 +300,8 @@ namespace ConsoLovers.UnitTests.DIContainer
       public void Registration_of_handlers_with_key_only()
       {
          Container container = new Container();
-         container.Register(null, c => new Demo()).Named("KeyOnly");
-         container.Register(null, c => new Simple()).Named("otherKey");
+         container.RegisterNamed(null, c => new Demo(), "KeyOnly");
+         container.RegisterNamed(null, c => new Simple(), "otherKey");
 
          var demo1 = container.ResolveNamed<Demo>("KeyOnly");
          var demo2 = container.ResolveNamed(typeof(Demo), "KeyOnly") as Demo;
@@ -455,26 +319,72 @@ namespace ConsoLovers.UnitTests.DIContainer
       }
 
       [TestMethod]
-      public void ResolveAll_instances_of_a_registered_interface()
+      public void ResolveAllInstancesOfARegisteredService()
       {
-         IContainer container = new Container();
-         container.Register(typeof(IDemo), new Demo(222));
-         container.Register(typeof(IDemo), new Demo(333));
-         container.Register(typeof(IDemo), new Demo(444));
+         Container container = new Container();
+         container.Register(typeof(IDemo), new Demo(111));
+         container.RegisterNamed(typeof(IDemo), new Demo(222), "222");
+         container.RegisterNamed(typeof(IDemo), new Demo(333), "333");
+         container.RegisterNamed(typeof(IDemo), new Demo(444), "444");
 
          var resolveAll = container.ResolveAll(typeof(IDemo)).OfType<IDemo>().ToList();
-         resolveAll.Should().Contain(d => d.GetId() == 222).And.Contain(d => d.GetId() == 333).And.Contain(d => d.GetId() == 444);
-         container.Resolve<IDemo>().GetId().Should().Be(222);
+         resolveAll.Should().Contain(d => d.GetId() == 111).And.Contain(d => d.GetId() == 222).And.Contain(d => d.GetId() == 333).And.Contain(d => d.GetId() == 444);
 
-         container = new Container();
-         container.Register<IDemo>(new Demo(555));
-         container.Register<IDemo>(new Demo(666));
-         container.Register<IDemo>(new Demo(777));
+         container.Resolve<IDemo>().GetId().Should().Be(111);
+      }
 
-         resolveAll = container.ResolveAll<IDemo>().ToList();
-         resolveAll.Should().Contain(d => d.GetId() == 555).And.Contain(d => d.GetId() == 666).And.Contain(d => d.GetId() == 777);
+      [TestMethod]
+      public void EnsureNamedAndUnnamedRegistrationWorks()
+      {
+         Container container = new Container();
+         var demo1 = new Demo{ Name = "default" };
+         var demo2 = new Demo{ Name = "DemoWithName" };
 
-         container.Resolve<IDemo>().GetId().Should().Be(555);
+         container.Register<IDemo>(demo1);
+         container.RegisterNamed<IDemo>(demo2, "demo2");
+
+         var resolved1 = container.Resolve<IDemo>();
+         resolved1.Name.Should().Be("default");
+
+         var resolved2 = container.ResolveNamed<IDemo>("demo2");
+         resolved2.Name.Should().Be("DemoWithName");
+      }
+
+      [TestMethod]
+      public void EnsureNamedAndUnnamedRegistrationWorksWhenNamedIsRegisteredFirst()
+      {
+         Container container = new Container();
+         var demo1 = new Demo { Name = "default" };
+         var demo2 = new Demo { Name = "DemoWithName" };
+
+         container.RegisterNamed<IDemo>(demo2, "demo2");
+         container.Register<IDemo>(demo1);
+
+         var resolved1 = container.Resolve<IDemo>();
+         resolved1.Name.Should().Be("default");
+
+         var resolved2 = container.ResolveNamed<IDemo>("demo2");
+         resolved2.Name.Should().Be("DemoWithName");
+      }
+
+      [TestMethod]
+      public void EnsureSecondRegistrationWithTheSameNameFails()
+      {
+         Container container = new Container();
+         var demo1 = new Demo { Name = "first" };
+         var demo2 = new Demo { Name = "second" };
+
+         container.RegisterNamed<IDemo>(demo1, "same");
+         container.Invoking(c => c.RegisterNamed<IDemo>(demo2, "same")).ShouldThrow<InvalidOperationException>();
+      }
+
+      [TestMethod]
+      public void EnsureSecondRegistrationWithoutNameFails()
+      {
+         Container container = new Container();
+
+         container.Register<IDemo>(new Demo { Name = "first" });
+         container.Invoking(c => c.Register<IDemo>(new Demo { Name = "second" })).ShouldThrow<InvalidOperationException>();
       }
 
       /// <summary>Tests, if a unregistered component of the <see cref="Container"/> will return <c>null</c> if resolved.</summary>
@@ -489,6 +399,23 @@ namespace ConsoLovers.UnitTests.DIContainer
          container.Unregister<IDemo>();
 
          container.Resolve<IDemo>().Should().BeNull("unregistered component should not resolve");
+      }
+      
+      /// <summary>Tests, if a unregistered component of the <see cref="Container"/> will return <c>null</c> if resolved.</summary>
+      [TestMethod]
+      public void RegisteringMultipleInstancesWithMixedSingletonAndPerInstance()
+      {
+         var container = new Container();
+         container.Register<IDemo, Demo>();
+         container.RegisterNamed<IDemo, Demo>("Singleton").WithLifetime(Lifetime.Singleton);
+
+         var first = container.Resolve<IDemo>();
+         var second = container.Resolve<IDemo>();
+         first.Should().NotBeSameAs(second);
+
+         first = container.ResolveNamed<IDemo>("Singleton");
+         second = container.ResolveNamed<IDemo>("Singleton");
+         first.Should().BeSameAs(second);
       }
 
       #endregion

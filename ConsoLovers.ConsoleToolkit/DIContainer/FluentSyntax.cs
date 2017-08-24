@@ -10,20 +10,6 @@ namespace ConsoLovers.ConsoleToolkit.DIContainer
 
    /// <summary>Fluent syntax interface </summary>
    [EditorBrowsable(EditorBrowsableState.Never)]
-   public interface INamed : IFluentInterface
-   {
-      #region Public Methods and Operators
-
-      /// <summary>Sets the name of the service entry.</summary>
-      /// <param name="name">The name to register the service with</param>
-      /// <returns>The fluent configuration continue</returns>
-      ILifetime Named(string name);
-
-      #endregion
-   }
-
-   /// <summary>Fluent syntax interface </summary>
-   [EditorBrowsable(EditorBrowsableState.Never)]
    public interface ILifetime : IFluentInterface
    {
       #region Public Methods and Operators
@@ -37,7 +23,7 @@ namespace ConsoLovers.ConsoleToolkit.DIContainer
 
    /// <summary>Fluent syntax interface </summary>
    [EditorBrowsable(EditorBrowsableState.Never)]
-   public interface IContainerEntry : INamed, ILifetime
+   public interface IContainerEntry : ILifetime
    {
    }
 }
