@@ -21,8 +21,6 @@ namespace ConsoLovers.UnitTests.DIContainer
 
    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-   using Moq;
-
    #endregion
 
    /// <summary>Test-class for the container</summary>
@@ -33,11 +31,8 @@ namespace ConsoLovers.UnitTests.DIContainer
    {
       #region Public Methods and Operators
 
-
-
-
       [TestMethod]
-      public void Check_simple_generic_handler_registration()
+      public void CheckSimpleGenericHandlerRegistration()
       {
          Container container = new Container();
          container.Register<IDemo>(c => new Demo());

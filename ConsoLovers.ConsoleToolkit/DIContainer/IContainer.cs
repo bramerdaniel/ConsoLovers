@@ -88,15 +88,11 @@ namespace ConsoLovers.ConsoleToolkit.DIContainer
       IContainerEntry Register<TService, TImplementation>()
          where TService : class where TImplementation : class;
 
-      /// <summary>
-      /// Registers the service type with an implementation type.
-      /// </summary>
+      /// <summary>Registers the service type with an implementation type.</summary>
       /// <typeparam name="T">The type of the service to register.</typeparam>
       /// <param name="implementation">The implementation of the service.</param>
       /// <param name="name">The name.</param>
-      /// <returns>
-      /// The registered container element used for fluent configuration
-      /// </returns>
+      /// <returns>The registered container element used for fluent configuration</returns>
       IContainerEntry RegisterNamed<T>(object implementation, string name)
          where T : class;
 
@@ -151,6 +147,23 @@ namespace ConsoLovers.ConsoleToolkit.DIContainer
       /// <param name="name">The key the implementation was registered with.</param>
       /// <returns>The resolved type</returns>
       object ResolveNamed(Type service, string name);
+
+      /// <summary>Unregisters the specified <see cref="IContainerEntry"/>.</summary>
+      /// <param name="entry">The entry.</param>
+      void Unregister(IContainerEntry entry);
+
+      /// <summary>Unregisters this instance of type <typeparamref name="T"/>.</summary>
+      /// <typeparam name="T">The type that should be unregistered.</typeparam>
+      void Unregister<T>();
+
+      /// <summary>Unregisters the specified <paramref name="type"/>.</summary>
+      /// <param name="type">The <see cref="Type"/> that should be unregistered.</param>
+      void Unregister(Type type);
+
+      /// <summary>Unregisters the named instance of type <typeparamref name="T"/>.</summary>
+      /// <typeparam name="T">The type that should be unregistered.</typeparam>
+      /// <param name="name">The name of the component that should be unregistered.</param>
+      void UnregisterNamed<T>(string name);
 
       #endregion
    }

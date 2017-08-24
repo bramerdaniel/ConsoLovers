@@ -75,10 +75,7 @@
     <Compile Include="DIContainer\DependencyAttribute.cs" />
     <Compile Include="DIContainer\FluentSyntax.cs" />
     <Compile Include="DIContainer\IContainer.cs" />
-    <Compile Include="DIContainer\IExtendedContainer.cs" />
     <Compile Include="DIContainer\IFluentInterface.cs" />
-    <Compile Include="DIContainer\ILifetimeContext.cs" />
-    <Compile Include="DIContainer\ILifetimeContextFactory.cs" />
     <Compile Include="DIContainer\InjectionConstructorAttribute.cs" />
     <Compile Include="DIContainer\Lifetime.cs" />
     <Compile Include="DIContainer\MostParametersSelectionStrategy.cs" />

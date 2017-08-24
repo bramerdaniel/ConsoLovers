@@ -28,7 +28,6 @@ namespace ConsoLovers.ConsoleToolkit.DIContainer
       public ContainerEntry(Container container)
       {
          Container = container;
-         FactoryMethods = new Stack<Func<IContainer, object>>();
       }
 
       #endregion
@@ -40,29 +39,7 @@ namespace ConsoLovers.ConsoleToolkit.DIContainer
       /// <exception cref="RegistrationException">A singleton can only be registered once</exception>
       public void WithLifetime(Lifetime lifetime)
       {
-         if (lifetime == Lifetime.Singleton && FactoryMethods.Count > 1)
-            throw new RegistrationException("A sigleton can only be registered once");
-
          Lifetime = lifetime;
-      }
-
-      #endregion
-
-      #region INamed Members
-
-      /// <summary>Sets the name of the service entry.</summary>
-      /// <param name="name">The name to register the service with</param>
-      /// <returns>The fluent configuration continue interface</returns>
-      public ILifetime Named(string name)
-      {
-         if (FactoryMethods.Count == 1)
-         {
-            Name = name;
-            return this;
-         }
-
-         var factory = FactoryMethods.Pop();
-         return Container.CloneEntry(this, name, factory);
       }
 
       #endregion
@@ -73,7 +50,7 @@ namespace ConsoLovers.ConsoleToolkit.DIContainer
       public Container Container { get; }
 
       /// <summary>Gets or sets the factory methods of the entry.</summary>
-      public Stack<Func<IContainer, object>> FactoryMethods { get; set; }
+      public Func<IContainer, object> FactoryMethod { get; set; }
 
       /// <summary>Gets the instance.</summary>
       public object Instance
@@ -81,7 +58,7 @@ namespace ConsoLovers.ConsoleToolkit.DIContainer
          get
          {
             if (instance == null)
-               instance = FactoryMethods.Single()(Container);
+               instance = FactoryMethod(Container);
             return instance;
          }
       }

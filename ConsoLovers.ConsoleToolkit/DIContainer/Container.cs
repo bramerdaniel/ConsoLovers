@@ -22,15 +22,13 @@ namespace ConsoLovers.ConsoleToolkit.DIContainer
    #endregion
 
    /// <summary>Simple implementation of a dependency injection container</summary>
-   public class Container : IExtendedContainer
+   public class Container : IContainer
    {
       // ReSharper disable ExceptionNotDocumented
 
       #region Constants and Fields
 
       private readonly List<ContainerEntry> entries = new List<ContainerEntry>();
-
-      private ContainerOptions options = new ContainerOptions();
 
       #endregion
 
@@ -56,17 +54,7 @@ namespace ConsoLovers.ConsoleToolkit.DIContainer
       #region Public Properties
 
       /// <summary>Gets or sets the options the <see cref="Container"/> uses.</summary>
-      public ContainerOptions Options
-      {
-         get
-         {
-            return options;
-         }
-         set
-         {
-            options = value;
-         }
-      }
+      public ContainerOptions Options { get; set; } = new ContainerOptions();
 
       #endregion
 
@@ -104,7 +92,7 @@ namespace ConsoLovers.ConsoleToolkit.DIContainer
       public void BuildUp([NotNull] object instance, PropertySelectionStrategy strategy)
       {
          if (instance == null)
-            throw new ArgumentNullException("instance", "Container can not build up a null object");
+            throw new ArgumentNullException(nameof(instance), "Container can not build up a null object");
 
          IEnumerable<PropertyInfo> injectables = strategy.SelectProperties(instance.GetType());
          foreach (var propertyInfo in injectables.ToList())
@@ -267,7 +255,7 @@ namespace ConsoLovers.ConsoleToolkit.DIContainer
       private IContainerEntry RegisterInternal(Type service, Func<IContainer, object> handler, string name)
       {
          var entry = GetOrCreateEntry(service, name);
-         entry.FactoryMethods.Push(handler);
+         entry.FactoryMethod = handler;
          return entry;
       }
 
@@ -321,14 +309,11 @@ namespace ConsoLovers.ConsoleToolkit.DIContainer
       {
          var typeEntries = entries.Where(x => x.ServiceType == service).ToArray();
          if (typeEntries.Any())
-            return typeEntries.SelectMany(t => t.FactoryMethods.Select(x => x(this)));
+            return typeEntries.Select(t => t.FactoryMethod(this));
 
-         if (ServiceProvider != null)
-         {
-            var instance = ServiceProvider.GetService(service);
-            if (instance != null)
-               return new[] { instance };
-         }
+         var instance = ServiceProvider?.GetService(service);
+         if (instance != null)
+            return new[] { instance };
 
          return new object[0];
       }
@@ -365,12 +350,9 @@ namespace ConsoLovers.ConsoleToolkit.DIContainer
             return ResolveInstance(entry);
          }
 
-         if (ServiceProvider != null)
-         {
-            var instance = ServiceProvider.GetService(service);
-            if (instance != null)
-               return instance;
-         }
+         var instance = ServiceProvider?.GetService(service);
+         if (instance != null)
+            return instance;
 
          if (typeof(Delegate).IsAssignableFrom(service))
          {
@@ -436,21 +418,6 @@ namespace ConsoLovers.ConsoleToolkit.DIContainer
       #endregion
 
       #region Methods
-
-      /// <summary>Renames the specified entry by cloning it.</summary>
-      /// <param name="entry">The entry.</param>
-      /// <param name="name">The name.</param>
-      /// <param name="factory">The factory.</param>
-      /// <returns>the fluent configuration followers</returns>
-      internal ILifetime CloneEntry(ContainerEntry entry, string name, Func<IContainer, object> factory)
-      {
-         var clone = entry.Clone();
-         clone.FactoryMethods.Push(factory);
-         clone.Name = name;
-         entries.Add(clone);
-
-         return clone;
-      }
 
       /// <summary>Activates the instance.</summary>
       /// <param name="type">The type to create. </param>
@@ -561,7 +528,7 @@ namespace ConsoLovers.ConsoleToolkit.DIContainer
          switch (entry.Lifetime)
          {
             case Lifetime.Singleton: return entry.Instance;
-            case Lifetime.None: return entry.FactoryMethods.Last()(this);
+            case Lifetime.None: return entry.FactoryMethod(this);
             default: throw new ArgumentOutOfRangeException();
          }
       }
