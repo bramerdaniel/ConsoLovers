@@ -101,9 +101,9 @@ namespace ConsoLovers.ConsoleToolkit.DIContainer
       /// <summary>Registers the specified service type with the implementation type with the given name.</summary>
       /// <param name="service">The service type.</param>
       /// <param name="implementation">The implementation type.</param>
-      /// <param name="named">The named.</param>
+      /// <param name="name">The named.</param>
       /// <returns>The registered container element used for fluent configuration</returns>
-      IContainerEntry RegisterNamed(Type service, Type implementation, string named);
+      IContainerEntry RegisterNamed(Type service, Type implementation, string name);
 
       /// <summary>Registers the service type with the given name .</summary>
       /// <typeparam name="TService">The type of the service to register.</typeparam>
@@ -112,6 +112,13 @@ namespace ConsoLovers.ConsoleToolkit.DIContainer
       /// <returns>The registered container element used for fluent configuration</returns>
       IContainerEntry RegisterNamed<TService, TImplementation>(string name)
          where TService : class where TImplementation : class;
+
+      /// <summary>Registers the specified service type with the implementation type with the given name.</summary>
+      /// <param name="service">The service type.</param>
+      /// <param name="handler">The factory method that will be used to resolve the dependency.</param>
+      /// <param name="name">The name of the dpendency.</param>
+      /// <returns>The registered container element used for fluent configuration</returns>
+      IContainerEntry RegisterNamed(Type service, Func<IContainer, object> handler, string name);
 
       /// <summary>Resolves the registered implementation for the given type.</summary>
       /// <param name="service">The service.</param>
