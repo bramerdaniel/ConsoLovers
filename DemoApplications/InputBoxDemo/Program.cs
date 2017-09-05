@@ -8,6 +8,9 @@
    {
       static void Main()
       {
+         var password = new InputBox<string>("Enter 4 Chars: ").ReadLine(4, '.');
+         Console.WriteLine(password);
+
          int inty = new InputBox<int>("Enter an integer: ").ReadLine();
          Console.WriteLine(inty);
 

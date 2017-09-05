@@ -65,18 +65,24 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          return ConsoleColor.White;
       }
 
-      protected override ConsoleColor GetMenuItemBackground(bool isSelected, bool disabled, bool mouseOver)
+      protected override ConsoleColor GetMenuItemBackground(bool isSelected, bool disabled, bool mouseOver, ConsoleColor? elementBackground)
       {
          if (mouseOver && !isSelected)
             return GetMouseOverBackground();
 
+         if (elementBackground.HasValue)
+            return elementBackground.Value;
+
          return isSelected ? ConsoleColor.White : sharedBackground;
       }
 
-      protected override ConsoleColor GetMenuItemForeground(bool isSelected, bool disabled, bool mouseOver)
+      protected override ConsoleColor GetMenuItemForeground(bool isSelected, bool disabled, bool mouseOver, ConsoleColor? elementForeground)
       {
          if (mouseOver)
             return GetMouseOverForeground();
+
+         if (elementForeground.HasValue)
+            return elementForeground.Value;
 
          return GetSharedForeground(isSelected, disabled);
       }

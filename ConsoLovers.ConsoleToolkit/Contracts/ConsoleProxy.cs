@@ -15,88 +15,60 @@ namespace ConsoLovers.ConsoleToolkit.Contracts
    /// <seealso cref="ConsoLovers.ConsoleToolkit.Contracts.IConsole"/>
    public class ConsoleProxy : IConsole
    {
+
+
       #region IConsole Members
 
       public ConsoleColor BackgroundColor
       {
-         get
-         {
-            return Console.BackgroundColor;
-         }
+         get => Console.BackgroundColor;
 
-         set
-         {
-            Console.BackgroundColor = value;
-         }
+         set => Console.BackgroundColor = value;
       }
 
       public int CursorLeft
       {
-         get
-         {
-            return Console.CursorLeft;
-         }
+         get => Console.CursorLeft;
 
-         set
-         {
-            Console.CursorLeft = value;
-         }
+         set => Console.CursorLeft = value;
       }
 
       public int CursorTop
       {
-         get
-         {
-            return Console.CursorTop;
-         }
+         get => Console.CursorTop;
 
-         set
-         {
-            Console.CursorTop = value;
-         }
+         set => Console.CursorTop = value;
       }
 
       public ConsoleColor ForegroundColor
       {
-         get
-         {
-            return Console.ForegroundColor;
-         }
+         get => Console.ForegroundColor;
 
-         set
-         {
-            Console.ForegroundColor = value;
-         }
+         set => Console.ForegroundColor = value;
       }
 
       public int WindowWidth
       {
-         get
-         {
-            return Console.WindowWidth;
-         }
+         get => Console.WindowWidth;
 
-         set
-         {
-            Console.WindowWidth = value;
-         }
+         set => Console.WindowWidth = value;
       }
 
       public int WindowHeight
       {
-         get
-         {
-            return Console.WindowHeight;
-         }
+         get => Console.WindowHeight;
 
-         set
-         {
-            Console.WindowHeight = value;
-         }
+         set => Console.WindowHeight = value;
       }
 
       public int LargestWindowHeight => Console.LargestWindowHeight;
       public int LargestWindowWidth => Console.LargestWindowWidth;
+
+      public int CursorSize
+      {
+         get => Console.CursorSize;
+         set => Console.CursorSize = value;
+      }
 
       public void Clear()
       {

@@ -44,5 +44,10 @@ namespace ConsoLovers.UnitTests.Setups
       {
          return new HelpCommandSetup();
       }
+
+      internal static InputRangeSetup InputRange()
+      {
+         return new InputRangeSetup();
+      }
    }
 }

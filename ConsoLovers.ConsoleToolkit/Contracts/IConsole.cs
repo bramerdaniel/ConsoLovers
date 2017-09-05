@@ -29,6 +29,8 @@ namespace ConsoLovers.ConsoleToolkit.Contracts
 
       int LargestWindowWidth { get; }
 
+      int CursorSize { get; set; }
+
       #endregion
 
       #region Public Methods and Operators

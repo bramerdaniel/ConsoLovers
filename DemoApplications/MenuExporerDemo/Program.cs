@@ -255,8 +255,9 @@ namespace MenuDemo
          menu.Add(new ConsoleMenuItem("Simulate Crash", DoCrash));
          menu.Add(new ConsoleMenuItem("ColorSimulation", ColorSimulation));
          menu.Add(new ConsoleMenuItem("LazyLoadChildren", LazyLoadChildren, true));
+         menu.Add(new ConsoleMenuSeperator{ Label = "Close stuff" });
          menu.Add(new ConsoleMenuItem("Close menu", x => menu.Close()));
-         menu.Add(new ConsoleMenuItem("Exit", x => Environment.Exit(0)));
+         menu.Add(new ConsoleMenuItem("Exit", x => Environment.Exit(0)){ Foreground = ConsoleColor.Red });
          menu.Show();
       }
 

@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="ConsoleMenuBase.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2016
+//    Copyright (c) ConsoLovers  2015 - 2017
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -289,10 +289,6 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          OnMenuClosed();
       }
 
-      protected virtual void OnMenuClosed()
-      {
-      }
-
       public bool Contains(ConsoleMenuItem item)
       {
          return root.Items.Contains(item);
@@ -406,9 +402,9 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       protected abstract ConsoleColor GetHintForeground(bool isSelected, bool disabled);
 
-      protected abstract ConsoleColor GetMenuItemBackground(bool isSelected, bool disabled, bool mouseOver);
+      protected abstract ConsoleColor GetMenuItemBackground(bool isSelected, bool disabled, bool mouseOver, ConsoleColor? elementBackground);
 
-      protected abstract ConsoleColor GetMenuItemForeground(bool isSelected, bool disabled, bool mouseOver);
+      protected abstract ConsoleColor GetMenuItemForeground(bool isSelected, bool disabled, bool mouseOver, ConsoleColor? elementForeground);
 
       //{
       //   return Theme.MenuItem.GetForeground(element.IsSelected, element.Disabled);
@@ -426,12 +422,23 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       protected abstract ConsoleColor GetSelectorForeground(bool isSelected, bool disabled, bool mouseOver);
 
+      protected virtual void OnMenuClosed()
+      {
+      }
+
       private static string DisabledHint(ConsoleMenuItem menuItem)
       {
          if (menuItem.DisabledHint != null)
             return menuItem.DisabledHint;
 
          return "[Item is disabled]";
+      }
+
+      private static string GetText(ConsoleMenuSeperator seperator)
+      {
+         if (seperator == null)
+            return ConsoleMenuSeperator.DefaultText;
+         return seperator.GetText();
       }
 
       private void AttachMouseEvents(bool attach)
@@ -492,7 +499,9 @@ namespace ConsoLovers.ConsoleToolkit.Menu
                var seperator = menuItems[i] as ConsoleMenuSeperator;
                var seperatorElement = new ElementInfo
                {
-                  Text = "----",
+                  Text = GetText(seperator),
+                  Foreground = seperator?.Foreground,
+                  Background = seperator?.Background,
                   MenuItem = seperator,
                   IsSelected = false,
                   Disabled = true,
@@ -511,6 +520,8 @@ namespace ConsoLovers.ConsoleToolkit.Menu
                Path = parent?.Identifier + identifier,
                IndexString = $"[{identifier}] ",
                Text = menuItem.Text,
+               Foreground = menuItem.Foreground,
+               Background = menuItem.Background,
                MenuItem = menuItem,
                IsSelected = IsSelected(menuItem),
                Disabled = !CanExecute(menuItem),
@@ -679,8 +690,8 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       private void PrintElement(ElementInfo element)
       {
-         var foreground = GetMenuItemForeground(element.IsSelected,element.Disabled, element.IsMouseOver);
-         var background = GetMenuItemBackground(element.IsSelected, element.Disabled, element.IsMouseOver);
+         var foreground = GetMenuItemForeground(element.IsSelected, element.Disabled, element.IsMouseOver, element.Foreground);
+         var background = GetMenuItemBackground(element.IsSelected, element.Disabled, element.IsMouseOver, element.Background);
 
          Write(element.Indent, foreground, background);
          WriteExpander(element, foreground, background);
@@ -799,8 +810,8 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       private void PrintSelector(ElementInfo element)
       {
-         var foreground =  GetSelectorForeground(element.IsSelected, element.Disabled, element.IsMouseOver);
-         var background =  GetSelectorBackground(element.IsSelected, element.Disabled, element.IsMouseOver);
+         var foreground = GetSelectorForeground(element.IsSelected, element.Disabled, element.IsMouseOver);
+         var background = GetSelectorBackground(element.IsSelected, element.Disabled, element.IsMouseOver);
 
          if (element.IsSelected)
          {

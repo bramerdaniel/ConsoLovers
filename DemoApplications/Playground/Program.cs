@@ -73,6 +73,13 @@ namespace Playground
 
       private static void Main(string[] args)
       {
+         string text = null;
+         while (text != "exit")
+         {
+            text = new InputBox<string>("Enter some long text: ", "SomeText").ReadLine(10);
+            Console.WriteLine(text);
+         }
+
          new ConsoleProxy().WaitForKey(ConsoleKey.Escape);
          ConsoleApplicationManager.For<MyProgramLogic>().Run(args);
       }

@@ -1,6 +1,6 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ConsoleMenuItem.cs" company="ConsoLovers">
-//   Copyright (c) ConsoLovers  2015 - 2016
+// <copyright file="ColoredConsoleMenuItem.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2017
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -11,8 +11,8 @@ namespace ConsoLovers.ConsoleToolkit.Menu
    using System.Diagnostics;
    using System.Linq;
 
-   [DebuggerDisplay("{Text}")]
-   public class ConsoleMenuItem : PrintableItem
+   [DebuggerDisplay("{" + nameof(Text) + "}")]
+   public class ColoredConsoleMenuItem : PrintableItem
    {
       #region Constants and Fields
 
@@ -20,15 +20,15 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       private readonly bool clearItemsOnCollapse;
 
-      private readonly Action<ConsoleMenuItem> execute;
+      private readonly Action<ColoredConsoleMenuItem> execute;
 
-      private readonly Func<IEnumerable<ConsoleMenuItem>> loadChildren;
+      private readonly Func<IEnumerable<ColoredConsoleMenuItem>> loadChildren;
 
       private bool isExpanded;
 
-      internal List<PrintableItem> items;
+      private List<PrintableItem> items;
 
-      private bool loadingChildren = false;
+      private bool loadingChildren;
 
       private string text;
 
@@ -36,7 +36,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       #region Constructors and Destructors
 
-      public ConsoleMenuItem(string text, Func<IEnumerable<ConsoleMenuItem>> loadChildren, bool clearItemsOnCollapse)
+      public ColoredConsoleMenuItem(string text, Func<IEnumerable<ColoredConsoleMenuItem>> loadChildren, bool clearItemsOnCollapse)
          : this(text)
       {
          this.loadChildren = loadChildren;
@@ -44,7 +44,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          execute = SwapExpand;
       }
 
-      public ConsoleMenuItem(string text, params PrintableItem[] children)
+      public ColoredConsoleMenuItem(string text, params PrintableItem[] children)
          : this(text)
       {
          items = new List<PrintableItem>(children.Length);
@@ -57,31 +57,22 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          execute = SwapExpand;
       }
 
-      public ConsoleMenuItem(string text, Action<ConsoleMenuItem> execute)
+      public ColoredConsoleMenuItem(string text, Action<ColoredConsoleMenuItem> execute)
          : this(text)
       {
-         if (execute == null)
-            throw new ArgumentNullException(nameof(execute));
-         this.execute = execute;
+         this.execute = execute ?? throw new ArgumentNullException(nameof(execute));
       }
 
-      public ConsoleMenuItem(string text, Action<ConsoleMenuItem> execute, Func<bool> canExecute)
+      public ColoredConsoleMenuItem(string text, Action<ColoredConsoleMenuItem> execute, Func<bool> canExecute)
          : this(text)
       {
-         if (execute == null)
-            throw new ArgumentNullException(nameof(execute));
-         if (canExecute == null)
-            throw new ArgumentNullException(nameof(canExecute));
-
-         this.execute = execute;
-         this.canExecute = canExecute;
+         this.execute = execute ?? throw new ArgumentNullException(nameof(execute));
+         this.canExecute = canExecute ?? throw new ArgumentNullException(nameof(canExecute));
       }
 
-      public ConsoleMenuItem(string text)
+      public ColoredConsoleMenuItem(string text)
       {
-         if (text == null)
-            throw new ArgumentNullException(nameof(text));
-         Text = text;
+         Text = text ?? throw new ArgumentNullException(nameof(text));
       }
 
       #endregion
@@ -102,40 +93,22 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
             return isExpanded;
          }
-         private set
-         {
-            isExpanded = value;
-         }
+         private set => isExpanded = value;
       }
 
       public List<PrintableItem> Items
       {
-         get
-         {
-            return items ?? (items = new List<PrintableItem>());
-         }
-
-         private set
-         {
-            items = value;
-         }
+         get => items ?? (items = new List<PrintableItem>());
       }
 
       public bool ReturnsToMenu { get; set; } = true;
 
       public virtual string Text
       {
-         get
-         {
-            return loadingChildren ? text + " [loading children]" : text;
-         }
+         get => loadingChildren ? text + " [loading children]" : text;
 
-         set
-         {
-            text = value;
-         }
+         set => text = value;
       }
-      
 
       #endregion
 
@@ -178,6 +151,58 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          ExpandInternal(recursive);
       }
 
+      /// <summary>Removes this item from its menu.</summary>
+      /// <returns>True if the item could be removed</returns>
+      public bool Remove()
+      {
+         return Parent != null && ((ConsoleMenuItem)Parent).items.Remove(this);
+      }
+
+      #endregion
+
+      #region Methods
+
+      internal ColoredConsoleMenuItem Next()
+      {
+         return Next(true);
+      }
+
+      internal ColoredConsoleMenuItem Previous()
+      {
+         if (Parent == null)
+            return null;
+
+         var currentIndex = ((ColoredConsoleMenuItem)Parent).items.IndexOf(this);
+         if (currentIndex == 0)
+            return ((ColoredConsoleMenuItem)Parent);
+
+         var previousIndex = currentIndex - 1;
+
+         while (previousIndex >= 0)
+         {
+            var previous = ((ColoredConsoleMenuItem)Parent).items[previousIndex] as ColoredConsoleMenuItem;
+            if (previous != null)
+            {
+               if (previous.IsExpanded)
+               {
+                  var item = previous.items.OfType<ColoredConsoleMenuItem>().Last();
+                  while (item.IsExpanded)
+                  {
+                     item = item.Items.OfType<ColoredConsoleMenuItem>().Last();
+                  }
+
+                  return item;
+               }
+
+               return previous;
+            }
+
+            previousIndex--;
+         }
+
+         return ((ColoredConsoleMenuItem)Parent);
+      }
+
       private void ExpandInternal(bool recursive, bool invalidate = true)
       {
          if (items == null && loadChildren != null)
@@ -207,7 +232,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
          if (recursive)
          {
-            foreach (var item in Items.OfType<ConsoleMenuItem>())
+            foreach (var item in Items.OfType<ColoredConsoleMenuItem>())
             {
                if (item.HasChildren && item.CanExpand())
                   item.ExpandInternal(true, false);
@@ -218,82 +243,30 @@ namespace ConsoLovers.ConsoleToolkit.Menu
             Menu.Invalidate();
       }
 
-      /// <summary>Removes this item from its menu.</summary>
-      /// <returns>True if the item could be removed</returns>
-      public bool Remove()
-      {
-         return Parent != null && ((ConsoleMenuItem)Parent).items.Remove(this);
-      }
-
-      #endregion
-
-      #region Methods
-
-      internal ConsoleMenuItem Next()
-      {
-         return Next(true);
-      }
-
-      internal ConsoleMenuItem Previous()
-      {
-         if (Parent == null)
-            return null;
-
-         var currentIndex = ((ConsoleMenuItem)Parent).items.IndexOf(this);
-         if (currentIndex == 0)
-            return ((ConsoleMenuItem)Parent);
-
-         var previousIndex = currentIndex - 1;
-
-         while (previousIndex >= 0)
-         {
-            var previous = ((ConsoleMenuItem)Parent).items[previousIndex] as ConsoleMenuItem;
-            if (previous != null)
-            {
-               if (previous.IsExpanded)
-               {
-                  var item = previous.items.OfType<ConsoleMenuItem>().Last();
-                  while (item.IsExpanded)
-                  {
-                     item = item.Items.OfType<ConsoleMenuItem>().Last();
-                  }
-
-                  return item;
-               }
-
-               return previous;
-            }
-
-            previousIndex--;
-         }
-
-         return ((ConsoleMenuItem)Parent);
-      }
-
-      private ConsoleMenuItem Next(bool firstChildWhenExpanded)
+      private ColoredConsoleMenuItem Next(bool firstChildWhenExpanded)
       {
          if (firstChildWhenExpanded && IsExpanded && HasChildren)
-            return items?.OfType<ConsoleMenuItem>().FirstOrDefault();
+            return items?.OfType<ColoredConsoleMenuItem>().FirstOrDefault();
 
-         if (Parent == null || ((ConsoleMenuItem)Parent).items == null)
+         if (Parent == null || ((ColoredConsoleMenuItem)Parent).items == null)
             return null;
 
-         var currentIndex = ((ConsoleMenuItem)Parent).items.IndexOf(this);
+         var currentIndex = ((ColoredConsoleMenuItem)Parent).items.IndexOf(this);
          var nextIndex = currentIndex + 1;
 
-         while (nextIndex < ((ConsoleMenuItem)Parent).items.Count)
+         while (nextIndex < ((ColoredConsoleMenuItem)Parent).items.Count)
          {
-            var item = ((ConsoleMenuItem)Parent).items[nextIndex] as ConsoleMenuItem;
+            var item = ((ColoredConsoleMenuItem)Parent).items[nextIndex] as ColoredConsoleMenuItem;
             if (item != null)
                return item;
 
             nextIndex++;
          }
 
-         return ((ConsoleMenuItem)Parent).Next(false);
+         return ((ColoredConsoleMenuItem)Parent).Next(false);
       }
 
-      private void SwapExpand(ConsoleMenuItem sender)
+      private void SwapExpand(ColoredConsoleMenuItem sender)
       {
          if (Parent == null)
             return;

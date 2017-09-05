@@ -91,6 +91,10 @@
     <Compile Include="ConsoleApplicationBootstrapper.cs" />
     <Compile Include="IConsoleApplication.cs" />
     <Compile Include="InputLabel.cs" />
+    <Compile Include="InputRange.cs" />
+    <Compile Include="InsertionMode.cs" />
+    <Compile Include="Menu\ColoredConsoleMenuItem.cs" />
+    <Compile Include="Menu\PrintableItem.cs" />
     <Compile Include="Progress\ChildProgressBar.cs" />
     <Compile Include="Progress\IProgressBar.cs" />
     <Compile Include="Progress\ProgressBar.cs" />

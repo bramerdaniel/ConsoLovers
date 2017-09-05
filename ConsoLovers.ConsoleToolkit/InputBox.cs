@@ -8,7 +8,6 @@ namespace ConsoLovers.ConsoleToolkit
 {
    using System;
    using System.Globalization;
-   using System.Text;
 
    using ConsoLovers.ConsoleToolkit.Contracts;
 
@@ -23,6 +22,8 @@ namespace ConsoLovers.ConsoleToolkit
 
       private readonly char defaultPlaceHolder = ' ';
 
+      private InputRange inputRange;
+
       private Func<ConsoleKeyInfo, bool> isValidInput;
 
       private Func<ConsoleKeyInfo, string, bool> maskingCompleted;
@@ -35,13 +36,15 @@ namespace ConsoLovers.ConsoleToolkit
 
       #region Constructors and Destructors
 
-      /// <summary>Initializes a new instance of the <see cref="InputBox{T}"/> class.</summary>
+      /// <inheritdoc />
+      /// <summary>Initializes a new instance of the <see cref="T:ConsoLovers.ConsoleToolkit.InputBox`1" /> class.</summary>
       public InputBox()
          : this(new ConsoleProxy())
       {
       }
 
-      /// <summary>Initializes a new instance of the <see cref="InputBox{T}"/> class.</summary>
+      /// <inheritdoc />
+      /// <summary>Initializes a new instance of the <see cref="T:ConsoLovers.ConsoleToolkit.InputBox`1" /> class.</summary>
       /// <param name="label">The label.</param>
       public InputBox(string label)
          : this(new ConsoleProxy())
@@ -49,7 +52,8 @@ namespace ConsoLovers.ConsoleToolkit
          Label = new InputLabel(label);
       }
 
-      /// <summary>Initializes a new instance of the <see cref="InputBox{T}"/> class.</summary>
+      /// <inheritdoc />
+      /// <summary>Initializes a new instance of the <see cref="T:ConsoLovers.ConsoleToolkit.InputBox`1" /> class.</summary>
       /// <param name="label">The label.</param>
       /// <param name="initialValue">The initial value.</param>
       public InputBox(string label, string initialValue)
@@ -84,15 +88,9 @@ namespace ConsoLovers.ConsoleToolkit
       /// <summary>Gets or sets a function that is called to check if the pressed console key is valid in this context (default is !char.IsControl(key.KeyChar)).</summary>
       public Func<ConsoleKeyInfo, bool> IsValidInput
       {
-         get
-         {
-            return isValidInput ?? NoControlCharacter;
-         }
+         get => isValidInput ?? NoControlCharacter;
 
-         set
-         {
-            isValidInput = value;
-         }
+         set => isValidInput = value;
       }
 
       /// <summary>Gets or sets the label that is displayed on the left of the text to input.</summary>
@@ -101,15 +99,9 @@ namespace ConsoLovers.ConsoleToolkit
       /// <summary>Gets or sets a function that checks if the masking completed (default when [ENTER] is pressed).</summary>
       public Func<ConsoleKeyInfo, string, bool> MaskingCompleted
       {
-         get
-         {
-            return maskingCompleted ?? CompleteWithEnterKey;
-         }
+         get => maskingCompleted ?? CompleteWithEnterKey;
 
-         set
-         {
-            maskingCompleted = value;
-         }
+         set => maskingCompleted = value;
       }
 
       #endregion
@@ -205,15 +197,6 @@ namespace ConsoLovers.ConsoleToolkit
          return !char.IsControl(key.KeyChar);
       }
 
-      private void ClearCharacters(int positions, int leftPadding = 0, char clear = ' ')
-      {
-         var abs = Math.Abs(positions);
-
-         MoveCursor(-abs, leftPadding);
-         Console.Write(clear.ToString().PadRight(abs));
-         MoveCursor(-abs, leftPadding);
-      }
-
       private T ConvertedValue(int length, char placeHolder, Func<string, T> converterFunction)
       {
          while (true)
@@ -242,10 +225,9 @@ namespace ConsoLovers.ConsoleToolkit
       private string ReadInternal(int length, char placeHolder, bool newline)
       {
          Label?.Print();
-
          SetColors();
-         StringBuilder resultBuilder = new StringBuilder(InitialValue ?? string.Empty);
 
+         var initialCursorSize = Console.CursorSize;
          var initialLeft = Console.CursorLeft;
 
          if (length > 0)
@@ -259,34 +241,99 @@ namespace ConsoLovers.ConsoleToolkit
          if (!string.IsNullOrEmpty(InitialValue))
             Console.Write(InitialValue);
 
+         inputRange = new InputRange(InitialValue, length);
+
          while (true)
          {
             var key = Console.ReadKey(true);
-            if (MaskingCompleted(key, resultBuilder.ToString()))
-               return ReturnResult(newline, resultBuilder);
+            if (MaskingCompleted(key, inputRange.Text))
+            {
+               Console.CursorSize = initialCursorSize;
+               return ReturnResult(newline);
+            }
 
             if (key.Key == ConsoleKey.Backspace)
             {
-               ClearCharacters(1, initialLeft, placeHolder);
-               resultBuilder.Length = Math.Max(resultBuilder.Length - 1, 0);
+               var lengthBeforeDelete = inputRange.Length;
+               if (inputRange.Remove())
+               {
+                  Console.SetCursorPosition(initialLeft, Console.CursorTop);
+                  Console.Write(inputRange.Text.PadRight(lengthBeforeDelete));
+                  Console.SetCursorPosition(initialLeft + inputRange.Position, Console.CursorTop);
+               }
+
+               continue;
+            }
+
+            if (key.Key == ConsoleKey.Insert)
+            {
+               inputRange.Mode = inputRange.Mode == InsertionMode.Delete ? InsertionMode.Insert : InsertionMode.Delete;
+               Console.CursorSize = inputRange.Mode == InsertionMode.Delete ? 100 : initialCursorSize;
+               continue;
+            }
+
+            if (key.Key == ConsoleKey.Home)
+            {
+               inputRange.Home();
+               Console.SetCursorPosition(initialLeft, Console.CursorTop);
+               continue;
+            }
+
+            if (key.Key == ConsoleKey.End)
+            {
+               inputRange.End();
+               Console.SetCursorPosition(initialLeft + inputRange.Length, Console.CursorTop);
+               continue;
+            }
+
+            if (key.Key == ConsoleKey.Delete)
+            {
+               var lengthBeforeDelete = inputRange.Length;
+               if (inputRange.Move(1) && inputRange.Remove())
+               {
+                  Console.SetCursorPosition(initialLeft, Console.CursorTop);
+                  Console.Write(inputRange.Text.PadRight(lengthBeforeDelete));
+                  Console.SetCursorPosition(initialLeft + inputRange.Position, Console.CursorTop);
+               }
+
+               continue;
+            }
+
+            if (key.Key == ConsoleKey.LeftArrow)
+            {
+               if (inputRange.Move(-1))
+                  MoveCursor(-1, initialLeft);
+
+               continue;
+            }
+
+            if (key.Key == ConsoleKey.RightArrow)
+            {
+               if (inputRange.Move(1))
+                  MoveCursor(1, initialLeft);
+
                continue;
             }
 
             if (IsValidInput(key) && ValidForType(key))
             {
-               if (length > 0 && length <= resultBuilder.Length)
+               if (!inputRange.Insert(key.KeyChar))
                   continue;
 
-               Console.Write(key.KeyChar);
-               resultBuilder.Append(key.KeyChar);
+               Console.SetCursorPosition(initialLeft, Console.CursorTop);
+               Console.Write(inputRange.Text);
+               Console.SetCursorPosition(initialLeft + inputRange.Position, Console.CursorTop);
 
-               if (maskingCompleted != null && MaskingCompleted(key, resultBuilder.ToString()))
-                  return ReturnResult(newline, resultBuilder);
+               if (maskingCompleted != null && MaskingCompleted(key, inputRange.Text))
+               {
+                  Console.CursorSize = initialCursorSize;
+                  return ReturnResult(newline);
+               }
             }
          }
       }
 
-      private string ReturnResult(bool newline, StringBuilder resultBuilder)
+      private string ReturnResult(bool newline)
       {
          Console.ForegroundColor = originalForeground;
          Console.BackgroundColor = originalBackground;
@@ -294,7 +341,7 @@ namespace ConsoLovers.ConsoleToolkit
          if (newline)
             Console.WriteLine();
 
-         return resultBuilder.ToString();
+         return inputRange.Text;
       }
 
       private void SetColors()

@@ -6,6 +6,8 @@
 
 namespace ConsoLovers.ConsoleToolkit.Menu
 {
+   using System;
+
    internal class ElementInfo
    {
       #region Public Properties
@@ -37,6 +39,10 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       public int Length { get; set; }
 
       public bool IsSelectable { get; set; }
+
+      public ConsoleColor? Foreground { get; set; }
+
+      public ConsoleColor? Background { get; set; }
 
       #endregion
    }
