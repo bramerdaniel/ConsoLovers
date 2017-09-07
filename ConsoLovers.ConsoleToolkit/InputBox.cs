@@ -20,8 +20,6 @@ namespace ConsoLovers.ConsoleToolkit
 
       private readonly int defaultLength = 0;
 
-      private readonly char defaultPlaceHolder = ' ';
-
       private InputRange inputRange;
 
       private Func<ConsoleKeyInfo, bool> isValidInput;
@@ -36,24 +34,29 @@ namespace ConsoLovers.ConsoleToolkit
 
       #region Constructors and Destructors
 
-      /// <inheritdoc />
-      /// <summary>Initializes a new instance of the <see cref="T:ConsoLovers.ConsoleToolkit.InputBox`1" /> class.</summary>
+      /// <inheritdoc/>
+      /// <summary>Initializes a new instance of the <see cref="T:ConsoLovers.ConsoleToolkit.InputBox`1"/> class.</summary>
       public InputBox()
          : this(new ConsoleProxy())
       {
       }
 
-      /// <inheritdoc />
-      /// <summary>Initializes a new instance of the <see cref="T:ConsoLovers.ConsoleToolkit.InputBox`1" /> class.</summary>
+      /// <inheritdoc/>
+      /// <summary>Initializes a new instance of the <see cref="T:ConsoLovers.ConsoleToolkit.InputBox`1"/> class.</summary>
       /// <param name="label">The label.</param>
       public InputBox(string label)
-         : this(new ConsoleProxy())
+         : this(new InputLabel(label))
       {
-         Label = new InputLabel(label);
       }
 
-      /// <inheritdoc />
-      /// <summary>Initializes a new instance of the <see cref="T:ConsoLovers.ConsoleToolkit.InputBox`1" /> class.</summary>
+      public InputBox(InputLabel label)
+         : this(new ConsoleProxy())
+      {
+         Label = label;
+      }
+
+      /// <inheritdoc/>
+      /// <summary>Initializes a new instance of the <see cref="T:ConsoLovers.ConsoleToolkit.InputBox`1"/> class.</summary>
       /// <param name="label">The label.</param>
       /// <param name="initialValue">The initial value.</param>
       public InputBox(string label, string initialValue)
@@ -85,6 +88,9 @@ namespace ConsoLovers.ConsoleToolkit
       /// <summary>Gets or sets the initial value.</summary>
       public string InitialValue { get; set; }
 
+      /// <summary>Gets or sets a value indicating whether the input is a password.</summary>
+      public bool IsPassword { get; set; }
+
       /// <summary>Gets or sets a function that is called to check if the pressed console key is valid in this context (default is !char.IsControl(key.KeyChar)).</summary>
       public Func<ConsoleKeyInfo, bool> IsValidInput
       {
@@ -104,6 +110,12 @@ namespace ConsoLovers.ConsoleToolkit
          set => maskingCompleted = value;
       }
 
+      /// <summary>Gets or sets the password character.</summary>
+      public char PasswordChar { get; set; } = '*';
+
+      /// <summary>Gets or sets the placeholder character.</summary>
+      public char PlaceholderChar { get; set; } = ' ';
+
       #endregion
 
       #region Public Methods and Operators
@@ -112,16 +124,7 @@ namespace ConsoLovers.ConsoleToolkit
       /// <returns>The input as string</returns>
       public string Read()
       {
-         return ReadInternal(defaultLength, defaultPlaceHolder, false);
-      }
-
-      /// <summary>Reads the following input with the given mask and inserts a newline.</summary>
-      /// <param name="length">The allowed length of the masked input.</param>
-      /// <param name="placeHolder">The place holder that should be used for remaining input length.</param>
-      /// <returns>The input as string</returns>
-      public string Read(int length, char placeHolder)
-      {
-         return ReadInternal(length, placeHolder, false);
+         return ReadInternal(defaultLength, false);
       }
 
       /// <summary>Reads the following input with the given mask and inserts a newline.</summary>
@@ -129,7 +132,7 @@ namespace ConsoLovers.ConsoleToolkit
       /// <returns>The input as string</returns>
       public string Read(int length)
       {
-         return ReadInternal(length, defaultPlaceHolder, false);
+         return ReadInternal(length, false);
       }
 
       /// <summary>Reads the following input with the default mask of * and inserts a newline.</summary>
@@ -144,34 +147,7 @@ namespace ConsoLovers.ConsoleToolkit
       /// <returns>The input as value of type <see cref="T"/></returns>
       public T ReadLine(Func<string, T> converterFunction)
       {
-         return ConvertedValue(defaultLength, defaultPlaceHolder, converterFunction);
-      }
-
-      /// <summary>Reads the following input with the given mask and inserts a newline.</summary>
-      /// <param name="length">The allowed length of the masked input.</param>
-      /// <param name="placeHolder">The place holder that should be used for remaining input length.</param>
-      /// <returns>The input as value of type <see cref="T"/></returns>
-      public T ReadLine(int length, char placeHolder)
-      {
-         return ReadLine(length, placeHolder, s => (T)Convert.ChangeType(s, typeof(T)));
-      }
-
-      /// <summary>Reads the following input with the given mask and inserts a newline.</summary>
-      /// <param name="length">The allowed length of the masked input.</param>
-      /// <param name="placeHolder">The place holder that should be used for remaining input length.</param>
-      /// <param name="converterFunction">The converter function to get a value from the input string.</param>
-      /// <returns>The input as value of type <see cref="T"/></returns>
-      public T ReadLine(int length, char placeHolder, Func<string, T> converterFunction)
-      {
-         return ConvertedValue(length, placeHolder, converterFunction);
-      }
-
-      /// <summary>Reads the following input with the given mask and inserts a newline.</summary>
-      /// <param name="length">The allowed length of the masked input.</param>
-      /// <returns>The input as value of type <see cref="T"/></returns>
-      public T ReadLine(int length)
-      {
-         return ReadLine(length, s => (T)Convert.ChangeType(s, typeof(T)));
+         return ConvertedValue(defaultLength, converterFunction);
       }
 
       /// <summary>Reads the following input with the given mask and inserts a newline.</summary>
@@ -180,7 +156,15 @@ namespace ConsoLovers.ConsoleToolkit
       /// <returns>The input as value of type <see cref="T"/></returns>
       public T ReadLine(int length, Func<string, T> converterFunction)
       {
-         return ConvertedValue(length, defaultPlaceHolder, converterFunction);
+         return ConvertedValue(length, converterFunction);
+      }
+
+      /// <summary>Reads the following input with the given mask and inserts a newline.</summary>
+      /// <param name="length">The allowed length of the masked input.</param>
+      /// <returns>The input as value of type <see cref="T"/></returns>
+      public T ReadLine(int length)
+      {
+         return ReadLine(length, s => (T)Convert.ChangeType(s, typeof(T)));
       }
 
       #endregion
@@ -197,13 +181,13 @@ namespace ConsoLovers.ConsoleToolkit
          return !char.IsControl(key.KeyChar);
       }
 
-      private T ConvertedValue(int length, char placeHolder, Func<string, T> converterFunction)
+      private T ConvertedValue(int length, Func<string, T> converterFunction)
       {
          while (true)
          {
             try
             {
-               var stringValue = ReadInternal(length, placeHolder, true);
+               var stringValue = ReadInternal(length, true);
                var value = converterFunction(stringValue);
 
                return value;
@@ -222,7 +206,7 @@ namespace ConsoLovers.ConsoleToolkit
          Console.SetCursorPosition(allowedMoves, Console.CursorTop);
       }
 
-      private string ReadInternal(int length, char placeHolder, bool newline)
+      private string ReadInternal(int length, bool newline)
       {
          Label?.Print();
          SetColors();
@@ -230,18 +214,11 @@ namespace ConsoLovers.ConsoleToolkit
          var initialCursorSize = Console.CursorSize;
          var initialLeft = Console.CursorLeft;
 
-         if (length > 0)
-         {
-            for (int i = 0; i < length; i++)
-               Console.Write(placeHolder);
-
-            MoveCursor(-length);
-         }
-
-         if (!string.IsNullOrEmpty(InitialValue))
-            Console.Write(InitialValue);
-
          inputRange = new InputRange(InitialValue, length);
+
+         Console.SetCursorPosition(initialLeft, Console.CursorTop);
+         WriteText(InitialValue ?? string.Empty, length);
+         Console.SetCursorPosition(initialLeft + inputRange.Position, Console.CursorTop);
 
          while (true)
          {
@@ -258,7 +235,7 @@ namespace ConsoLovers.ConsoleToolkit
                if (inputRange.Remove())
                {
                   Console.SetCursorPosition(initialLeft, Console.CursorTop);
-                  Console.Write(inputRange.Text.PadRight(lengthBeforeDelete));
+                  WriteText(inputRange.Text, lengthBeforeDelete);
                   Console.SetCursorPosition(initialLeft + inputRange.Position, Console.CursorTop);
                }
 
@@ -292,7 +269,7 @@ namespace ConsoLovers.ConsoleToolkit
                if (inputRange.Move(1) && inputRange.Remove())
                {
                   Console.SetCursorPosition(initialLeft, Console.CursorTop);
-                  Console.Write(inputRange.Text.PadRight(lengthBeforeDelete));
+                  WriteText(inputRange.Text, lengthBeforeDelete);
                   Console.SetCursorPosition(initialLeft + inputRange.Position, Console.CursorTop);
                }
 
@@ -321,7 +298,7 @@ namespace ConsoLovers.ConsoleToolkit
                   continue;
 
                Console.SetCursorPosition(initialLeft, Console.CursorTop);
-               Console.Write(inputRange.Text);
+               WriteText(inputRange.Text, 0);
                Console.SetCursorPosition(initialLeft + inputRange.Position, Console.CursorTop);
 
                if (maskingCompleted != null && MaskingCompleted(key, inputRange.Text))
@@ -367,6 +344,18 @@ namespace ConsoLovers.ConsoleToolkit
          }
 
          return true;
+      }
+
+      private void WriteText(string text, int paddingSize)
+      {
+         if (IsPassword)
+         {
+            Console.Write(string.Empty.PadRight(text.Length, PasswordChar).PadRight(paddingSize, PlaceholderChar));
+         }
+         else
+         {
+            Console.Write(text.PadRight(paddingSize));
+         }
       }
 
       #endregion
