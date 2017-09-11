@@ -151,7 +151,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
             throw new CommandLineArgumentException(string.Format(CultureInfo.InvariantCulture, "The option \"{0}\" occurs more than once.", argumentString));
          }
 
-         arguments.Add(option, new CommandLineArgument { Name = option, Value = "true", Index = index });
+         arguments.Add(option, new CommandLineArgument { Name = option, Value = null, Index = index });
       }
 
       private static string[] Split(string argumentString)

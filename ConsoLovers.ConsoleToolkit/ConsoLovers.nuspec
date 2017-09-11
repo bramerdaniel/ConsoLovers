@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>ConsoLovers.ConsoleToolkit</id>
-    <version>3.0.0-rc5</version>
+    <version>3.0.0-rc6</version>
     <title>ConsoLovers.ConsoleToolkit</title>
     <authors>danielbramer</authors>
     <owners>danielbramer</owners>
@@ -13,8 +13,11 @@
     <releaseNotes>
        - Fixed resizing error of ConsoleWindowHeigth and width attributes.
        - Fixed color in default menu
-       - Added posibility for ConsoleApplication's to react on calls without arguments 
+       - Added posibility for ConsoleApplication's to react on calls without arguments
+     # V 3.0.0
        - Changed and improved dependency injection container
+       - Fixed behavior of boolean arguments
+       - Added validation interface for command line engine
 
        Most important classes are:
        - ConsoleMenu

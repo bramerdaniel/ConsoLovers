@@ -79,6 +79,7 @@
     <Compile Include="ArgumentEngine\CovertValueTests.cs" />
     <Compile Include="ArgumentEngine\EngineFactorySetup.cs" />
     <Compile Include="ArgumentEngine\TestData\ExecuteArgs.cs" />
+    <Compile Include="ArgumentEngine\ValidateArgument.cs" />
     <Compile Include="DIContainer\BuildUp.cs" />
     <Compile Include="DIContainer\Create.cs" />
     <Compile Include="DIContainer\Testclasses\HaveNamedDependancies.cs" />

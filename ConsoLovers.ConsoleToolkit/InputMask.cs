@@ -10,6 +10,7 @@ namespace ConsoLovers.ConsoleToolkit
    using System.Text;
 
    /// <summary>Helper class for creating a</summary>
+   [Obsolete("Will be removed soon. Use ImputBox instead.")]
    public class InputMask : IInputMask
    {
       #region Constants and Fields

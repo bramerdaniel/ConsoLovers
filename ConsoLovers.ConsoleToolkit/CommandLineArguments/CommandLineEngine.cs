@@ -25,10 +25,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       [InjectionConstructor]
       public CommandLineEngine([NotNull] IObjectFactory objectFactory)
       {
-         if (objectFactory == null)
-            throw new ArgumentNullException(nameof(objectFactory));
-
-         ObjectFactory = objectFactory;
+         ObjectFactory = objectFactory ?? throw new ArgumentNullException(nameof(objectFactory));
       }
 
       public CommandLineEngine()

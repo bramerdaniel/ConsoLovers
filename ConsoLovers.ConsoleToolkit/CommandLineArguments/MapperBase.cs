@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="MapperBase.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2016
+//    Copyright (c) ConsoLovers  2015 - 2017
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -24,8 +24,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
          foreach (var name in names)
          {
-            PropertyInfo firstProperty;
-            if (usedNames.TryGetValue(name, out firstProperty))
+            if (usedNames.TryGetValue(name, out var firstProperty))
             {
                var message = $"The properties '{firstProperty.Name}' and '{propertyInfo.Name}' of the class '{typeof(T).Name}' define both a name (or alias) called '{name}'";
                throw new CommandLineAttributeException(message) { Name = name, FirstProperty = firstProperty, SecondProperty = propertyInfo };
@@ -38,15 +37,49 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          }
       }
 
-      internal static bool SetPropertyValue<T>(T instance, PropertyInfo propertyInfo, IDictionary<string, CommandLineArgument> arguments, CommandLineAttribute attribute, bool trim = false)
+      internal static bool SetOptionValue<T>(T instance, PropertyInfo propertyInfo, IDictionary<string, CommandLineArgument> arguments, CommandLineAttribute attribute)
+      {
+         bool wasSet = false;
+         var propertyName = attribute.Name ?? propertyInfo.Name;
+
+         if (arguments.TryGetValue(propertyName, out var argument))
+         {
+            if (argument.Value != null)
+               throw new CommandLineArgumentException("Options can not have a value"); // TODO make better error message
+
+            propertyInfo.SetValue(instance, true, null);
+            arguments.Remove(propertyName);
+            wasSet = true;
+         }
+
+         foreach (var alias in attribute.Aliases)
+         {
+            if (arguments.TryGetValue(alias, out argument))
+            {
+               if (argument.Value != null)
+                  throw new CommandLineArgumentException("Options can not have a value"); // TODO make better error message
+
+               propertyInfo.SetValue(instance, true, null);
+               arguments.Remove(alias);
+               wasSet = true;
+            }
+         }
+
+         return wasSet;
+      }
+
+      internal static bool SetPropertyValue<T>(T instance, PropertyInfo propertyInfo, IDictionary<string, CommandLineArgument> arguments, CommandLineAttribute attribute)
       {
          var count = 0;
          var propertyName = attribute.Name ?? propertyInfo.Name;
+         bool trim = attribute.TrimQuotation();
 
          string stringValue;
-         CommandLineArgument argument;
-         if (arguments.TryGetValue(propertyName, out argument))
+         if (arguments.TryGetValue(propertyName, out var argument))
          {
+            if (argument.Value == null)
+               throw new CommandLineArgumentException("A value of an argument can not be null"); // TODO better error message
+
             stringValue = GetValue(argument.Value, trim);
 
             propertyInfo.SetValue(instance, ConvertValue(propertyInfo.PropertyType, stringValue, (t, v) => CreateErrorMessage(t, v, propertyName)), null);
@@ -67,8 +100,12 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          }
 
          if (count > 1)
-            throw new CommandLineArgumentException($"Multiple aruments for '{propertyName}'-command is not allowed.");
-         return count == 1;
+            throw new AmbiguousCommandLineArgumentsException($"The value for the argument '{propertyName}' was specified multiple times.");
+
+         if (count == 0 && attribute.IsRequired())
+            throw new MissingCommandLineArgumentException(propertyName);
+
+         return count > 0;
       }
 
       /// <summary>Converts the given string value to the expected target type when possible.</summary>

@@ -29,6 +29,16 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          return propertyInfo.GetCustomAttributes(typeof(T), true).FirstOrDefault() as T;
       }
 
+      public static bool IsRequired(this CommandLineAttribute attribute)
+      {
+         return attribute is ArgumentAttribute argumentAttribute && argumentAttribute.Required;
+      }
+
+      public static bool TrimQuotation(this CommandLineAttribute attribute)
+      {
+         return attribute is ArgumentAttribute argumentAttribute && argumentAttribute.TrimQuotation;
+      }
+
       #endregion
    }
 }

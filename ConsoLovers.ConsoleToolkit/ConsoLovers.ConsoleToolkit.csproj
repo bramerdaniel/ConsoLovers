@@ -41,10 +41,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandLineArguments\AmbiguousCommandLineArgumentsException.cs" />
     <Compile Include="CommandLineArguments\ArgumentClassInfo.cs" />
+    <Compile Include="CommandLineArguments\ArgumentValidatorAttribute.cs" />
     <Compile Include="CommandLineArguments\CommandLineArgument.cs" />
+    <Compile Include="CommandLineArguments\CommandLineArgumentValidationException.cs" />
     <Compile Include="CommandLineArguments\DetailedHelpTextAttribute.cs" />
     <Compile Include="CommandLineArguments\HelpCommandArguments.cs" />
+    <Compile Include="CommandLineArguments\IArgumentValidator.cs" />
+    <Compile Include="CommandLineArguments\InvalidValidatorUsageException.cs" />
     <Compile Include="CommandLineArguments\PropertyHelpProvider.cs" />
     <Compile Include="CommandLineArguments\PropertyHelpRequest.cs" />
     <Compile Include="CommandLineArguments\TypeHelpProvider.cs" />

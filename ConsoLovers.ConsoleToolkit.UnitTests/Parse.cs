@@ -74,9 +74,9 @@ namespace ConsoLovers.UnitTests
          arguments.ContainsKey("a").Should().BeTrue();
          arguments.ContainsKey("x").Should().BeTrue();
 
-         arguments["D"].Value.Should().Be("true");
-         arguments["A"].Value.Should().Be("true");
-         arguments["X"].Value.Should().Be("true");
+         arguments["D"].Value.Should().BeNull();
+         arguments["A"].Value.Should().BeNull();
+         arguments["X"].Value.Should().BeNull();
       }
 
       [TestMethod]
@@ -100,7 +100,7 @@ namespace ConsoLovers.UnitTests
          arguments.ContainsKey("command").Should().BeTrue();
          arguments.ContainsKey("COMMAND").Should().BeTrue();
 
-         arguments["COMMAND"].Value.Should().Be("true");
+         arguments["COMMAND"].Value.Should().BeNull();
       }
 
       /// <summary>Parses the named string.</summary>
@@ -133,7 +133,7 @@ namespace ConsoLovers.UnitTests
          arguments.ContainsKey("release").Should().BeFalse();
          arguments.ContainsKey("RELEASE").Should().BeFalse();
 
-         arguments["DEBUg"].Value.Should().Be("true");
+         arguments["DEBUg"].Value.Should().BeNull();
 
          arguments = Parse(" -Release");
          arguments.ContainsKey("Debug").Should().BeFalse();
@@ -143,14 +143,14 @@ namespace ConsoLovers.UnitTests
          arguments.ContainsKey("release").Should().BeTrue();
          arguments.ContainsKey("RELEASE").Should().BeTrue();
 
-         arguments["ReleasE"].Value.Should().Be("true");
+         arguments["ReleasE"].Value.Should().BeNull();
       }
 
       #endregion
 
       #region Methods
 
-      private static void AssertContains(IDictionary<string, CommandLineArgument> arguments, string expectedKey, string expectedValue = "true")
+      private static void AssertContains(IDictionary<string, CommandLineArgument> arguments, string expectedKey, string expectedValue = null)
       {
          arguments.Should().ContainKey(expectedKey);
          arguments.Should().ContainKey(expectedKey.ToLower());

@@ -1,11 +1,12 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="Map.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2016
+//    Copyright (c) ConsoLovers  2015 - 2017
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace ConsoLovers.UnitTests
 {
+   using System;
    using System.Diagnostics.CodeAnalysis;
 
    using ConsoLovers.ConsoleToolkit.CommandLineArguments;
@@ -24,22 +25,40 @@ namespace ConsoLovers.UnitTests
       #region Public Methods and Operators
 
       [TestMethod]
+      public void EnsureOnlyPropertiesWithAttributesGetMapped()
+      {
+         var arguments = GetTarget().Map<UglyArgs>(new[] { " -AValue=45" });
+         arguments.XValue.Should().Be(45);
+         arguments.AValue.Should().Be(0);
+      }
+
+      [TestMethod]
+      public void MapIndexedArguments()
+      {
+         var path = "\"C:\\Path\\File.txt\"";
+         var name = "Nick Oteen";
+         var arguments = GetTarget().Map<IndexedArguments>(new[] { path, name });
+         arguments.Path.Should().Be(path);
+         arguments.Name.Should().Be(name);
+      }
+
+      [TestMethod]
       public void MapInvalidTypesShouldThrowException()
       {
          this.Invoking(x => GetTarget().Map<Arguments>(new[] { "Enum:Null" })).ShouldThrow<CommandLineArgumentException>().WithMessage(
             "The value Null of parameter Enum can not be converted into the expected type ConsoLovers.UnitTests.Boolenum. Possible values are True and False.");
 
-         this.Invoking(x => GetTarget().Map<Arguments>(new[] { "ali:TRUE" })).ShouldThrow<CommandLineArgumentException>().WithMessage(
-            "The value TRUE of parameter Alias can not be converted into the expected type System.Int32");
+         this.Invoking(x => GetTarget().Map<Arguments>(new[] { "ali:TRUE" })).ShouldThrow<CommandLineArgumentException>()
+            .WithMessage("The value TRUE of parameter Alias can not be converted into the expected type System.Int32");
 
-         this.Invoking(x => GetTarget().Map<Arguments>(new[] { "Integer:TRUE" })).ShouldThrow<CommandLineArgumentException>().WithMessage(
-            "The value TRUE of parameter Integer can not be converted into the expected type System.Int32");
+         this.Invoking(x => GetTarget().Map<Arguments>(new[] { "Integer:TRUE" })).ShouldThrow<CommandLineArgumentException>()
+            .WithMessage("The value TRUE of parameter Integer can not be converted into the expected type System.Int32");
 
-         this.Invoking(x => GetTarget().Map<Arguments>(new[] { "ElBool:Tuere" })).ShouldThrow<CommandLineArgumentException>().WithMessage(
-            "The value Tuere of parameter ElBool can not be converted into the expected type System.Boolean");
+         this.Invoking(x => GetTarget().Map<Arguments>(new[] { "ElBool:Tuere" })).ShouldThrow<CommandLineArgumentException>()
+            .WithMessage("The value Tuere of parameter ElBool can not be converted into the expected type System.Boolean");
 
-         this.Invoking(x => GetTarget().Map<Arguments>(new[] { "Dooby:Twentyfive" })).ShouldThrow<CommandLineArgumentException>().WithMessage(
-            "The value Twentyfive of parameter Dooby can not be converted into the expected type System.Double");
+         this.Invoking(x => GetTarget().Map<Arguments>(new[] { "Dooby:Twentyfive" })).ShouldThrow<CommandLineArgumentException>()
+            .WithMessage("The value Twentyfive of parameter Dooby can not be converted into the expected type System.Double");
       }
 
       [TestMethod]
@@ -96,6 +115,19 @@ namespace ConsoLovers.UnitTests
 
          arguments = GetTarget().Map<Arguments>(new[] { "-Name:Hans " });
          arguments.String.Should().Be("Hans");
+
+         arguments = GetTarget().Map<Arguments>(new[] { "-Name:\"Hans\"" });
+         arguments.String.Should().Be("\"Hans\"");
+      }
+
+      [TestMethod]
+      public void MapNamedStringWithQuotations()
+      {
+         var arguments = GetTarget().Map<Arguments>(new[] { "-Trimmed:\"TheValue\"" });
+         arguments.Trimmed.Should().Be("TheValue");
+
+         arguments = GetTarget().Map<Arguments>(new[] { "-Trimmed:\"\"" });
+         arguments.Trimmed.Should().BeEmpty();
       }
 
       [TestMethod]
@@ -127,6 +159,25 @@ namespace ConsoLovers.UnitTests
       }
 
       [TestMethod]
+      public void MappingAmbiguousOptionsShouldThrowException()
+      {
+         var arguments = GetTarget().Map<Options>(new[] { "-A", "-Amb", "-am" });
+         arguments.Ambiguous.Should().Be(true);
+      }
+
+      [TestMethod]
+      public void MappingANamedBooleanArgumentWithoutValueMustThrowException()
+      {
+         GetTarget().Invoking(t => t.Map<Arguments>(new[] { " -ElBool" })).ShouldThrow<CommandLineArgumentException>();
+      }
+
+      [TestMethod]
+      public void MappingAnOptionWithValueMustThrowException()
+      {
+         GetTarget().Invoking(t => t.Map<Options>(new[] { "-Debug=true" })).ShouldThrow<CommandLineArgumentException>();
+      }
+
+      [TestMethod]
       public void MapStringWithQuotes()
       {
          var arguments = GetTarget().Map<Arguments>(new[] { " -Name=C:\\Path\\File.txt" });
@@ -146,16 +197,6 @@ namespace ConsoLovers.UnitTests
       public void ParseMissingRequiredArgumentsShouldThrowException()
       {
          this.Invoking(t => GetTarget().Map<RequiredArguments>(new[] { string.Empty })).ShouldThrow<MissingCommandLineArgumentException>().Where(e => e.Argument == "Name");
-      }
-
-      [TestMethod]
-      public void MapIndexedArguments()
-      {
-         var path = "\"C:\\Path\\File.txt\"";
-         var name = "Nick Oteen";
-         var arguments = GetTarget().Map<IndexedArguments>(new[] { path, name });
-         arguments.Path.Should().Be(path);
-         arguments.Name.Should().Be(name);
       }
 
       #endregion
@@ -182,33 +223,40 @@ namespace ConsoLovers.UnitTests
          [Argument("Name")]
          public string String { get; [UsedImplicitly] set; }
 
+         [Argument("Trimmed", TrimQuotation = true)]
+         public string Trimmed { get; [UsedImplicitly] set; }
+
          #endregion
       }
-
 
       public class IndexedArguments
       {
          #region Public Properties
 
-         [IndexedArgument(0)]
-         public string Path { get; [UsedImplicitly] set; }
-
          [IndexedArgument(1)]
          public string Name { get; [UsedImplicitly] set; }
+
+         [IndexedArgument(0)]
+         public string Path { get; [UsedImplicitly] set; }
 
          #endregion
       }
 
-
       public class Options
       {
          #region Public Properties
+
+         [Option("Ambiguous ", "a", "am", "amb")]
+         public bool Ambiguous { get; [UsedImplicitly] set; }
 
          [Argument("Blias", "b", "bl", "bli")]
          public int Blias { get; [UsedImplicitly] set; }
 
          [Option]
          public bool Debug { get; [UsedImplicitly] set; }
+
+         [Option]
+         public Nullable<bool> Nully { get; set; }
 
          [Option]
          public bool Release { get; [UsedImplicitly] set; }
@@ -223,6 +271,18 @@ namespace ConsoLovers.UnitTests
          [Argument(Required = true)]
          [UsedImplicitly]
          public string Name { get; set; }
+
+         #endregion
+      }
+
+      public class UglyArgs
+      {
+         #region Public Properties
+
+         public int AValue { get; [UsedImplicitly] set; }
+
+         [Argument("AValue")]
+         public int XValue { get; [UsedImplicitly] set; }
 
          #endregion
       }
