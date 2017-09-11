@@ -47,6 +47,7 @@
     <Compile Include="CommandLineArguments\CommandLineArgument.cs" />
     <Compile Include="CommandLineArguments\CommandLineArgumentValidationException.cs" />
     <Compile Include="CommandLineArguments\DetailedHelpTextAttribute.cs" />
+    <Compile Include="CommandLineArguments\ErrorReason.cs" />
     <Compile Include="CommandLineArguments\HelpCommandArguments.cs" />
     <Compile Include="CommandLineArguments\IArgumentValidator.cs" />
     <Compile Include="CommandLineArguments\InvalidValidatorUsageException.cs" />

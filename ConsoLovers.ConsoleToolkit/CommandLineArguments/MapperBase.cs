@@ -45,7 +45,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          if (arguments.TryGetValue(propertyName, out var argument))
          {
             if (argument.Value != null)
-               throw new CommandLineArgumentException("Options can not have a value"); // TODO make better error message
+               throw new CommandLineArgumentException($"The option '{argument.Name}' was specified with a value. This is not allowed for option.") { Reason = ErrorReason.OptionWithValue };
 
             propertyInfo.SetValue(instance, true, null);
             arguments.Remove(propertyName);
@@ -57,7 +57,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
             if (arguments.TryGetValue(alias, out argument))
             {
                if (argument.Value != null)
-                  throw new CommandLineArgumentException("Options can not have a value"); // TODO make better error message
+                  throw new CommandLineArgumentException($"The option '{alias}' was specified with a value. This is not allowed for option.") { Reason = ErrorReason.OptionWithValue };
 
                propertyInfo.SetValue(instance, true, null);
                arguments.Remove(alias);
@@ -78,7 +78,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          if (arguments.TryGetValue(propertyName, out var argument))
          {
             if (argument.Value == null)
-               throw new CommandLineArgumentException("A value of an argument can not be null"); // TODO better error message
+               throw new CommandLineArgumentException($"The value of the argument '{argument.Name}' was not specified."){ Reason = ErrorReason.ArgumentWithoutValue };
 
             stringValue = GetValue(argument.Value, trim);
 
@@ -91,6 +91,9 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          {
             if (arguments.TryGetValue(alias, out argument))
             {
+               if (argument.Value == null)
+                  throw new CommandLineArgumentException($"The value of the argument '{argument.Name}' was not specified.") { Reason = ErrorReason.ArgumentWithoutValue };
+
                stringValue = GetValue(argument.Value, trim);
 
                propertyInfo.SetValue(instance, ConvertValue(propertyInfo.PropertyType, stringValue, (t, v) => CreateErrorMessage(t, v, propertyName)), null);

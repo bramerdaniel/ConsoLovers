@@ -116,14 +116,14 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
             { "Inv", new CommandLineArgument { Value = "AnyString" } }
          };
 
-         target.Invoking(t => t.Map(dictionary)).ShouldThrow<CommandLineArgumentException>();
+         target.Invoking(t => t.Map(dictionary)).ShouldThrow<CommandLineArgumentException>().Where(e => e.Reason == ErrorReason.OptionWithValue);
 
          var second = new Dictionary<string, CommandLineArgument>(StringComparer.InvariantCultureIgnoreCase)
          {
             { "sec", new CommandLineArgument { Value = "true" } }
          };
 
-         target.Invoking(t => t.Map(second)).ShouldThrow<CommandLineArgumentException>();
+         target.Invoking(t => t.Map(second)).ShouldThrow<CommandLineArgumentException>().Where(e => e.Reason == ErrorReason.OptionWithValue);
       }
 
 

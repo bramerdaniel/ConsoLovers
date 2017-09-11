@@ -122,12 +122,11 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
                var validatorName = typeof(IArgumentValidator<T>).Name;
                var validatorInterfaces = attribute.Type.GetInterfaces().Where(i => i.Name == validatorName).ToArray();
                if (validatorInterfaces.Length == 0)
-                  throw new InvalidValidatorUsageException($"The validator {attribute.Type} does not implement the {validatorName} interface.");
+                  throw new InvalidValidatorUsageException($"The validator {attribute.Type} does not implement the {validatorName} interface."){ Reason = ErrorReason.NoValidatorImplementation };
 
                Type type = validatorInterfaces.FirstOrDefault(i => i.GenericTypeArguments.FirstOrDefault() == propertyInfo.PropertyType);
                if (type == null)
-                  throw new InvalidValidatorUsageException(
-                     $"The specified validator '{attribute.Type.FullName}' does not support the validation of the type '{propertyInfo.PropertyType}'.");
+                  throw new InvalidValidatorUsageException($"The specified validator '{attribute.Type.FullName}' does not support the validation of the type '{propertyInfo.PropertyType}'.") { Reason = ErrorReason.InvalidValidatorImplementation };
 
                MethodInfo validationMethod = GetValidationMethod(attribute, propertyInfo.PropertyType);
 

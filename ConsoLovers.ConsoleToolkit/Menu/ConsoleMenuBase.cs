@@ -794,8 +794,6 @@ namespace ConsoLovers.ConsoleToolkit.Menu
             }
             else
             {
-               //TODO
-               // Write("  ", Theme.MenuItem.Foreground, Theme.ConsoleBackground);
                Write(disabledHint, foreground, background);
             }
 

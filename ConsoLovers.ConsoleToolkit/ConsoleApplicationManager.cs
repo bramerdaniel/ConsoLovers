@@ -114,8 +114,7 @@ namespace ConsoLovers.ConsoleToolkit
       {
          try
          {
-            Type argumentType;
-            if (IsArgumentInitializer(applicationType, out argumentType))
+            if (IsArgumentInitializer(applicationType, out _))
             {
                var methodInfo = applicationType.GetMethod("CreateArguments"); // TODO Ensure functionality with unit tests
                var argumentsInstance = methodInfo.Invoke(application, null);

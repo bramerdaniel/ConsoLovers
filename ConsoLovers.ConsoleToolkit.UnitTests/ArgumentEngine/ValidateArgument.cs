@@ -33,14 +33,16 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
       public void EnsureInvalidValidatorTypeFails()
       {
          var target = GetTarget();
-         target.Invoking(t => t.Map<Arguments>(new[] { "Text=HelloWorld" })).ShouldThrow<InvalidValidatorUsageException>();
+         target.Invoking(t => t.Map<Arguments>(new[] { "Text=HelloWorld" })).ShouldThrow<InvalidValidatorUsageException>()
+            .Where(e => e.Reason == ErrorReason.InvalidValidatorImplementation);
       }
 
       [TestMethod]
       public void EnsureValidatorsWithoutInterfacesFail()
       {
          var target = GetTarget();
-         target.Invoking(t => t.Map<Arguments>(new[] { "NoValidator=44" })).ShouldThrow<InvalidValidatorUsageException>();
+         target.Invoking(t => t.Map<Arguments>(new[] { "NoValidator=44" })).ShouldThrow<InvalidValidatorUsageException>()
+            .Where(e => e.Reason == ErrorReason.NoValidatorImplementation);
       }
 
       #endregion

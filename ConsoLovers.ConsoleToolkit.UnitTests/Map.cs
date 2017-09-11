@@ -168,7 +168,15 @@ namespace ConsoLovers.UnitTests
       [TestMethod]
       public void MappingANamedBooleanArgumentWithoutValueMustThrowException()
       {
-         GetTarget().Invoking(t => t.Map<Arguments>(new[] { " -ElBool" })).ShouldThrow<CommandLineArgumentException>();
+         GetTarget().Invoking(t => t.Map<Arguments>(new[] { " -ElBool" })).ShouldThrow<CommandLineArgumentException>()
+            .Where(e => e.Reason == ErrorReason.ArgumentWithoutValue);
+      }
+
+      [TestMethod]
+      public void MappingANamedBooleanArgumentWithoutValueMustThrowExceptionForAliasAlso()
+      {
+         GetTarget().Invoking(t => t.Map<Arguments>(new[] { " -ali" })).ShouldThrow<CommandLineArgumentException>()
+            .Where(e => e.Reason == ErrorReason.ArgumentWithoutValue);
       }
 
       [TestMethod]

@@ -45,5 +45,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       }
 
       #endregion
+
+      internal ErrorReason Reason { get; set; }
    }
 }
