@@ -100,7 +100,7 @@
     <Compile Include="ArgumentEngine\ParserTestBase.cs" />
     <Compile Include="ArgumentEngine\EngineTestBase.cs" />
     <Compile Include="Setups\Setup.cs" />
-    <Compile Include="Class1.cs" />
+    <Compile Include="RunTests.cs" />
     <Compile Include="ConsoleApplicationWithTests\Utils\ApplicationTestContext.cs" />
     <Compile Include="ConsoleApplicationWithTests\Utils\ArgumentsTwoDefaultCommands.cs" />
     <Compile Include="ConsoleApplicationWithTests\Utils\ArgumentsWithGenericDefaultCommand.cs" />

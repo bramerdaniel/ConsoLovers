@@ -26,7 +26,7 @@ namespace InputBoxDemo
 
       static void Main()
       {
-         var password = new InputBox<string>("Enter password : ") { IsPassword = true }.ReadLine(10);
+         var password = new InputBox<string>("Enter password : ") { IsPassword = true }.ReadLine();
          Console.WriteLine(password);
          password = new InputBox<string>("Enter password : ", "Password") { IsPassword = true }.ReadLine(10);
          Console.WriteLine(password);
