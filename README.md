@@ -1,7 +1,7 @@
 # ConsoLovers.ConsoleToolkit
 The ConsoLovers.ConsoleToolkit is a collection of several independant tools that can be used to write console applications (better and faster).
 <p align="center">
-  <img alt="VS Code in action" src="https://github.com/bramerdaniel/ConsoLovers/blob/master/Documentation/ConsoleMenuExplorer.png">
+  <img alt="VS Code in action" src="https://github.com/bramerdaniel/ConsoLovers/blob/master/src/Documentation/ConsoleMenuExplorer.png">
 </p>
 
 ## Main features are:
