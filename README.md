@@ -46,5 +46,9 @@ or simply search for 'ConsoleToolkit'.
 If a third party reference is not allowed in your project, you could also download the sources 
 and just pick the classes you need (this should work in the most cases without any problems). 
 
+## Contribution
+Feel free to create a pull request to include new features. 
+For development Visual Studio 2017 is required. (or any tool for compiling C#7)
+
 ## License
 There is no licence required.
