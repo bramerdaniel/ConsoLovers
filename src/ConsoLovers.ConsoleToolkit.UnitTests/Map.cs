@@ -87,6 +87,37 @@ namespace ConsoLovers.UnitTests
          arguments.Boolean.Should().Be(true);
       }
 
+       [TestMethod]
+       public void MapNullableEnum()
+       {
+           var arguments = GetTarget().Map<Arguments>(new[] { "-Nullinger=True" });
+           arguments.Nullinger.Should().Be(Boolenum.True);
+
+           arguments = GetTarget().Map<Arguments>(new[] { "-Nullinger=False" });
+           arguments.Nullinger.Should().Be(Boolenum.False);
+
+           arguments = GetTarget().Map<Arguments>(new[] { "-Name:Hans" });
+           arguments.Nullinger.Should().Be(null);
+           arguments = GetTarget().Map<Arguments>(new[] { "-Nullinger:Null" });
+           arguments.Nullinger.Should().Be(null);
+           arguments = GetTarget().Map<Arguments>(new[] { "-Nullinger:null" });
+           arguments.Nullinger.Should().Be(null);
+       }
+
+       [TestMethod]
+       public void MapNullableIntegers()
+       {
+           var arguments = GetTarget().Map<Arguments>(new[] { "-NullInteg=25" });
+           arguments.NullInteg.Should().Be(25);
+
+           arguments = GetTarget().Map<Arguments>(new[] { "-Name:Hans" });
+           arguments.NullInteg.Should().Be(null);
+           arguments = GetTarget().Map<Arguments>(new[] { "-Nullinger:Null" });
+           arguments.NullInteg.Should().Be(null);
+           arguments = GetTarget().Map<Arguments>(new[] { "-Nullinger:null" });
+           arguments.NullInteg.Should().Be(null);
+       }
+
       [TestMethod]
       public void MapNamedEnum()
       {
@@ -233,6 +264,13 @@ namespace ConsoLovers.UnitTests
 
          [Argument("Trimmed", TrimQuotation = true)]
          public string Trimmed { get; [UsedImplicitly] set; }
+
+            
+          [Argument("Nullinger")]
+          public Boolenum? Nullinger { get; [UsedImplicitly] set; }
+
+          [Argument("NullInteg")]
+          public int? NullInteg { get; [UsedImplicitly] set; }
 
          #endregion
       }
