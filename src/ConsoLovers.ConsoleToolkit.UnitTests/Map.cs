@@ -238,9 +238,19 @@ namespace ConsoLovers.UnitTests
          this.Invoking(t => GetTarget().Map<RequiredArguments>(new[] { string.Empty })).ShouldThrow<MissingCommandLineArgumentException>().Where(e => e.Argument == "Name");
       }
 
-      #endregion
 
-      public class Arguments
+       [TestMethod]
+       public void MappingACaseSensitiveValuesWorksCorrectly()
+       {
+           GetTarget().Map<Arguments>(new[] { " -Enum=notspecified" }).Boolenum.Should().Be(Boolenum.NotSpecified);
+           GetTarget().Map<Arguments>(new[] { " -Enum=NOTSPECIFIED" }).Boolenum.Should().Be(Boolenum.NotSpecified);
+           GetTarget().Map<Arguments>(new[] { " -ElBool=TRUE" }).Boolean.Should().Be(true);
+           GetTarget().Map<Arguments>(new[] { " -ElBool=tRUE" }).Boolean.Should().Be(true);
+        }
+
+        #endregion
+
+        public class Arguments
       {
          #region Public Properties
 
@@ -338,6 +348,8 @@ namespace ConsoLovers.UnitTests
    {
       True,
 
-      False
+      False,
+
+      NotSpecified
    }
 }
