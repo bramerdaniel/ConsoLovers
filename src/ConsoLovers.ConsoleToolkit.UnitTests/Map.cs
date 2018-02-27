@@ -242,8 +242,8 @@ namespace ConsoLovers.UnitTests
        [TestMethod]
        public void MappingACaseSensitiveValuesWorksCorrectly()
        {
-           GetTarget().Map<Arguments>(new[] { " -Enum=notspecified" }).Boolenum.Should().Be(Boolenum.NotSpecified);
-           GetTarget().Map<Arguments>(new[] { " -Enum=NOTSPECIFIED" }).Boolenum.Should().Be(Boolenum.NotSpecified);
+           GetTarget().Map<Arguments>(new[] { " -Enum=true" }).Boolenum.Should().Be(Boolenum.True);
+           GetTarget().Map<Arguments>(new[] { " -Enum=TRue" }).Boolenum.Should().Be(Boolenum.True);
            GetTarget().Map<Arguments>(new[] { " -ElBool=TRUE" }).Boolean.Should().Be(true);
            GetTarget().Map<Arguments>(new[] { " -ElBool=tRUE" }).Boolean.Should().Be(true);
         }
@@ -348,8 +348,6 @@ namespace ConsoLovers.UnitTests
    {
       True,
 
-      False,
-
-      NotSpecified
+      False
    }
 }
