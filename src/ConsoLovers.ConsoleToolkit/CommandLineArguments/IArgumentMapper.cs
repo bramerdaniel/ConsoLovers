@@ -6,10 +6,17 @@
 
 namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 {
+   using System;
    using System.Collections.Generic;
    using System.IO;
 
-   public interface IArgumentMapper<T>
+   public interface IArgumentMapper
+   {
+      /// <summary>Occurs when a command line argument of the given arguments dictionary could not be mapped to a arguments member</summary>
+      event EventHandler<UnmappedCommandLineArgumentEventArgs> UnmappedCommandLineArgument;
+   }
+
+   public interface IArgumentMapper<T> : IArgumentMapper
    {
       #region Public Methods and Operators
 

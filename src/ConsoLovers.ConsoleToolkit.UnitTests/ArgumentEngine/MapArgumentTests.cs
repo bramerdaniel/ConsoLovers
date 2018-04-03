@@ -98,6 +98,27 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
          Assert.AreEqual(result.TrimmedArgument, "UntrimmedValue");
       }
 
+      [TestMethod]
+      public void EnsureUnmappedArgumentsRaiseUnmappedCommandLineArgumentEvent()
+      {
+         var args = new ArgumentTestClass();
+         var dictionary = new Dictionary<string, CommandLineArgument>
+         {
+            { "RequiredArgument", new CommandLineArgument { Value = "RequiredArgumentValue" } },
+            { "MisspelledArgument", new CommandLineArgument { Name = "MisspelledArgument", Value = "AnyValue" } }
+         };
+         var target = Setup.ArgumentMapper()
+            .ForType<ArgumentTestClass>()
+            .Done();
+
+         target.MonitorEvents();
+         var result = target.Map(dictionary, args);
+
+         Assert.AreEqual(result.RequiredArgument, "RequiredArgumentValue");
+         target.ShouldRaise(nameof(IArgumentMapper<ArgumentTestClass>.UnmappedCommandLineArgument))
+            .WithArgs<UnmappedCommandLineArgumentEventArgs>(e => e.Argument.Name == "MisspelledArgument" && e.Argument.Value == "AnyValue");
+      }
+
       #endregion
    }
 

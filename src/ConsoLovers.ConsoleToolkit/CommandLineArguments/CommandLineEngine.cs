@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="CommandLineEngine.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2017
+//    Copyright (c) ConsoLovers  2015 - 2018
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -32,6 +32,13 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          : this(new DefaultFactory())
       {
       }
+
+      #endregion
+
+      #region Public Events
+
+      /// <summary>Occurs when command line argument was passed to the <see cref="ICommandLineEngine"/> the could not be processed in any way.</summary>
+      public event EventHandler<UnhandledCommandLineArgumentEventArgs> UnhandledCommandLineArgument;
 
       #endregion
 
@@ -100,7 +107,16 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       {
          var arguments = ArgumentParser.ParseArguments(args, caseSensitive);
          var mapper = CreateMapper<T>();
-         return mapper.Map(arguments);
+
+         try
+         {
+            mapper.UnmappedCommandLineArgument += OnUnmappedCommandLineArgument;
+            return mapper.Map(arguments);
+         }
+         finally
+         {
+            mapper.UnmappedCommandLineArgument -= OnUnmappedCommandLineArgument;
+         }
       }
 
       /// <summary>Maps the specified arguments to given object of the given type.</summary>
@@ -126,7 +142,15 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          var arguments = ArgumentParser.ParseArguments(args, caseSensitive);
          var mapper = CreateMapper<T>();
 
-         return mapper.Map(arguments, instance);
+         try
+         {
+            mapper.UnmappedCommandLineArgument += OnUnmappedCommandLineArgument;
+            return mapper.Map(arguments, instance);
+         }
+         finally
+         {
+            mapper.UnmappedCommandLineArgument -= OnUnmappedCommandLineArgument;
+         }
       }
 
       /// <summary>Prints the help to the <see cref="Console"/>.</summary>
@@ -221,6 +245,14 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
       #region Methods
 
+      internal static string GetLocalizedDescription(ResourceManager resourceManager, string resourceKey)
+      {
+         if (resourceManager == null || resourceKey == null)
+            return null;
+
+         return resourceManager.GetString(resourceKey);
+      }
+
       private static string[] GetAliases(ArgumentAttribute argumentAttribute, OptionAttribute optionAttribute, CommandAttribute commandAttribute)
       {
          if (argumentAttribute != null)
@@ -248,14 +280,6 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
             return commandAttribute.Name.ToLowerInvariant();
 
          return primaryName.ToLowerInvariant();
-      }
-
-      internal static string GetLocalizedDescription(ResourceManager resourceManager, string resourceKey)
-      {
-         if (resourceManager == null || resourceKey == null)
-            return null;
-
-         return resourceManager.GetString(resourceKey);
       }
 
       private static IEnumerable<string> GetWrappedStrings(string text, int maxLength)
@@ -317,6 +341,11 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          }
 
          return new PropertyHelpProvider(resourceManager);
+      }
+
+      private void OnUnmappedCommandLineArgument(object sender, UnmappedCommandLineArgumentEventArgs e)
+      {
+         UnhandledCommandLineArgument?.Invoke(this, new UnhandledCommandLineArgumentEventArgs(e.Argument));
       }
 
       #endregion

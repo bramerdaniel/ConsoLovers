@@ -66,6 +66,45 @@ namespace ConsoLovers.UnitTests
          arguments.Wait.Should().BeTrue();
       }
 
+      [TestMethod]
+      public void EnsureUnmappedOptionsRaiseUnhandledCommandLineArgumentEventCorrectly()
+      {
+         var engine = GetTarget();
+         engine.MonitorEvents();
+         engine.Map<ApplicationCommands>(new[] { "execute", "-Path=C:\\Path\\File.txt", "-unknown" });
+
+         engine.ShouldRaise(nameof(CommandLineEngine.UnhandledCommandLineArgument))
+            .WithArgs<UnhandledCommandLineArgumentEventArgs>(e => e.Argument.Name == "unknown");
+      }
+
+      [TestMethod]
+      public void EnsureUnmappedArgumentsRaiseUnhandledCommandLineArgumentEventCorrectly()
+      {
+         var engine = GetTarget();
+         engine.MonitorEvents();
+         engine.Map<ApplicationCommands>(new[] { "execute", "-Path=C:\\Path\\File.txt", "-unknown=666" });
+
+         engine.ShouldRaise(nameof(CommandLineEngine.UnhandledCommandLineArgument))
+            .WithArgs<UnhandledCommandLineArgumentEventArgs>(e => e.Argument.Name == "unknown");
+      }
+
+      [TestMethod]
+      public void EnsureUnmappedArgumentsForNonGenericCommandRaiseUnhandledCommandLineArgumentEventCorrectly()
+      {
+         var engine = GetTarget();
+         engine.MonitorEvents();
+         engine.Map<NonGenericApplicationCommands>(new[] { "execute", "-unknown=666" });
+
+         engine.ShouldRaise(nameof(CommandLineEngine.UnhandledCommandLineArgument))
+            .WithArgs<UnhandledCommandLineArgumentEventArgs>(e => e.Argument.Name == "unknown" && e.Argument.Index == 1 && e.Argument.Value == "666");
+
+         var args = engine.Map<NonGenericApplicationCommands>(new[] { "execute","-wait", "-unknown=234" });
+
+         engine.ShouldRaise(nameof(CommandLineEngine.UnhandledCommandLineArgument))
+            .WithArgs<UnhandledCommandLineArgumentEventArgs>(e => e.Argument.Name == "unknown" && e.Argument.Index == 2 && e.Argument.Value == "234");
+
+         args.Wait.Should().BeTrue();
+      }
 
       #endregion
 
@@ -81,6 +120,7 @@ namespace ConsoLovers.UnitTests
 
          #endregion
       }
+
       internal class NonGenericApplicationCommands
       {
          #region Public Properties

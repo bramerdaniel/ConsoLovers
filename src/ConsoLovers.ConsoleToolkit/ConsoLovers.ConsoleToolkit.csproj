@@ -67,6 +67,8 @@
     <Compile Include="CommandLineArguments\IObjectFactory.cs" />
     <Compile Include="CommandLineArguments\DefaultFactory.cs" />
     <Compile Include="CommandLineArguments\TypeHelpRequest.cs" />
+    <Compile Include="CommandLineArguments\UnhandledCommandLineArgumentEventArgs.cs" />
+    <Compile Include="CommandLineArguments\UnmappedCommandLineArgumentEventArgs.cs" />
     <Compile Include="ConsoleApplicationManager.cs" />
     <Compile Include="ConsoleApplicationWith.cs" />
     <Compile Include="ConsoleWindowHeightAttribute.cs" />

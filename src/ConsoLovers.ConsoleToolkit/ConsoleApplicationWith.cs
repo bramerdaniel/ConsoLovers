@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="ConsoleApplicationWith.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2017
+//    Copyright (c) ConsoLovers  2015 - 2018
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -24,10 +24,6 @@ namespace ConsoLovers.ConsoleToolkit
       where T : class
 
    {
-      #region Constants and Fields
-
-      #endregion
-
       #region Constructors and Destructors
 
       [InjectionConstructor]
@@ -37,6 +33,7 @@ namespace ConsoLovers.ConsoleToolkit
             throw new ArgumentNullException(nameof(commandLineEngine));
 
          CommandLineEngine = commandLineEngine;
+         CommandLineEngine.UnhandledCommandLineArgument += OnUnhandledCommandLineArgument;
       }
 
       #endregion
@@ -140,8 +137,10 @@ namespace ConsoLovers.ConsoleToolkit
 
       #region Methods
 
-      /// <summary>Executes the command that was specified in the command line arguments. 
-      /// If no argument was specified but the IsDefaultCommand property was set at one of the commands, a simulated command</summary>
+      /// <summary>
+      ///    Executes the command that was specified in the command line arguments. If no argument was specified but the IsDefaultCommand property was set at one of the commands, a
+      ///    simulated command
+      /// </summary>
       /// <param name="useDefaultCommand">if set to <c>true</c> [use default command].</param>
       /// <returns></returns>
       protected virtual bool ExecuteCommand(bool useDefaultCommand)
@@ -170,6 +169,19 @@ namespace ConsoLovers.ConsoleToolkit
          return false;
       }
 
+      protected ICommand GetDefaultCommand()
+      {
+         CommandInfo defaultComand = GetDefaultCommand(HasArguments);
+         if (defaultComand == null)
+            return null;
+
+         var originalArgs = Args.ToList();
+         originalArgs.Insert(0, defaultComand.Attribute.Name);
+
+         CommandLineEngine.Map(originalArgs.ToArray(), Arguments);
+         return defaultComand.PropertyInfo.GetValue(Arguments) as ICommand;
+      }
+
       protected ICommand GetMappedCommand()
       {
          if (Arguments == null)
@@ -188,30 +200,18 @@ namespace ConsoLovers.ConsoleToolkit
          return null;
       }
 
-      protected ICommand GetDefaultCommand()
-      {
-         CommandInfo defaultComand = GetDefaultCommand(HasArguments);
-         if (defaultComand == null)
-            return null;
-         
-         var originalArgs = Args.ToList();
-         originalArgs.Insert(0, defaultComand.Attribute.Name);
-
-         CommandLineEngine.Map(originalArgs.ToArray(), Arguments);
-         return defaultComand.PropertyInfo.GetValue(Arguments) as ICommand;
-      }
-
-      private static CommandInfo GetDefaultCommand(bool withParameters)
-      {
-         var argumentClassInfo = new ArgumentClassInfo(typeof(T));
-         if (withParameters)
-            return argumentClassInfo.CommandInfos.FirstOrDefault(c => c.Attribute.IsDefaultCommand && c.ArgumentType != null);
-
-         return argumentClassInfo.CommandInfos.FirstOrDefault(c => c.Attribute.IsDefaultCommand && c.ArgumentType == null);
-      }
-
       /// <summary>Called when after the arguments were initialized. This is the first method the arguments can be accessed</summary>
       protected virtual void OnArgumentsInitialized()
+      {
+      }
+
+      /// <summary>
+      ///    Called when a command line argument could not be handled (e.g when an argument was misspelled, and therfore could not be mapped to a property in the arguments class). The
+      ///    default behavior is to do nothing. This means that it is ignored.
+      /// </summary>
+      /// <param name="sender">The sender.</param>
+      /// <param name="e">The <see cref="UnhandledCommandLineArgumentEventArgs"/> instance containing the event data.</param>
+      protected virtual void OnUnhandledCommandLineArgument(object sender, UnhandledCommandLineArgumentEventArgs e)
       {
       }
 
@@ -224,6 +224,15 @@ namespace ConsoLovers.ConsoleToolkit
       {
          Console.WriteLine(waitText);
          Console.ReadLine();
+      }
+
+      private static CommandInfo GetDefaultCommand(bool withParameters)
+      {
+         var argumentClassInfo = new ArgumentClassInfo(typeof(T));
+         if (withParameters)
+            return argumentClassInfo.CommandInfos.FirstOrDefault(c => c.Attribute.IsDefaultCommand && c.ArgumentType != null);
+
+         return argumentClassInfo.CommandInfos.FirstOrDefault(c => c.Attribute.IsDefaultCommand && c.ArgumentType == null);
       }
 
       #endregion

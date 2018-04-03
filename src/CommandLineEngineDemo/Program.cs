@@ -6,6 +6,7 @@
 
 namespace CommandLineEngineDemo
 {
+   using System;
    using System.Resources;
 
    using ConsoLovers.ConsoleToolkit;
@@ -39,6 +40,12 @@ namespace CommandLineEngineDemo
          var objectFactory = new DefaultFactory(container);
          ConsoleApplicationManager.For<Program>().UsingFactory(objectFactory).Run(args);
          Console.ReadLine();
+      }
+
+      protected override void OnUnhandledCommandLineArgument(object sender, UnhandledCommandLineArgumentEventArgs e)
+      {
+         Console.WriteLine($"Unknown command line argument '{e.Argument.Name}' at index {e.Argument.Index}.", ConsoleColor.Yellow);
+         base.OnUnhandledCommandLineArgument(sender, e);
       }
 
       #endregion

@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>ConsoLovers.ConsoleToolkit</id>
-    <version>3.0.1</version>
+    <version>3.0.2</version>
     <title>ConsoLovers.ConsoleToolkit</title>
     <authors>danielbramer</authors>
     <owners>danielbramer</owners>
@@ -11,13 +11,15 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes>
+       3.0.2
+       - Added support for handling unhandled command line arguments in command line engine
        3.0.1
        - Added support for Nullable types in the argument classes of the command line engine
        3.0.0
        - Fixed resizing error of ConsoleWindowHeigth and width attributes.
        - Fixed color in default menu
        - Added posibility for ConsoleApplication's to react on calls without arguments
-     # V 3.0.0
+       # V 3.0.0
        - Changed and improved dependency injection container
        - Fixed behavior of boolean arguments
        - Added validation interface for command line engine

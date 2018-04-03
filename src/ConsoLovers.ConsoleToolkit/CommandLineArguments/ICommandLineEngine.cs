@@ -61,5 +61,8 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       /// <param name="consoleWidth">Width of the console.</param>
       /// <returns>A <see cref="StringBuilder" /> containing the formatted help text.</returns>
       StringBuilder FormatHelp<T>(ResourceManager resourceManager, int consoleWidth);
+
+      /// <summary>Occurs when command line argument was passed to the <see cref="ICommandLineEngine"/> the could not be processed in any way.</summary>
+      event EventHandler<UnhandledCommandLineArgumentEventArgs> UnhandledCommandLineArgument;
    }
 }

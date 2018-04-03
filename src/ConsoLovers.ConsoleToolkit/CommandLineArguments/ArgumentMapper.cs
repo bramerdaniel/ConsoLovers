@@ -75,12 +75,28 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
             {
                var wasSet = SetPropertyValue(instance, propertyInfo, arguments, commandLineAttribute);
                if (wasSet)
+               {
                   ValidateProperty(instance, propertyInfo);
+               }
             }
          }
 
+         CheckForUnmappedArguments(arguments);
+
          return instance;
       }
+
+      private void CheckForUnmappedArguments(IDictionary<string, CommandLineArgument> arguments)
+      {
+         if(arguments.Count <= 0)
+            return;
+
+         foreach (var argument in arguments)
+            UnmappedCommandLineArgument?.Invoke(this, new UnmappedCommandLineArgumentEventArgs(argument.Value));
+      }
+
+      /// <summary>Occurs when a command line argument of the given arguments dictionary could not be mapped to a arguments member</summary>
+      public event EventHandler<UnmappedCommandLineArgumentEventArgs> UnmappedCommandLineArgument;
 
       /// <inheritdoc/>
       /// <summary>Maps the give argument dictionary to a new created instance.</summary>
