@@ -106,9 +106,34 @@ namespace ConsoLovers.UnitTests
          args.Wait.Should().BeTrue();
       }
 
+      [TestMethod]
+      public void EnsureBaseClassArgumentsAreSetAndDoNotRaisedUnhandledCommandLineArgument()
+      {
+         var engine = GetTarget();
+         engine.MonitorEvents();
+
+         var args = engine.Map<ApplicationCommandsWithBaseClass>(new[] { "execute", "-loglevel=Trace" });
+
+         args.LogLevel.Should().Be("Trace");
+         engine.ShouldNotRaise(nameof(CommandLineEngine.UnhandledCommandLineArgument));
+      }
+
       #endregion
 
       internal class ApplicationCommands
+      {
+         #region Public Properties
+
+         [Command("Execute", "e")]
+         public GenericCommand<ExecuteArguments> Execute { get; set; }
+
+         [Option("Wait")]
+         public bool Wait { get; set; }
+
+         #endregion
+      }
+
+      internal class ApplicationCommandsWithBaseClass : LoggingArgs
       {
          #region Public Properties
 
@@ -159,6 +184,12 @@ namespace ConsoLovers.UnitTests
 
          #endregion
       }
+   }
+
+   internal class LoggingArgs
+   {
+      [Argument("LogLevel")]
+      public string LogLevel { get; set; }
    }
 
    internal class ExecuteCommand : ICommand<ExecuteArgs>

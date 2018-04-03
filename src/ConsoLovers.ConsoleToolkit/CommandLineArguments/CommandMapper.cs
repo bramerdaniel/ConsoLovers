@@ -70,6 +70,9 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
             defaultMapper.Map(arguments, instance);
          }
 
+         foreach (var argument in arguments)
+            UnmappedCommandLineArgument?.Invoke(this, new UnmappedCommandLineArgumentEventArgs(argument.Value));
+
          return instance;
       }
 
@@ -157,8 +160,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
             throw new ArgumentException(
                $"The type '{commandType}' of the property '{commandInfo.PropertyInfo.Name}' does not implemente the {typeof(ICommand).FullName} interface");
 
-         Type argumentType;
-         if (TryGetArgumentType(commandType, out argumentType))
+         if (TryGetArgumentType(commandType, out var argumentType))
          {
             var argumentInstance = factory.CreateInstance(argumentType);
 
@@ -167,26 +169,15 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
             var genericType = mapperType.MakeGenericType(typeArgs);
             object mapper = factory.CreateInstance(genericType);
 
-            var argumentMapper = mapper as IArgumentMapper;
-
             try
             {
-               if (argumentMapper != null)
-                  argumentMapper.UnmappedCommandLineArgument += OnUnmappedCommandLineArgument;
-
                var methodInfo = genericType.GetMethod("Map", new[] { typeof(IDictionary<string, CommandLineArgument>), argumentType });
                methodInfo.Invoke(mapper, new[] { arguments, argumentInstance });
             }
             catch (TargetInvocationException e)
             {
-               var exception = e.InnerException as CommandLineArgumentException;
-               if (exception != null)
+               if (e.InnerException is CommandLineArgumentException exception)
                   throw exception;
-            }
-            finally
-            {
-               if (argumentMapper != null)
-                  argumentMapper.UnmappedCommandLineArgument -= OnUnmappedCommandLineArgument;
             }
 
             var command = factory.CreateInstance(commandType);
@@ -225,11 +216,6 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          var helpCommand = factory.CreateInstance<HelpCommand>();
          helpCommand.Arguments = new HelpCommandArguments { ArgumentInfos = argumentInfo, ArgumentDictionary = arguments };
          argumentInfo.HelpCommand.PropertyInfo.SetValue(instance, helpCommand);
-      }
-
-      private void OnUnmappedCommandLineArgument(object sender, UnmappedCommandLineArgumentEventArgs e)
-      {
-         UnmappedCommandLineArgument?.Invoke(this, e);
       }
 
       private bool TryGetArgumentType(Type commandType, out Type argumentType)

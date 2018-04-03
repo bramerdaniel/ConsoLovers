@@ -1,6 +1,7 @@
 namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 {
    using System;
+   using System.Diagnostics;
 
    using JetBrains.Annotations;
 
@@ -8,6 +9,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
    /// Event args class for the <see cref="ICommandLineEngine.UnhandledCommandLineArgument"/> event
    /// </summary>
    /// <seealso cref="System.EventArgs" />
+   [DebuggerDisplay("[{Argument.Index}] {Argument.Name}={Argument.Value}")]
    public class UnhandledCommandLineArgumentEventArgs : EventArgs
    {
       public UnhandledCommandLineArgumentEventArgs([NotNull] CommandLineArgument argument)

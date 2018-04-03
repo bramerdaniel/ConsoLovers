@@ -8,7 +8,7 @@ namespace CommandLineEngineDemo
 {
    using ConsoLovers.ConsoleToolkit.CommandLineArguments;
 
-   internal class Commands
+   internal class Commands : LoggerArgs
    {
       #region Public Properties
 
@@ -28,6 +28,10 @@ namespace CommandLineEngineDemo
       [HelpText("Executes the command.", "None", Priority = 20)]
       public ExecuteCommand Execute { get; set; }
 
+      [Command("DoNothing", "dn")]
+      [HelpText("Executes the command but does nothing.", "None", Priority = 30)]
+      public ExecuteCommand DoNothing { get; set; }
+
       [Command("Help", "?")]
       [HelpText("Displays the help you are watching at the moment.", "None")]
       public HelpCommand Help { get; set; }
@@ -38,5 +42,11 @@ namespace CommandLineEngineDemo
       public bool Wait { get; set; }
 
       #endregion
+   }
+
+   internal class LoggerArgs
+   {
+      [Argument("LogLevel", "ll")]
+      public string LogLevel { get; set; }
    }
 }
