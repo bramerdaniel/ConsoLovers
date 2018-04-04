@@ -5,11 +5,11 @@ The ConsoLovers.ConsoleToolkit is a collection of several independant tools that
 </p>
 
 ## Main features are:
-* A [ConsoleMenu](https://github.com/bramerdaniel/ConsoLovers/blob/master/ConsoLovers.ConsoleToolkit/Menu/ConsoleMenu.cs) that supports Keyboard and Mouse selection.
+* A [ConsoleMenu](https://github.com/bramerdaniel/ConsoLovers/blob/master/src/ConsoLovers.ConsoleToolkit/Menu/ConsoleMenu.cs) that supports Keyboard and Mouse selection.
   The menu is extremely customizable, supports color themes, index navigation and much more...
 * A CommandLineEngine that offers parsing of command line arguments and mapping them to properties of a class 
 * A [InputBox](https://github.com/bramerdaniel/ConsoLovers/tree/documentation/Documentation/InputBox) class that can be used for password scenarios.
-* The [ConsoleApplicationManager](https://github.com/bramerdaniel/ConsoLovers/blob/master/ConsoLovers.ConsoleToolkit/ConsoleApplicationManager.cs) and the [ConsoleApplication](https://github.com/bramerdaniel/ConsoLovers/blob/master/ConsoLovers.ConsoleToolkit/ConsoleApplication.cs). A base class for console applications to get rid of the static context, normal console application is runnin in.
+* The [ConsoleApplicationManager](https://github.com/bramerdaniel/ConsoLovers/blob/master/src/ConsoLovers.ConsoleToolkit/ConsoleApplicationManager.cs) and the [ConsoleApplicationWith](https://github.com/bramerdaniel/ConsoLovers/blob/master/src/ConsoLovers.ConsoleToolkit/ConsoleApplicationWith.cs). A base class for console applications to get rid of the static context, normal console application is runnin in.
 
 ```csharp
    class Program
