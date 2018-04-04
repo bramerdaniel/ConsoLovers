@@ -71,7 +71,7 @@ namespace Playground
 
       #region Methods
 
-      private static void Main(string[] args)
+      private static void Mainbak(string[] args)
       {
          string text = null;
          while (text != "exit")

@@ -22,7 +22,7 @@ namespace ConsoLovers.UnitTests
       [TestMethod]
       public void EnsureRunIsCalledOnRunable()
       {
-         var runned = new ConsoleApplicationManager<Runable>().Run(new string[0]);
+         var runned = new ConsoleApplicationManagerGeneric<Runable>().Run(new string[0]);
 
          runned.Mock.Verify(x => x.Run(), Times.Once);
       }
@@ -31,7 +31,7 @@ namespace ConsoLovers.UnitTests
       public void EnsureRunInitializesWhenRequired()
       {
          var args = new string[0];
-         var runned = new ConsoleApplicationManager<ApplicationWithArguments>().Run(args);
+         var runned = new ConsoleApplicationManagerGeneric<ApplicationWithArguments>().Run(args);
 
          runned.Args.Should().BeSameAs(args);
          runned.TestParameters.Should().NotBeNull();

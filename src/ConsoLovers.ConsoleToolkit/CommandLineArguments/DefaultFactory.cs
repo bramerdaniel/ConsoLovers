@@ -18,9 +18,7 @@
 
       public DefaultFactory([NotNull] IContainer container)
       {
-         if (container == null)
-            throw new ArgumentNullException(nameof(container));
-         this.container = container;
+         this.container = container ?? throw new ArgumentNullException(nameof(container));
 
          container.Register<IObjectFactory>(this).WithLifetime(Lifetime.Singleton);
          container.Register<ICommandLineEngine, CommandLineEngine>().WithLifetime(Lifetime.Singleton);

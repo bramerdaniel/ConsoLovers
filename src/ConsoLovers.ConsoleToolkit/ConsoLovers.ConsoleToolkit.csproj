@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BootstrapperBase.cs" />
     <Compile Include="CommandLineArguments\AmbiguousCommandLineArgumentsException.cs" />
     <Compile Include="CommandLineArguments\ArgumentClassInfo.cs" />
     <Compile Include="CommandLineArguments\ArgumentValidatorAttribute.cs" />
@@ -69,7 +70,9 @@
     <Compile Include="CommandLineArguments\TypeHelpRequest.cs" />
     <Compile Include="CommandLineArguments\UnhandledCommandLineArgumentEventArgs.cs" />
     <Compile Include="CommandLineArguments\UnmappedCommandLineArgumentEventArgs.cs" />
+    <Compile Include="DefaultBootstrapper.cs" />
     <Compile Include="ConsoleApplicationManager.cs" />
+    <Compile Include="ConsoleApplicationManagerGeneric.cs" />
     <Compile Include="ConsoleApplicationWith.cs" />
     <Compile Include="ConsoleWindowHeightAttribute.cs" />
     <Compile Include="ConsoleWindowTitleAttribute.cs" />
@@ -96,7 +99,8 @@
     <Compile Include="DIContainer\Strategies\PropertySelectionStrategies.cs" />
     <Compile Include="DIContainer\Strategies\PropertySelectionStrategy.cs" />
     <Compile Include="DIContainer\Strategies\ReflectionExtensions.cs" />
-    <Compile Include="ConsoleApplicationBootstrapper.cs" />
+    <Compile Include="GenericBootstrapper.cs" />
+    <Compile Include="IBootstrapper.cs" />
     <Compile Include="IConsoleApplication.cs" />
     <Compile Include="InputLabel.cs" />
     <Compile Include="InputRange.cs" />

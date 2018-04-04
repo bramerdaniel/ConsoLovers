@@ -60,12 +60,24 @@ namespace ConsoLovers.ConsoleToolkit
 
       #region IApplication<T> Members
 
+      /// <summary>
+      ///    This methof is called when the application was started with command line arguments. NOTE: If there are <see cref="ICommand"/>s specified in the arguments and the
+      ///    application is called with one of those. This method is not called any more, because the command is executed.
+      /// </summary>
+      /// <param name="arguments">The initialited arguments for the application.</param>
       public abstract void RunWith(T arguments);
 
       #endregion
 
       #region IArgumentInitializer<T> Members
 
+      /// <summary>
+      /// This method is responsible for creating the required default arguments.
+      /// This could e.g. be a empty instance or an instance filledd with data from the app.config...
+      /// </summary>
+      /// <returns>
+      /// The created arguments instance
+      /// </returns>
       public virtual T CreateArguments()
       {
          if (GetType() == typeof(T))
@@ -111,14 +123,14 @@ namespace ConsoLovers.ConsoleToolkit
 
       public static IConsole Console { get; } = new ConsoleProxy();
 
+      public T Arguments { get; private set; }
+
       /// <summary>Gets a value indicating whether this application was called with arguments.</summary>
       public bool HasArguments { get; private set; }
 
       #endregion
 
       #region Properties
-
-      protected T Arguments { get; private set; }
 
       protected ICommandLineEngine CommandLineEngine { get; }
 
