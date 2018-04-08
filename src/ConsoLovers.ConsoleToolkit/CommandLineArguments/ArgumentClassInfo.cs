@@ -13,6 +13,11 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
    using JetBrains.Annotations;
 
+   /// <summary>
+   /// The <see cref="ArgumentClassInfo"/> is a helper class,
+   /// that is able to analyse the class representing the command line arguments. 
+   /// This is done by reflection
+   /// </summary>
    public class ArgumentClassInfo
    {
       #region Constants and Fields
@@ -27,7 +32,17 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
       #region Constructors and Destructors
 
-      public ArgumentClassInfo([NotNull] Type argumentType)
+      public static ArgumentClassInfo FromType(Type argumentClassType)
+      {
+         return new ArgumentClassInfo(argumentClassType);
+      }
+
+      public static ArgumentClassInfo FromType<T>()
+      {
+         return FromType(typeof(T));
+      }
+
+      private ArgumentClassInfo([NotNull] Type argumentType)
       {
          if (argumentType == null)
             throw new ArgumentNullException(nameof(argumentType));
@@ -48,6 +63,8 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       public bool HasCommands => CommandInfos.Any();
 
       public CommandInfo HelpCommand { get; private set; }
+
+      public CommandInfo DefaultCommand { get; private set; }
 
       public IReadOnlyCollection<ParameterInfo> Properties => properties;
 
@@ -109,16 +126,30 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
                   commandInfos.Add(commandInfo);
                   if (IsHelpCommand(propertyInfo))
                      HelpCommand = commandInfo;
+                  if (commandInfo.IsDefault)
+                  {
+                     if (DefaultCommand != null)
+                        throw new InvalidOperationException("Default command was defined twice.");
+
+                     DefaultCommand = commandInfo;
+                  }
                }
             }
          }
       }
 
+  
       private bool IsHelpCommand(PropertyInfo propertyInfo)
       {
          return propertyInfo.PropertyType == typeof(HelpCommand);
       }
 
       #endregion
+
+      public void Validate()
+      {
+         
+
+      }
    }
 }

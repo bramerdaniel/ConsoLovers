@@ -5,9 +5,12 @@
 // --------------------------------------------------------------------------------------------------------------------
 namespace ConsoLovers.UnitTests.ConsoleApplicationWithTests
 {
+   using System;
    using System.Diagnostics.CodeAnalysis;
 
    using ConsoLovers.UnitTests.ConsoleApplicationWithTests.Utils;
+
+   using FluentAssertions;
 
    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -56,37 +59,11 @@ namespace ConsoLovers.UnitTests.ConsoleApplicationWithTests
       }
 
       [TestMethod]
-      public void EnsureDefaultCommandWithoutParameters()
+      public void EnsureExceptionIsThrownWhenTwoDefaultCommandAreSpecified()
       {
          using (var testContext = new ApplicationTestContext<TestApplication<ArgumentsTwoDefaultCommands>>())
          {
-            testContext.RunApplication();
-
-            testContext.Application.Verify(a => a.Run(), Times.Once);
-            testContext.Application.Verify(a => a.RunWithCommand(), Times.Once);
-
-            testContext.Application.Verify(a => a.RunWith(), Times.Never);
-            testContext.Application.Verify(a => a.RunWithoutArguments(), Times.Never);
-
-            testContext.Commands.Verify(x => x.Execute("DefaultExecute"), Times.Once);
-         }
-      }
-
-      [TestMethod]
-      public void EnsureGenericCommandIsCalledWhenArgumentsAreAvailable()
-      {
-         using (var testContext = new ApplicationTestContext<TestApplication<ArgumentsTwoDefaultCommands>>())
-         {
-            testContext.RunApplication("string=butHereComesAValue");
-
-            testContext.Application.Verify(a => a.Run(), Times.Once);
-            testContext.Application.Verify(a => a.RunWithCommand(), Times.Once);
-
-            testContext.Application.Verify(a => a.RunWith(), Times.Never);
-            testContext.Application.Verify(a => a.RunWithoutArguments(), Times.Never);
-
-            testContext.Commands.Verify(x => x.Execute("GenericExecute"), Times.Once);
-            testContext.Commands.Verify(x => x.Argument("string", "butHereComesAValue"), Times.Once);
+            testContext.Invoking(x => x.RunApplication()).ShouldThrow<InvalidOperationException>();
          }
       }
 

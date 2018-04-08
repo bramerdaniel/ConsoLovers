@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Program2.cs" company="ConsoLovers">
+// <copyright file="Program3.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2018
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -12,19 +12,14 @@ namespace Playground
    using ConsoLovers.ConsoleToolkit;
    using ConsoLovers.ConsoleToolkit.CommandLineArguments;
 
-   public static class Program2
+   public static class Program3
    {
       #region Methods
 
       private static void Main(string[] args)
       {
-         var application = ConsoleApplicationManager.For<TheApplication>().SetWindowWidth(150).SetWindowHeight(40).Run(args);
-
-         if (application.Arguments.WaitForDebugger)
-         {
-            Console.WriteLine("Waiting for key");
-            Console.ReadLine();
-         }
+         ConsoleApplicationManager.For<DeleteMeApplication>()
+            .Run(args);
       }
 
       #endregion
@@ -32,11 +27,11 @@ namespace Playground
 
    [ConsoleWindowHeight(80)]
    [ConsoleWindowWidth(40)]
-   internal class TheApplication : ConsoleApplicationWith<TheArguments>
+   internal class DeleteMeApplication : ConsoleApplicationWith<DeleteMeArguments>
    {
       #region Constructors and Destructors
 
-      public TheApplication(ICommandLineEngine commandLineEngine)
+      public DeleteMeApplication(ICommandLineEngine commandLineEngine)
          : base(commandLineEngine)
       {
       }
@@ -45,7 +40,11 @@ namespace Playground
 
       #region Public Methods and Operators
 
-      public override void RunWith(TheArguments arguments)
+      protected override void OnUnhandledCommandLineArgument(object sender, UnhandledCommandLineArgumentEventArgs e)
+      {
+      }
+
+      public override void RunWith(DeleteMeArguments arguments)
       {
          if (arguments.WaitForDebugger)
             Console.ReadLine();
@@ -57,12 +56,39 @@ namespace Playground
       #endregion
    }
 
-   internal class TheArguments
+   internal class DeleteMeArguments : ICommand<ExecuteArgs>
    {
+      #region ICommand Members
+
+      void ICommand.Execute()
+      {
+      }
+
+      #endregion
+
+      #region ICommand<ExecuteArgs> Members
+
+      public ExecuteArgs Arguments { get; set; }
+
+      #endregion
+
       #region Public Properties
+
+      [Command(IsDefaultCommand = true)]
+      public DeleteMeArguments Execute { get; set; }
 
       [Option("WaitForKey", "w")]
       public bool WaitForDebugger { get; set; }
+
+      #endregion
+   }
+
+   internal class ExecuteArgs
+   {
+      #region Public Properties
+
+      [Argument("Path", "p")]
+      public string Path { get; set; }
 
       #endregion
    }

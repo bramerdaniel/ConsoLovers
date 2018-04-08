@@ -44,6 +44,7 @@
     <Compile Include="BootstrapperBase.cs" />
     <Compile Include="CommandLineArguments\AmbiguousCommandLineArgumentsException.cs" />
     <Compile Include="CommandLineArguments\ArgumentClassInfo.cs" />
+    <Compile Include="CommandLineArguments\ArgumentInfo.cs" />
     <Compile Include="CommandLineArguments\ArgumentValidatorAttribute.cs" />
     <Compile Include="CommandLineArguments\CommandLineArgument.cs" />
     <Compile Include="CommandLineArguments\CommandLineArgumentValidationException.cs" />

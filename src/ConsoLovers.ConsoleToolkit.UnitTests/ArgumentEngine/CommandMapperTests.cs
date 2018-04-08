@@ -33,6 +33,30 @@ namespace ConsoLovers.UnitTests.ArgumentEngine
          result.Execute.Should().NotBeNull();
       }
 
+      [TestMethod]
+      public void EnsureCommandIsMappedCorrectlyEvenIfNoNameIsSpecified()
+      {
+         var applicationArgs = new CommandsWithoutName();
+         var dictionary = new Dictionary<string, CommandLineArgument>
+         {
+            { "Execute", new CommandLineArgument { Name = "Execute" } },
+         };
+
+
+
+         var commandMapper = new CommandMapper<CommandsWithoutName>(Setup.EngineFactory().Done());
+         var result = commandMapper.Map(dictionary, applicationArgs);
+
+         result.Execute.Should().NotBeNull();
+      }
+
+      class CommandsWithoutName
+      {
+         [Command]
+         // ReSharper disable once UnusedAutoPropertyAccessor.Local
+         public Command Execute { get; set; }
+      }
+
       #endregion
    }
 }

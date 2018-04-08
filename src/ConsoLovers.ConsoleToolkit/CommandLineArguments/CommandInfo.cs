@@ -19,6 +19,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          : base(propertyInfo, commandLineAttribute)
       {
          ArgumentType = ComputeArgumentType();
+         IsDefault = commandLineAttribute.IsDefaultCommand;
       }
 
       private Type ComputeArgumentType()
@@ -39,23 +40,8 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       /// <summary>Gets or sets the type of the argument.</summary>
       public Type ArgumentType { get; }
 
-      #endregion
-   }
-
-   public class ArgumentInfo : ParameterInfo
-   {
-      #region Constructors and Destructors
-
-      public ArgumentInfo([NotNull] PropertyInfo propertyInfo, [NotNull] ArgumentAttribute commandLineAttribute)
-         : base(propertyInfo, commandLineAttribute)
-      {
-      }
-
-      #endregion
-
-      #region Public Properties
-
-      public ArgumentAttribute Attribute => (ArgumentAttribute)CommandLineAttribute;
+      /// <summary>Gets a value indicating whether this command is the default command.</summary>
+      public bool IsDefault{ get; }
 
       #endregion
    }

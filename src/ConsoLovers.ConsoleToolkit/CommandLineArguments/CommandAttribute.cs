@@ -46,9 +46,6 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       /// <summary>Gets or sets a value indicating whether this command is the default command and is used when no command is specified.</summary>
       public bool IsDefaultCommand { get; set; }
 
-      /// <summary>Gets or sets a value indicating whether the command is optional.</summary>
-      public bool Optional { get; set; }
-
       #endregion
 
       #region Public Methods and Operators
@@ -56,7 +53,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       public override string ToString()
       {
          var result = new StringBuilder();
-         result.Append(Name);
+         result.Append(Name ?? "<PropertyName>");
          result.Append('[');
          foreach (var alias in Aliases)
          {

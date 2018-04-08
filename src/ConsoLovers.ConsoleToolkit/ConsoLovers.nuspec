@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>ConsoLovers.ConsoleToolkit</id>
-    <version>4.0.0-rc1</version>
+    <version>4.0.0-rc2</version>
     <title>ConsoLovers.ConsoleToolkit</title>
     <authors>danielbramer</authors>
     <owners>danielbramer</owners>
@@ -12,8 +12,10 @@
     <description>$description$</description>
     <releaseNotes>
        4.0.0-rc1
+       - Bug fix because unhandle command line argument event was raised for default commands
+       4.0.0-rc1
        - Some braking changes in the ConsoleApplicationManager class and it's bootstrappers.
-         Migration (if required) should be simple and straightforward.
+       Migration (if required) should be simple and straightforward.
        3.0.3
        - Minor fix to support derived argument classes with unmapped arguments
        3.0.2

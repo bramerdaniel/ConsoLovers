@@ -107,6 +107,16 @@ namespace ConsoLovers.UnitTests
       }
 
       [TestMethod]
+      public void EnsureUnhandledCommandLineArgumentEventIsNotRaisedWhenDefaultCommandIsUsed()
+      {
+         var engine = GetTarget();
+         engine.MonitorEvents();
+         engine.Map<ApplicationCommandsWithDefault>(new[] { "path=SomeValue" });
+
+         engine.ShouldNotRaise(nameof(CommandLineEngine.UnhandledCommandLineArgument));
+      }
+
+      [TestMethod]
       public void EnsureBaseClassArgumentsAreSetAndDoNotRaisedUnhandledCommandLineArgument()
       {
          var engine = GetTarget();

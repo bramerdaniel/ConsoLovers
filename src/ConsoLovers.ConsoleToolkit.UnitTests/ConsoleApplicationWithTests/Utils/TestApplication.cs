@@ -21,7 +21,7 @@
       {
          base.InitializeArguments(instance, args);
 
-         var info = new ArgumentClassInfo(typeof(T));
+         var info = ArgumentClassInfo.FromType<T>();
          foreach (var property in info.Properties)
             application.Argument(property.ParameterName, property.PropertyInfo.GetValue(instance));
       }

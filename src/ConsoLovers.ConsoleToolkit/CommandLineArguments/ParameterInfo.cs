@@ -1,4 +1,10 @@
-﻿namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ParameterInfo.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2018
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 {
    using System;
    using System.Diagnostics;
@@ -11,6 +17,8 @@
    [DebuggerDisplay("[{" + nameof(ParameterName) + "}]")]
    public abstract class ParameterInfo
    {
+      #region Constructors and Destructors
+
       protected ParameterInfo([NotNull] PropertyInfo propertyInfo, [NotNull] CommandLineAttribute commandLineAttribute)
       {
          if (propertyInfo == null)
@@ -22,22 +30,31 @@
          ParameterType = propertyInfo.PropertyType;
          CommandLineAttribute = commandLineAttribute;
          Identifiers = commandLineAttribute.GetIdentifiers().ToArray();
-         ParameterName = commandLineAttribute.Name;
+         ParameterName = commandLineAttribute.Name ?? PropertyInfo.Name;
+
       }
 
-      public string ParameterName { get; }
+      #endregion
 
       #region Public Properties
-      public PropertyInfo PropertyInfo { get; }
 
-      protected CommandLineAttribute CommandLineAttribute { get; }
+      /// <summary>Gets the defined names.</summary>
+      public string[] Identifiers { get; }
+
+      public string ParameterName { get; }
 
       /// <summary>Gets the type of the property that was decorated with the <see cref="CommandLineAttribute"/>.</summary>
       public Type ParameterType { get; }
 
-      /// <summary>Gets the defined names.</summary>
-      public string[] Identifiers{ get; }
-      
+      /// <summary>Gets the <see cref="PropertyInfo"/> of the property that was decorated with the <see cref="CommandLineAttribute"/>.</summary>
+      public PropertyInfo PropertyInfo { get; }
+
+      #endregion
+
+      #region Properties
+
+      protected CommandLineAttribute CommandLineAttribute { get; }
+
       #endregion
    }
 }

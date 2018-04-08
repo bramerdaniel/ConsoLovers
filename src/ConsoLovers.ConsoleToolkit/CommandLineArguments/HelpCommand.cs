@@ -85,7 +85,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
          {
             if (commandInfo.ArgumentType != null)
             {
-               var classInfo = new ArgumentClassInfo(commandInfo.ArgumentType);
+               var classInfo = ArgumentClassInfo.FromType(commandInfo.ArgumentType);
                var parameterInfo = classInfo.GetParameterInfo(argumentName);
                if (parameterInfo != null)
                {

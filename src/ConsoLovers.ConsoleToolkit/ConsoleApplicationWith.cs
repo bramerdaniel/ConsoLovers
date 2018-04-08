@@ -7,7 +7,6 @@
 namespace ConsoLovers.ConsoleToolkit
 {
    using System;
-   using System.Linq;
 
    using ConsoLovers.ConsoleToolkit.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Contracts;
@@ -29,10 +28,7 @@ namespace ConsoLovers.ConsoleToolkit
       [InjectionConstructor]
       protected ConsoleApplicationWith([NotNull] ICommandLineEngine commandLineEngine)
       {
-         if (commandLineEngine == null)
-            throw new ArgumentNullException(nameof(commandLineEngine));
-
-         CommandLineEngine = commandLineEngine;
+         CommandLineEngine = commandLineEngine ?? throw new ArgumentNullException(nameof(commandLineEngine));
          CommandLineEngine.UnhandledCommandLineArgument += OnUnhandledCommandLineArgument;
       }
 
@@ -47,7 +43,7 @@ namespace ConsoLovers.ConsoleToolkit
          {
             if (HasArguments)
             {
-               RunWith(Arguments);
+                RunWith(Arguments);
             }
             else
             {
@@ -61,8 +57,8 @@ namespace ConsoLovers.ConsoleToolkit
       #region IApplication<T> Members
 
       /// <summary>
-      ///    This methof is called when the application was started with command line arguments. NOTE: If there are <see cref="ICommand"/>s specified in the arguments and the
-      ///    application is called with one of those. This method is not called any more, because the command is executed.
+      ///    This method is called when the application was started with command line arguments. NOTE: If there are <see cref="ICommand"/>s specified in the arguments and the
+      ///    application is called with one of those, this method is not called any more, because the command is executed.
       /// </summary>
       /// <param name="arguments">The initialited arguments for the application.</param>
       public abstract void RunWith(T arguments);
@@ -88,7 +84,6 @@ namespace ConsoLovers.ConsoleToolkit
 
       public virtual void InitializeArguments(T instance, string[] args)
       {
-         Args = args;
          HasArguments = args != null && args.Length > 0;
          Arguments = CommandLineEngine.Map(args, instance);
 
@@ -101,8 +96,7 @@ namespace ConsoLovers.ConsoleToolkit
 
       public virtual bool HandleException(Exception exception)
       {
-         var missingArgumentException = exception as MissingCommandLineArgumentException;
-         if (missingArgumentException != null)
+         if (exception is MissingCommandLineArgumentException missingArgumentException)
          {
             Console.WriteLine("Invalid command line arguments", ConsoleColor.Yellow);
             Console.WriteLine(missingArgumentException.Message, ConsoleColor.Yellow);
@@ -121,7 +115,7 @@ namespace ConsoLovers.ConsoleToolkit
 
       #region Public Properties
 
-      public static IConsole Console { get; } = new ConsoleProxy();
+      public IConsole Console { get; protected set; } = new ConsoleProxy();
 
       public T Arguments { get; private set; }
 
@@ -134,7 +128,6 @@ namespace ConsoLovers.ConsoleToolkit
 
       protected ICommandLineEngine CommandLineEngine { get; }
 
-      private string[] Args { get; set; }
 
       #endregion
 
@@ -157,41 +150,16 @@ namespace ConsoLovers.ConsoleToolkit
       /// <returns></returns>
       protected virtual bool ExecuteCommand(bool useDefaultCommand)
       {
-         var applicationArguments = new ArgumentClassInfo(typeof(T));
+         var applicationArguments = ArgumentClassInfo.FromType<T>();
          if (!applicationArguments.HasCommands)
             return false;
 
          ICommand command = GetMappedCommand();
-         if (command != null)
-         {
-            RunWithCommand(command);
-            return true;
-         }
+         if (command == null)
+            return false;
 
-         if (useDefaultCommand)
-         {
-            var defaultCommand = GetDefaultCommand();
-            if (defaultCommand != null)
-            {
-               RunWithCommand(defaultCommand);
-               return true;
-            }
-         }
-
-         return false;
-      }
-
-      protected ICommand GetDefaultCommand()
-      {
-         CommandInfo defaultComand = GetDefaultCommand(HasArguments);
-         if (defaultComand == null)
-            return null;
-
-         var originalArgs = Args.ToList();
-         originalArgs.Insert(0, defaultComand.Attribute.Name);
-
-         CommandLineEngine.Map(originalArgs.ToArray(), Arguments);
-         return defaultComand.PropertyInfo.GetValue(Arguments) as ICommand;
+         RunWithCommand(command);
+         return true;
       }
 
       protected ICommand GetMappedCommand()
@@ -203,8 +171,7 @@ namespace ConsoLovers.ConsoleToolkit
          {
             if (propertyInfo.PropertyType.GetInterface(typeof(ICommand).FullName) != null)
             {
-               var value = propertyInfo.GetValue(Arguments) as ICommand;
-               if (value != null)
+               if (propertyInfo.GetValue(Arguments) is ICommand value)
                   return value;
             }
          }
@@ -236,15 +203,6 @@ namespace ConsoLovers.ConsoleToolkit
       {
          Console.WriteLine(waitText);
          Console.ReadLine();
-      }
-
-      private static CommandInfo GetDefaultCommand(bool withParameters)
-      {
-         var argumentClassInfo = new ArgumentClassInfo(typeof(T));
-         if (withParameters)
-            return argumentClassInfo.CommandInfos.FirstOrDefault(c => c.Attribute.IsDefaultCommand && c.ArgumentType != null);
-
-         return argumentClassInfo.CommandInfos.FirstOrDefault(c => c.Attribute.IsDefaultCommand && c.ArgumentType == null);
       }
 
       #endregion

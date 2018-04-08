@@ -84,7 +84,7 @@ namespace ConsoLovers.UnitTests.ArgumentEngine.HelpCommandTests
             index++;
          }
 
-         return new HelpCommandArguments { ArgumentInfos = new ArgumentClassInfo(typeof(T)), ArgumentDictionary = argumentDictionary };
+         return new HelpCommandArguments { ArgumentInfos = ArgumentClassInfo.FromType<T>(), ArgumentDictionary = argumentDictionary };
       }
 
       #endregion

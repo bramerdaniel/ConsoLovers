@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="CommandLineAttribute.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2017
+//    Copyright (c) ConsoLovers  2015 - 2018
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -11,7 +11,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
    using System.Xml.Serialization;
 
    /// <summary>Base attribute class for the usage with the <see cref="ArgumentMapper{T}"/> class.</summary>
-   [AttributeUsage(AttributeTargets.Property, Inherited = true)]
+   [AttributeUsage(AttributeTargets.Property)]
    public abstract class CommandLineAttribute : Attribute
    {
       #region Constructors and Destructors
@@ -49,7 +49,8 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
 
       public IEnumerable<string> GetIdentifiers()
       {
-         yield return Name;
+         if (Name != null)
+            yield return Name;
 
          if (Aliases != null)
          {

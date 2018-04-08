@@ -313,7 +313,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandLineArguments
       private IArgumentMapper<T> CreateMapper<T>()
          where T : class
       {
-         var info = new ArgumentClassInfo(typeof(T));
+         var info = ArgumentClassInfo.FromType<T>();
          return info.HasCommands ? (IArgumentMapper<T>)ObjectFactory.CreateInstance<CommandMapper<T>>() : ObjectFactory.CreateInstance<ArgumentMapper<T>>();
       }
 

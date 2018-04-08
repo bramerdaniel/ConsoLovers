@@ -38,8 +38,9 @@ namespace CommandLineEngineDemo
          var container = new Container();
          container.Register<ResourceManager>(Properties.Resources.ResourceManager).WithLifetime(Lifetime.Singleton);
          var objectFactory = new DefaultFactory(container);
+
          ConsoleApplicationManager.For<Program>().UsingFactory(objectFactory).Run(args);
-         Console.ReadLine();
+         System.Console.ReadLine();
       }
 
       protected override void OnUnhandledCommandLineArgument(object sender, UnhandledCommandLineArgumentEventArgs e)
