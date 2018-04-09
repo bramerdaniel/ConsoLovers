@@ -42,35 +42,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BootstrapperBase.cs" />
-    <Compile Include="CommandLineArguments\AmbiguousCommandLineArgumentsException.cs" />
-    <Compile Include="CommandLineArguments\ArgumentClassInfo.cs" />
-    <Compile Include="CommandLineArguments\ArgumentInfo.cs" />
-    <Compile Include="CommandLineArguments\ArgumentValidatorAttribute.cs" />
-    <Compile Include="CommandLineArguments\CommandLineArgument.cs" />
-    <Compile Include="CommandLineArguments\CommandLineArgumentValidationException.cs" />
-    <Compile Include="CommandLineArguments\DetailedHelpTextAttribute.cs" />
-    <Compile Include="CommandLineArguments\ErrorReason.cs" />
-    <Compile Include="CommandLineArguments\HelpCommandArguments.cs" />
-    <Compile Include="CommandLineArguments\IArgumentValidator.cs" />
-    <Compile Include="CommandLineArguments\InvalidValidatorUsageException.cs" />
-    <Compile Include="CommandLineArguments\PropertyHelpProvider.cs" />
-    <Compile Include="CommandLineArguments\PropertyHelpRequest.cs" />
-    <Compile Include="CommandLineArguments\TypeHelpProvider.cs" />
-    <Compile Include="CommandLineArguments\HelpTextProviderAttribute.cs" />
-    <Compile Include="CommandLineArguments\IHelpProvider.cs" />
-    <Compile Include="CommandLineArguments\ParameterInfo.cs" />
-    <Compile Include="CommandLineArguments\CommandInfo.cs" />
-    <Compile Include="CommandLineArguments\Extensions.cs" />
-    <Compile Include="CommandLineArguments\GenericCommand.cs" />
-    <Compile Include="CommandLineArguments\CommandMapper.cs" />
-    <Compile Include="CommandLineArguments\HelpCommand.cs" />
-    <Compile Include="CommandLineArguments\ICommand.cs" />
-    <Compile Include="CommandLineArguments\ICommandLineEngine.cs" />
-    <Compile Include="CommandLineArguments\IObjectFactory.cs" />
-    <Compile Include="CommandLineArguments\DefaultFactory.cs" />
-    <Compile Include="CommandLineArguments\TypeHelpRequest.cs" />
-    <Compile Include="CommandLineArguments\UnhandledCommandLineArgumentEventArgs.cs" />
-    <Compile Include="CommandLineArguments\UnmappedCommandLineArgumentEventArgs.cs" />
     <Compile Include="DefaultBootstrapper.cs" />
     <Compile Include="ConsoleApplicationManager.cs" />
     <Compile Include="ConsoleApplicationManagerGeneric.cs" />
@@ -81,25 +52,6 @@
     <Compile Include="Console\ConsoleBuffer.cs" />
     <Compile Include="Console\IConsoleBuffer.cs" />
     <Compile Include="Console\Win32Console.cs" />
-    <Compile Include="DIContainer\Container.cs" />
-    <Compile Include="DIContainer\ContainerEntry.cs" />
-    <Compile Include="DIContainer\ContainerOptions.cs" />
-    <Compile Include="DIContainer\DependencyAttribute.cs" />
-    <Compile Include="DIContainer\FluentSyntax.cs" />
-    <Compile Include="DIContainer\IContainer.cs" />
-    <Compile Include="DIContainer\IFluentInterface.cs" />
-    <Compile Include="DIContainer\InjectionConstructorAttribute.cs" />
-    <Compile Include="DIContainer\Lifetime.cs" />
-    <Compile Include="DIContainer\MostParametersSelectionStrategy.cs" />
-    <Compile Include="DIContainer\RegistrationException.cs" />
-    <Compile Include="DIContainer\Strategies\AttributePropertySelectionStrategy.cs" />
-    <Compile Include="DIContainer\Strategies\AttributSelectionStrategy.cs" />
-    <Compile Include="DIContainer\Strategies\CombinedSelectionStrategy.cs" />
-    <Compile Include="DIContainer\Strategies\ConstructorSelectionStrategies.cs" />
-    <Compile Include="DIContainer\Strategies\ConstructorSelectionStrategy.cs" />
-    <Compile Include="DIContainer\Strategies\PropertySelectionStrategies.cs" />
-    <Compile Include="DIContainer\Strategies\PropertySelectionStrategy.cs" />
-    <Compile Include="DIContainer\Strategies\ReflectionExtensions.cs" />
     <Compile Include="GenericBootstrapper.cs" />
     <Compile Include="IBootstrapper.cs" />
     <Compile Include="IConsoleApplication.cs" />
@@ -116,20 +68,6 @@
     <Compile Include="Progress\ProgressBarOptions.cs" />
     <Compile Include="Progress\StringExtensions.cs" />
     <Compile Include="Properties\Annotations.cs" />
-    <Compile Include="CommandLineArguments\ArgumentAttribute.cs" />
-    <Compile Include="CommandLineArguments\ArgumentHelp.cs" />
-    <Compile Include="CommandLineArguments\ArgumentMapper.cs" />
-    <Compile Include="CommandLineArguments\CommandAttribute.cs" />
-    <Compile Include="CommandLineArguments\CommandLineArgumentException.cs" />
-    <Compile Include="CommandLineArguments\CommandLineArgumentParser.cs" />
-    <Compile Include="CommandLineArguments\CommandLineAttribute.cs" />
-    <Compile Include="CommandLineArguments\CommandLineAttributeException.cs" />
-    <Compile Include="CommandLineArguments\CommandLineEngine.cs" />
-    <Compile Include="CommandLineArguments\HelpTextAttribute.cs" />
-    <Compile Include="CommandLineArguments\IArgumentMapper.cs" />
-    <Compile Include="CommandLineArguments\MapperBase.cs" />
-    <Compile Include="CommandLineArguments\MissingCommandLineArgumentException.cs" />
-    <Compile Include="CommandLineArguments\OptionAttribute.cs" />
     <Compile Include="ConsoleApplication.cs" />
     <Compile Include="ConsoleMessageBox.cs" />
     <Compile Include="Console\ColorAlternator.cs" />
@@ -221,7 +159,12 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\ConsoLovers.ConsoleToolkit.Core\ConsoLovers.ConsoleToolkit.Core.csproj">
+      <Project>{F65F37BA-CEA3-4DE6-A1B6-1127C95D38E0}</Project>
+      <Name>ConsoLovers.ConsoleToolkit.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>IF $(ConfigurationName) == Release ($(SolutionDir)nuget.exe pack $(ProjectPath) -OutputDirectory $(TargetDir) -properties Configuration=Release -symbols)

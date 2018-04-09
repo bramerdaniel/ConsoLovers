@@ -10,7 +10,7 @@ namespace Playground
    using System.Threading.Tasks;
 
    using ConsoLovers.ConsoleToolkit;
-   using ConsoLovers.ConsoleToolkit.CommandLineArguments;
+   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
    public static class Program2
    {
@@ -59,11 +59,10 @@ namespace Playground
 
    internal class TheArguments
    {
-      #region Public Properties
+      [Argument("Path", "p")]
+      public string Path { get; set; }
 
       [Option("WaitForKey", "w")]
       public bool WaitForDebugger { get; set; }
-
-      #endregion
    }
 }

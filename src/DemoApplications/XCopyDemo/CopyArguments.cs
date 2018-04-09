@@ -1,6 +1,6 @@
 ﻿namespace XCopyDemo
 {
-   using ConsoLovers.ConsoleToolkit.CommandLineArguments;
+   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
    internal class CopyArguments
    {

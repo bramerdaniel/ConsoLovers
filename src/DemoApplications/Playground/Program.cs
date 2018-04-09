@@ -12,9 +12,9 @@ namespace Playground
    using System.Threading;
 
    using ConsoLovers.ConsoleToolkit;
-   using ConsoLovers.ConsoleToolkit.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Console;
    using ConsoLovers.ConsoleToolkit.Contracts;
+   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
    public class Program
    {

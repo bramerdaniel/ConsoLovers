@@ -8,7 +8,7 @@ namespace ConsoLovers.ConsoleToolkit
 {
    using System;
 
-   using ConsoLovers.ConsoleToolkit.CommandLineArguments;
+   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
    public class ConsoleApplicationManagerGeneric<T> : ConsoleApplicationManager
       where T : class , IApplication

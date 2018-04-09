@@ -5,7 +5,7 @@ namespace XCopyDemo
    using System.IO;
 
    using ConsoLovers.ConsoleToolkit;
-   using ConsoLovers.ConsoleToolkit.CommandLineArguments;
+   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
    [ConsoleWindowWidth(120)]
    [ConsoleWindowHeight(80)]

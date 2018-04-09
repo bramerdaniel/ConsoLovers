@@ -9,8 +9,8 @@ namespace CommandLineEngineDemo
    using System;
    using System.Reflection;
 
-   using ConsoLovers.ConsoleToolkit.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Contracts;
+   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
    [HelpTextProvider(typeof(CrashCommand))]
    internal class CrashCommand : ICommand, IHelpProvider

@@ -7,7 +7,7 @@ namespace ConsoLovers.UnitTests.InputRange
 {
    using System.Diagnostics.CodeAnalysis;
 
-   using ConsoLovers.ConsoleToolkit;
+   using ConsoLovers.UnitTests.Setups;
 
    using FluentAssertions;
 
@@ -20,7 +20,7 @@ namespace ConsoLovers.UnitTests.InputRange
       [TestMethod]
       public void EnsureRemoveDeletesTheLastByDefault()
       {
-         var target = Setups.Setup.InputRange().WithText("four").Done();
+         var target = Setup.InputRange().WithText("four").Done();
          target.Remove();
 
          target.Length.Should().Be(3);
@@ -30,7 +30,7 @@ namespace ConsoLovers.UnitTests.InputRange
       [TestMethod]
       public void AfterMovingBackwardsRemoveShouldDeleteSecondFromLast()
       {
-         var target = Setups.Setup.InputRange().WithText("four").Done();
+         var target = Setup.InputRange().WithText("four").Done();
          target.Move(-1);
          target.Remove();
 
@@ -41,7 +41,7 @@ namespace ConsoLovers.UnitTests.InputRange
       [TestMethod]
       public void AfterMovingToStartRemoveShouldDoNothing()
       {
-         var target = Setups.Setup.InputRange().WithText("four").Done();
+         var target = Setup.InputRange().WithText("four").Done();
          target.Move(-4);
          target.Remove();
 

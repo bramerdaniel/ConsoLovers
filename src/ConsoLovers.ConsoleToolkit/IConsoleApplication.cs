@@ -8,8 +8,6 @@ namespace ConsoLovers.ConsoleToolkit
 {
    using System;
 
-   using ConsoLovers.ConsoleToolkit.CommandLineArguments;
-
    public interface IConsoleApplication : IApplication
    {
       #region Public Methods and Operators

@@ -10,8 +10,8 @@ namespace CommandLineEngineDemo
    using System.Resources;
 
    using ConsoLovers.ConsoleToolkit;
-   using ConsoLovers.ConsoleToolkit.CommandLineArguments;
-   using ConsoLovers.ConsoleToolkit.DIContainer;
+   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+   using ConsoLovers.ConsoleToolkit.Core.DIContainer;
 
    [ConsoleWindowWidth(140)]
    [ConsoleWindowHeight(60)]

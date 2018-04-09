@@ -2,6 +2,8 @@
 {
    using System.Diagnostics.CodeAnalysis;
 
+   using ConsoLovers.UnitTests.Setups;
+
    using FluentAssertions;
 
    using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -13,7 +15,7 @@
       [TestMethod]
       public void EnsureInsertingAtTheEndWorksCorrectly()
       {
-         var target = Setups.Setup.InputRange()
+         var target = Setup.InputRange()
             .WithText("oooo")
             .WithMaximumLength(5)
             .Done();
@@ -30,7 +32,7 @@
       [TestMethod]
       public void EnsureInsertingAtTheStartWorksCorrectly()
       {
-         var target = Setups.Setup.InputRange()
+         var target = Setup.InputRange()
             .WithText("oooo")
             .WithMaximumLength(5)
             .Done();

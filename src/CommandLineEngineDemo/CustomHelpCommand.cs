@@ -10,7 +10,7 @@ namespace CommandLineEngineDemo
    using System.Reflection;
    using System.Resources;
 
-   using ConsoLovers.ConsoleToolkit.CommandLineArguments;
+   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
    [HelpTextProvider(typeof(CustomHelpCommand))]
    internal class CustomHelpCommand : ICommand, IHelpProvider

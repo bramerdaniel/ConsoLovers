@@ -2,7 +2,7 @@ namespace CommandLineEngineDemo
 {
    using System;
 
-   using ConsoLovers.ConsoleToolkit.CommandLineArguments;
+   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
    internal class CustomizedArgumentsHelpCommand : ICommand<CustomizedHelpArgs>
    {
