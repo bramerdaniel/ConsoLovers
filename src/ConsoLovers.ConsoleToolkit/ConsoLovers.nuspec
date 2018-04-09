@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>ConsoLovers.ConsoleToolkit</id>
-    <version>5.0.0-alpha2</version>
+    <version>5.0.0-alpha3</version>
     <title>ConsoLovers.ConsoleToolkit</title>
     <authors>danielbramer</authors>
     <owners>danielbramer</owners>
@@ -11,20 +11,16 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes>
-       5.0.0-alpha1
-         - First version with .NetStandard support
+       5.0.0-alpha3
+       - Moved most classes to ConsoLovers.ConsoleToolkit.Core (that supports .NetStandard2.0)
 
        Most important classes are:
        - ConsoleMenu
        - ColoredConsoleMenu
-       - ConsoleColorManager
-       - CommandLineEngine
        - InputBox
        - ConsoleBuffer
-       - ConsoleApplicationWith{T}
-       - ConsoleApplicationManager
     </releaseNotes>
     <copyright>Copyright 2017</copyright>
-    <tags>Console Shell Menu ConsoleMenu ConsoleToolkit .Net Password CommandLineArgument CommandLineArguments CommandLineParser InputBox</tags>
+    <tags>Console Shell Menu ConsoleMenu ConsoleToolkit .Net Password InputBox</tags>
   </metadata>
 </package>
