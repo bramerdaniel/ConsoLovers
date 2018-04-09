@@ -10,6 +10,7 @@ namespace Playground
    using System.Threading.Tasks;
 
    using ConsoLovers.ConsoleToolkit;
+   using ConsoLovers.ConsoleToolkit.Core;
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
    public static class Program3

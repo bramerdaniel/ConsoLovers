@@ -3,6 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>Daniel Bramer</Authors>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.0.0-alpha1</Version>
+    <PackageTags>CommandLineEngine, CommandLineParser</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,36 +1,39 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="Program.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2016
+//    Copyright (c) ConsoLovers  2015 - 2018
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace MouseInputDemo
 {
    using System;
-   using System.Drawing;
-   using System.Runtime.InteropServices;
 
-   using ConsoLovers.ConsoleToolkit;
-   using ConsoLovers.ConsoleToolkit.Console;
+   using ConsoLovers.ConsoleToolkit.Core;
    using ConsoLovers.ConsoleToolkit.InputHandler;
 
    class App : ConsoleApplication
    {
+      #region Public Methods and Operators
+
+      public override void Run()
+      {
+         var listener = new ConsoleInputHandler();
+         listener.MouseMoved += OnMouseMoved;
+         listener.MouseDoubleClicked += OnMouseDoubleClicked;
+         listener.MouseWheelChanged += OnMouseWheelChanged;
+         listener.KeyDown += OnKeyDown;
+         listener.Start();
+         listener.Wait();
+      }
+
+      #endregion
+
       #region Methods
 
       static void Main(string[] args)
       {
          ConsoleApplicationManager.RunThis(args);
          Console.ReadKey();
-      }
-
-      private void OnKeyDown(object sender, KeyEventArgs e)
-      {
-         Console.SetCursorPosition(0, 0);
-         Console.WriteLine();
-         Console.WriteLine($" ConsoleKey: .....:     {e.Key.ToString().PadRight(10)}  ");
-         Console.WriteLine($" KeyChar .........:     {e.KeyChar}  ");
-         Console.WriteLine($" Modifiers .........:   {e.ControlKeys.ToString().PadRight(Console.WindowWidth - 10)}  ");
       }
 
       private static void OnMouseDoubleClicked(object sender, MouseEventArgs e)
@@ -42,6 +45,15 @@ namespace MouseInputDemo
             Console.Write("#");
             Console.ResetColor();
          }
+      }
+
+      private void OnKeyDown(object sender, KeyEventArgs e)
+      {
+         Console.SetCursorPosition(0, 0);
+         Console.WriteLine();
+         Console.WriteLine($" ConsoleKey: .....:     {e.Key.ToString().PadRight(10)}  ");
+         Console.WriteLine($" KeyChar .........:     {e.KeyChar}  ");
+         Console.WriteLine($" Modifiers .........:   {e.ControlKeys.ToString().PadRight(Console.WindowWidth - 10)}  ");
       }
 
       private void OnMouseEvent(MOUSE_EVENT_RECORD MouseEvent)
@@ -87,18 +99,5 @@ namespace MouseInputDemo
       }
 
       #endregion
-
-      public override void Run()
-      {
-         var listener = new ConsoleInputHandler();
-         listener.MouseMoved += OnMouseMoved;
-         listener.MouseDoubleClicked += OnMouseDoubleClicked;
-         listener.MouseWheelChanged += OnMouseWheelChanged;
-         listener.KeyDown += OnKeyDown;
-         listener.Start();
-         listener.Wait();
-
-      }
    }
-   
 }

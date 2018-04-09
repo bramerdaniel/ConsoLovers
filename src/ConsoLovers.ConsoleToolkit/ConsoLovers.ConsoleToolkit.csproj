@@ -42,19 +42,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BootstrapperBase.cs" />
-    <Compile Include="DefaultBootstrapper.cs" />
-    <Compile Include="ConsoleApplicationManager.cs" />
-    <Compile Include="ConsoleApplicationManagerGeneric.cs" />
-    <Compile Include="ConsoleApplicationWith.cs" />
-    <Compile Include="ConsoleWindowHeightAttribute.cs" />
-    <Compile Include="ConsoleWindowTitleAttribute.cs" />
-    <Compile Include="ConsoleWindowWidthAttribute.cs" />
     <Compile Include="Console\ConsoleBuffer.cs" />
     <Compile Include="Console\IConsoleBuffer.cs" />
     <Compile Include="Console\Win32Console.cs" />
-    <Compile Include="GenericBootstrapper.cs" />
-    <Compile Include="IBootstrapper.cs" />
-    <Compile Include="IConsoleApplication.cs" />
     <Compile Include="InputLabel.cs" />
     <Compile Include="InputRange.cs" />
     <Compile Include="InsertionMode.cs" />
@@ -68,7 +58,6 @@
     <Compile Include="Progress\ProgressBarOptions.cs" />
     <Compile Include="Progress\StringExtensions.cs" />
     <Compile Include="Properties\Annotations.cs" />
-    <Compile Include="ConsoleApplication.cs" />
     <Compile Include="ConsoleMessageBox.cs" />
     <Compile Include="Console\ColorAlternator.cs" />
     <Compile Include="Console\ColorExtensions.cs" />

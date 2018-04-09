@@ -9,7 +9,7 @@ namespace CommandLineEngineDemo
    using System;
    using System.Resources;
 
-   using ConsoLovers.ConsoleToolkit;
+   using ConsoLovers.ConsoleToolkit.Core;
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Core.DIContainer;
 
