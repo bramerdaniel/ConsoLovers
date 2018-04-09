@@ -14,7 +14,7 @@ namespace ConsoleBufferDemo
    using ConsoLovers.ConsoleToolkit.Core;
 
    [ConsoleWindowTitle("ConsoleBufferDemo")]
-   class Program : ConsoleApplication
+   class Program : IApplication
    {
       #region Constants and Fields
 
@@ -32,7 +32,7 @@ namespace ConsoleBufferDemo
 
       #region Public Methods and Operators
 
-      public override void Run()
+      public void Run()
       {
          firstColumn = 0;
          secondColumn = Console.WindowWidth - firstText.Length;

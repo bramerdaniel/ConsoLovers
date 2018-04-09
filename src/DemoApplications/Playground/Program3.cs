@@ -28,7 +28,7 @@ namespace Playground
 
    [ConsoleWindowHeight(80)]
    [ConsoleWindowWidth(40)]
-   internal class DeleteMeApplication : ConsoleApplicationWith<DeleteMeArguments>
+   internal class DeleteMeApplication : ConsoleApplication<DeleteMeArguments>
    {
       #region Constructors and Destructors
 

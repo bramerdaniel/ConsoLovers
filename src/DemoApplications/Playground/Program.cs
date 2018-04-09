@@ -88,7 +88,7 @@ namespace Playground
       #endregion
    }
 
-   internal class MyProgramLogic : ConsoleApplicationWith<MyArguments>
+   internal class MyProgramLogic : ConsoleApplication<MyArguments>
    {
       #region Public Methods and Operators
 
@@ -155,7 +155,7 @@ namespace Playground
       #endregion
    }
 
-   internal class AppAndParameters : ConsoleApplicationWith<AppAndParameters>
+   internal class AppAndParameters : ConsoleApplication<AppAndParameters>
    {
       #region Public Properties
 

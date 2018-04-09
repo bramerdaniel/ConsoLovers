@@ -15,7 +15,7 @@ namespace CommandLineEngineDemo
 
    [ConsoleWindowWidth(140)]
    [ConsoleWindowHeight(60)]
-   class Program : ConsoleApplicationWith<Commands>
+   class Program : ConsoleApplication<Commands>
    {
       #region Public Methods and Operators
 

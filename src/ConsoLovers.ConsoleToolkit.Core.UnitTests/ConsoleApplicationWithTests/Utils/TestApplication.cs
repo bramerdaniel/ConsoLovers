@@ -7,7 +7,7 @@
 
    using JetBrains.Annotations;
 
-   public class TestApplication<T> : ConsoleApplicationWith<T>
+   public class TestApplication<T> : ConsoleApplication<T>
       where T : class
    {
       private readonly IApplicationVerification application;

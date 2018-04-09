@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>Daniel Bramer</Authors>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.0.0-alpha3</Version>
+    <Version>1.0.0-beta1</Version>
     <PackageTags>Console Shell ConsoleToolkit .Net CommandLineArgument CommandLineArguments CommandLineParser</PackageTags>
     <PackageIconUrl>https://raw.githubusercontent.com/bramerdaniel/ConsoLovers/master/ConsoLovers/Resources/Icon.ico</PackageIconUrl>
     <PackageProjectUrl>https://github.com/bramerdaniel/ConsoLovers</PackageProjectUrl>

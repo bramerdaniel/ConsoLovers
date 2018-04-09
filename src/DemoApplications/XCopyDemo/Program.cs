@@ -9,7 +9,7 @@ namespace XCopyDemo
 
    [ConsoleWindowWidth(120)]
    [ConsoleWindowHeight(80)]
-   class Program : ConsoleApplicationWith<CopyArguments>
+   class Program : ConsoleApplication<CopyArguments>
    {
       // Call it with different arguments
       // s=FileToCopy.txt d=HereItWasCopied.txt -q -o

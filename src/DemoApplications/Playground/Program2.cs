@@ -32,7 +32,7 @@ namespace Playground
 
    [ConsoleWindowHeight(80)]
    [ConsoleWindowWidth(40)]
-   internal class TheApplication : ConsoleApplicationWith<TheArguments>
+   internal class TheApplication : ConsoleApplication<TheArguments>
    {
       #region Constructors and Destructors
 

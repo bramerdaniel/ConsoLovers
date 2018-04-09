@@ -11,11 +11,11 @@ namespace MouseInputDemo
    using ConsoLovers.ConsoleToolkit.Core;
    using ConsoLovers.ConsoleToolkit.InputHandler;
 
-   class App : ConsoleApplication
+   class App : IApplication
    {
       #region Public Methods and Operators
 
-      public override void Run()
+      public void Run()
       {
          var listener = new ConsoleInputHandler();
          listener.MouseMoved += OnMouseMoved;
