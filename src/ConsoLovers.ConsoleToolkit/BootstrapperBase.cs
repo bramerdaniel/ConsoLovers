@@ -1,5 +1,6 @@
 ﻿namespace ConsoLovers.ConsoleToolkit
 {
+   /// <summary>Base class for the bootstrappers</summary>
    internal class BootstrapperBase
    {
       /// <summary>Gets or sets the height of the window.</summary>

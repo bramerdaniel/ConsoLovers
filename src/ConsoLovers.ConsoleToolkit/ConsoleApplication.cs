@@ -11,6 +11,9 @@ namespace ConsoLovers.ConsoleToolkit
    using ConsoLovers.ConsoleToolkit.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Contracts;
 
+   /// <summary>Base class for the <see cref="IConsoleApplication"/> interface</summary>
+   /// <seealso cref="ConsoLovers.ConsoleToolkit.IConsoleApplication" />
+   [Obsolete("Will be removed in ConsoLovers.ConsoleToolkit.Core")]
    public abstract class ConsoleApplication : IConsoleApplication
    {
       #region IConsoleApplication Members

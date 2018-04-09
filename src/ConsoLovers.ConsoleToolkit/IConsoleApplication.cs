@@ -10,6 +10,7 @@ namespace ConsoLovers.ConsoleToolkit
 
    using ConsoLovers.ConsoleToolkit.CommandLineArguments;
 
+   [Obsolete("Will be removed in ConsoLovers.ConsoleToolkit.Core")]
    public interface IConsoleApplication : IApplication
    {
       #region Public Methods and Operators
@@ -48,6 +49,10 @@ namespace ConsoLovers.ConsoleToolkit
       #endregion
    }
 
+   /// <summary>
+   /// Interface that can be used to initi
+   /// </summary>
+   [Obsolete("Will be removed in ConsoLovers.ConsoleToolkit.Core")]
    public interface IInitializer
    {
       #region Public Methods and Operators

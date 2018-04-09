@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>ConsoLovers.ConsoleToolkit</id>
-    <version>4.0.0</version>
+    <version>4.0.1</version>
     <title>ConsoLovers.ConsoleToolkit</title>
     <authors>danielbramer</authors>
     <owners>danielbramer</owners>
@@ -11,6 +11,8 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes>
+       4.0.1
+       - Added some descriptions and some obsolete attributes
        4.0.0
        - Release before .Net standard support
        4.0.0-rc2
