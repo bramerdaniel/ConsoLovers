@@ -13,7 +13,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
    using System.Resources;
    using System.Text;
 
-   using ConsoLovers.ConsoleToolkit.Core.Contracts;
    using ConsoLovers.ConsoleToolkit.Core.DIContainer;
 
    using JetBrains.Annotations;

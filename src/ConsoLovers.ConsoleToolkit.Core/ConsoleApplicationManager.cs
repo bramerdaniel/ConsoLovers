@@ -10,6 +10,8 @@ namespace ConsoLovers.ConsoleToolkit.Core
    using System.Diagnostics;
    using System.Reflection;
 
+   using ConsoLovers.ConsoleToolkit.Core.BootStrappers;
+
    /// <summary>This class is the starting point for running an <see cref="IApplication"/> or <see cref="IApplication{T}"/></summary>
    public class ConsoleApplicationManager
    {
@@ -42,6 +44,9 @@ namespace ConsoLovers.ConsoleToolkit.Core
       /// <summary>Gets or sets the width of the window.</summary>
       protected internal int? WindowWidth { get; set; }
 
+      /// <summary>Creates a bootstrapper for the given type <see cref="T"/>.</summary>
+      /// <typeparam name="T">The type of the application.</typeparam>
+      /// <returns></returns>
       public static IBootstrapper<T> For<T>()
          where T : class, IApplication
       {
@@ -102,7 +107,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       {
          var title = WindowTitle ?? (applicationType.GetCustomAttribute(typeof(ConsoleWindowTitleAttribute)) as ConsoleWindowTitleAttribute)?.Title;
          if (title != null)
-            System.Console.Title = title;
+            Console.Title = title;
       }
 
       #endregion
@@ -115,7 +120,8 @@ namespace ConsoLovers.ConsoleToolkit.Core
          {
             if (IsArgumentInitializer(applicationType, out _))
             {
-               var methodInfo = applicationType.GetMethod(nameof(IArgumentInitializer<Type>.CreateArguments)); // TODO Ensure functionality with unit tests
+               // TODO Ensure functionality with unit tests
+               var methodInfo = applicationType.GetMethod(nameof(IArgumentInitializer<Type>.CreateArguments));
                // ReSharper disable once PossibleNullReferenceException
                var argumentsInstance = methodInfo.Invoke(application, null);
 
@@ -146,17 +152,17 @@ namespace ConsoLovers.ConsoleToolkit.Core
          {
             if (WindowHeight.HasValue)
             {
-               System.Console.WindowHeight = Math.Min(WindowHeight.Value, System.Console.LargestWindowHeight);
+               Console.WindowHeight = Math.Min(WindowHeight.Value, Console.LargestWindowHeight);
             }
             else
             {
                var heightAttribute = GetAttribute<ConsoleWindowHeightAttribute>(applicationType);
                if (heightAttribute != null)
                {
-                  if (System.Console.WindowHeight > heightAttribute.ConsoleHeight && !heightAttribute.AllowShrink)
+                  if (Console.WindowHeight > heightAttribute.ConsoleHeight && !heightAttribute.AllowShrink)
                      return;
 
-                  System.Console.WindowHeight = Math.Min(heightAttribute.ConsoleHeight, System.Console.LargestWindowHeight);
+                  Console.WindowHeight = Math.Min(heightAttribute.ConsoleHeight, Console.LargestWindowHeight);
                }
             }
          }
@@ -169,17 +175,17 @@ namespace ConsoLovers.ConsoleToolkit.Core
          {
             if (WindowWidth.HasValue)
             {
-               System.Console.WindowWidth = Math.Min(WindowWidth.Value, System.Console.LargestWindowWidth);
+               Console.WindowWidth = Math.Min(WindowWidth.Value, Console.LargestWindowWidth);
             }
             else
             {
                var widthAttribute = GetAttribute<ConsoleWindowWidthAttribute>(applicationType);
                if (widthAttribute != null)
                {
-                  if (System.Console.WindowWidth > widthAttribute.ConsoleWidth && !widthAttribute.AllowShrink)
+                  if (Console.WindowWidth > widthAttribute.ConsoleWidth && !widthAttribute.AllowShrink)
                      return;
 
-                  System.Console.WindowWidth = Math.Min(widthAttribute.ConsoleWidth, System.Console.LargestWindowWidth);
+                  Console.WindowWidth = Math.Min(widthAttribute.ConsoleWidth, Console.LargestWindowWidth);
                }
             }
          }

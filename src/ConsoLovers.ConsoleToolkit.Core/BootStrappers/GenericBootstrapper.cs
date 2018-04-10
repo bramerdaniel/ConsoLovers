@@ -4,12 +4,16 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Core
+namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
 {
    using System;
 
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
+   /// <summary>Bootstrapper for generic <see cref="IApplication{T}"/>s/// </summary>
+   /// <typeparam name="T">The type pf the application</typeparam>
+   /// <seealso cref="ConsoLovers.ConsoleToolkit.Core.BootStrappers.BootstrapperBase" />
+   /// <seealso cref="ConsoLovers.ConsoleToolkit.Core.IBootstrapper{T}" />
    internal class GenericBootstrapper<T> : BootstrapperBase, IBootstrapper<T>
       where T : class, IApplication
    {
@@ -21,6 +25,11 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       #region IBootstrapper<T> Members
 
+      /// <summary>Specifies the function that creates the instance of the application.</summary>
+      /// <param name="applicationBuilder">The application builder function.</param>
+      /// <returns>The current <see cref="T:ConsoLovers.ConsoleToolkit.Core.IBootstrapper`1"/> for futher configuration</returns>
+      /// <exception cref="InvalidOperationException">ApplicationBuilder function was already specified.</exception>
+      /// <exception cref="ArgumentNullException">applicationBuilder</exception>
       public IBootstrapper<T> CreateApplication(Func<T> applicationBuilder)
       {
          if (createApplication != null)

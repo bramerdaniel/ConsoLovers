@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Core.Contracts
+namespace ConsoLovers.ConsoleToolkit.Core
 {
    using System;
 

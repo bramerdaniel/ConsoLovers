@@ -177,7 +177,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       #region Public Properties
 
-      public CommandLineArgumentParser ArgumentParser { get; set; } = new CommandLineArgumentParser();
+      public ICommandLineArgumentParser ArgumentParser { get; set; } = new CommandLineArgumentParser();
 
       #endregion
 

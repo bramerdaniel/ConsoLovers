@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="CommandLineArgumentParser.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2016
+//    Copyright (c) ConsoLovers  2015 - 2018
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -11,7 +11,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
    using System.Globalization;
    using System.Linq;
 
-   public class CommandLineArgumentParser
+   /// <summary>Default implementation of the <see cref="ICommandLineArgumentParser"/> interface</summary>
+   /// <seealso cref="ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.ICommandLineArgumentParser" />
+   public class CommandLineArgumentParser : ICommandLineArgumentParser
    {
       #region Constants and Fields
 
@@ -21,12 +23,38 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       #endregion
 
-      #region Public Methods and Operators
+      #region ICommandLineArgumentParser Members
+
+      /// <summary>Parses the given arguments into a dictionary.</summary>
+      /// <param name="args">The command line arguments.</param>
+      /// <param name="caseSensitive">if set to <c>true</c> the arguments should be treated case sensitive.</param>
+      /// <returns>The created dictionary</returns>
+      public IDictionary<string, CommandLineArgument> ParseArguments(string[] args, bool caseSensitive)
+      {
+         var arguments = new Dictionary<string, CommandLineArgument>(caseSensitive ? StringComparer.InvariantCulture : StringComparer.CurrentCultureIgnoreCase);
+         int index = 0;
+
+         foreach (string argument in NormalizeArguments(args).Where(x => !string.IsNullOrEmpty(x)))
+         {
+            if (IsNamedParameter(argument))
+               ParseNamedParameter(argument, arguments, index);
+            else
+               ParseOption(argument, arguments, index);
+
+            index++;
+         }
+
+         return arguments;
+      }
+
+      #endregion
+
+      #region Methods
 
       /// <summary>Normalizes the arguments.</summary>
       /// <param name="args">The arguments.</param>
       /// <returns>A normalized enumerable</returns>
-      public IEnumerable<string> NormalizeArguments(params string[] args)
+      internal IEnumerable<string> NormalizeArguments(params string[] args)
       {
          var normalized = new List<string>();
          var maxIndex = args.Length - 1;
@@ -59,28 +87,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          return normalized;
       }
 
-      public IDictionary<string, CommandLineArgument> ParseArguments(string[] args, bool caseSensitive)
-      {
-         var arguments = new Dictionary<string, CommandLineArgument>(caseSensitive ? StringComparer.InvariantCulture : StringComparer.CurrentCultureIgnoreCase);
-         int index = 0;
-
-         foreach (string argument in NormalizeArguments(args).Where(x => !string.IsNullOrEmpty(x)))
-         {
-            if (IsNamedParameter(argument))
-               ParseNamedParameter(argument, arguments, index);
-            else
-               ParseOption(argument, arguments, index);
-
-            index++;
-         }
-
-         return arguments;
-      }
-
-      #endregion
-
-      #region Methods
-
       private static bool EndsWithNameSeparator(string current)
       {
          return !string.IsNullOrEmpty(current) && NameSeparators.Contains(current[current.Length - 1]);
@@ -104,14 +110,14 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          return !IsQuoted(argumentString) && NameSeparators.Any(argumentString.Contains);
       }
 
-      private static bool IsQuoted(string argumentString)
-      {
-         return argumentString.StartsWith("\"");
-      }
-
       private static bool IsNameSeparator(string candidate)
       {
          return candidate.Length == 1 && NameSeparators.Contains(candidate[0]);
+      }
+
+      private static bool IsQuoted(string argumentString)
+      {
+         return argumentString.StartsWith("\"");
       }
 
       private static void ParseNamedParameter(string argumentString, IDictionary<string, CommandLineArgument> arguments, int index)

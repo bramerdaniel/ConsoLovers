@@ -9,7 +9,6 @@ namespace ConsoLovers.ConsoleToolkit.Core
    using System;
 
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
-   using ConsoLovers.ConsoleToolkit.Core.Contracts;
    using ConsoLovers.ConsoleToolkit.Core.DIContainer;
 
    using JetBrains.Annotations;

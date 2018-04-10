@@ -8,8 +8,6 @@ namespace ConsoLovers.ConsoleToolkit.Core
 {
    using System;
 
-   using ConsoLovers.ConsoleToolkit.Core.Contracts;
-
    using JetBrains.Annotations;
 
    /// <summary>Helper class for printing <see cref="Exception"/> details to the console</summary>
@@ -65,7 +63,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       private void PrintLine(string header, string text)
       {
-         var consoleWidth = System.Console.WindowWidth;
+         var consoleWidth = Console.WindowWidth;
          var headerIndent = string.Empty.PadRight(header.Length, ' ');
 
          var rest = header + text;

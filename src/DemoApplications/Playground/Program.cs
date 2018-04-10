@@ -15,7 +15,6 @@ namespace Playground
    using ConsoLovers.ConsoleToolkit.Console;
    using ConsoLovers.ConsoleToolkit.Core;
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
-   using ConsoLovers.ConsoleToolkit.Core.Contracts;
 
    public class Program
    {

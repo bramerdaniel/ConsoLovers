@@ -7,7 +7,6 @@
 namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups
 {
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
-   using ConsoLovers.ConsoleToolkit.Core.Contracts;
 
    using Moq;
 

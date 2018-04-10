@@ -10,7 +10,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
-   public class ConsoleApplicationManagerGeneric<T> : ConsoleApplicationManager
+   internal class ConsoleApplicationManagerGeneric<T> : ConsoleApplicationManager
       where T : class , IApplication
    {
       #region Constructors and Destructors

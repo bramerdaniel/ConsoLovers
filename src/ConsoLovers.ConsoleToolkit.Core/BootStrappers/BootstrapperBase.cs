@@ -1,4 +1,4 @@
-﻿namespace ConsoLovers.ConsoleToolkit.Core
+﻿namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
 {
    internal class BootstrapperBase
    {

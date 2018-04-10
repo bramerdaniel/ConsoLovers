@@ -20,10 +20,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       /// <param name="title">The title.</param>
       public ConsoleWindowTitleAttribute([NotNull] string title)
       {
-         if (title == null)
-            throw new ArgumentNullException(nameof(title));
-
-         Title = title;
+         Title = title ?? throw new ArgumentNullException(nameof(title));
       }
 
       #endregion
@@ -31,7 +28,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       #region Public Properties
 
       /// <summary>Gets the title that will be set to the console window.</summary>
-      public string Title { get; private set; }
+      public string Title { get; }
 
       #endregion
    }
