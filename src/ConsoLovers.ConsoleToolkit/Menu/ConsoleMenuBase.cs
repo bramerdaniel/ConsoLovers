@@ -12,7 +12,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
    using ConsoLovers.ConsoleToolkit.Console;
    using ConsoLovers.ConsoleToolkit.Contracts;
-   using ConsoLovers.ConsoleToolkit.Core.Contracts;
+   using ConsoLovers.ConsoleToolkit.Core;
    using ConsoLovers.ConsoleToolkit.InputHandler;
 
    public abstract class ConsoleMenuBase : IConsoleMenuOptions

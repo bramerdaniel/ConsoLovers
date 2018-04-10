@@ -8,8 +8,7 @@ namespace ConsoLovers.ConsoleToolkit
 {
    using System;
 
-   using ConsoLovers.ConsoleToolkit.Contracts;
-   using ConsoLovers.ConsoleToolkit.Core.Contracts;
+   using ConsoLovers.ConsoleToolkit.Core;
 
    using JetBrains.Annotations;
 
