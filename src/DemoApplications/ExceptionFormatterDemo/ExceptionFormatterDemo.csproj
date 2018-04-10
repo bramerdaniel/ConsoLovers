@@ -50,9 +50,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ConsoLovers.ConsoleToolkit\ConsoLovers.ConsoleToolkit.csproj">
-      <Project>{A001404C-4752-48B0-B28A-2EA524E49ADB}</Project>
-      <Name>ConsoLovers.ConsoleToolkit</Name>
+    <ProjectReference Include="..\..\ConsoLovers.ConsoleToolkit.Core\ConsoLovers.ConsoleToolkit.Core.csproj">
+      <Project>{5cd277eb-585c-4891-b8b9-4a6f53d94a2e}</Project>
+      <Name>ConsoLovers.ConsoleToolkit.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

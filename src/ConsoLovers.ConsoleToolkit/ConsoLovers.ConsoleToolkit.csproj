@@ -145,10 +145,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ConsoLovers.ConsoleToolkit.Core\ConsoLovers.ConsoleToolkit.Core.csproj">
-      <Project>{f65f37ba-cea3-4de6-a1b6-1127c95d38e0}</Project>
-      <Name>ConsoLovers.ConsoleToolkit.Core</Name>
-    </ProjectReference>
+    <PackageReference Include="ConsoLovers.ConsoleToolkit.Core">
+      <Version>1.0.0-beta1</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

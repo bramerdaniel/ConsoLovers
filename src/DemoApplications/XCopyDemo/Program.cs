@@ -33,14 +33,6 @@ namespace XCopyDemo
                if (!arguments.OverrideExisting)
                   throw new XCopyException("Destination file allready exists. Use OverrideExisting option [-o] to override ");
             }
-            else
-            {
-               var answer = new Question($"The file {arguments.DestinationFile} allready exists. Override ?").Show();
-               if (answer != Answer.Yes)
-                  return;
-
-               arguments.OverrideExisting = true;
-            }
          }
 
          File.Copy(arguments.SourceFile, arguments.DestinationFile, arguments.OverrideExisting);

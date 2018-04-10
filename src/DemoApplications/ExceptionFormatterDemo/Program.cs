@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ExceptionFormatterDemo
 {
-   using ConsoLovers.ConsoleToolkit;
+   using ConsoLovers.ConsoleToolkit.Core;
 
    class Program
    {

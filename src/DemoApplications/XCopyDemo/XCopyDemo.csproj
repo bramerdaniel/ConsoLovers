@@ -47,26 +47,21 @@
     <Compile Include="CopyArguments.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Question.cs" />
     <Compile Include="XCopyException.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ConsoLovers.ConsoleToolkit.Core\ConsoLovers.ConsoleToolkit.Core.csproj">
-      <Project>{f65f37ba-cea3-4de6-a1b6-1127c95d38e0}</Project>
-      <Name>ConsoLovers.ConsoleToolkit.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\ConsoLovers.ConsoleToolkit\ConsoLovers.ConsoleToolkit.csproj">
-      <Project>{A001404C-4752-48B0-B28A-2EA524E49ADB}</Project>
-      <Name>ConsoLovers.ConsoleToolkit</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="FileToCopy.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\ConsoLovers.ConsoleToolkit.Core\ConsoLovers.ConsoleToolkit.Core.csproj">
+      <Project>{5cd277eb-585c-4891-b8b9-4a6f53d94a2e}</Project>
+      <Name>ConsoLovers.ConsoleToolkit.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
