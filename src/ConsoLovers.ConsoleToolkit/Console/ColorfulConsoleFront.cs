@@ -13,6 +13,7 @@ namespace ConsoLovers.ConsoleToolkit.Console
    using System.Text;
 
    using ConsoLovers.ConsoleToolkit.Contracts;
+   using ConsoLovers.ConsoleToolkit.Core.Contracts;
 
    /// <summary>Wraps around the System.ColoredConsole class, adding enhanced styling functionality.</summary>
    public partial class ColoredConsole : IColoredConsole

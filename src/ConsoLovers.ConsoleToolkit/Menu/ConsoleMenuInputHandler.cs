@@ -56,39 +56,21 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       public event EventHandler<MouseEventArgs> MouseMoved
       {
-         add
-         {
-            handler.MouseMoved += value;
-         }
-         remove
-         {
-            handler.MouseMoved -= value;
-         }
+         add => handler.MouseMoved += value;
+         remove => handler.MouseMoved -= value;
       }
 
 
       public event EventHandler<MouseEventArgs> MouseDoubleClicked
       {
-         add
-         {
-            handler.MouseDoubleClicked += value;
-         }
-         remove
-         {
-            handler.MouseDoubleClicked -= value;
-         }
+         add => handler.MouseDoubleClicked += value;
+         remove => handler.MouseDoubleClicked -= value;
       }
 
       public event EventHandler<MouseEventArgs> MouseClicked
       {
-         add
-         {
-            handler.MouseClicked += value;
-         }
-         remove
-         {
-            handler.MouseClicked -= value;
-         }
+         add => handler.MouseClicked += value;
+         remove => handler.MouseClicked -= value;
       }
 
       private void OnKeyDown(object sender, KeyEventArgs e)

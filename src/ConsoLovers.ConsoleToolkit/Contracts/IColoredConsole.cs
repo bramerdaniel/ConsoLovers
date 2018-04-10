@@ -9,6 +9,8 @@ namespace ConsoLovers.ConsoleToolkit.Contracts
    using System;
    using System.Drawing;
 
+   using ConsoLovers.ConsoleToolkit.Core.Contracts;
+
    /// <summary>ColoredConsole abstraction that adds some methods for easy colorizing the console</summary>
    /// <seealso cref="IConsole"/>
    public interface IColoredConsole : IConsole

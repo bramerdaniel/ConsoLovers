@@ -41,7 +41,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BootstrapperBase.cs" />
     <Compile Include="Console\ConsoleBuffer.cs" />
     <Compile Include="Console\IConsoleBuffer.cs" />
     <Compile Include="Console\Win32Console.cs" />
@@ -91,7 +90,6 @@
     <Compile Include="Console\TextFormatter.cs" />
     <Compile Include="Console\TextPattern.cs" />
     <Compile Include="Console\TextPatternCollection.cs" />
-    <Compile Include="Contracts\ConsoleProxy.cs" />
     <Compile Include="ExceptionFormatter.cs" />
     <Compile Include="ICanShowMenu.cs" />
     <Compile Include="IInputBox.cs" />
@@ -110,7 +108,6 @@
     <Compile Include="InputHandler\MOUSE_EVENT_RECORD.cs" />
     <Compile Include="InputHandler\WINDOW_BUFFER_SIZE_RECORD.cs" />
     <Compile Include="InputBox.cs" />
-    <Compile Include="InputMask.cs" />
     <Compile Include="Menu\ColoredConsoleMenu.cs" />
     <Compile Include="Menu\ConsoleInputEventArgs.cs" />
     <Compile Include="Menu\ConsoleMenu.cs" />
@@ -124,7 +121,6 @@
     <Compile Include="Menu\ExceptionEventArgs.cs" />
     <Compile Include="Menu\ExpanderDescription.cs" />
     <Compile Include="Contracts\IColoredConsole.cs" />
-    <Compile Include="Contracts\IConsole.cs" />
     <Compile Include="Contracts\ICustomHeader.cs" />
     <Compile Include="Contracts\ICustomFooter.cs" />
     <Compile Include="Menu\ICanAddMenuItems.cs" />
@@ -147,6 +143,11 @@
     <None Include="ConsoLovers.nuspec">
       <SubType>Designer</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="ConsoLovers.ConsoleToolkit.Core">
+      <Version>1.0.0-beta1</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

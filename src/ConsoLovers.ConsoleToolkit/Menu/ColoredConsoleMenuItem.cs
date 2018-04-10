@@ -12,7 +12,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
    using System.Linq;
 
    [DebuggerDisplay("{" + nameof(Text) + "}")]
-   public class ColoredConsoleMenuItem : PrintableItem
+   public sealed class ColoredConsoleMenuItem : PrintableItem
    {
       #region Constants and Fields
 
@@ -96,14 +96,11 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          private set => isExpanded = value;
       }
 
-      public List<PrintableItem> Items
-      {
-         get => items ?? (items = new List<PrintableItem>());
-      }
+      public List<PrintableItem> Items => items ?? (items = new List<PrintableItem>());
 
       public bool ReturnsToMenu { get; set; } = true;
 
-      public virtual string Text
+      public string Text
       {
          get => loadingChildren ? text + " [loading children]" : text;
 
@@ -180,6 +177,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
          while (previousIndex >= 0)
          {
+            // ReSharper disable once UsePatternMatching
             var previous = ((ColoredConsoleMenuItem)Parent).items[previousIndex] as ColoredConsoleMenuItem;
             if (previous != null)
             {
@@ -256,6 +254,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
          while (nextIndex < ((ColoredConsoleMenuItem)Parent).items.Count)
          {
+            // ReSharper disable once UsePatternMatching
             var item = ((ColoredConsoleMenuItem)Parent).items[nextIndex] as ColoredConsoleMenuItem;
             if (item != null)
                return item;

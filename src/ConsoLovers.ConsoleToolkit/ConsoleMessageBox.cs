@@ -7,6 +7,7 @@ namespace ConsoLovers.ConsoleToolkit
 {
    using ConsoLovers.ConsoleToolkit.Console;
    using ConsoLovers.ConsoleToolkit.Contracts;
+   using ConsoLovers.ConsoleToolkit.Core.Contracts;
 
    public class ConsoleMessageBox
    {

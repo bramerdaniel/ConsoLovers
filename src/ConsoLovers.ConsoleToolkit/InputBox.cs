@@ -10,6 +10,7 @@ namespace ConsoLovers.ConsoleToolkit
    using System.Globalization;
 
    using ConsoLovers.ConsoleToolkit.Contracts;
+   using ConsoLovers.ConsoleToolkit.Core.Contracts;
 
    /// <summary>Helper class for creating a</summary>
    /// <typeparam name="T">The type of the expected input</typeparam>

@@ -10,6 +10,7 @@
     <PackageProjectUrl>https://github.com/bramerdaniel/ConsoLovers</PackageProjectUrl>
     <Company>ConsoLovers</Company>
     <Copyright>Copyright 2018</Copyright>
+    <Description>Collection of tools for developing console applications.</Description>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

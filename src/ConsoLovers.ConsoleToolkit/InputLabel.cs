@@ -10,6 +10,7 @@ namespace ConsoLovers.ConsoleToolkit
 
    using ConsoLovers.ConsoleToolkit.Console;
    using ConsoLovers.ConsoleToolkit.Contracts;
+   using ConsoLovers.ConsoleToolkit.Core.Contracts;
 
    /// <summary>Class that represents the label of an <see cref="InputBox"/></summary>
    public class InputLabel

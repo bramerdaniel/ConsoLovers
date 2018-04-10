@@ -12,7 +12,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
    using System.Linq;
 
    [DebuggerDisplay("{Text}")]
-   public class ConsoleMenuItem : PrintableItem
+   public sealed class ConsoleMenuItem : PrintableItem
    {
       #region Constants and Fields
 
@@ -28,7 +28,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       internal List<PrintableItem> items;
 
-      private bool loadingChildren = false;
+      private bool loadingChildren;
 
       private string text;
 
@@ -60,28 +60,19 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       public ConsoleMenuItem(string text, Action<ConsoleMenuItem> execute)
          : this(text)
       {
-         if (execute == null)
-            throw new ArgumentNullException(nameof(execute));
-         this.execute = execute;
+         this.execute = execute ?? throw new ArgumentNullException(nameof(execute));
       }
 
       public ConsoleMenuItem(string text, Action<ConsoleMenuItem> execute, Func<bool> canExecute)
          : this(text)
       {
-         if (execute == null)
-            throw new ArgumentNullException(nameof(execute));
-         if (canExecute == null)
-            throw new ArgumentNullException(nameof(canExecute));
-
-         this.execute = execute;
-         this.canExecute = canExecute;
+         this.execute = execute ?? throw new ArgumentNullException(nameof(execute));
+         this.canExecute = canExecute ?? throw new ArgumentNullException(nameof(canExecute));
       }
 
       public ConsoleMenuItem(string text)
       {
-         if (text == null)
-            throw new ArgumentNullException(nameof(text));
-         Text = text;
+         Text = text ?? throw new ArgumentNullException(nameof(text));
       }
 
       #endregion
@@ -102,38 +93,18 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
             return isExpanded;
          }
-         private set
-         {
-            isExpanded = value;
-         }
+         private set => isExpanded = value;
       }
 
-      public List<PrintableItem> Items
-      {
-         get
-         {
-            return items ?? (items = new List<PrintableItem>());
-         }
-
-         private set
-         {
-            items = value;
-         }
-      }
+      public List<PrintableItem> Items => items ?? (items = new List<PrintableItem>());
 
       public bool ReturnsToMenu { get; set; } = true;
 
-      public virtual string Text
+      public string Text
       {
-         get
-         {
-            return loadingChildren ? text + " [loading children]" : text;
-         }
+         get => loadingChildren ? text + " [loading children]" : text;
 
-         set
-         {
-            text = value;
-         }
+         set => text = value;
       }
       
 
@@ -247,8 +218,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
          while (previousIndex >= 0)
          {
-            var previous = ((ConsoleMenuItem)Parent).items[previousIndex] as ConsoleMenuItem;
-            if (previous != null)
+            if (((ConsoleMenuItem)Parent).items[previousIndex] is ConsoleMenuItem previous)
             {
                if (previous.IsExpanded)
                {
@@ -275,7 +245,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          if (firstChildWhenExpanded && IsExpanded && HasChildren)
             return items?.OfType<ConsoleMenuItem>().FirstOrDefault();
 
-         if (Parent == null || ((ConsoleMenuItem)Parent).items == null)
+         if (((ConsoleMenuItem)Parent)?.items == null)
             return null;
 
          var currentIndex = ((ConsoleMenuItem)Parent).items.IndexOf(this);

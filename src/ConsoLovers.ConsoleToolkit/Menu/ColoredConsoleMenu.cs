@@ -34,10 +34,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       /// <summary>Gets or sets the <see cref="MenuColorTheme"/> the <see cref="ColoredConsoleMenu"/> uses.</summary>
       public MenuColorTheme Theme
       {
-         get
-         {
-            return theme;
-         }
+         get => theme;
          set
          {
             if (theme == value)

@@ -12,9 +12,9 @@ namespace ConsoLovers.ConsoleToolkit.Menu
    {
       #region Constants and Fields
 
-      ConsoleColor sharedBackground = ConsoleColor.Black;
+      private readonly ConsoleColor sharedBackground = ConsoleColor.Black;
 
-      private ConsoleColor sharedForeground = ConsoleColor.Gray;
+      private readonly ConsoleColor sharedForeground = ConsoleColor.Gray;
 
       #endregion
 

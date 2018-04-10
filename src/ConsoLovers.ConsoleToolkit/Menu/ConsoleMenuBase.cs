@@ -12,6 +12,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
    using ConsoLovers.ConsoleToolkit.Console;
    using ConsoLovers.ConsoleToolkit.Contracts;
+   using ConsoLovers.ConsoleToolkit.Core.Contracts;
    using ConsoLovers.ConsoleToolkit.InputHandler;
 
    public abstract class ConsoleMenuBase : IConsoleMenuOptions
@@ -24,7 +25,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       private readonly ConsoleMenuItem root = new ConsoleMenuItem("rootItem");
 
-      private bool attached = false;
+      private bool attached;
 
       private bool circularSelection = true;
 
@@ -68,10 +69,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       /// <summary>Gets or sets a value indicating whether the circular selection is enabled or not.</summary>
       public bool CircularSelection
       {
-         get
-         {
-            return circularSelection;
-         }
+         get => circularSelection;
          set
          {
             if (circularSelection == value)
@@ -84,10 +82,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       public bool ClearOnExecution
       {
-         get
-         {
-            return clearOnExecution;
-         }
+         get => clearOnExecution;
          set
          {
             if (clearOnExecution == value)
@@ -104,10 +99,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       public ExpanderDescription Expander
       {
-         get
-         {
-            return expander;
-         }
+         get => expander;
          set
          {
             if (expander == value)
@@ -127,10 +119,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       /// <summary>Gets or sets the size of the indent that is used to indent child menu items.</summary>
       public int IndentSize
       {
-         get
-         {
-            return indentSize;
-         }
+         get => indentSize;
          set
          {
             if (indentSize == value)
@@ -144,10 +133,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       /// <summary>Gets or sets a value indicating whether the <see cref="ConsoleMenuItem"/>s should be displayed and be accessible with an index.</summary>
       public bool IndexMenuItems
       {
-         get
-         {
-            return indexMenuItems;
-         }
+         get => indexMenuItems;
          set
          {
             if (indexMenuItems == value)
@@ -161,10 +147,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       /// <summary>Gets or sets the selection strech mode that is used for displaying the selection.</summary>
       public SelectionStrech SelectionStrech
       {
-         get
-         {
-            return selectionStrech;
-         }
+         get => selectionStrech;
          set
          {
             if (selectionStrech == value)
@@ -178,10 +161,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       /// <summary>Gets or sets the selector that is used for displaying the selection.</summary>
       public string Selector
       {
-         get
-         {
-            return selector;
-         }
+         get => selector;
          set
          {
             if (selector == value)
@@ -204,10 +184,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       /// <summary>Gets or sets a value indicating whether the mouse selection is enabled.</summary>
       public MouseMode MouseMode
       {
-         get
-         {
-            return mouseMode;
-         }
+         get => mouseMode;
          set
          {
             if (value == mouseMode)
@@ -223,10 +200,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       /// <summary>Gets or sets the selected item.</summary>
       public ConsoleMenuItem SelectedItem
       {
-         get
-         {
-            return selectedItem;
-         }
+         get => selectedItem;
 
          private set
          {
@@ -509,6 +483,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
                   Indent = string.Empty.PadRight(indent * IndentSize),
                   IsExpanded = null
                };
+
                yield return seperatorElement;
                continue;
             }
@@ -739,16 +714,14 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       private void PrintFooter()
       {
-         var stringFooter = Footer as string;
-         if (stringFooter != null)
+         if (Footer is string stringFooter)
          {
             Write(stringFooter, GetFooterForeground(), GetFooterBackground());
             Console.WriteLine();
             return;
          }
 
-         var customFooter = Footer as ICustomFooter;
-         if (customFooter != null)
+         if (Footer is ICustomFooter customFooter)
          {
             customFooter.PrintFooter();
             return;
@@ -760,16 +733,14 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       private void PrintHeader()
       {
-         var stringHeader = Header as string;
-         if (stringHeader != null)
+         if (Header is string stringHeader)
          {
             Write(stringHeader, GetHeaderForeground(), GetHeaderBackground());
             Console.WriteLine();
             return;
          }
 
-         var customHeader = Header as ICustomHeader;
-         if (customHeader != null)
+         if (Header is ICustomHeader customHeader)
          {
             customHeader.PrintHeader();
             return;
@@ -826,8 +797,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          if (itemToUpdate == null)
             return;
 
-         ElementInfo elementToUpdate;
-         if (elements.TryGetValue(itemToUpdate, out elementToUpdate))
+         if (elements.TryGetValue(itemToUpdate, out var elementToUpdate))
          {
             elementToUpdate.IsSelected = isSelected;
             Console.CursorTop = elementToUpdate.Line;
@@ -930,19 +900,15 @@ namespace ConsoLovers.ConsoleToolkit.Menu
                return;
             case ConsoleKey.End:
                SelectedItem = elements.Values.LastOrDefault()?.MenuItem as ConsoleMenuItem;
-               ;
                return;
          }
 
          if (!IndexMenuItems)
             return;
 
-         ElementInfo element;
-         if (indexMap.TryGetValue(input, out element))
+         if (indexMap.TryGetValue(input, out var element))
          {
             SelectedItem = element.MenuItem as ConsoleMenuItem;
-            ;
-
             if (ExecuteOnIndexSelection && SelectedItem != null)
             {
                if (SelectedItem.IsExpanded)
