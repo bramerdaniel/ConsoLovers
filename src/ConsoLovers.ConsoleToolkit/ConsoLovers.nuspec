@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>ConsoLovers.ConsoleToolkit</id>
-    <version>5.0.0-beta2</version>
+    <version>5.0.0-rc1</version>
     <title>ConsoLovers.ConsoleToolkit</title>
     <authors>danielbramer</authors>
     <owners>danielbramer</owners>
@@ -11,6 +11,8 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes>
+       5.0.0-rc1
+       - Added nuget reference to ConsoLovers.ConsoleToolkit.Core package
        5.0.0-alpha3
        - Moved most classes to ConsoLovers.ConsoleToolkit.Core (that supports .NetStandard2.0)
 
@@ -22,5 +24,8 @@
     </releaseNotes>
     <copyright>Copyright 2017</copyright>
     <tags>Console Shell Menu ConsoleMenu ConsoleToolkit .Net Password InputBox</tags>
+     <dependencies>
+        <dependency id="ConsoLovers.ConsoleToolkit.Core" version="1.0" />
+     </dependencies>
   </metadata>
 </package>
