@@ -11,28 +11,28 @@ namespace ConsoleBufferDemo
 
    using ConsoLovers.ConsoleToolkit;
    using ConsoLovers.ConsoleToolkit.Console;
-   using ConsoLovers.ConsoleToolkit.Core;
 
-   [ConsoleWindowTitle("ConsoleBufferDemo")]
-   class Program : IApplication
+   class Program 
    {
       #region Constants and Fields
 
-      private readonly ConsoleBuffer buffer = new ConsoleBuffer();
+      private static readonly ConsoleBuffer buffer = new ConsoleBuffer();
 
-      private int firstColumn, secondColumn;
+      private static int firstColumn;
 
-      private int direction = 1;
+      private static int secondColumn;
 
-      string firstText = "THIS IS DIRECTLY WRITTEN THE BUFFER";
+      private static int direction = 1;
 
-      string secondText = "WHILE YOU STILL CAN TYPE YOUR TEXT!";
+      static string firstText = "THIS IS DIRECTLY WRITTEN THE BUFFER";
+
+      static string secondText = "WHILE YOU STILL CAN TYPE YOUR TEXT!";
 
       #endregion
 
       #region Public Methods and Operators
 
-      public void Run()
+      public static void Run()
       {
          firstColumn = 0;
          secondColumn = Console.WindowWidth - firstText.Length;
@@ -45,19 +45,19 @@ namespace ConsoleBufferDemo
 
          Console.SetCursorPosition(0, 2);
          while (new InputBox<string>("Enter any text: ").ReadLine(4) != "exit")
-            Console.WriteLine("Enter exit if you want to leave !", ConsoleColor.Cyan);
+            Console.WriteLine("Enter exit if you want to leave !");
       }
 
       #endregion
 
       #region Methods
 
-      static void Main(string[] args)
+      static void Main()
       {
-         ConsoleApplicationManager.RunThis(args);
+         Run();
       }
 
-      private void OnTimerElapsed(object sender, EventArgs e)
+      private static void OnTimerElapsed(object sender, EventArgs e)
       {
          firstColumn += direction;
          secondColumn -= direction;

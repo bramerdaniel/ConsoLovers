@@ -6,10 +6,8 @@
 
 namespace Playground
 {
-   using System;
    using System.Threading.Tasks;
 
-   using ConsoLovers.ConsoleToolkit;
    using ConsoLovers.ConsoleToolkit.Core;
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 

@@ -8,14 +8,13 @@ namespace MouseInputDemo
 {
    using System;
 
-   using ConsoLovers.ConsoleToolkit.Core;
    using ConsoLovers.ConsoleToolkit.InputHandler;
 
-   class App : IApplication
+   class App 
    {
       #region Public Methods and Operators
 
-      public void Run()
+      public static void Run()
       {
          var listener = new ConsoleInputHandler();
          listener.MouseMoved += OnMouseMoved;
@@ -32,7 +31,7 @@ namespace MouseInputDemo
 
       static void Main(string[] args)
       {
-         ConsoleApplicationManager.RunThis(args);
+         Run();
          Console.ReadKey();
       }
 
@@ -47,7 +46,7 @@ namespace MouseInputDemo
          }
       }
 
-      private void OnKeyDown(object sender, KeyEventArgs e)
+      private static void OnKeyDown(object sender, KeyEventArgs e)
       {
          Console.SetCursorPosition(0, 0);
          Console.WriteLine();
@@ -67,7 +66,7 @@ namespace MouseInputDemo
          Console.WriteLine($"    dwEventFlags ....: 0x{MouseEvent.dwEventFlags:X4}  ");
       }
 
-      private void OnMouseMoved(object sender, MouseEventArgs e)
+      private static void OnMouseMoved(object sender, MouseEventArgs e)
       {
          if ((e.ButtonState & ButtonStates.Left) == ButtonStates.Left)
          {
@@ -93,7 +92,7 @@ namespace MouseInputDemo
          Console.Write($"X: {e.WindowLeft}, Y: {e.WindowTop}".PadLeft(Console.WindowWidth - 1));
       }
 
-      private void OnMouseWheelChanged(object sender, MouseEventArgs e)
+      private static void OnMouseWheelChanged(object sender, MouseEventArgs e)
       {
          Console.Beep();
       }
