@@ -7,7 +7,7 @@
     <authors>danielbramer</authors>
     <owners>danielbramer</owners>
     <projectUrl>https://github.com/bramerdaniel/ConsoLovers</projectUrl>
-    <iconUrl>https://raw.githubusercontent.com/bramerdaniel/ConsoLovers/master/ConsoLovers/Resources/Icon.ico</iconUrl>
+    <iconUrl>https://raw.githubusercontent.com/bramerdaniel/ConsoLovers/master/src/ConsoLovers.ConsoleToolkit/Resources/Icon.ico</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes>
