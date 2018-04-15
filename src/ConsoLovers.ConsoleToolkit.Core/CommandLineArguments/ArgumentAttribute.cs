@@ -57,6 +57,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          : base(null)
       {
          Index = index;
+         Relevance = 100;
       }
 
       #endregion

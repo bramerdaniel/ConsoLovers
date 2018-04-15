@@ -35,6 +35,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       #region Public Properties
 
+      /// <summary>
+      /// Gets or sets the relevance of the attribute according to the other <see cref="CommandAttribute"/>.
+      /// </summary>
+      protected internal int Relevance { get; set; }
+
       /// <summary>Gets the aliases.</summary>
       [XmlIgnore]
       public string[] Aliases { get; set; }

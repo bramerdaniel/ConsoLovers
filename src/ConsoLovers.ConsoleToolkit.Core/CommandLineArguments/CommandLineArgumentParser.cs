@@ -140,7 +140,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
             throw new CommandLineArgumentException(string.Format(CultureInfo.InvariantCulture, "The argument \"{0}\" occurs more than once.", argumentString));
          }
 
-         arguments[name] = new CommandLineArgument { Name = name, Value = valueString, Index = index };
+         arguments[name] = new CommandLineArgument { Name = name, Value = valueString, Index = index, OriginalString = argumentString };
       }
 
       private static void ParseOption(string argumentString, IDictionary<string, CommandLineArgument> arguments, int index)
@@ -157,7 +157,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
             throw new CommandLineArgumentException(string.Format(CultureInfo.InvariantCulture, "The option \"{0}\" occurs more than once.", argumentString));
          }
 
-         arguments.Add(option, new CommandLineArgument { Name = option, Value = null, Index = index });
+         arguments.Add(option, new CommandLineArgument { Name = option, Value = null, Index = index, OriginalString = argumentString });
       }
 
       private static string[] Split(string argumentString)

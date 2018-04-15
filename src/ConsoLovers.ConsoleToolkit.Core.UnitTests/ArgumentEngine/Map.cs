@@ -180,7 +180,53 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
          dictionary.ContainsKey("unmaped").Should().BeTrue();
       }
 
+      [TestMethod]
+      public void EnsurePathCanBeMappedToIndexedArgument()
+      {
+         var target = Setup.ArgumentMapper().ForType<ArgumentsWithIndex>().Done();
+         var dictionary = new Dictionary<string, CommandLineArgument>(StringComparer.InvariantCultureIgnoreCase)
+         {
+            { "D", new CommandLineArgument { Name = "D", Value = @"\HelloWorld\Hansi.txt", Index = 0, OriginalString = @"D:\HelloWorld\Hansi.txt"} }
+         };
+
+         var result = target.Map(dictionary);
+
+         result.Path.Should().Be(@"D:\HelloWorld\Hansi.txt");
+      }
+
+      [TestMethod]
+      public void EnsureIndexedArgumetnsAreMappedCorrectlyEvenIfOrderOfAttributeIsWrong()
+      {
+         var target = Setup.ArgumentMapper().ForType<ArgumentsWithIndex>().Done();
+         var dictionary = new Dictionary<string, CommandLineArgument>(StringComparer.InvariantCultureIgnoreCase)
+         {
+            { "ThePath", new CommandLineArgument { Name = "ThePath", Value = "ThePath", Index = 0, OriginalString = "ThePath"} },
+            { "TheValue", new CommandLineArgument { Name = "TheValue", Value = "TheValue", Index = 1, OriginalString = "TheValue"} }
+         };
+
+         var result = target.Map(dictionary);
+
+         result.Path.Should().Be("ThePath");
+         result.Value.Should().Be("TheValue");
+      }
+
       #endregion
+
+      public class ArgumentsWithIndex
+      {
+         #region Public Properties
+
+         [IndexedArgument(0)]
+         [Argument("Path")]
+         public string Path { get; set; }
+
+
+         [Argument("Value")]
+         [IndexedArgument(1)]
+         public string Value { get; set; }
+
+         #endregion
+      }
 
       public class Arguments
       {

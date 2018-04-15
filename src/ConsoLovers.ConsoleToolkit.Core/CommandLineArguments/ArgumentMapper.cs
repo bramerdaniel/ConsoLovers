@@ -42,7 +42,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
          foreach (var propertyInfo in typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public))
          {
-            var commandLineAttribute = (CommandLineAttribute)propertyInfo.GetCustomAttributes(typeof(CommandLineAttribute), true).FirstOrDefault();
+            var commandLineAttribute = GetCommandLineAttribute(propertyInfo);
             if (commandLineAttribute == null)
                continue;
 
@@ -56,7 +56,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
                }
                else
                {
-                  propertyInfo.SetValue(instance, ConvertValue(propertyInfo.PropertyType, argument.Name, (t, v) => CreateErrorMessage(t, v, argument.Name)), null);
+                  propertyInfo.SetValue(instance, ConvertValue(propertyInfo.PropertyType, argument.OriginalString, (t, v) => CreateErrorMessage(t, v, argument.Name)), null);
                   ValidateProperty(instance, propertyInfo);
                }
 
@@ -84,6 +84,12 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          CheckForUnmappedArguments(arguments);
 
          return instance;
+      }
+
+      private static CommandLineAttribute GetCommandLineAttribute(PropertyInfo propertyInfo)
+      {
+         return propertyInfo.GetCustomAttributes(typeof(CommandLineAttribute), true)
+            .OfType<CommandLineAttribute>().OrderByDescending(x => x.Relevance).FirstOrDefault();
       }
 
       private void CheckForUnmappedArguments(IDictionary<string, CommandLineArgument> arguments)

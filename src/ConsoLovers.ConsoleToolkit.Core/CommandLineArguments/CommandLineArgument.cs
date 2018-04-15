@@ -7,6 +7,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
    {
       #region Public Properties
 
+      /// <summary>Gets or sets the original string that was passed to the command line.</summary>
+      public string OriginalString { get; set; }
+
       /// <summary>Gets or sets the index of the argument in the command line parameter string.</summary>
       public int Index { get; set; }
 

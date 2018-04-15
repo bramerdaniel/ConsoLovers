@@ -123,6 +123,15 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       }
 
       [TestMethod]
+      public void ParseAPathThatShouldBecomeIndexedArgumentLater()
+      {
+         var arguments = Parse(@"D:\HelloWorld\Hansi.txt");
+         arguments.ContainsKey("D").Should().BeTrue();
+
+         arguments["D"].OriginalString.Should().Be(@"D:\HelloWorld\Hansi.txt");
+      }
+
+      [TestMethod]
       public void ParseOption()
       {
          var arguments = Parse(" -Debug");
