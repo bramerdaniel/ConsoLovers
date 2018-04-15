@@ -9,7 +9,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
    using System;
 
    /// <summary>Interface that can be implemented by an <see cref="IApplication"/> to handle unhandle <see cref="Exception"/>s</summary>
-   public interface IExeptionHandler
+   public interface IExceptionHandler
    {
       #region Public Methods and Operators
 

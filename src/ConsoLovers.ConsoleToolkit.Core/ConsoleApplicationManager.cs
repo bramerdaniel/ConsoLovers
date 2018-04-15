@@ -95,7 +95,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
          catch (Exception exception)
          {
             // ReSharper disable once UsePatternMatching
-            var handler = application as IExeptionHandler;
+            var handler = application as IExceptionHandler;
             if (handler == null || !handler.HandleException(exception))
                throw;
 

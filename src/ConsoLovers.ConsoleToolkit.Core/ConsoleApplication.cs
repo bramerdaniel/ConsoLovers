@@ -17,8 +17,8 @@ namespace ConsoLovers.ConsoleToolkit.Core
    /// <typeparam name="T">The type of the parameter class</typeparam>
    /// <seealso cref="IApplication{T}"/>
    /// <seealso cref="IArgumentInitializer{T}"/>
-   /// <seealso cref="IExeptionHandler"/>
-   public abstract class ConsoleApplication<T> : IApplication<T>, IArgumentInitializer<T>, IExeptionHandler
+   /// <seealso cref="IExceptionHandler"/>
+   public abstract class ConsoleApplication<T> : IApplication<T>, IArgumentInitializer<T>, IExceptionHandler
       where T : class
 
    {

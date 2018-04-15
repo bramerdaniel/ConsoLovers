@@ -61,6 +61,16 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       }
 
       [TestMethod]
+      public void MapIndexedAndNamesArguments()
+      {
+         var path = "\"C:\\Path\\File.txt\"";
+         var name = "Nick Oteen";
+         var arguments = GetTarget().Map<IndexedAndNamesArguments>(new[] { path, name });
+         arguments.Path.Should().Be(path);
+         arguments.Name.Should().Be(name);
+      }
+
+      [TestMethod]
       public void MapInvalidTypesShouldThrowException()
       {
          this.Invoking(x => GetTarget().Map<Arguments>(new[] { "Enum:Null" })).ShouldThrow<CommandLineArgumentException>().WithMessage(
@@ -307,6 +317,21 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
          public string Name { get; [UsedImplicitly] set; }
 
          [IndexedArgument(0)]
+         public string Path { get; [UsedImplicitly] set; }
+
+         #endregion
+      }
+
+      public class IndexedAndNamesArguments
+      {
+         #region Public Properties
+
+         [IndexedArgument(1)]
+         [Argument("Name")]
+         public string Name { get; [UsedImplicitly] set; }
+
+         [IndexedArgument(0)]
+         [Argument("Path")]
          public string Path { get; [UsedImplicitly] set; }
 
          #endregion
