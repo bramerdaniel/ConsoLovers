@@ -14,7 +14,7 @@
 This package contains the basic funtionality like application handling and command line argument parsing/mapping like the 4.* version of the ConsoLovers.ConsoleToolkit did, but usable for .NetStandard 2.0</Description>
     <PackageReleaseNotes>1.0.2
  - Fix of Issue #13
-1.0.2
+1.0.1
  - Rename of IExceptionHandler interface</PackageReleaseNotes>
   </PropertyGroup>
 
