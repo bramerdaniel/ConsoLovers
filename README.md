@@ -1,8 +1,5 @@
 # ConsoLovers.ConsoleToolkit.Core and ConsoLovers.ConsoleToolkit
 The ConsoLovers.ConsoleToolkit is a collection of several independant tools that can be used to write console applications (better and faster).
-<p align="center">
-  <img alt="VS Code in action" src="https://github.com/bramerdaniel/ConsoLovers/wiki/Images/ConsoleMenuExplorer.png">
-</p>
 
 ## Main features are:
 * A [ConsoleMenu](https://github.com/bramerdaniel/ConsoLovers/wiki/ConsoleMenu) that supports Keyboard and Mouse selection.
