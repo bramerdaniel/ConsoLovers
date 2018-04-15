@@ -161,12 +161,18 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          PrintHelp(typeof(T), resourceManager);
       }
 
-      public void PrintHelp([NotNull] Type type, ResourceManager resourceManager)
+      /// <summary>Prints the help to the <see cref="Console"/>.</summary>
+      /// <param name="argumentType">Type of the argument class to print the help for</param>
+      /// <param name="resourceManager">The resource manager that will be used for localization.</param>
+      public void PrintHelp([NotNull] Type argumentType, ResourceManager resourceManager)
       {
-         var helpTextProvider = GetHelpTextProvider(type, resourceManager);
-         helpTextProvider.PrintTypeHelp(type);
+         var helpTextProvider = GetHelpTextProvider(argumentType, resourceManager);
+         helpTextProvider.PrintTypeHelp(argumentType);
       }
 
+      /// <summary>Prints the help for the given <see cref="!:propertyInfo"/> to the <see cref="T:System.Console"/>.</summary>
+      /// <param name="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> to print the help for</param>
+      /// <param name="resourceManager">The resource manager that will be used for localization.</param>
       public void PrintHelp(PropertyInfo propertyInfo, ResourceManager resourceManager)
       {
          var helpTextProvider = GetHelpTextProvider(propertyInfo, resourceManager);
