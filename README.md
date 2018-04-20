@@ -22,4 +22,4 @@ Feel free to create a pull request to include new features.
 For development Visual Studio 2017 is required. (or any tool for compiling C#7)
 
 ### License
-There is no licence required.
+The software is licensed under the [MIT](LICENSE) license.
