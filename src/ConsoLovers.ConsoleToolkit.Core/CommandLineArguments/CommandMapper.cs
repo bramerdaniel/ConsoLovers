@@ -117,6 +117,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
                if (IsEqual(commandInfo.ParameterName, commandName))
                {
                   arguments.Remove(commandName);
+                  DecreaseIndices(arguments);
                   return commandInfo;
                }
 
@@ -125,6 +126,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
                   if (IsEqual(alias, commandName))
                   {
                      arguments.Remove(commandName);
+                     DecreaseIndices(arguments);
                      return commandInfo;
                   }
                }
@@ -132,6 +134,12 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          }
 
          return argumentInfo.DefaultCommand;
+      }
+
+      private static void DecreaseIndices(IDictionary<string, CommandLineArgument> arguments)
+      {
+         foreach (var argument in arguments.Values)
+            argument.Index--;
       }
 
       private static CommandLineArgument GetFirstArgument(IDictionary<string, CommandLineArgument> arguments)
@@ -155,7 +163,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       {
          var commandType = commandInfo.PropertyInfo.PropertyType;
          if (!ImplementsICommand(commandType))
-            throw new ArgumentException($"The type '{commandType}' of the property '{commandInfo.PropertyInfo.Name}' does not implemente the {typeof(ICommand).FullName} interface");
+            throw new ArgumentException(
+               $"The type '{commandType}' of the property '{commandInfo.PropertyInfo.Name}' does not implemente the {typeof(ICommand).FullName} interface");
 
          if (TryGetArgumentType(commandType, out var argumentType))
          {

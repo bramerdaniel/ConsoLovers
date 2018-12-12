@@ -34,6 +34,13 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          return attribute is ArgumentAttribute argumentAttribute && argumentAttribute.Required;
       }
 
+      public static int GetIndex(this CommandLineAttribute attribute)
+      {
+         if (attribute is ArgumentAttribute argumentAttribute)
+            return argumentAttribute.Index;
+         return -1;
+      }
+
       public static bool TrimQuotation(this CommandLineAttribute attribute)
       {
          return attribute is ArgumentAttribute argumentAttribute && argumentAttribute.TrimQuotation;

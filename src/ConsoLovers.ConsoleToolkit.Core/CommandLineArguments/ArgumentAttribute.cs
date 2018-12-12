@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="ArgumentAttribute.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2016
+//    Copyright (c) ConsoLovers  2015 - 2018
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -12,6 +12,12 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
    [AttributeUsage(AttributeTargets.Property, Inherited = true, AllowMultiple = false)]
    public class ArgumentAttribute : CommandLineAttribute
    {
+      #region Constants and Fields
+
+      private int? index;
+
+      #endregion
+
       #region Constructors and Destructors
 
       /// <summary>
@@ -34,6 +40,17 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       #endregion
 
       #region Public Properties
+
+      /// <summary>Gets the index of the argument.</summary>
+      public int Index
+      {
+         get => index.GetValueOrDefault(-1);
+         set
+         {
+            index = value;
+            Relevance = 180;
+         }
+      }
 
       /// <summary>Gets a value indicating whether the command line argument is required.</summary>
       public bool Required { get; set; }

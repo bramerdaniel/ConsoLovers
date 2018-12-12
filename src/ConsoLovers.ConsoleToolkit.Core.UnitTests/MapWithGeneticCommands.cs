@@ -8,6 +8,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
 
    using FluentAssertions;
 
+   using JetBrains.Annotations;
+
    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
    [TestClass]
@@ -96,12 +98,12 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
          engine.Map<NonGenericApplicationCommands>(new[] { "execute", "-unknown=666" });
 
          engine.ShouldRaise(nameof(CommandLineEngine.UnhandledCommandLineArgument))
-            .WithArgs<UnhandledCommandLineArgumentEventArgs>(e => e.Argument.Name == "unknown" && e.Argument.Index == 1 && e.Argument.Value == "666");
+            .WithArgs<UnhandledCommandLineArgumentEventArgs>(e => e.Argument.Name == "unknown" && e.Argument.Index == 0 && e.Argument.Value == "666");
 
-         var args = engine.Map<NonGenericApplicationCommands>(new[] { "execute","-wait", "-unknown=234" });
+         var args = engine.Map<NonGenericApplicationCommands>(new[] { "execute", "-wait", "-unknown=234" });
 
          engine.ShouldRaise(nameof(CommandLineEngine.UnhandledCommandLineArgument))
-            .WithArgs<UnhandledCommandLineArgumentEventArgs>(e => e.Argument.Name == "unknown" && e.Argument.Index == 2 && e.Argument.Value == "234");
+            .WithArgs<UnhandledCommandLineArgumentEventArgs>(e => e.Argument.Name == "unknown" && e.Argument.Index == 1 && e.Argument.Value == "234");
 
          args.Wait.Should().BeTrue();
       }
@@ -128,7 +130,83 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
          engine.ShouldNotRaise(nameof(CommandLineEngine.UnhandledCommandLineArgument));
       }
 
+      [TestMethod]
+      public void EnsureMissingCommandLineArgumentsThrowMissingCommandLineArgumentException()
+      {
+         var engine = GetTarget();
+
+         engine.Invoking(x => x.Map<ApplicationCommandsWithDefaultAndIndexedArgs>(new[] { "nam=hans" }))
+            .ShouldThrow<MissingCommandLineArgumentException>().Where(x => x.Argument == "Name");
+      }
+
+      [TestMethod]
+      public void EnsureOtherNamedParameterIsNotUsedName()
+      {
+         var engine = GetTarget();
+
+         engine.Invoking(x => x.Map<ApplicationCommandsWithDefaultAndIndexedArgs>(new[] { "path=aPath" }))
+            .ShouldThrow<MissingCommandLineArgumentException>().Where(x => x.Argument == "Name");
+      }
+
+      [TestMethod]
+      public void EnsureValuesAreMappedCorrectlyByIndex()
+      {
+         var engine = GetTarget();
+
+         var result = engine.Map<ApplicationCommandsWithDefaultAndIndexedArgs>(new[] { "execute", "hans", "ANormalValue" });
+         result.Execute.Arguments.Name.Should().Be("hans");
+         result.Execute.Arguments.Path.Should().Be("ANormalValue");
+
+         result = engine.Map<ApplicationCommandsWithDefaultAndIndexedArgs>(new[] { "hans", "ANormalValue" });
+         result.Execute.Arguments.Name.Should().Be("hans");
+         result.Execute.Arguments.Path.Should().Be("ANormalValue");
+
+         result = engine.Map<ApplicationCommandsWithDefaultAndIndexedArgs>(new[] { "execute", "hans", "\"D:\\bam\"" });
+         result.Execute.Arguments.Name.Should().Be("hans");
+         result.Execute.Arguments.Path.Should().Be("D:\\bam");
+
+         result = engine.Map<ApplicationCommandsWithDefaultAndIndexedArgs>(new[] { "execute", "name=hans", "Path=\"D:\\bam\"" });
+         result.Execute.Arguments.Name.Should().Be("hans");
+         result.Execute.Arguments.Path.Should().Be("D:\\bam");
+      }
+
+      [TestMethod]
+      public void EnsureNoMissingCommandLineArgumentsWhenParameterIsSpecifiedByIndex()
+      {
+         var engine = GetTarget();
+
+         engine.Invoking(x => x.Map<ApplicationCommandsWithDefaultAndIndexedArgs>(new[] { "execute", "hans" })).
+            ShouldNotThrow<MissingCommandLineArgumentException>();
+
+         engine.Invoking(x => x.Map<ApplicationCommandsWithDefaultAndIndexedArgs>(new[] { "hans" })).
+            ShouldNotThrow<MissingCommandLineArgumentException>();
+      }
+
+      [TestMethod]
+      public void EnsureNoMissingCommandLineArgumentsWhenParameterIsSpecifiedWithName()
+      {
+         var engine = GetTarget();
+
+         engine.Invoking(x => x.Map<ApplicationCommandsWithDefaultAndIndexedArgs>(new[] { "Name=hans" })).
+            ShouldNotThrow<MissingCommandLineArgumentException>();
+      }
+
       #endregion
+
+      public class RequiredIndexedArguments
+      {
+         #region Public Properties
+
+         [Argument(Required = true, Index = 0)]
+         [UsedImplicitly]
+         public string Name { get; set; }
+
+         [Argument(Index = 1, TrimQuotation = true)]
+         [UsedImplicitly]
+         public string Path { get; set; }
+
+         #endregion
+      }
 
       internal class ApplicationCommands
       {
@@ -173,8 +251,21 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       {
          #region Public Properties
 
-         [Command("Execute", IsDefaultCommand=true)]
+         [Command("Execute", IsDefaultCommand = true)]
          public GenericCommand<ExecuteArguments> Execute { get; set; }
+
+         [Command("ExecuteMany")]
+         public GenericCommand<ExecuteArguments> ExecuteMany { get; set; }
+
+         #endregion
+      }
+
+      internal class ApplicationCommandsWithDefaultAndIndexedArgs
+      {
+         #region Public Properties
+
+         [Command("Execute", IsDefaultCommand = true)]
+         public GenericCommand<RequiredIndexedArguments> Execute { get; set; }
 
          [Command("ExecuteMany")]
          public GenericCommand<ExecuteArguments> ExecuteMany { get; set; }
