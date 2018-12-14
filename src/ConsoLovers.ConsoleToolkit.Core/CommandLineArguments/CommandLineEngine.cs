@@ -130,6 +130,29 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          return Map(args, instance, false);
       }
 
+      public T Map<T>(string args, T instance)
+         where T : class
+      {
+         return Map(args, instance, false);
+      }
+
+      public T Map<T>(string args, T instance, bool caseSensitive)
+         where T : class
+      {
+         var arguments = ArgumentParser.ParseArguments(args, caseSensitive);
+         var mapper = CreateMapper<T>();
+
+         try
+         {
+            mapper.UnmappedCommandLineArgument += OnUnmappedCommandLineArgument;
+            return mapper.Map(arguments, instance);
+         }
+         finally
+         {
+            mapper.UnmappedCommandLineArgument -= OnUnmappedCommandLineArgument;
+         }
+      }
+
       /// <summary>Maps the specified arguments to given object of the given type.</summary>
       /// <typeparam name="T">The type of the class to map the argument to.</typeparam>
       /// <param name="args">The arguments that should be mapped to the instance.</param>

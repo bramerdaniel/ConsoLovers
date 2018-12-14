@@ -83,9 +83,18 @@ namespace ConsoLovers.ConsoleToolkit.Core
       /// <returns>The created <see cref="IApplication"/> of type <see cref="T"/></returns>
       T Run(string[] args);
 
+      /// <summary>Runs the configured application with the given commandline arguments.</summary>
+      /// <param name="args">The command line arguments as string. Use <see cref="Environment.CommandLine"/></param>
+      /// <returns>The created <see cref="IApplication"/> of type <see cref="T"/></returns>
+      T Run(string args);
+
+      /// <summary>Runs the configured application with the commandline arguments from <see cref="Environment.CommandLine"/>.</summary>
+      /// <returns>The created <see cref="IApplication"/> of type <see cref="T"/></returns>
+      T Run();
+
       /// <summary>Specifies the <see cref="IObjectFactory"/> that is used to create the <see cref="IApplication"/>.</summary>
       /// <param name="container">The container.</param>
-      /// <returns>The current <see cref="IBootstrapper{T}"/> for futher configuration</returns>
+      /// <returns>The current <see cref="IBootstrapper{T}"/> for further configuration</returns>
       IBootstrapper<T> UsingFactory([NotNull] IObjectFactory container);
 
       #endregion

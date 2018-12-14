@@ -35,11 +35,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       #region Public Properties
 
-      /// <summary>
-      /// Gets or sets the relevance of the attribute according to the other <see cref="CommandAttribute"/>.
-      /// </summary>
-      protected internal int Relevance { get; set; }
-
       /// <summary>Gets the aliases.</summary>
       [XmlIgnore]
       public string[] Aliases { get; set; }
@@ -47,6 +42,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       /// <summary>Gets the name of the argument.</summary>
       [XmlIgnore]
       public string Name { get; set; }
+
+      /// <summary>Gets or sets a value indicating whether this <see cref="CommandLineAttribute"/> is shared between commands and the application.
+      /// The defaults value is false, so the a command will map this value only</summary>
+      [XmlIgnore]
+      public bool Shared { get; set; }
 
       #endregion
 

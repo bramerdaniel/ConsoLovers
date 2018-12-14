@@ -28,7 +28,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       #region Properties
 
-      /// <summary>Gets the function that creates the application object itselfe.</summary>
+      /// <summary>Gets the function that creates the application object itself.</summary>
       protected Func<Type, object> CreateApplication { get; }
 
       #endregion
@@ -103,6 +103,29 @@ namespace ConsoLovers.ConsoleToolkit.Core
          }
       }
 
+      public IApplication Run(Type applicationType, string args)
+      {
+         SetTitle(applicationType);
+         ApplySize(applicationType);
+
+         var application = CreateApplicationInternal(applicationType);
+
+         try
+         {
+            InitializeApplication(applicationType, application, args);
+            return RunApplication(application);
+         }
+         catch (Exception exception)
+         {
+            // ReSharper disable once UsePatternMatching
+            var handler = application as IExceptionHandler;
+            if (handler == null || !handler.HandleException(exception))
+               throw;
+
+            return application;
+         }
+      }
+
       private void SetTitle(Type applicationType)
       {
          var title = WindowTitle ?? (applicationType.GetCustomAttribute(typeof(ConsoleWindowTitleAttribute)) as ConsoleWindowTitleAttribute)?.Title;
@@ -114,7 +137,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       #region Methods
 
-      internal void InitializeApplication(Type applicationType, IApplication application, string[] args)
+      internal void InitializeApplication(Type applicationType, IApplication application, object args)
       {
          try
          {
@@ -128,8 +151,15 @@ namespace ConsoLovers.ConsoleToolkit.Core
                var initialize = applicationType.GetMethod(nameof(IArgumentInitializer<Type>.InitializeArguments));
                if (initialize == null)
                   throw new InvalidOperationException($"The InitializeArguments method of the {typeof(IArgumentInitializer<>).FullName} could not be found.");
-
-               initialize.Invoke(application, new[] { argumentsInstance, args });
+    
+               if (args is string stringArgs)
+               {
+                  initialize.Invoke(application, new[] { argumentsInstance, stringArgs });
+               }
+               else
+               {
+                  initialize.Invoke(application, new[] { argumentsInstance, args });
+               }
             }
          }
          catch (TargetInvocationException ex)

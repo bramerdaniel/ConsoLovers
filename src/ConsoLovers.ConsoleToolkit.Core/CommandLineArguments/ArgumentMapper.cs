@@ -38,67 +38,43 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       public T Map(IDictionary<string, CommandLineArgument> arguments, T instance)
       {
-         var usedNames = new Dictionary<string, PropertyInfo>();
+         HashSet<CommandLineArgument> sharedArguments = new HashSet<CommandLineArgument>();
 
-         foreach (var propertyInfo in typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public))
+         foreach (var mapping in MappingList.FromType<T>())
          {
-            var commandLineAttribute = GetCommandLineAttribute(propertyInfo);
-            if (commandLineAttribute == null)
-               continue;
-
-            if (commandLineAttribute is IndexedArgumentAttribute indexedArgument)
+            if (mapping.IsOption())
             {
-               var argument = arguments.Values.FirstOrDefault(x => x.Index == indexedArgument.Index);
-               if (argument == null)
-               {
-                  if (indexedArgument.Required)
-                     throw new MissingCommandLineArgumentException(propertyInfo.Name);
-               }
-               else
-               {
-                  propertyInfo.SetValue(instance, ConvertValue(propertyInfo.PropertyType, argument.OriginalString, (t, v) => CreateErrorMessage(t, v, argument.Name)), null);
-                  ValidateProperty(instance, propertyInfo);
-               }
-
-               continue;
-            }
-
-            EnsureUnique<T>(usedNames, commandLineAttribute, propertyInfo);
-
-            if (commandLineAttribute is OptionAttribute)
-            {
-               var wasSet = SetOptionValue(instance, propertyInfo, arguments, commandLineAttribute);
+               var wasSet = SetOptionValue(instance, mapping, arguments);
                if (wasSet)
-                  ValidateProperty(instance, propertyInfo);
+               {
+                  sharedArguments.Add(mapping.CommandLineArgument);
+                  ValidateProperty(instance, mapping.PropertyInfo);
+               }
             }
             else
             {
-               var wasSet = SetPropertyValue(instance, propertyInfo, arguments, commandLineAttribute);
+               var wasSet = SetArgumentValue(instance, mapping, arguments);
                if (wasSet)
                {
-                  ValidateProperty(instance, propertyInfo);
+                  sharedArguments.Add(mapping.CommandLineArgument);
+                  ValidateProperty(instance, mapping.PropertyInfo);
                }
             }
          }
 
-         CheckForUnmappedArguments(arguments);
-
+         CheckForUnmappedArguments(arguments, sharedArguments);
          return instance;
       }
 
-      private static CommandLineAttribute GetCommandLineAttribute(PropertyInfo propertyInfo)
+      private void CheckForUnmappedArguments(IDictionary<string, CommandLineArgument> arguments, HashSet<CommandLineArgument> sharedArguments)
       {
-         return propertyInfo.GetCustomAttributes(typeof(CommandLineAttribute), true)
-            .OfType<CommandLineAttribute>().OrderByDescending(x => x.Relevance).FirstOrDefault();
-      }
-
-      private void CheckForUnmappedArguments(IDictionary<string, CommandLineArgument> arguments)
-      {
-         if(arguments.Count <= 0)
+         if (arguments.Count <= 0)
             return;
 
-         foreach (var argument in arguments)
-            UnmappedCommandLineArgument?.Invoke(this, new UnmappedCommandLineArgumentEventArgs(argument.Value));
+         foreach (var argument in arguments.Values.Where(arg => !sharedArguments.Contains(arg)))
+         {
+            UnmappedCommandLineArgument?.Invoke(this, new UnmappedCommandLineArgumentEventArgs(argument));
+         }
       }
 
       /// <summary>Occurs when a command line argument of the given arguments dictionary could not be mapped to a arguments member</summary>
@@ -144,11 +120,18 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
                var validatorName = typeof(IArgumentValidator<T>).Name;
                var validatorInterfaces = attribute.Type.GetInterfaces().Where(i => i.Name == validatorName).ToArray();
                if (validatorInterfaces.Length == 0)
-                  throw new InvalidValidatorUsageException($"The validator {attribute.Type} does not implement the {validatorName} interface."){ Reason = ErrorReason.NoValidatorImplementation };
+                  throw new InvalidValidatorUsageException($"The validator {attribute.Type} does not implement the {validatorName} interface.")
+                  {
+                     Reason = ErrorReason.NoValidatorImplementation
+                  };
 
                Type type = validatorInterfaces.FirstOrDefault(i => i.GenericTypeArguments.FirstOrDefault() == propertyInfo.PropertyType);
                if (type == null)
-                  throw new InvalidValidatorUsageException($"The specified validator '{attribute.Type.FullName}' does not support the validation of the type '{propertyInfo.PropertyType}'.") { Reason = ErrorReason.InvalidValidatorImplementation };
+                  throw new InvalidValidatorUsageException(
+                     $"The specified validator '{attribute.Type.FullName}' does not support the validation of the type '{propertyInfo.PropertyType}'.")
+                  {
+                     Reason = ErrorReason.InvalidValidatorImplementation
+                  };
 
                MethodInfo validationMethod = GetValidationMethod(attribute, propertyInfo.PropertyType);
 

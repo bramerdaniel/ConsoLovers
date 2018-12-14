@@ -13,14 +13,15 @@ namespace ConsoLovers.ConsoleToolkit.Core
    {
       #region Public Methods and Operators
 
-      /// <summary>This method is responsible for creating the required default arguments. This could e.g. be a empty instance or an instance filledd with data from the app.config...</summary>
+      /// <summary>This method is responsible for creating the required default arguments.
+      /// This could e.g. be a empty instance or an instance filled with data from the app.config...</summary>
       /// <returns>The created arguments instance</returns>
       T CreateArguments();
 
-      /// <summary>Initializes the given instance with the command line arguments array.</summary>
+      /// <summary>Initializes the given instance with the command line arguments.</summary>
       /// <param name="instance">The instance to fill.</param>
       /// <param name="args">The arguments to use.</param>
-      void InitializeArguments(T instance, string[] args);
+      void InitializeArguments(T instance, string args);
 
       #endregion
    }

@@ -56,6 +56,44 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       }
 
       [TestMethod]
+      public void EnsureSharedOptionsAreSetInRootArgumentsClassAndCommandClass()
+      {
+         var arguments = GetTarget().Map<ApplicationCommands>(new[] {  "Execute", "-wait" });
+
+         arguments.Execute.Should().NotBeNull();
+         arguments.Execute.Arguments.Should().NotBeNull();
+
+         arguments.Wait.Should().BeTrue();
+         arguments.Execute.Arguments.Wait.Should().BeTrue();
+      }
+
+      [TestMethod]
+      public void EnsureSharedArgumentsAreSetInRootArgumentsClassAndCommandClass()
+      {
+         var arguments = GetTarget().Map<ApplicationCommands>(new[] {  "Execute", "-priority=24" });
+
+         arguments.Execute.Should().NotBeNull();
+         arguments.Execute.Arguments.Should().NotBeNull();
+
+         arguments.Priority.Should().Be(24);
+         arguments.Execute.Arguments.Priority.Should().Be(24);
+      }
+
+      [TestMethod]
+      public void EnsureSharedArgumentsDontCauseErrorsInRootClass()
+      {
+         var engine = GetTarget();
+         engine.MonitorEvents();
+         var arguments = engine.Map<ApplicationCommands>(new[] {  "Execute", "-sharedButAlone=22.4" });
+
+         arguments.Execute.Should().NotBeNull();
+         arguments.Execute.Arguments.Should().NotBeNull();
+
+         arguments.Execute.Arguments.SharedButAlone.Should().Be(22.4);
+         engine.ShouldNotRaise(nameof(CommandLineEngine.UnhandledCommandLineArgument));
+      }
+
+      [TestMethod]
       public void EnsureNonGenericCommandClassWorks()
       {
          var arguments = GetTarget().Map<NonGenericApplicationCommands>(new[] { "Execute", "-Path=C:\\Path\\File.txt", "-silent", "-wait" });
@@ -218,6 +256,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
          [Option("Wait")]
          public bool Wait { get; set; }
 
+         [Argument("Priority")]
+         public int Priority { get; set; }
+
          #endregion
       }
 
@@ -282,6 +323,15 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
 
          [Option("Silent")]
          public bool Silent { get; set; }
+
+         [Option("Wait", Shared = true)]
+         public bool Wait { get; set; }
+
+         [Argument("Priority", Shared = true)]
+         public int Priority { get; set; }
+
+         [Argument("SharedButAlone", Shared = true)]
+         public double SharedButAlone { get; set; }
 
          #endregion
       }

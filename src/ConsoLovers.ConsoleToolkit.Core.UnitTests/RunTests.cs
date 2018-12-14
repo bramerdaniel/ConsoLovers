@@ -28,7 +28,7 @@
       [TestMethod]
       public void EnsureRunInitializesWhenRequired()
       {
-         var args = new string[0];
+         var args = string.Empty;
          var runned = new ConsoleApplicationManagerGeneric<ApplicationWithArguments>().Run(args);
 
          runned.Args.Should().BeSameAs(args);
@@ -43,7 +43,7 @@
 
          public TestArguments TestParameters { get; private set; }
 
-         public string[] Args{ get; private set; }
+         public string Args{ get; private set; }
 
          public Mock<IArgumentInitializer<TestArguments>> Initializer { get; } = new Mock<IArgumentInitializer<TestArguments>>();
 
@@ -64,7 +64,7 @@
             return TestParameters;
          }
 
-         public void InitializeArguments(TestArguments instance, string[] args)
+         public void InitializeArguments(TestArguments instance, string args)
          {
             TestParameters.Should().BeSameAs(instance);
             Args = args;

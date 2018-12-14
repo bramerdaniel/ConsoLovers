@@ -17,7 +17,7 @@
          application.RunWith();
       }
 
-      public override void InitializeArguments(T instance, string[] args)
+      public override void InitializeArguments(T instance, string args)
       {
          base.InitializeArguments(instance, args);
 

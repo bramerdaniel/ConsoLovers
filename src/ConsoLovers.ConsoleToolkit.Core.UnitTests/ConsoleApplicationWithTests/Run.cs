@@ -25,7 +25,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests
       {
          using (var testContext = new ApplicationTestContext<TestApplication<ArgumentsWithGenericCommand>>())
          {
-            testContext.RunApplication("execute", "string=someValue", "int=30");
+            testContext.RunApplication("execute string=someValue int=30");
 
             testContext.Application.Verify(a => a.Run(), Times.Once);
             testContext.Application.Verify(a => a.RunWithCommand(), Times.Once);
@@ -91,7 +91,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests
       {
          using (var testContext = new ApplicationTestContext<TestApplication<ArgumentsWithoutDefaultCommands>>())
          {
-            testContext.RunApplication();
+            testContext.RunApplication(string.Empty);
 
             testContext.Application.Verify(a => a.Run(), Times.Once);
             testContext.Application.Verify(a => a.RunWithCommand(), Times.Never);

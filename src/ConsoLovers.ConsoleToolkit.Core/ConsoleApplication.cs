@@ -63,14 +63,14 @@ namespace ConsoLovers.ConsoleToolkit.Core
       ///    This method is called when the application was started with command line arguments. NOTE: If there are <see cref="ICommand"/>s specified in the arguments and the
       ///    application is called with one of those, this method is not called any more, because the command is executed.
       /// </summary>
-      /// <param name="arguments">The initialited arguments for the application.</param>
+      /// <param name="arguments">The initialized arguments for the application.</param>
       public abstract void RunWith(T arguments);
 
       #endregion
 
       #region IArgumentInitializer<T> Members
 
-      /// <summary>This method is responsible for creating the required default arguments. This could e.g. be a empty instance or an instance filledd with data from the app.config...</summary>
+      /// <summary>This method is responsible for creating the required default arguments. This could e.g. be a empty instance or an instance filled with data from the app.config...</summary>
       /// <returns>The created arguments instance</returns>
       public virtual T CreateArguments()
       {
@@ -80,9 +80,9 @@ namespace ConsoLovers.ConsoleToolkit.Core
          return Activator.CreateInstance<T>();
       }
 
-      public virtual void InitializeArguments(T instance, string[] args)
+      public virtual void InitializeArguments(T instance, string args)
       {
-         HasArguments = args != null && args.Length > 0;
+         HasArguments = ! string.IsNullOrWhiteSpace(args);
          Arguments = CommandLineEngine.Map(args, instance);
 
          OnArgumentsInitialized();
@@ -102,7 +102,6 @@ namespace ConsoLovers.ConsoleToolkit.Core
             Console.WriteLine("[ARGUMENT HELP]");
             CommandLineEngine.PrintHelp<T>(null);
             Console.WriteLine();
-            WaitForEnter();
             return true;
          }
 
@@ -181,7 +180,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       }
 
       /// <summary>
-      ///    Called when a command line argument could not be handled (e.g when an argument was misspelled, and therfore could not be mapped to a property in the arguments class). The
+      ///    Called when a command line argument could not be handled (e.g when an argument was misspelled, and therefor could not be mapped to a property in the arguments class). The
       ///    default behavior is to do nothing. This means that it is ignored.
       /// </summary>
       /// <param name="sender">The sender.</param>

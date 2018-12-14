@@ -77,7 +77,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
             "The value Null of parameter Enum can not be converted into the expected type " + typeof(Boolenum).FullName + ". Possible values are True and False.");
 
          this.Invoking(x => GetTarget().Map<Arguments>(new[] { "ali:TRUE" })).ShouldThrow<CommandLineArgumentException>()
-            .WithMessage("The value TRUE of parameter Alias can not be converted into the expected type System.Int32");
+            .WithMessage("The value TRUE of parameter ali can not be converted into the expected type System.Int32");
 
          this.Invoking(x => GetTarget().Map<Arguments>(new[] { "Integer:TRUE" })).ShouldThrow<CommandLineArgumentException>()
             .WithMessage("The value TRUE of parameter Integer can not be converted into the expected type System.Int32");
@@ -313,10 +313,10 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       {
          #region Public Properties
 
-         [IndexedArgument(1)]
+         [Argument(1)]
          public string Name { get; [UsedImplicitly] set; }
 
-         [IndexedArgument(0)]
+         [Argument(0)]
          public string Path { get; [UsedImplicitly] set; }
 
          #endregion
@@ -325,13 +325,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       public class IndexedAndNamesArguments
       {
          #region Public Properties
-
-         [IndexedArgument(1)]
-         [Argument("Name")]
+         
+         [Argument("Name", Index = 1)]
          public string Name { get; [UsedImplicitly] set; }
-
-         [IndexedArgument(0)]
-         [Argument("Path")]
+         
+         [Argument("Path", Index = 0)]
          public string Path { get; [UsedImplicitly] set; }
 
          #endregion

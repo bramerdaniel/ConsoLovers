@@ -186,12 +186,12 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
          var target = Setup.ArgumentMapper().ForType<ArgumentsWithIndex>().Done();
          var dictionary = new Dictionary<string, CommandLineArgument>(StringComparer.InvariantCultureIgnoreCase)
          {
-            { "D", new CommandLineArgument { Name = "D", Value = @"\HelloWorld\Hansi.txt", Index = 0, OriginalString = @"D:\HelloWorld\Hansi.txt"} }
+            { @"D:\HelloWorld\Hansi.txt", new CommandLineArgument { Name = @"D:\HelloWorld\Hansi.txt", Value = null, Index = 0, OriginalString = @"D:\HelloWorld\Hansi.txt"} }
          };
 
          var result = target.Map(dictionary);
 
-         result.Path.Should().Be(@"D:\HelloWorld\Hansi.txt");
+         result.Path.Should().Be("D:\\HelloWorld\\Hansi.txt");
       }
 
       [TestMethod]
@@ -200,8 +200,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
          var target = Setup.ArgumentMapper().ForType<ArgumentsWithIndex>().Done();
          var dictionary = new Dictionary<string, CommandLineArgument>(StringComparer.InvariantCultureIgnoreCase)
          {
-            { "ThePath", new CommandLineArgument { Name = "ThePath", Value = "ThePath", Index = 0, OriginalString = "ThePath"} },
-            { "TheValue", new CommandLineArgument { Name = "TheValue", Value = "TheValue", Index = 1, OriginalString = "TheValue"} }
+            { "ThePath", new CommandLineArgument { Name = "ThePath", Index = 0, OriginalString = "ThePath"} },
+            { "TheValue", new CommandLineArgument { Name = "TheValue", Index = 1, OriginalString = "TheValue"} }
          };
 
          var result = target.Map(dictionary);
@@ -210,20 +210,59 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
          result.Value.Should().Be("TheValue");
       }
 
+      [TestMethod]
+      public void EnsureIndexedArgumentsAreNotSetWhenBetterArgumentMatchIsAvailable()
+      {
+         var target = Setup.ArgumentMapper().ForType<ArgumentsWithIndex>().Done();
+         var dictionary = new Dictionary<string, CommandLineArgument>(StringComparer.InvariantCultureIgnoreCase)
+         {
+            { "ThePath", new CommandLineArgument { Name = "ThePath", Index = 0 } },
+            { "Third", new CommandLineArgument { Name = "Third", Value = "bam", Index = 1} }
+         };
+
+         var result = target.Map(dictionary);
+
+         result.Path.Should().Be("ThePath");
+         result.Value.Should().BeNull();
+         result.Third.Should().Be("bam");
+         result.Wait.Should().BeFalse();
+      }
+
+      [TestMethod]
+      public void EnsureIndexedArgumentsAreNotSetWhenBetterOptionMatchIsAvailable()
+      {
+         var target = Setup.ArgumentMapper().ForType<ArgumentsWithIndex>().Done();
+         var dictionary = new Dictionary<string, CommandLineArgument>(StringComparer.InvariantCultureIgnoreCase)
+         {
+            { "ThePath", new CommandLineArgument { Name = "ThePath", Index = 0 } },
+            { "Wait", new CommandLineArgument { Name = "Wait" , Index = 1} }
+         };
+
+         var result = target.Map(dictionary);
+
+         result.Path.Should().Be("ThePath");
+         result.Value.Should().BeNull();
+         result.Third.Should().BeNull();
+         result.Wait.Should().BeTrue();
+      }
+
       #endregion
 
       public class ArgumentsWithIndex
       {
          #region Public Properties
 
-         [IndexedArgument(0)]
-         [Argument("Path")]
+         [Argument("Path", Index = 0)]
          public string Path { get; set; }
 
-
-         [Argument("Value")]
-         [IndexedArgument(1)]
+         [Argument("Value", Index = 1)]
          public string Value { get; set; }
+
+         [Argument("Third", Index = 2)]
+         public string Third { get; set; }
+
+         [Option("Wait")]
+         public bool Wait { get; set; }
 
          #endregion
       }

@@ -12,8 +12,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
 
    /// <summary>Bootstrapper for generic <see cref="IApplication{T}"/>s/// </summary>
    /// <typeparam name="T">The type pf the application</typeparam>
-   /// <seealso cref="ConsoLovers.ConsoleToolkit.Core.BootStrappers.BootstrapperBase" />
-   /// <seealso cref="ConsoLovers.ConsoleToolkit.Core.IBootstrapper{T}" />
+   /// <seealso cref="ConsoLovers.ConsoleToolkit.Core.BootStrappers.BootstrapperBase"/>
+   /// <seealso cref="ConsoLovers.ConsoleToolkit.Core.IBootstrapper{T}"/>
    internal class GenericBootstrapper<T> : BootstrapperBase, IBootstrapper<T>
       where T : class, IApplication
    {
@@ -78,14 +78,16 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
       /// <summary>Runs the configured application with the given commandline arguments.</summary>
       /// <param name="args">The command line arguments.</param>
       /// <returns>The created <see cref="T:ConsoLovers.ConsoleToolkit.IApplication"/> of type <see cref="!:T"/></returns>
-      public T Run(string[] args)
-      {
-         if (createApplication == null)
-            createApplication = () => new DefaultFactory().CreateInstance<T>();
+      public T Run(string[] args) => CreateApplicationManager().Run(args);
 
-         var applicationManager = new ConsoleApplicationManagerGeneric<T>(createApplication) { WindowTitle = WindowTitle, WindowHeight = WindowHeight, WindowWidth = WindowWidth };
-         return applicationManager.Run(args);
-      }
+      /// <summary>Runs the configured application with the given commandline arguments.</summary>
+      /// <param name="args">The command line arguments as string.</param>
+      /// <returns>The created <see cref="T:ConsoLovers.ConsoleToolkit.IApplication"/> of type <see cref="!:T"/></returns>
+      public T Run(string args) => CreateApplicationManager().Run(args);
+
+      /// <summary>Runs the configured application with the commandline arguments <see cref="Environment.CommandLine"/>.</summary>
+      /// <returns>The created <see cref="T:ConsoLovers.ConsoleToolkit.IApplication"/> of type <see cref="!:T"/></returns>
+      public T Run() => Run(Environment.CommandLine);
 
       /// <summary>
       ///    Specifies the <see cref="T:ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.IObjectFactory"/> that is used to create the
@@ -104,6 +106,19 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
 
          createApplication = container.CreateInstance<T>;
          return this;
+      }
+
+      #endregion
+
+      #region Methods
+
+      private ConsoleApplicationManagerGeneric<T> CreateApplicationManager()
+      {
+         if (createApplication == null)
+            createApplication = () => new DefaultFactory().CreateInstance<T>();
+
+         var applicationManager = new ConsoleApplicationManagerGeneric<T>(createApplication) { WindowTitle = WindowTitle, WindowHeight = WindowHeight, WindowWidth = WindowWidth };
+         return applicationManager;
       }
 
       #endregion

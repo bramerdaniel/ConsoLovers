@@ -7,6 +7,7 @@
 namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests.Utils
 {
    using System;
+   using System.Linq;
 
    using ConsoLovers.ConsoleToolkit.Core;
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
@@ -60,9 +61,14 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests.
 
       #region Public Methods and Operators
 
-      public void RunApplication(params string[] args)
+      public void RunApplication(string args)
       {
          ConsoleApplicationManager.For<T>().UsingFactory(Factory).Run(args);
+      }
+
+      public void RunApplication(params string[] args)
+      {
+         RunApplication(string.Join(" ", args));
       }
 
       #endregion

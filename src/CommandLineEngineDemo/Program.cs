@@ -33,14 +33,15 @@ namespace CommandLineEngineDemo
 
       #region Methods
 
-      static void Main(string[] args)
+      static void Main()
       {
          var container = new Container();
          container.Register<ResourceManager>(Properties.Resources.ResourceManager).WithLifetime(Lifetime.Singleton);
          var objectFactory = new DefaultFactory(container);
 
-         ConsoleApplicationManager.For<Program>().UsingFactory(objectFactory).Run(args);
-         System.Console.ReadLine();
+         var program = ConsoleApplicationManager.For<Program>().UsingFactory(objectFactory).Run();
+         if (program.Arguments.Wait)
+            program.WaitForEnter();
       }
 
       protected override void OnUnhandledCommandLineArgument(object sender, UnhandledCommandLineArgumentEventArgs e)

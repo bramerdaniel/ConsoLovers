@@ -12,140 +12,83 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
    using System.Linq;
    using System.Reflection;
 
-   /// <summary>Non generic base cclass for the <see cref="ArgumentMapper{T}"/> that provides static helper methods</summary>
+   /// <summary>Non generic base class for the <see cref="ArgumentMapper{T}"/> that provides static helper methods</summary>
    public abstract class MapperBase
    {
       #region Methods
 
-      internal static void EnsureUnique<T>(Dictionary<string, PropertyInfo> usedNames, CommandLineAttribute commandLineAttribute, PropertyInfo propertyInfo)
+      internal static bool SetArgumentValue<T>(T instance, MappingInfo mappingInfo, IDictionary<string, CommandLineArgument> arguments)
       {
-         var names = new List<string> { commandLineAttribute.Name ?? propertyInfo.Name };
-         names.AddRange(commandLineAttribute.Aliases);
-
-         foreach (var name in names)
-         {
-            if (usedNames.TryGetValue(name, out var firstProperty))
-            {
-               var message = $"The properties '{firstProperty.Name}' and '{propertyInfo.Name}' of the class '{typeof(T).Name}' define both a name (or alias) called '{name}'";
-               throw new CommandLineAttributeException(message) { Name = name, FirstProperty = firstProperty, SecondProperty = propertyInfo };
-            }
-         }
-
-         foreach (var name in names)
-         {
-            usedNames[name] = propertyInfo;
-         }
-      }
-
-      internal static bool SetOptionValue<T>(T instance, PropertyInfo propertyInfo, IDictionary<string, CommandLineArgument> arguments, CommandLineAttribute attribute)
-      {
-         bool wasSet = false;
-         var propertyName = attribute.Name ?? propertyInfo.Name;
-
-         if (arguments.TryGetValue(propertyName, out var argument))
-         {
-            if (argument.Value != null)
-               throw new CommandLineArgumentException($"The option '{argument.Name}' was specified with a value. This is not allowed for option.")
-               {
-                  Reason = ErrorReason.OptionWithValue
-               };
-
-            propertyInfo.SetValue(instance, true, null);
-            arguments.Remove(propertyName);
-            wasSet = true;
-         }
-
-         foreach (var alias in attribute.Aliases)
-         {
-            if (arguments.TryGetValue(alias, out argument))
-            {
-               if (argument.Value != null)
-                  throw new CommandLineArgumentException($"The option '{alias}' was specified with a value. This is not allowed for option.")
-                  {
-                     Reason = ErrorReason.OptionWithValue
-                  };
-
-               propertyInfo.SetValue(instance, true, null);
-               arguments.Remove(alias);
-               wasSet = true;
-            }
-         }
-
-         return wasSet;
-      }
-
-      internal static bool SetPropertyValue<T>(T instance, PropertyInfo propertyInfo, IDictionary<string, CommandLineArgument> arguments, CommandLineAttribute attribute)
-      {
+         PropertyInfo propertyInfo = mappingInfo.PropertyInfo;
+         CommandLineAttribute attribute = mappingInfo.CommandLineAttribute;
          var count = 0;
-         var propertyName = attribute.Name ?? propertyInfo.Name;
          bool trim = attribute.TrimQuotation();
 
+         CommandLineArgument argument;
          string stringValue;
-         if (arguments.TryGetValue(propertyName, out var argument))
+
+         foreach (var name in mappingInfo.GetNames())
          {
-            if (argument.Value == null)
-               throw new CommandLineArgumentException($"The value of the argument '{argument.Name}' was not specified.") { Reason = ErrorReason.ArgumentWithoutValue };
-
-            stringValue = GetValue(argument.Value, trim);
-
-            propertyInfo.SetValue(instance, ConvertValue(propertyInfo.PropertyType, stringValue, (t, v) => CreateErrorMessage(t, v, propertyName)), null);
-            arguments.Remove(propertyName);
-            count++;
-         }
-
-         foreach (var alias in attribute.Aliases)
-         {
-            if (arguments.TryGetValue(alias, out argument))
+            if (arguments.TryGetValue(name, out argument))
             {
                if (argument.Value == null)
                   throw new CommandLineArgumentException($"The value of the argument '{argument.Name}' was not specified.") { Reason = ErrorReason.ArgumentWithoutValue };
 
                stringValue = GetValue(argument.Value, trim);
+               propertyInfo.SetValue(instance, ConvertValue(propertyInfo.PropertyType, stringValue, (t, v) => CreateErrorMessage(t, v, name)), null);
+               mappingInfo.CommandLineArgument = argument;
 
-               propertyInfo.SetValue(instance, ConvertValue(propertyInfo.PropertyType, stringValue, (t, v) => CreateErrorMessage(t, v, propertyName)), null);
-               arguments.Remove(alias);
+               if (!mappingInfo.IsShared())
+                  arguments.Remove(name);
+
                count++;
             }
          }
 
-         var index = attribute.GetIndex();
-         if (index >= 0)
+         if (TryGetByIndex(arguments, mappingInfo, out var entry))
          {
-            if (TryGetByIndex(arguments, index, out var entry))
+            argument = entry.Value;
+            if (argument != null && argument.Value == null)
             {
-               argument = entry.Value;
-               if (argument != null && argument.Value == null)
-               {
-                  stringValue = GetValue(argument.Name, trim);
+               stringValue = GetValue(argument.Name, trim);
 
-                  propertyInfo.SetValue(instance, ConvertValue(propertyInfo.PropertyType, stringValue, (t, v) => CreateErrorMessage(t, v, attribute.Name)), null);
-                  arguments.Remove(entry.Key);
-                  count++;
-               }
+               propertyInfo.SetValue(instance, ConvertValue(propertyInfo.PropertyType, stringValue, (t, v) => CreateErrorMessage(t, v, attribute.Name)), null);
+               arguments.Remove(entry.Key);
+               count++;
             }
          }
 
          if (count > 1)
-            throw new AmbiguousCommandLineArgumentsException($"The value for the argument '{propertyName}' was specified multiple times.");
+            throw new AmbiguousCommandLineArgumentsException($"The value for the argument '{mappingInfo.Name}' was specified multiple times.");
 
          if (count == 0 && attribute.IsRequired())
-            throw new MissingCommandLineArgumentException(propertyName);
+            throw new MissingCommandLineArgumentException(mappingInfo.Name);
 
          return count > 0;
       }
 
-      private static bool TryGetByIndex(IDictionary<string, CommandLineArgument> arguments, int index, out KeyValuePair<string,CommandLineArgument> argument)
+      internal static bool SetOptionValue<T>(T instance, MappingInfo mappingInfo, IDictionary<string, CommandLineArgument> arguments)
       {
-         foreach (var commandLineArgument in arguments)
+         foreach (var name in mappingInfo.GetNames())
          {
-            if (commandLineArgument.Value.Index == index)
+            if (arguments.TryGetValue(name, out var argument))
             {
-               argument = commandLineArgument;
+               if (argument.Value != null)
+                  throw new CommandLineArgumentException($"The option '{argument.Name}' was specified with a value. This is not allowed for option.")
+                  {
+                     Reason = ErrorReason.OptionWithValue
+                  };
+
+               mappingInfo.PropertyInfo.SetValue(instance, true, null);
+               mappingInfo.CommandLineArgument = argument;
+
+               if (!mappingInfo.IsShared())
+                  arguments.Remove(name);
+
                return true;
             }
          }
 
-         argument = new KeyValuePair<string, CommandLineArgument>();
          return false;
       }
 
@@ -213,6 +156,31 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       private static string GetValue(string originalValue, bool trim)
       {
          return trim ? originalValue.Trim('"', '\'') : originalValue;
+      }
+
+      private static bool TryGetByIndex(IDictionary<string, CommandLineArgument> arguments, MappingInfo mappingInfo, out KeyValuePair<string, CommandLineArgument> argument)
+      {
+         var index = mappingInfo.CommandLineAttribute.GetIndex();
+         if (index >= 0)
+         {
+            foreach (var commandLineArgument in arguments)
+            {
+               if (commandLineArgument.Value.Index == index)
+               {
+                  var betterNameMatch = mappingInfo.GetNameMatch(commandLineArgument.Value.Name);
+                  if (betterNameMatch == null)
+                  {
+                     argument = commandLineArgument;
+                     return true;
+                  }
+
+                  break;
+               }
+            }
+         }
+
+         argument = new KeyValuePair<string, CommandLineArgument>();
+         return false;
       }
 
       #endregion

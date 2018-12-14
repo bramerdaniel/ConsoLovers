@@ -34,6 +34,11 @@ namespace ConsoLovers.ConsoleToolkit.Core
          return (T)Run(typeof(T), args);
       }
 
+      public T Run(string args)
+      {
+         return (T)Run(typeof(T), args);
+      }
+
       #endregion
    }
 }

@@ -50,9 +50,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       public IDictionary<string, CommandLineArgument> ParseArguments(string args, bool caseSensitive)
       {
+         int skippFirst = args.Equals(Environment.CommandLine) ? 1 : 0;
+
          var arguments = new Dictionary<string, CommandLineArgument>(caseSensitive ? StringComparer.InvariantCulture : StringComparer.InvariantCultureIgnoreCase);
          int index = 0;
-         foreach (var arg in SplitIntoArgs(args))
+         foreach (var arg in SplitIntoArgs(args).Skip(skippFirst))
          {
             var commandLineArgument = ParseSingleArgument(arg, index);
             arguments[commandLineArgument.Name] = commandLineArgument;
@@ -216,7 +218,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
                inName = false;
                foundNameSeparator = true;
             }
-
             else
             {
                if (!charInfo.IsFirst() || !ArgumentSigns.Contains(charInfo.Current))
