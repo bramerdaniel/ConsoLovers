@@ -10,9 +10,10 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
    using System.Collections.Generic;
    using System.Globalization;
    using System.Linq;
+   using System.Text;
 
    /// <summary>Default implementation of the <see cref="ICommandLineArgumentParser"/> interface</summary>
-   /// <seealso cref="ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.ICommandLineArgumentParser" />
+   /// <seealso cref="ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.ICommandLineArgumentParser"/>
    public class CommandLineArgumentParser : ICommandLineArgumentParser
    {
       #region Constants and Fields
@@ -45,6 +46,25 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          }
 
          return arguments;
+      }
+
+      public IDictionary<string, CommandLineArgument> ParseArguments(string args, bool caseSensitive)
+      {
+         var arguments = new Dictionary<string, CommandLineArgument>(caseSensitive ? StringComparer.InvariantCulture : StringComparer.InvariantCultureIgnoreCase);
+         int index = 0;
+         foreach (var arg in SplitIntoArgs(args))
+         {
+            var commandLineArgument = ParseSingleArgument(arg, index);
+            arguments[commandLineArgument.Name] = commandLineArgument;
+            index++;
+         }
+
+         return arguments;
+      }
+
+      public IDictionary<string, CommandLineArgument> ParseArguments(string args)
+      {
+         return ParseArguments(args, false);
       }
 
       #endregion
@@ -172,6 +192,89 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       private static bool StartsWithNameSeparator(string candidate)
       {
          return !string.IsNullOrEmpty(candidate) && NameSeparators.Contains(candidate[0]);
+      }
+
+      private bool IsNameSeparator(char character)
+      {
+         return NameSeparators.Contains(character);
+      }
+
+      private CommandLineArgument ParseSingleArgument(string argument, int index)
+      {
+         StringBuilder nameBuilder = new StringBuilder();
+         StringBuilder valueBuilder = null;
+         bool inName = true;
+         bool foundNameSeparator = false;
+
+         foreach (var charInfo in new CharRope(argument))
+         {
+            if (charInfo.IsQuote() && !charInfo.IsEscaped())
+               continue;
+
+            if (!charInfo.InsideQuotes() && !foundNameSeparator && IsNameSeparator(charInfo.Current))
+            {
+               inName = false;
+               foundNameSeparator = true;
+            }
+
+            else
+            {
+               if (!charInfo.IsFirst() || !ArgumentSigns.Contains(charInfo.Current))
+                  AppendCharacter(charInfo);
+            }
+         }
+
+         var name = nameBuilder.ToString();
+         return new CommandLineArgument
+         {
+            Index = index, 
+            Name = name, 
+            Value = valueBuilder?.ToString(), 
+            OriginalString = argument
+         };
+
+         void AppendCharacter(CharInfo charInfo)
+         {
+            if (charInfo.Current == '\\' && (charInfo.Next == '\\' || charInfo.Next == '"'))
+               return;
+
+            if (inName)
+            {
+               nameBuilder.Append(charInfo.Current);
+            }
+            else
+            {
+               GetValueBuilder().Append(charInfo.Current);
+            }
+         }
+
+         StringBuilder GetValueBuilder()
+         {
+            return valueBuilder ?? (valueBuilder = new StringBuilder());
+         }
+      }
+
+      private IEnumerable<string> SplitIntoArgs(string args)
+      {
+         StringBuilder builder = new StringBuilder();
+         foreach (var charInfo in new CharRope(args))
+         {
+            if (charInfo.IsWhiteSpace() && !charInfo.InsideQuotes())
+            {
+               if (builder.Length > 0)
+               {
+                  yield return builder.ToString();
+                  builder = new StringBuilder();
+               }
+            }
+            else
+            {
+               builder.Append(charInfo.Current);
+            }
+         }
+
+         if (builder.Length > 0)
+            yield return builder.ToString();
       }
 
       #endregion

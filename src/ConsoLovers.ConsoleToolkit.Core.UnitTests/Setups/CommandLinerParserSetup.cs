@@ -2,9 +2,9 @@
 {
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
-   public class CommandLinerParserSetup
+   public class CommandLinerParserSetup : Setups.SetupBase<CommandLineArgumentParser>
    {
-      public CommandLineArgumentParser Done()
+      protected override CommandLineArgumentParser CreateInstance()
       {
          return new CommandLineArgumentParser();
       }

@@ -16,5 +16,16 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       /// <param name="caseSensitive">if set to <c>true</c> the arguments should be treated case sensitive.</param>
       /// <returns>The created dictionary</returns>
       IDictionary<string, CommandLineArgument> ParseArguments(string[] args, bool caseSensitive);
+
+      /// <summary>Parses the given arguments into a dictionary.</summary>
+      /// <param name="args">The command line arguments as string.</param>
+      /// <param name="caseSensitive">if set to <c>true</c> the arguments should be treated case sensitive.</param>
+      /// <returns>The created dictionary</returns>
+      IDictionary<string, CommandLineArgument> ParseArguments(string args, bool caseSensitive);
+      
+      /// <summary>Parses the given arguments into a dictionary.</summary>
+      /// <param name="args">The command line arguments as string.</param>
+      /// <returns>The created dictionary</returns>
+      IDictionary<string, CommandLineArgument> ParseArguments(string args);
    }
 }

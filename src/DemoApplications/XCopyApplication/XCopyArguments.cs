@@ -9,14 +9,16 @@
    {
       public override void WriteTypeHeader(TypeHelpRequest helpRequest)
       {
-         Console.WriteLine("### XCOPY ARGUMENT HELP ###");
-         Console.WriteLine("---------------------------");
+         Console.WriteLine(" ╔══════════════════════════╗");
+         Console.WriteLine(" ║  XCOPY ARGUMENT HELP     ║");
+         Console.WriteLine(" ╚══════════════════════════╝");
          Console.WriteLine();
       }
 
       public override void WriteTypeFooter(TypeHelpRequest helpRequest)
       {
-         Console.WriteLine("*******************");
+         Console.WriteLine();
+         Console.WriteLine("►───────────────────────────────────────────────────────────────────────────◄");
       }
 
       [Command("copy", "c", IsDefaultCommand = true)]
@@ -37,6 +39,7 @@
 
       [Option("Wait", "w")]
       [HelpText("Waits for key press after the executed command has finished", "None")]
+      [DetailedHelpText("This is normally only used for error diagosis.")]
       public bool Wait { get; set; }
    }
 }

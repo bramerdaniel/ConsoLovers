@@ -74,7 +74,9 @@
     <Compile Include="ArgumentEngine\ArgumentInfoTests.cs" />
     <Compile Include="ArgumentEngine\ArgumentMapperSetup.cs" />
     <Compile Include="ArgumentEngine\Command.cs" />
-    <Compile Include="ArgumentEngine\CommandLinerParserSetup.cs" />
+    <Compile Include="CharRopeTests.cs" />
+    <Compile Include="ParseFromString.cs" />
+    <Compile Include="Setups\CommandLinerParserSetup.cs" />
     <Compile Include="ArgumentEngine\CommandMapperTests.cs" />
     <Compile Include="ArgumentEngine\CovertValueTests.cs" />
     <Compile Include="ArgumentEngine\EngineFactorySetup.cs" />
@@ -129,6 +131,7 @@
     <Compile Include="NormalizeArguments.cs" />
     <Compile Include="Parse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Setups\SetupBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -138,6 +141,9 @@
       <Project>{5cd277eb-585c-4891-b8b9-4a6f53d94a2e}</Project>
       <Name>ConsoLovers.ConsoleToolkit.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="CommandLineArgumentParserTests\" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
