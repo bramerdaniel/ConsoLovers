@@ -21,7 +21,9 @@ namespace ConsoLovers.ConsoleToolkit.Core
       /// <summary>Initializes the given instance with the command line arguments.</summary>
       /// <param name="instance">The instance to fill.</param>
       /// <param name="args">The arguments to use.</param>
-      void InitializeArguments(T instance, string args);
+      void InitializeFromString(T instance, string args);
+
+      void InitializeFromArray(T instance, string[] args);
 
       #endregion
    }

@@ -10,7 +10,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
    using JetBrains.Annotations;
 
-   /// <summary>Attibute that is used to set the title of the console windoe</summary>
+   /// <summary>Attribute that is used to set the title of the console window</summary>
    /// <seealso cref="System.Attribute"/>
    public class ConsoleWindowTitleAttribute : Attribute
    {

@@ -80,9 +80,17 @@ namespace ConsoLovers.ConsoleToolkit.Core
          return Activator.CreateInstance<T>();
       }
 
-      public virtual void InitializeArguments(T instance, string args)
+      public virtual void InitializeFromString(T instance, string args)
       {
          HasArguments = ! string.IsNullOrWhiteSpace(args);
+         Arguments = CommandLineEngine.Map(args, instance);
+
+         OnArgumentsInitialized();
+      }
+
+      public virtual void InitializeFromArray(T instance, string[] args)
+      {
+         HasArguments = args != null && args.Length > 0;
          Arguments = CommandLineEngine.Map(args, instance);
 
          OnArgumentsInitialized();

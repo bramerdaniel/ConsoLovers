@@ -17,9 +17,9 @@
          application.RunWith();
       }
 
-      public override void InitializeArguments(T instance, string args)
+      public override void InitializeFromString(T instance, string args)
       {
-         base.InitializeArguments(instance, args);
+         base.InitializeFromString(instance, args);
 
          var info = ArgumentClassInfo.FromType<T>();
          foreach (var property in info.Properties)

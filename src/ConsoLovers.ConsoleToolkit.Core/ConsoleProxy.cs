@@ -1,6 +1,6 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="ConsoleProxy.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2017
+//    Copyright (c) ConsoLovers  2015 - 2018
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -59,6 +59,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       }
 
       public int LargestWindowHeight => Console.LargestWindowHeight;
+
       public int LargestWindowWidth => Console.LargestWindowWidth;
 
       public int CursorSize

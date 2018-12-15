@@ -17,7 +17,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       private readonly IConsole console;
 
-      string headerFormatString = "##### {0} ####";
+      readonly string headerFormatString = "##### {0} ####";
 
       #endregion
 
@@ -33,10 +33,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       /// <param name="console">The console.</param>
       private ExceptionFormatter([NotNull] IConsole console)
       {
-         if (console == null)
-            throw new ArgumentNullException(nameof(console));
-
-         this.console = console;
+         this.console = console ?? throw new ArgumentNullException(nameof(console));
       }
 
       #endregion

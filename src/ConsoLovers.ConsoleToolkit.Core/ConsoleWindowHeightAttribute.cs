@@ -8,7 +8,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
 {
    using System;
 
-   /// <summary>Attribute that is used to set the window heiht of the console window</summary>
+   /// <summary>Attribute that is used to set the window height of the console window</summary>
    /// <seealso cref="System.Attribute"/>
    public class ConsoleWindowHeightAttribute : Attribute
    {

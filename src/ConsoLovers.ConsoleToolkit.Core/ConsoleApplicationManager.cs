@@ -8,6 +8,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
 {
    using System;
    using System.Diagnostics;
+   using System.Linq;
    using System.Reflection;
 
    using ConsoLovers.ConsoleToolkit.Core.BootStrappers;
@@ -148,17 +149,24 @@ namespace ConsoLovers.ConsoleToolkit.Core
                // ReSharper disable once PossibleNullReferenceException
                var argumentsInstance = methodInfo.Invoke(application, null);
 
-               var initialize = applicationType.GetMethod(nameof(IArgumentInitializer<Type>.InitializeArguments));
-               if (initialize == null)
-                  throw new InvalidOperationException($"The InitializeArguments method of the {typeof(IArgumentInitializer<>).FullName} could not be found.");
-    
+
                if (args is string stringArgs)
                {
+                  var initialize = applicationType.GetMethod(nameof(IArgumentInitializer<Type>.InitializeFromString));
+                  if (initialize == null)
+                     throw new InvalidOperationException($"The InitializeArguments method of the {typeof(IArgumentInitializer<>).FullName} could not be found.");
+
                   initialize.Invoke(application, new[] { argumentsInstance, stringArgs });
                }
                else
                {
-                  initialize.Invoke(application, new[] { argumentsInstance, args });
+                  var strings = (string[])args;
+
+                  var initialize = applicationType.GetMethod(nameof(IArgumentInitializer<Type>.InitializeFromArray));
+                  if (initialize == null)
+                     throw new InvalidOperationException($"The InitializeArguments method of the {typeof(IArgumentInitializer<>).FullName} could not be found.");
+
+                  initialize.Invoke(application, new[] { argumentsInstance,  strings });
                }
             }
          }
