@@ -19,6 +19,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       /// <summary>Gets or sets the name.</summary>
       public string Name { get; set; }
 
+      /// <summary>Gets or sets a value indicating whether this <see cref="CommandLineArgument"/> was mapped.</summary>
+      internal bool Mapped { get; set; }
+
       #endregion
    }
 }

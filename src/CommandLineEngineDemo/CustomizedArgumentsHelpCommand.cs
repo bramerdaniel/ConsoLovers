@@ -4,21 +4,15 @@ namespace CommandLineEngineDemo
 
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
-   internal class CustomizedArgumentsHelpCommand : ICommand<CustomizedHelpArgs>
+   internal class CustomizedArgumentsHelpCommand : CommandBase<CustomizedHelpArgs>
    {
       #region ICommand Members
 
-      public void Execute()
+      protected override void ExecuteOverride()
       {
          Console.WriteLine($"CommandName = CustomizedArgumentsHelpCommand, Path= {Arguments.Path}");
          Console.ReadLine();
       }
-
-      #endregion
-
-      #region ICommand<ExecuteArgs> Members
-
-      public CustomizedHelpArgs Arguments { get; set; }
 
       #endregion
    }

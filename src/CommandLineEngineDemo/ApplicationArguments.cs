@@ -8,7 +8,7 @@ namespace CommandLineEngineDemo
 {
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
-   internal class Commands : LoggerArgs
+   internal class ApplicationArguments : LoggerArgs
    {
       #region Public Properties
 
@@ -48,5 +48,9 @@ namespace CommandLineEngineDemo
    {
       [Argument("LogLevel", "ll")]
       public string LogLevel { get; set; }
+
+      [Argument("LogFile", "lf")]
+      [HelpText("Log file of the application")]
+      public string LogFile { get; set; }
    }
 }

@@ -94,6 +94,20 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       }
 
       [TestMethod]
+      public void EnsureSharedOptionsDontCauseErrorsInRootClass()
+      {
+         var engine = GetTarget();
+         engine.MonitorEvents();
+         var arguments = engine.Map<ApplicationCommands>(new[] {  "Execute", "-sharedOptionAlone" });
+
+         arguments.Execute.Should().NotBeNull();
+         arguments.Execute.Arguments.Should().NotBeNull();
+
+         arguments.Execute.Arguments.SharedOptionAlone.Should().BeTrue();
+         engine.ShouldNotRaise(nameof(CommandLineEngine.UnhandledCommandLineArgument));
+      }
+
+      [TestMethod]
       public void EnsureNonGenericCommandClassWorks()
       {
          var arguments = GetTarget().Map<NonGenericApplicationCommands>(new[] { "Execute", "-Path=C:\\Path\\File.txt", "-silent", "-wait" });
@@ -332,6 +346,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
 
          [Argument("SharedButAlone", Shared = true)]
          public double SharedButAlone { get; set; }
+
+         [Option("SharedOptionAlone", Shared = true)]
+         public bool SharedOptionAlone { get; set; }
 
          #endregion
       }

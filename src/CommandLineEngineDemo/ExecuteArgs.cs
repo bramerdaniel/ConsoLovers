@@ -21,13 +21,13 @@ namespace CommandLineEngineDemo
       [DetailedHelpText(ResourceKey = nameof(Properties.Resources.Execute_Path_DetailedHelp))]
       public string Path { get; set; }
 
-      [Argument("LogLevel", "ll" , Index = 1)]
+      [Argument("LogLevel", "ll" , Index = 1, Shared = true)]
       public string LogLevel { get; set; }
 
       [Argument(2)]
       public string Unnamed { get; set; }
 
-      [Option("wait", "w")]
+      [Option("wait", "w", Shared = true)]
       public bool Wait { get; set; }
 
       #endregion

@@ -7,6 +7,7 @@
 namespace CommandLineEngineDemo
 {
    using System;
+   using System.Reflection;
    using System.Resources;
 
    using ConsoLovers.ConsoleToolkit.Core;
@@ -15,12 +16,11 @@ namespace CommandLineEngineDemo
 
    [ConsoleWindowWidth(140)]
    [ConsoleWindowHeight(60)]
-   class Program : ConsoleApplication<Commands>
+   class Program : ConsoleApplication<ApplicationArguments>
    {
       #region Public Methods and Operators
 
-
-      public override void RunWith(Commands arguments)
+      public override void RunWith(ApplicationArguments arguments)
       {
          if (arguments.Wait)
          {
@@ -33,6 +33,8 @@ namespace CommandLineEngineDemo
 
       #region Methods
 
+      private static IConsole Console = new ConsoleProxy();
+
       static void Main()
       {
          var container = new Container();
@@ -40,8 +42,35 @@ namespace CommandLineEngineDemo
          var objectFactory = new DefaultFactory(container);
 
          var program = ConsoleApplicationManager.For<Program>().UsingFactory(objectFactory).Run();
-         if (program.Arguments.Wait)
+         PrintArgs(program.Arguments);
+         if (program.Arguments != null && program.Arguments.Wait)
+         {
+            Console.WriteLine();
             program.WaitForEnter();
+         }
+      }
+
+      private static void PrintArgs(ApplicationArguments args)
+      {
+         Console.WriteLine();
+         if (args == null)
+         {
+            Console.WriteLine(" no application arguments", ConsoleColor.Yellow);
+            return;
+         }
+
+         Console.WriteLine(" ### Application arguments ###");
+         ConsoleColor color = ConsoleColor.White;
+         foreach (var propertyInfo in args.GetType().GetProperties())
+         {
+            var commandLineAttribute = propertyInfo.GetCustomAttribute<CommandLineAttribute>();
+            var value = propertyInfo.GetValue(args);
+            if (value != null)
+            {
+               color = color == ConsoleColor.White ? ConsoleColor.Gray : ConsoleColor.White;
+               Console.WriteLine($"  - {propertyInfo.Name.PadRight(10)} = {value.ToString().PadRight(40)} [Shared={commandLineAttribute?.Shared}]", color);
+            }
+         }
       }
 
       protected override void OnUnhandledCommandLineArgument(object sender, UnhandledCommandLineArgumentEventArgs e)

@@ -70,8 +70,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
             defaultMapper.Map(arguments, instance);
          }
 
-         foreach (var argument in arguments)
-            UnmappedCommandLineArgument?.Invoke(this, new UnmappedCommandLineArgumentEventArgs(argument.Value));
+         foreach (var argument in arguments.Values.Where(x => !x.Mapped))
+            UnmappedCommandLineArgument?.Invoke(this, new UnmappedCommandLineArgumentEventArgs(argument));
 
          return instance;
       }

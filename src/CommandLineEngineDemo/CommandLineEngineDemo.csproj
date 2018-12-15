@@ -43,7 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands.cs" />
+    <Compile Include="ApplicationArguments.cs" />
+    <Compile Include="CommandBase.cs" />
     <Compile Include="CrashCommand.cs" />
     <Compile Include="CustomHelpCommand.cs" />
     <Compile Include="CustomizedArgumentsHelpCommand.cs" />

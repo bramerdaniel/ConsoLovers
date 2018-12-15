@@ -37,6 +37,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
                stringValue = GetValue(argument.Value, trim);
                propertyInfo.SetValue(instance, ConvertValue(propertyInfo.PropertyType, stringValue, (t, v) => CreateErrorMessage(t, v, name)), null);
                mappingInfo.CommandLineArgument = argument;
+               argument.Mapped = true;
 
                if (!mappingInfo.IsShared())
                   arguments.Remove(name);
@@ -81,6 +82,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
                mappingInfo.PropertyInfo.SetValue(instance, true, null);
                mappingInfo.CommandLineArgument = argument;
+               argument.Mapped = true;
 
                if (!mappingInfo.IsShared())
                   arguments.Remove(name);
