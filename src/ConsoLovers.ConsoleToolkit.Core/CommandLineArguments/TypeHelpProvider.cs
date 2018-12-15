@@ -306,8 +306,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       private bool IsRequired(CommandLineAttribute commandLineAttribute)
       {
-         var attribute = commandLineAttribute as ArgumentAttribute;
-         return attribute != null && attribute.Required;
+         return commandLineAttribute is ArgumentAttribute attribute && attribute.Required;
       }
 
       private void WriteArgument(ArgumentHelp argumentHelp, int longestNameWidth, int longestAliasWidth, int descriptionWidth, int leftWidth)

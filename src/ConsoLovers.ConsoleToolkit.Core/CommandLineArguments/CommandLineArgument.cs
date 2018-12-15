@@ -2,6 +2,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
    using System.Diagnostics;
 
+   /// <summary>Helper class containing information of the parsed command line arguments </summary>
    [DebuggerDisplay("[{Index}] {Name}={Value}")]
    public class CommandLineArgument
    {

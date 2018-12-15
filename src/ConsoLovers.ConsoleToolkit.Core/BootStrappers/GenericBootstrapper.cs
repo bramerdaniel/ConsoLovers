@@ -27,7 +27,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
 
       /// <summary>Specifies the function that creates the instance of the application.</summary>
       /// <param name="applicationBuilder">The application builder function.</param>
-      /// <returns>The current <see cref="T:ConsoLovers.ConsoleToolkit.Core.IBootstrapper`1"/> for futher configuration</returns>
+      /// <returns>The current <see cref="T:ConsoLovers.ConsoleToolkit.Core.IBootstrapper`1"/> for further configuration</returns>
       /// <exception cref="InvalidOperationException">ApplicationBuilder function was already specified.</exception>
       /// <exception cref="ArgumentNullException">applicationBuilder</exception>
       public IBootstrapper<T> CreateApplication(Func<T> applicationBuilder)
@@ -44,7 +44,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
       ///    <see cref="T:ConsoLovers.ConsoleToolkit.Core.ConsoleWindowHeightAttribute"/>
       /// </summary>
       /// <param name="height">The expected window height.</param>
-      /// <returns>The current <see cref="T:ConsoLovers.ConsoleToolkit.Core.IBootstrapper`1"/> for futher configuration</returns>
+      /// <returns>The current <see cref="T:ConsoLovers.ConsoleToolkit.Core.IBootstrapper`1"/> for further configuration</returns>
       public IBootstrapper<T> SetWindowHeight(int height)
       {
          WindowHeight = height;
@@ -56,7 +56,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
       ///    <see cref="T:ConsoLovers.ConsoleToolkit.Core.ConsoleWindowWidthAttribute"/>
       /// </summary>
       /// <param name="width">The expected window width.</param>
-      /// <returns>The current <see cref="T:ConsoLovers.ConsoleToolkit.Core.IBootstrapper`1"/> for futher configuration</returns>
+      /// <returns>The current <see cref="T:ConsoLovers.ConsoleToolkit.Core.IBootstrapper`1"/> for further configuration</returns>
       public IBootstrapper<T> SetWindowWidth(int width)
       {
          WindowWidth = width;
@@ -68,7 +68,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
       ///    <see cref="T:ConsoLovers.ConsoleToolkit.Core.ConsoleWindowTitleAttribute"/>
       /// </summary>
       /// <param name="windowTitle">The window title to set.</param>
-      /// <returns>The current <see cref="T:ConsoLovers.ConsoleToolkit.Core.IBootstrapper`1"/> for futher configuration</returns>
+      /// <returns>The current <see cref="T:ConsoLovers.ConsoleToolkit.Core.IBootstrapper`1"/> for further configuration</returns>
       public IBootstrapper<T> SetWindowTitle(string windowTitle)
       {
          WindowTitle = windowTitle;
@@ -94,7 +94,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
       ///    <see cref="T:ConsoLovers.ConsoleToolkit.Core.IApplication"/>.
       /// </summary>
       /// <param name="container">The container.</param>
-      /// <returns>The current <see cref="T:ConsoLovers.ConsoleToolkit.Core.IBootstrapper`1"/> for futher configuration</returns>
+      /// <returns>The current <see cref="T:ConsoLovers.ConsoleToolkit.Core.IBootstrapper`1"/> for further configuration</returns>
       /// <exception cref="ArgumentNullException">container</exception>
       /// <exception cref="InvalidOperationException">ApplicationBuilder function was already specified.</exception>
       public IBootstrapper<T> UsingFactory(IObjectFactory container)

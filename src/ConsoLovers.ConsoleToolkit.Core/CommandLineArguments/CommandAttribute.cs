@@ -10,7 +10,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
    using System.Text;
 
    /// <summary>Attribute for defining a command line options (boolean flags)</summary>
-   [AttributeUsage(AttributeTargets.Property, Inherited = true, AllowMultiple = false)]
+   [AttributeUsage(AttributeTargets.Property)]
    public class CommandAttribute : CommandLineAttribute
    {
       #region Constructors and Destructors

@@ -7,17 +7,22 @@
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
    using System;
-   using System.Collections;
    using System.Collections.Generic;
    using System.Diagnostics;
    using System.Reflection;
 
    using JetBrains.Annotations;
 
-   [DebuggerDisplay("{GetDebuggerString()}")]
+   [DebuggerDisplay("{" + nameof(GetDebuggerString) + "()}")]
    internal class MappingInfo
    {
+      #region Constants and Fields
+
       private readonly MappingList mappingList;
+
+      #endregion
+
+      #region Constructors and Destructors
 
       internal MappingInfo([NotNull] PropertyInfo propertyInfo, [NotNull] CommandLineAttribute commandLineAttribute, [NotNull] MappingList mappingList)
       {
@@ -26,32 +31,35 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          CommandLineAttribute = commandLineAttribute ?? throw new ArgumentNullException(nameof(commandLineAttribute));
       }
 
+      #endregion
+
       #region Public Properties
 
-      public CommandLineAttribute CommandLineAttribute { get;  }
-
+      /// <summary>Gets or sets the command line argument.</summary>
       public CommandLineArgument CommandLineArgument { get; set; }
 
-      public PropertyInfo PropertyInfo { get;  }
+      /// <summary>Gets the command line attribute.</summary>
+      public CommandLineAttribute CommandLineAttribute { get; }
 
       public string Name => CommandLineAttribute.Name ?? PropertyInfo.Name;
 
-      #endregion
+      /// <summary>Gets the property information.</summary>
+      public PropertyInfo PropertyInfo { get; }
 
-      string GetDebuggerString()
-      {
-         return $"{(IsOption() ? "Option" : "Argument")}: {Name}";
-      }
+      #endregion
 
       #region Public Methods and Operators
 
-      public bool IsOption()
+      /// <summary>Gets a name match of the given name.</summary>
+      /// <param name="name">The name to get the <see cref="MappingInfo"/> for.</param>
+      /// <returns>The found <see cref="MappingInfo"/> or null</returns>
+      public MappingInfo GetNameMatch(string name)
       {
-         return CommandLineAttribute is OptionAttribute;
+         return mappingList.GetMappingInfo(name);
       }
 
-      #endregion
-
+      /// <summary>Gets all names the mapping defines.</summary>
+      /// <returns>An <see cref="IEnumerable{T}"/> of strings</returns>
       public IEnumerable<string> GetNames()
       {
          yield return Name;
@@ -59,14 +67,29 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
             yield return aliase;
       }
 
-      public MappingInfo GetNameMatch(string name)
+      /// <summary>Determines whether the mapping is an option.</summary>
+      /// <returns><c>true</c> if this instance is option; otherwise, <c>false</c>.</returns>
+      public bool IsOption()
       {
-         return mappingList.GetMappingInfo(name);
+         return CommandLineAttribute is OptionAttribute;
       }
 
+      /// <summary>Determines whether the mapping is shared.</summary>
+      /// <returns><c>true</c> if this instance is shared; otherwise, <c>false</c>.</returns>
       public bool IsShared()
       {
          return CommandLineAttribute.Shared;
       }
+
+      #endregion
+
+      #region Methods
+
+      private string GetDebuggerString()
+      {
+         return $"{(IsOption() ? "Option" : "Argument")}: {Name}";
+      }
+
+      #endregion
    }
 }

@@ -52,6 +52,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       #region Public Methods and Operators
 
+      /// <summary>Gets all the identifiers.</summary>
+      /// <returns>An <see cref="IEnumerable{T}"/> of strings</returns>
       public IEnumerable<string> GetIdentifiers()
       {
          if (Name != null)

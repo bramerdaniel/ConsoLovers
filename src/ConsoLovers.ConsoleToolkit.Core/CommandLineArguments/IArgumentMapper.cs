@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="IArgumentMapper.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2016
+//    Copyright (c) ConsoLovers  2015 - 2018
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -12,10 +12,16 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
    public interface IArgumentMapper
    {
+      #region Public Events
+
       /// <summary>Occurs when a command line argument of the given arguments dictionary could not be mapped to a arguments member</summary>
       event EventHandler<UnmappedCommandLineArgumentEventArgs> UnmappedCommandLineArgument;
+
+      #endregion
    }
 
+   /// <summary>Interface for mapping the parsed dictionary of <see cref="CommandLineAttribute"/>s the an arguments class of type <see cref="T"/></summary>
+   /// <typeparam name="T">The type of the arguments class</typeparam>
    public interface IArgumentMapper<T> : IArgumentMapper
    {
       #region Public Methods and Operators

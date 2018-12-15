@@ -21,14 +21,10 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       protected ParameterInfo([NotNull] PropertyInfo propertyInfo, [NotNull] CommandLineAttribute commandLineAttribute)
       {
-         if (propertyInfo == null)
-            throw new ArgumentNullException(nameof(propertyInfo));
-         if (commandLineAttribute == null)
-            throw new ArgumentNullException(nameof(commandLineAttribute));
-
-         PropertyInfo = propertyInfo;
+         PropertyInfo = propertyInfo ?? throw new ArgumentNullException(nameof(propertyInfo));
+         CommandLineAttribute = commandLineAttribute ?? throw new ArgumentNullException(nameof(commandLineAttribute));
+         
          ParameterType = propertyInfo.PropertyType;
-         CommandLineAttribute = commandLineAttribute;
          Identifiers = commandLineAttribute.GetIdentifiers().ToArray();
          ParameterName = commandLineAttribute.Name ?? PropertyInfo.Name;
 

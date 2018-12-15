@@ -112,7 +112,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       private void ValidateProperty(T arguments, PropertyInfo propertyInfo)
       {
-         foreach (var attribute in propertyInfo.GetCustomAttributes(typeof(ArgumentValidatorAttribute), true).OfType<ArgumentValidatorAttribute>())
+         foreach (var attribute in propertyInfo.GetCustomAttributes<ArgumentValidatorAttribute>(true))
          {
             var instance = engineFactory.CreateInstance(attribute.Type);
             if (instance != null)
@@ -148,13 +148,5 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       }
 
       #endregion
-
-      //static void CallByReflection(string name, Type typeArg, object value)
-      //{
-      //   // Just for simplicity, assume it's public etc
-      //   MethodInfo method = typeof(IA).GetMethod(name);
-      //   MethodInfo generic = method.MakeGenericMethod(typeArg);
-      //   generic.Invoke(null, new object[] { value });
-      //}
    }
 }

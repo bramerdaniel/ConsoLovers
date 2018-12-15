@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="ArgumentClassInfo.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2017
+//    Copyright (c) ConsoLovers  2015 - 2018
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -13,11 +13,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
    using JetBrains.Annotations;
 
-   /// <summary>
-   /// The <see cref="ArgumentClassInfo"/> is a helper class,
-   /// that is able to analyse the class representing the command line arguments. 
-   /// This is done by reflection
-   /// </summary>
+   /// <summary>The <see cref="ArgumentClassInfo"/> is a helper class, that is able to analyze the class representing the command line arguments. This is done by reflection</summary>
    public class ArgumentClassInfo
    {
       #region Constants and Fields
@@ -31,16 +27,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       #endregion
 
       #region Constructors and Destructors
-
-      public static ArgumentClassInfo FromType(Type argumentClassType)
-      {
-         return new ArgumentClassInfo(argumentClassType);
-      }
-
-      public static ArgumentClassInfo FromType<T>()
-      {
-         return FromType(typeof(T));
-      }
 
       private ArgumentClassInfo([NotNull] Type argumentType)
       {
@@ -60,17 +46,27 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       public IReadOnlyCollection<CommandInfo> CommandInfos => commandInfos;
 
+      public CommandInfo DefaultCommand { get; private set; }
+
       public bool HasCommands => CommandInfos.Any();
 
       public CommandInfo HelpCommand { get; private set; }
-
-      public CommandInfo DefaultCommand { get; private set; }
 
       public IReadOnlyCollection<ParameterInfo> Properties => properties;
 
       #endregion
 
       #region Public Methods and Operators
+
+      public static ArgumentClassInfo FromType(Type argumentClassType)
+      {
+         return new ArgumentClassInfo(argumentClassType);
+      }
+
+      public static ArgumentClassInfo FromType<T>()
+      {
+         return FromType(typeof(T));
+      }
 
       public ParameterInfo GetParameterInfo(string name)
       {
@@ -83,6 +79,10 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          return null;
       }
 
+      public void Validate()
+      {
+      }
+
       #endregion
 
       #region Methods
@@ -91,16 +91,13 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       {
          foreach (var attribute in attributes)
          {
-            var commandAttribute = attribute as CommandAttribute;
-            if (commandAttribute != null)
+            if (attribute is CommandAttribute commandAttribute)
                return new CommandInfo(propertyInfo, commandAttribute);
 
-            var argumentAttribute = attribute as ArgumentAttribute;
-            if (argumentAttribute != null)
+            if (attribute is ArgumentAttribute argumentAttribute)
                return new ArgumentInfo(propertyInfo, argumentAttribute);
 
-            var optionAttribute = attribute as OptionAttribute;
-            if (optionAttribute != null)
+            if (attribute is OptionAttribute optionAttribute)
                return new OptionInfo(propertyInfo, optionAttribute);
          }
 
@@ -114,14 +111,13 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
          foreach (var propertyInfo in ArgumentType.GetProperties(BindingFlags.Instance | BindingFlags.Public))
          {
-            var attributes = (CommandLineAttribute[])propertyInfo.GetCustomAttributes(typeof(CommandLineAttribute), true);
+            var attributes = propertyInfo.GetCustomAttributes<CommandLineAttribute>(true).ToArray();
             if (attributes.Any())
             {
                var parameterInfo = CreateInfo(propertyInfo, attributes);
                properties.Add(parameterInfo);
 
-               var commandInfo = parameterInfo as CommandInfo;
-               if (commandInfo != null)
+               if (parameterInfo is CommandInfo commandInfo)
                {
                   commandInfos.Add(commandInfo);
                   if (IsHelpCommand(propertyInfo))
@@ -138,18 +134,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          }
       }
 
-  
       private bool IsHelpCommand(PropertyInfo propertyInfo)
       {
          return propertyInfo.PropertyType == typeof(HelpCommand);
       }
 
       #endregion
-
-      public void Validate()
-      {
-         
-
-      }
    }
 }

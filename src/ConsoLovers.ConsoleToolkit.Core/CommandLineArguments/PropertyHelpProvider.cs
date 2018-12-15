@@ -12,8 +12,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
    using ConsoLovers.ConsoleToolkit.Core.DIContainer;
 
-   using JetBrains.Annotations;
-
    /// <summary><see cref="IHelpProvider"/> implementation for properties</summary>
    /// <seealso cref="IHelpProvider"/>
    internal class PropertyHelpProvider : IHelpProvider
@@ -28,14 +26,15 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       private HelpTextAttribute helpTextAttribute;
 
-      [NotNull]
       private PropertyInfo propertyInfo;
 
       #endregion
 
       #region Constructors and Destructors
 
-      /// <summary>Initializes a new instance of the <see cref="PropertyHelpProvider"/> class.</summary>
+      /// <summary>
+      /// Initializes a new instance of the <see cref="PropertyHelpProvider" /> class.
+      /// </summary>
       /// <param name="resourceManager">The resource manager.</param>
       [InjectionConstructor]
       public PropertyHelpProvider(ResourceManager resourceManager)

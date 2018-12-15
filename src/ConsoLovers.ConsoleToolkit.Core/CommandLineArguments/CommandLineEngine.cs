@@ -13,6 +13,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
    using System.Resources;
    using System.Text;
 
+   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing;
    using ConsoLovers.ConsoleToolkit.Core.DIContainer;
 
    using JetBrains.Annotations;
@@ -224,7 +225,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          if (argumentType == null)
             throw new ArgumentNullException(nameof(argumentType));
 
-         var helpText = (HelpTextAttribute)argumentType.GetCustomAttributes(typeof(HelpTextAttribute), true).FirstOrDefault();
+         var helpText = argumentType.GetCustomAttribute<HelpTextAttribute>(true);
          if (helpText != null)
          {
             if (resourceManager == null)
@@ -253,10 +254,10 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          PropertyInfo[] properties = argumentType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
          foreach (PropertyInfo info in properties)
          {
-            var argumentAttribute = (ArgumentAttribute)info.GetCustomAttributes(typeof(ArgumentAttribute), true).FirstOrDefault();
-            var optionAttribute = (OptionAttribute)info.GetCustomAttributes(typeof(OptionAttribute), true).FirstOrDefault();
-            var commandAttribute = (CommandAttribute)info.GetCustomAttributes(typeof(CommandAttribute), true).FirstOrDefault();
-            var helpText = (HelpTextAttribute)info.GetCustomAttributes(typeof(HelpTextAttribute), true).FirstOrDefault();
+            var argumentAttribute = info.GetCustomAttribute<ArgumentAttribute>(true);
+            var optionAttribute = info.GetCustomAttribute<OptionAttribute>(true);
+            var commandAttribute = info.GetCustomAttribute<CommandAttribute>(true);
+            var helpText = info.GetCustomAttribute<HelpTextAttribute>(true);
             if (helpText != null)
             {
                yield return new ArgumentHelp
@@ -348,26 +349,18 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       private IHelpProvider GetHelpTextProvider(Type argumentType, ResourceManager resourceManager)
       {
-         var providerType = (argumentType.GetCustomAttribute(typeof(HelpTextProviderAttribute)) as HelpTextProviderAttribute)?.Type;
-         if (providerType != null)
-         {
-            var provider = ObjectFactory.CreateInstance(providerType) as IHelpProvider;
-            if (provider != null)
-               return provider;
-         }
+         var providerType = argumentType.GetCustomAttribute<HelpTextProviderAttribute>()?.Type;
+         if (providerType != null && ObjectFactory.CreateInstance(providerType) is IHelpProvider provider)
+            return provider;
 
          return new TypeHelpProvider(resourceManager);
       }
 
       private IHelpProvider GetHelpTextProvider(PropertyInfo propertyInfo, ResourceManager resourceManager)
       {
-         var propertyDeclaringType = (propertyInfo.DeclaringType.GetCustomAttribute(typeof(HelpTextProviderAttribute)) as HelpTextProviderAttribute)?.Type;
-         if (propertyDeclaringType != null)
-         {
-            var provider = ObjectFactory.CreateInstance(propertyDeclaringType) as IHelpProvider;
-            if (provider != null)
-               return provider;
-         }
+         var propertyDeclaringType = propertyInfo.DeclaringType?.GetCustomAttribute<HelpTextProviderAttribute>()?.Type;
+         if (propertyDeclaringType != null && ObjectFactory.CreateInstance(propertyDeclaringType) is IHelpProvider provider)
+            return provider;
 
          return new PropertyHelpProvider(resourceManager);
       }

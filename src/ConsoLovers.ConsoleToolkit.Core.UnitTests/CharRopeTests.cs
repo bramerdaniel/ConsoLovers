@@ -6,11 +6,10 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
 {
-   using System;
    using System.Diagnostics.CodeAnalysis;
    using System.Linq;
 
-   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing;
 
    using FluentAssertions;
 
@@ -20,17 +19,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Reviewed. Suppression is OK here.")]
    public class CharRopeTests
    {
-      [TestMethod]
-      public void EnsureNormalStringWorksCorrectly()
-      {
-         var target = CreateTarget("abc");
-         var charInfo = target.ElementAt(1);
-
-         charInfo.Current.Should().Be('b');
-         charInfo.Previous.Should().Be('a');
-         charInfo.Next.Should().Be('c');
-         charInfo.InsideQuotes().Should().BeFalse();
-      }
+      #region Public Methods and Operators
 
       [TestMethod]
       public void EnsureBoundsDoNotCauseExceptions()
@@ -51,9 +40,27 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
          charInfo.InsideQuotes().Should().BeFalse();
       }
 
+      [TestMethod]
+      public void EnsureNormalStringWorksCorrectly()
+      {
+         var target = CreateTarget("abc");
+         var charInfo = target.ElementAt(1);
+
+         charInfo.Current.Should().Be('b');
+         charInfo.Previous.Should().Be('a');
+         charInfo.Next.Should().Be('c');
+         charInfo.InsideQuotes().Should().BeFalse();
+      }
+
+      #endregion
+
+      #region Methods
+
       private static CharRope CreateTarget(string original)
       {
          return new CharRope(original);
       }
+
+      #endregion
    }
 }

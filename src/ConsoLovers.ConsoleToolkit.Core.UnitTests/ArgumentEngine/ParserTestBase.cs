@@ -9,6 +9,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
    using System.Collections.Generic;
 
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing;
    using ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups;
 
    public class ParserTestBase

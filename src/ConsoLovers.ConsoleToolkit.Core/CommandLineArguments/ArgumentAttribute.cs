@@ -9,8 +9,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
    using System;
    using System.Diagnostics;
 
-   /// <summary>Attribute for defining a command line options (boolean flags)</summary>
-   [AttributeUsage(AttributeTargets.Property, Inherited = true, AllowMultiple = false)]
+   /// <summary>Attribute for defining command line arguments with values</summary>
+   [AttributeUsage(AttributeTargets.Property)]
    [DebuggerDisplay("Argument: Name={Name}, Index={Index}, Required={Required}")]
    public class ArgumentAttribute : CommandLineAttribute
    {

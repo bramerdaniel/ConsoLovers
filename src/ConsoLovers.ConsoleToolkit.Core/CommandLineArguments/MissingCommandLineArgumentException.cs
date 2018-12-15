@@ -24,7 +24,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       #region Public Properties
 
       /// <summary>Gets the missing command line argument name .</summary>
-      public string Argument { get; private set; }
+      public string Argument { get; }
 
       #endregion
    }

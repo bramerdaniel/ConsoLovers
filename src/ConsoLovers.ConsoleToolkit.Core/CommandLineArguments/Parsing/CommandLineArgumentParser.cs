@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
+namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
 {
    using System;
    using System.Collections.Generic;

@@ -23,20 +23,17 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       public string[] Aliases { get; set; }
 
       /// <summary>Gets the aliases as comma separated string.</summary>
-      public string AliasString
-      {
-         get
-         {
-            return aliasString ?? (aliasString = ToCommaSeperatedString());
-         }
-      }
+      public string AliasString => aliasString ?? (aliasString = ToCommaSeperatedString());
 
       /// <summary>Gets the <see cref="LocalizedDescription"/> if available, otherwise the <see cref="UnlocalizedDescription"/> is returned.</summary>
       public string Description
       {
          get
          {
-            return !string.IsNullOrEmpty(LocalizedDescription) ? LocalizedDescription : !string.IsNullOrEmpty(UnlocalizedDescription) ? UnlocalizedDescription : "No help available";
+            if (!string.IsNullOrEmpty(LocalizedDescription))
+               return LocalizedDescription;
+
+            return string.IsNullOrEmpty(UnlocalizedDescription) ? "No help available" : UnlocalizedDescription;
          }
       }
 

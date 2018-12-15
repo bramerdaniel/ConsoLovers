@@ -13,6 +13,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
    using JetBrains.Annotations;
 
+   /// <summary>Helper class that creates a list of <see cref="MappingInfo"/> for a specified type</summary>
+   /// <seealso cref="System.Collections.Generic.List{MappingInfo}"/>
    internal class MappingList : List<MappingInfo>
    {
       #region Constants and Fields
@@ -26,31 +28,20 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       #region Constructors and Destructors
 
-      public static MappingList FromType<T>()
-      {
-         return new MappingList(typeof(T));
-      }
-
       private MappingList([NotNull] Type type)
       {
          this.type = type ?? throw new ArgumentNullException(nameof(type));
-
-         foreach (var propertyInfo in type.GetProperties(BindingFlags.Instance | BindingFlags.Public))
-         {
-            var commandLineAttribute = GetCommandLineAttribute(propertyInfo);
-            if (commandLineAttribute != null)
-            {
-               var mappingInfo = new MappingInfo (propertyInfo,commandLineAttribute, this);
-               EnsureUnique(mappingInfo);
-
-               Add(mappingInfo);
-            }
-         }
+         Initialize();
       }
 
       #endregion
 
       #region Public Methods and Operators
+
+      public static MappingList FromType<T>()
+      {
+         return new MappingList(typeof(T));
+      }
 
       public MappingInfo GetMappingInfo(string name)
       {
@@ -75,7 +66,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          {
             if (definedNames.TryGetValue(name, out var existingMapping))
             {
-               var message = $"The properties '{existingMapping.PropertyInfo.Name}' and '{mappingInfo.PropertyInfo.Name}' of the class '{mappingInfo.PropertyInfo.DeclaringType?.Name}' define both a name (or alias) called '{name}'";
+               var message =
+                  $"The properties '{existingMapping.PropertyInfo.Name}' and '{mappingInfo.PropertyInfo.Name}' of the class '{mappingInfo.PropertyInfo.DeclaringType?.Name}' define both a name (or alias) called '{name}'";
                throw new CommandLineAttributeException(message) { Name = name, FirstProperty = existingMapping.PropertyInfo, SecondProperty = mappingInfo.PropertyInfo };
             }
          }
@@ -87,6 +79,21 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       private static CommandLineAttribute GetCommandLineAttribute(PropertyInfo propertyInfo)
       {
          return propertyInfo.GetCustomAttributes<CommandLineAttribute>(true).FirstOrDefault();
+      }
+
+      private void Initialize()
+      {
+         foreach (var propertyInfo in type.GetProperties(BindingFlags.Instance | BindingFlags.Public))
+         {
+            var commandLineAttribute = GetCommandLineAttribute(propertyInfo);
+            if (commandLineAttribute != null)
+            {
+               var mappingInfo = new MappingInfo(propertyInfo, commandLineAttribute, this);
+               EnsureUnique(mappingInfo);
+
+               Add(mappingInfo);
+            }
+         }
       }
 
       #endregion

@@ -110,25 +110,25 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       private static CommandInfo GetCommandByNameOrDefault(ArgumentClassInfo argumentInfo, string commandName, IDictionary<string, CommandLineArgument> arguments)
       {
-         if (commandName != null)
+         if (commandName == null)
+            return argumentInfo.DefaultCommand;
+
+         foreach (var commandInfo in argumentInfo.CommandInfos)
          {
-            foreach (var commandInfo in argumentInfo.CommandInfos)
+            if (IsEqual(commandInfo.ParameterName, commandName))
             {
-               if (IsEqual(commandInfo.ParameterName, commandName))
+               arguments.Remove(commandName);
+               DecreaseIndices(arguments);
+               return commandInfo;
+            }
+
+            foreach (var alias in commandInfo.Attribute.GetIdentifiers())
+            {
+               if (IsEqual(alias, commandName))
                {
                   arguments.Remove(commandName);
                   DecreaseIndices(arguments);
                   return commandInfo;
-               }
-
-               foreach (var alias in commandInfo.Attribute.GetIdentifiers())
-               {
-                  if (IsEqual(alias, commandName))
-                  {
-                     arguments.Remove(commandName);
-                     DecreaseIndices(arguments);
-                     return commandInfo;
-                  }
                }
             }
          }
@@ -164,7 +164,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          var commandType = commandInfo.PropertyInfo.PropertyType;
          if (!ImplementsICommand(commandType))
             throw new ArgumentException(
-               $"The type '{commandType}' of the property '{commandInfo.PropertyInfo.Name}' does not implemente the {typeof(ICommand).FullName} interface");
+               $"The type '{commandType}' of the property '{commandInfo.PropertyInfo.Name}' does not implement the {typeof(ICommand).FullName} interface");
 
          if (TryGetArgumentType(commandType, out var argumentType))
          {

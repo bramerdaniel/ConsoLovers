@@ -26,7 +26,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       public static T GetAttribute<T>(this PropertyInfo propertyInfo) where T : Attribute
       {
-         return propertyInfo.GetCustomAttributes(typeof(T), true).FirstOrDefault() as T;
+         return propertyInfo.GetCustomAttributes<T>(true).FirstOrDefault();
       }
 
       public static bool IsRequired(this CommandLineAttribute attribute)

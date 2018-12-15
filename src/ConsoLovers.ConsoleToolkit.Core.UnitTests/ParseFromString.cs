@@ -12,6 +12,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
    using System.Linq;
 
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing;
    using ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine;
    using ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups;
 

@@ -15,7 +15,8 @@ This package contains the basic funtionality like application handling and comma
     <PackageReleaseNotes>2.0.0
 - Rewrite of command line argument parsing (now from string and not only string[])
 - Rewrite of indexed arguments handling.
-- Added support for sharing arguments between commands and the application</PackageReleaseNotes>
+- Added support for sharing arguments between commands and the application
+- Removed IndexedArgument attribute (moved index to ArgumentAttribute)</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -39,6 +40,10 @@ This package contains the basic funtionality like application handling and comma
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="CommandLineArguments\Mapping\" />
   </ItemGroup>
 
 </Project>
