@@ -38,8 +38,14 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       #region Public Events
 
+      /// <summary>
+      ///    Occurs when command line argument was passed to the <see cref="T:ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.ICommandLineEngine"/> and it was processed and
+      ///    mapped to a specific property.
+      /// </summary>
+      public event EventHandler<CommandLineArgumentEventArgs> HandledCommandLineArgument;
+
       /// <summary>Occurs when command line argument was passed to the <see cref="ICommandLineEngine"/> the could not be processed in any way.</summary>
-      public event EventHandler<UnhandledCommandLineArgumentEventArgs> UnhandledCommandLineArgument;
+      public event EventHandler<CommandLineArgumentEventArgs> UnhandledCommandLineArgument;
 
       #endregion
 
@@ -112,10 +118,12 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          try
          {
             mapper.UnmappedCommandLineArgument += OnUnmappedCommandLineArgument;
+            mapper.MappedCommandLineArgument += OnMappedCommandLineArgument;
             return mapper.Map(arguments);
          }
          finally
          {
+            mapper.MappedCommandLineArgument -= OnMappedCommandLineArgument;
             mapper.UnmappedCommandLineArgument -= OnUnmappedCommandLineArgument;
          }
       }
@@ -146,11 +154,13 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          try
          {
             mapper.UnmappedCommandLineArgument += OnUnmappedCommandLineArgument;
+            mapper.MappedCommandLineArgument += OnMappedCommandLineArgument;
             return mapper.Map(arguments, instance);
          }
          finally
          {
             mapper.UnmappedCommandLineArgument -= OnUnmappedCommandLineArgument;
+            mapper.MappedCommandLineArgument -= OnMappedCommandLineArgument;
          }
       }
 
@@ -169,11 +179,13 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          try
          {
             mapper.UnmappedCommandLineArgument += OnUnmappedCommandLineArgument;
+            mapper.MappedCommandLineArgument += OnMappedCommandLineArgument;
             return mapper.Map(arguments, instance);
          }
          finally
          {
             mapper.UnmappedCommandLineArgument -= OnUnmappedCommandLineArgument;
+            mapper.MappedCommandLineArgument -= OnMappedCommandLineArgument;
          }
       }
 
@@ -365,9 +377,14 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          return new PropertyHelpProvider(resourceManager);
       }
 
-      private void OnUnmappedCommandLineArgument(object sender, UnmappedCommandLineArgumentEventArgs e)
+      private void OnMappedCommandLineArgument(object sender, MapperEventArgs e)
       {
-         UnhandledCommandLineArgument?.Invoke(this, new UnhandledCommandLineArgumentEventArgs(e.Argument));
+         HandledCommandLineArgument?.Invoke(this, new CommandLineArgumentEventArgs(e.Argument, e.PropertyInfo, e.Instance));
+      }
+
+      private void OnUnmappedCommandLineArgument(object sender, MapperEventArgs e)
+      {
+         UnhandledCommandLineArgument?.Invoke(this, new CommandLineArgumentEventArgs(e.Argument, e.PropertyInfo, e.Instance));
       }
 
       #endregion

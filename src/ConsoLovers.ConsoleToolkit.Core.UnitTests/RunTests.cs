@@ -4,6 +4,8 @@
 
    using ConsoLovers.ConsoleToolkit.Core;
    using ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine;
+   using ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests.Utils;
+   using ConsoLovers.ConsoleToolkit.Core.UnitTests.IntegrationTests.WithoutComamnds;
 
    using FluentAssertions;
 
@@ -20,6 +22,7 @@
       [TestMethod]
       public void EnsureRunIsCalledOnRunable()
       {
+
          var runned = new ConsoleApplicationManagerGeneric<Runable>().Run(new string[0]);
 
          runned.Mock.Verify(x => x.Run(), Times.Once);
@@ -64,10 +67,16 @@
             return TestParameters;
          }
 
-         public void InitializeArguments(TestArguments instance, string args)
+         public void InitializeFromString(TestArguments instance, string args)
          {
             TestParameters.Should().BeSameAs(instance);
             Args = args;
+         }
+
+         public void InitializeFromArray(TestArguments instance, string[] args)
+         {
+            TestParameters.Should().BeSameAs(instance);
+            Args = string .Join(" ", args);
          }
       }
 

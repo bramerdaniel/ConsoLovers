@@ -116,7 +116,47 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
 
          Assert.AreEqual(result.RequiredArgument, "RequiredArgumentValue");
          target.ShouldRaise(nameof(IArgumentMapper<ArgumentTestClass>.UnmappedCommandLineArgument))
-            .WithArgs<UnmappedCommandLineArgumentEventArgs>(e => e.Argument.Name == "MisspelledArgument" && e.Argument.Value == "AnyValue");
+            .WithArgs<MapperEventArgs>(e => e.Argument.Name == "MisspelledArgument" && e.Argument.Value == "AnyValue");
+      }
+      
+      [TestMethod]
+      public void EnsureMappedArgumentsRaiseMappedCommandLineArgumentEvent()
+      {
+         var args = new ArgumentTestClass();
+         var argument = new CommandLineArgument { Name = "RequiredArgument",Value = "Olla" };
+         var property = typeof(ArgumentTestClass).GetProperty(nameof(ArgumentTestClass.RequiredArgument));
+         var dictionary = new Dictionary<string, CommandLineArgument>{{ argument.Name, argument }};
+         var target = Setup.ArgumentMapper()
+            .ForType<ArgumentTestClass>()
+            .Done();
+
+         target.MonitorEvents();
+         var result = target.Map(dictionary, args);
+
+         result.RequiredArgument.Should().Be(argument.Value);
+         target.ShouldRaise(nameof(IArgumentMapper<ArgumentTestClass>.MappedCommandLineArgument))
+            .WithArgs<MapperEventArgs>(e => e.Argument == argument)
+            .WithArgs<MapperEventArgs>(e => e.PropertyInfo == property);
+      }      
+      
+      [TestMethod]
+      public void EnsureMappedOptionsRaiseMappedCommandLineArgumentEvent()
+      {
+         var args = new OptionsTestClass();
+         var argument = new CommandLineArgument { Name = "Wait" };
+         var property = typeof(OptionsTestClass).GetProperty(nameof(OptionsTestClass.Wait));
+         var dictionary = new Dictionary<string, CommandLineArgument>{{ argument.Name, argument }};
+         var target = Setup.ArgumentMapper()
+            .ForType<OptionsTestClass>()
+            .Done();
+
+         target.MonitorEvents();
+         var result = target.Map(dictionary, args);
+
+         result.Wait.Should().BeTrue();
+         target.ShouldRaise(nameof(IArgumentMapper<OptionsTestClass>.MappedCommandLineArgument))
+            .WithArgs<MapperEventArgs>(e => e.Argument == argument)
+            .WithArgs<MapperEventArgs>(e => e.PropertyInfo == property);
       }
 
       #endregion
@@ -137,6 +177,16 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
 
       [Argument(TrimQuotation = true)]
       public string TrimmedArgument { get; set; }
+
+      #endregion
+   }
+
+   internal class OptionsTestClass
+   {
+      #region Public Properties
+
+      [Option]
+      public bool Wait { get; set; }
 
       #endregion
    }

@@ -18,7 +18,10 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       #region Public Events
 
       /// <summary>Occurs when command line argument was passed to the <see cref="ICommandLineEngine"/> the could not be processed in any way.</summary>
-      event EventHandler<UnhandledCommandLineArgumentEventArgs> UnhandledCommandLineArgument;
+      event EventHandler<CommandLineArgumentEventArgs> UnhandledCommandLineArgument;
+
+      /// <summary>Occurs when command line argument was passed to the <see cref="ICommandLineEngine"/> and it was processed and mapped to a specific property.</summary>
+      event EventHandler<CommandLineArgumentEventArgs> HandledCommandLineArgument;
 
       #endregion
 

@@ -40,14 +40,14 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
          engine.Map<Arguments>(new[] { " -Integer=1", "-SpellingError=5" });
 
          engine.ShouldRaise(nameof(CommandLineEngine.UnhandledCommandLineArgument))
-            .WithArgs<UnhandledCommandLineArgumentEventArgs>(e => e.Argument.Name == "SpellingError" && e.Argument.Value == "5" && e.Argument.Index == 1);
+            .WithArgs<CommandLineArgumentEventArgs>(e => e.Argument.Name == "SpellingError" && e.Argument.Value == "5" && e.Argument.Index == 1);
 
          engine = GetTarget();
          engine.MonitorEvents();
          engine.Map<Arguments>(new[] { "-SpellingError=5", " -Integer=1" });
 
          engine.ShouldRaise(nameof(CommandLineEngine.UnhandledCommandLineArgument))
-            .WithArgs<UnhandledCommandLineArgumentEventArgs>(e => e.Argument.Name == "SpellingError" && e.Argument.Value == "5" && e.Argument.Index == 0);
+            .WithArgs<CommandLineArgumentEventArgs>(e => e.Argument.Name == "SpellingError" && e.Argument.Value == "5" && e.Argument.Index == 0);
       }
 
       [TestMethod]

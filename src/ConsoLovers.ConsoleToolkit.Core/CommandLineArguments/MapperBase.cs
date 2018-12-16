@@ -54,6 +54,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
                stringValue = GetValue(argument.Name, trim);
 
                propertyInfo.SetValue(instance, ConvertValue(propertyInfo.PropertyType, stringValue, (t, v) => CreateErrorMessage(t, v, attribute.Name)), null);
+               mappingInfo.CommandLineArgument = argument;
                arguments.Remove(entry.Key);
                count++;
             }

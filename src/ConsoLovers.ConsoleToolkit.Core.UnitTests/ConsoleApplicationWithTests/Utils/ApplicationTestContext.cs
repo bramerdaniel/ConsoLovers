@@ -16,7 +16,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests.
    using Moq;
 
    internal class ApplicationTestContext<T> : IDisposable
-      where T : class, IApplication
+      where T : class
    {
       #region Constants and Fields
 
@@ -31,10 +31,10 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests.
          container = new Container();
 
          Commands = new Mock<ICommandVerification>();
-         Application = new Mock<IApplicationVerification>();
+         Application = new Mock<IApplicationVerification<T>>();
 
          container.Register<ICommandVerification>(Commands.Object);
-         container.Register<IApplicationVerification>(Application.Object);
+         container.Register<IApplicationVerification<T>>(Application.Object);
          Factory = new DefaultFactory(container);
       }
 
@@ -51,7 +51,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests.
 
       #region Public Properties
 
-      public Mock<IApplicationVerification> Application { get; }
+      public Mock<IApplicationVerification<T>> Application { get; }
 
       public Mock<ICommandVerification> Commands { get; }
 
@@ -63,7 +63,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests.
 
       public void RunApplication(string args)
       {
-         ConsoleApplicationManager.For<T>().UsingFactory(Factory).Run(args);
+         ConsoleApplicationManager.For<TestApplication<T>>().UsingFactory(Factory).Run(args);
       }
 
       public void RunApplication(params string[] args)

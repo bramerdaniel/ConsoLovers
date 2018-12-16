@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="ArgumentMapper.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2017
+//    Copyright (c) ConsoLovers  2015 - 2018
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -34,6 +34,17 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       #endregion
 
+      #region Public Events
+
+      /// <summary>Occurs when command line argument could be mapped to a specific property of the specified class of type.</summary>
+      // TODO raise it
+      public event EventHandler<MapperEventArgs> MappedCommandLineArgument;
+
+      /// <summary>Occurs when a command line argument of the given arguments dictionary could not be mapped to a arguments member</summary>
+      public event EventHandler<MapperEventArgs> UnmappedCommandLineArgument;
+
+      #endregion
+
       #region IArgumentMapper<T> Members
 
       public T Map(IDictionary<string, CommandLineArgument> arguments, T instance)
@@ -49,6 +60,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
                {
                   sharedArguments.Add(mapping.CommandLineArgument);
                   ValidateProperty(instance, mapping.PropertyInfo);
+
+                  MappedCommandLineArgument?.Invoke(this, new MapperEventArgs(mapping.CommandLineArgument, mapping.PropertyInfo, instance));
                }
             }
             else
@@ -58,27 +71,15 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
                {
                   sharedArguments.Add(mapping.CommandLineArgument);
                   ValidateProperty(instance, mapping.PropertyInfo);
+
+                  MappedCommandLineArgument?.Invoke(this, new MapperEventArgs(mapping.CommandLineArgument, mapping.PropertyInfo, instance));
                }
             }
          }
 
-         CheckForUnmappedArguments(arguments, sharedArguments);
+         CheckForUnmappedArguments(arguments, sharedArguments, instance);
          return instance;
       }
-
-      private void CheckForUnmappedArguments(IDictionary<string, CommandLineArgument> arguments, HashSet<CommandLineArgument> sharedArguments)
-      {
-         if (arguments.Count <= 0)
-            return;
-
-         foreach (var argument in arguments.Values.Where(arg => !sharedArguments.Contains(arg)))
-         {
-            UnmappedCommandLineArgument?.Invoke(this, new UnmappedCommandLineArgumentEventArgs(argument));
-         }
-      }
-
-      /// <summary>Occurs when a command line argument of the given arguments dictionary could not be mapped to a arguments member</summary>
-      public event EventHandler<UnmappedCommandLineArgumentEventArgs> UnmappedCommandLineArgument;
 
       /// <inheritdoc/>
       /// <summary>Maps the give argument dictionary to a new created instance.</summary>
@@ -108,6 +109,15 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          }
 
          return null;
+      }
+
+      private void CheckForUnmappedArguments(IDictionary<string, CommandLineArgument> arguments, HashSet<CommandLineArgument> sharedArguments, T instance)
+      {
+         if (arguments.Count <= 0)
+            return;
+
+         foreach (var argument in arguments.Values.Where(arg => !sharedArguments.Contains(arg)))
+            UnmappedCommandLineArgument?.Invoke(this, new MapperEventArgs(argument, null, instance));
       }
 
       private void ValidateProperty(T arguments, PropertyInfo propertyInfo)

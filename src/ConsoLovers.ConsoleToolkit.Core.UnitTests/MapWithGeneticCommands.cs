@@ -128,7 +128,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
          engine.Map<ApplicationCommands>(new[] { "execute", "-Path=C:\\Path\\File.txt", "-unknown" });
 
          engine.ShouldRaise(nameof(CommandLineEngine.UnhandledCommandLineArgument))
-            .WithArgs<UnhandledCommandLineArgumentEventArgs>(e => e.Argument.Name == "unknown");
+            .WithArgs<CommandLineArgumentEventArgs>(e => e.Argument.Name == "unknown");
       }
 
       [TestMethod]
@@ -139,7 +139,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
          engine.Map<ApplicationCommands>(new[] { "execute", "-Path=C:\\Path\\File.txt", "-unknown=666" });
 
          engine.ShouldRaise(nameof(CommandLineEngine.UnhandledCommandLineArgument))
-            .WithArgs<UnhandledCommandLineArgumentEventArgs>(e => e.Argument.Name == "unknown");
+            .WithArgs<CommandLineArgumentEventArgs>(e => e.Argument.Name == "unknown");
       }
 
       [TestMethod]
@@ -150,12 +150,12 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
          engine.Map<NonGenericApplicationCommands>(new[] { "execute", "-unknown=666" });
 
          engine.ShouldRaise(nameof(CommandLineEngine.UnhandledCommandLineArgument))
-            .WithArgs<UnhandledCommandLineArgumentEventArgs>(e => e.Argument.Name == "unknown" && e.Argument.Index == 0 && e.Argument.Value == "666");
+            .WithArgs<CommandLineArgumentEventArgs>(e => e.Argument.Name == "unknown" && e.Argument.Index == 0 && e.Argument.Value == "666");
 
          var args = engine.Map<NonGenericApplicationCommands>(new[] { "execute", "-wait", "-unknown=234" });
 
          engine.ShouldRaise(nameof(CommandLineEngine.UnhandledCommandLineArgument))
-            .WithArgs<UnhandledCommandLineArgumentEventArgs>(e => e.Argument.Name == "unknown" && e.Argument.Index == 1 && e.Argument.Value == "234");
+            .WithArgs<CommandLineArgumentEventArgs>(e => e.Argument.Name == "unknown" && e.Argument.Index == 1 && e.Argument.Value == "234");
 
          args.Wait.Should().BeTrue();
       }

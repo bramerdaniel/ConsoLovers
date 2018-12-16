@@ -73,7 +73,7 @@ namespace CommandLineEngineDemo
          }
       }
 
-      protected override void OnUnhandledCommandLineArgument(object sender, UnhandledCommandLineArgumentEventArgs e)
+      protected override void OnUnhandledCommandLineArgument(object sender, CommandLineArgumentEventArgs e)
       {
          Console.WriteLine($"Unknown command line argument '{e.Argument.Name}' at index {e.Argument.Index}.", ConsoleColor.Yellow);
          base.OnUnhandledCommandLineArgument(sender, e);

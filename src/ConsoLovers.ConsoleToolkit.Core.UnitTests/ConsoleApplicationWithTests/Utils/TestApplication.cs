@@ -10,20 +10,41 @@
    public class TestApplication<T> : ConsoleApplication<T>
       where T : class
    {
-      private readonly IApplicationVerification application;
+      private readonly IApplicationVerification<T> application;
 
       public override void RunWith(T arguments)
       {
-         application.RunWith();
+         application.RunWith(arguments);
       }
 
       public override void InitializeFromString(T instance, string args)
       {
-         base.InitializeFromString(instance, args);
+         try
+         {
+            CommandLineEngine.HandledCommandLineArgument += OnMappedParameter;
+            CommandLineEngine.UnhandledCommandLineArgument += OnUnmappedParameter;
+            base.InitializeFromString(instance, args);
 
-         var info = ArgumentClassInfo.FromType<T>();
-         foreach (var property in info.Properties)
-            application.Argument(property.ParameterName, property.PropertyInfo.GetValue(instance));
+            var info = ArgumentClassInfo.FromType<T>();
+            foreach (var property in info.Properties)
+               application.Argument(property.ParameterName, property.PropertyInfo.GetValue(instance));
+         }
+         finally
+         {
+            CommandLineEngine.HandledCommandLineArgument -= OnMappedParameter;
+            CommandLineEngine.UnhandledCommandLineArgument -= OnUnmappedParameter;
+         }
+
+         void OnMappedParameter(object sender, CommandLineArgumentEventArgs e)
+         {
+            var value = e.PropertyInfo.GetValue(e.Instance);
+            application.MappedCommandLineParameter(e.PropertyInfo.Name, value);
+         }
+
+         void OnUnmappedParameter(object sender, CommandLineArgumentEventArgs e)
+         {
+            application.UnmappedCommandLineParameter(e.Argument.Name, e.Argument.Value);
+         }
       }
 
       public override void Run()
@@ -34,7 +55,7 @@
 
       public override void RunWithCommand(ICommand command)
       {
-         application.RunWithCommand();
+         application.RunWithCommand(command);
          base.RunWithCommand(command);
       }
 
@@ -44,13 +65,10 @@
          base.RunWithoutArguments();
       }
 
-      public TestApplication([NotNull] ICommandLineEngine commandLineEngine, [NotNull] IApplicationVerification application)
+      public TestApplication([NotNull] ICommandLineEngine commandLineEngine, [NotNull] IApplicationVerification<T> application)
          : base(commandLineEngine)
       {
-         if (application == null)
-            throw new ArgumentNullException(nameof(application));
-
-         this.application = application;
+         this.application = application ?? throw new ArgumentNullException(nameof(application));
       }
    }
 }

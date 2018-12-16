@@ -192,8 +192,8 @@ namespace ConsoLovers.ConsoleToolkit.Core
       ///    default behavior is to do nothing. This means that it is ignored.
       /// </summary>
       /// <param name="sender">The sender.</param>
-      /// <param name="e">The <see cref="UnhandledCommandLineArgumentEventArgs"/> instance containing the event data.</param>
-      protected virtual void OnUnhandledCommandLineArgument(object sender, UnhandledCommandLineArgumentEventArgs e)
+      /// <param name="e">The <see cref="CommandLineArgumentEventArgs"/> instance containing the event data.</param>
+      protected virtual void OnUnhandledCommandLineArgument(object sender, CommandLineArgumentEventArgs e)
       {
       }
 

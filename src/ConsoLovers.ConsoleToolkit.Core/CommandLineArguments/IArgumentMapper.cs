@@ -14,8 +14,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
    {
       #region Public Events
 
+      /// <summary>Occurs when command line argument could be mapped to a specific property of the specified class of type.</summary>
+      event EventHandler<MapperEventArgs> MappedCommandLineArgument;
+
       /// <summary>Occurs when a command line argument of the given arguments dictionary could not be mapped to a arguments member</summary>
-      event EventHandler<UnmappedCommandLineArgumentEventArgs> UnmappedCommandLineArgument;
+      event EventHandler<MapperEventArgs> UnmappedCommandLineArgument;
 
       #endregion
    }
