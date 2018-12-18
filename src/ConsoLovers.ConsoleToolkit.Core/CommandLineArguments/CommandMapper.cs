@@ -68,11 +68,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          if (argumentInfo.HasCommands)
             MapArgumentsToCommand(instance, argumentInfo, arguments);
 
-         if (arguments.Any())
-         {
-            MappRemainingArguments(arguments, instance);
-         }
-
          foreach (var argument in arguments.Values.Where(x => !x.Mapped))
             UnmappedCommandLineArgument?.Invoke(this, new MapperEventArgs(argument, null, instance));
 
@@ -228,13 +223,20 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          // NOTE: if the argument class contains a command that has the IsDefaultCommand property set to true,
          // this call will always return a command!
          var commandToCreate = GetCommandByNameOrDefault(argumentInfo, firstArgument?.Name, arguments);
-         if (commandToCreate == null)
-            return;
+         
+         // no mapper if we could not create a command but we try to map the arguments to the application arguments first.
+         // if there are remaining or shared argument, we map them to the command arguments later !
+         MapApplicationArguments(instance, arguments);
 
-         var command = CreateCommandInstance(commandToCreate, arguments);
-         commandToCreate.PropertyInfo.SetValue(instance, command, null);
+         if (commandToCreate != null)
+         {
+            // Now that we found a command, we create it and map the remaining (and shared) parameters to the commands arguments class
+            var command = CreateCommandInstance(commandToCreate, arguments);
+            commandToCreate.PropertyInfo.SetValue(instance, command, null);
 
-         MappedCommandLineArgument?.Invoke(this, new MapperEventArgs(firstArgument ?? new CommandLineArgument(), commandToCreate.PropertyInfo, instance));
+            var commandLineArgument = firstArgument ?? new CommandLineArgument();
+            MappedCommandLineArgument?.Invoke(this, new MapperEventArgs(commandLineArgument, commandToCreate.PropertyInfo, instance));
+         }
       }
 
       private void MapHelpOnly(T instance, ArgumentClassInfo argumentInfo, IDictionary<string, CommandLineArgument> arguments, CommandLineArgument helpRequest)
@@ -246,11 +248,12 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          MappedCommandLineArgument?.Invoke(this, new MapperEventArgs(helpRequest ?? new CommandLineArgument(), argumentInfo.HelpCommand.PropertyInfo, instance));
       }
 
-      private void MappRemainingArguments(IDictionary<string, CommandLineArgument> arguments, T instance)
+      private void MapApplicationArguments(T instance, IDictionary<string, CommandLineArgument> arguments)
       {
          var defaultMapper = new ArgumentMapper<T>(factory);
          try
          {
+            // Here we do not care about unmapped arguments, because they could get mapped to the command later
             defaultMapper.MappedCommandLineArgument += OnMappedCommandLineArgument;
             defaultMapper.Map(arguments, instance);
          }

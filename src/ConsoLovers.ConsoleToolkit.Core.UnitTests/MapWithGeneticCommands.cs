@@ -267,10 +267,10 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
          [Command("Execute", "e")]
          public GenericCommand<ExecuteArguments> Execute { get; set; }
 
-         [Option("Wait")]
+         [Option("Wait", Shared = true)]
          public bool Wait { get; set; }
 
-         [Argument("Priority")]
+         [Argument("Priority", Shared = true)]
          public int Priority { get; set; }
 
          #endregion
