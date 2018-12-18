@@ -38,6 +38,9 @@
          void OnMappedParameter(object sender, CommandLineArgumentEventArgs e)
          {
             var value = e.PropertyInfo.GetValue(e.Instance);
+
+            application.MappedCommandLineParameter(e.PropertyInfo);
+            application.MappedCommandLineParameter(e.PropertyInfo, value);
             application.MappedCommandLineParameter(e.PropertyInfo.Name, value);
          }
 

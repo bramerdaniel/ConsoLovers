@@ -83,6 +83,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       private void Initialize()
       {
+         var indexedArgs = new List<MappingInfo>();
          foreach (var propertyInfo in type.GetProperties(BindingFlags.Instance | BindingFlags.Public))
          {
             var commandLineAttribute = GetCommandLineAttribute(propertyInfo);
@@ -91,9 +92,20 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
                var mappingInfo = new MappingInfo(propertyInfo, commandLineAttribute, this);
                EnsureUnique(mappingInfo);
 
-               Add(mappingInfo);
+               if (mappingInfo.HasIndex)
+               {
+                  indexedArgs.Add(mappingInfo);
+               }
+               else
+               {
+                  // Options have to be mapped first to make sure that index based mapping of arguments still works later
+                  Add(mappingInfo);
+               }
             }
          }
+
+         foreach (var mappingInfo in indexedArgs.OrderBy(x => x.Index))
+            Add(mappingInfo);
       }
 
       #endregion

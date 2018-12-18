@@ -23,11 +23,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       {
          PropertyInfo = propertyInfo ?? throw new ArgumentNullException(nameof(propertyInfo));
          CommandLineAttribute = commandLineAttribute ?? throw new ArgumentNullException(nameof(commandLineAttribute));
-         
+
          ParameterType = propertyInfo.PropertyType;
          Identifiers = commandLineAttribute.GetIdentifiers().ToArray();
          ParameterName = commandLineAttribute.Name ?? PropertyInfo.Name;
-
+         Index = commandLineAttribute.GetIndex();
       }
 
       #endregion
@@ -36,6 +36,12 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       /// <summary>Gets the defined names.</summary>
       public string[] Identifiers { get; }
+
+      /// <summary>Gets the index of the parameter or -1 if not specified.</summary>
+      public int Index { get; }
+
+      /// <summary>Gets a value indicating whether parameter can be mapped by a specified index.</summary>
+      public bool IsIndexed => Index >= 0;
 
       public string ParameterName { get; }
 

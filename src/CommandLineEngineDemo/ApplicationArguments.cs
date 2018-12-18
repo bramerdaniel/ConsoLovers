@@ -6,6 +6,8 @@
 
 namespace CommandLineEngineDemo
 {
+   using CommandLineEngineDemo.Commands;
+
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
    internal class ApplicationArguments : LoggerArgs
@@ -31,6 +33,10 @@ namespace CommandLineEngineDemo
       [Command("DoNothing", "dn")]
       [HelpText("Executes the command but does nothing.", "None", Priority = 30)]
       public ExecuteCommand DoNothing { get; set; }
+
+      [Command("Add", "a")]
+      [HelpText("Just anotherCommand.", "None", Priority = 30)]
+      public AddCommand Add{ get; set; }
 
       [Command("Help", "?")]
       [HelpText("Displays the help you are watching at the moment.", "None")]

@@ -46,7 +46,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
             }
          }
 
-         if (TryGetByIndex(arguments, mappingInfo, out var entry))
+         if (count == 0 && TryGetByIndex(arguments, mappingInfo, out var entry))
          {
             argument = entry.Value;
             if (argument != null && argument.Value == null)

@@ -41,6 +41,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       /// <summary>Gets the command line attribute.</summary>
       public CommandLineAttribute CommandLineAttribute { get; }
 
+      /// <summary>Gets a value indicating whether an index was specified on argument.</summary>
+      public bool HasIndex => CommandLineAttribute.GetIndex() >= 0;
+      
+      public int Index => CommandLineAttribute.GetIndex();
+
       public string Name => CommandLineAttribute.Name ?? PropertyInfo.Name;
 
       /// <summary>Gets the property information.</summary>

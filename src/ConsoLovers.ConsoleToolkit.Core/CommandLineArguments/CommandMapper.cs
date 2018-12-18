@@ -70,9 +70,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
          if (arguments.Any())
          {
-            // TODO forward events of mapped args
-            var defaultMapper = new ArgumentMapper<T>(factory);
-            defaultMapper.Map(arguments, instance);
+            MappRemainingArguments(arguments, instance);
          }
 
          foreach (var argument in arguments.Values.Where(x => !x.Mapped))
@@ -95,23 +93,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       #endregion
 
       #region Methods
-
-      private static CommandLineArgument GetHelpRequest(IDictionary<string, CommandLineArgument> arguments, ArgumentClassInfo argumentInfo)
-      {
-         if (argumentInfo.HelpCommand == null)
-            return null;
-
-         foreach (var identifier in argumentInfo.HelpCommand.Attribute.GetIdentifiers())
-         {
-            if (arguments.TryGetValue(identifier, out var commandLineArgument))
-            {
-               arguments.Remove(identifier);
-               return commandLineArgument;
-            }
-         }
-
-         return null;
-      }
 
       private static void DecreaseIndices(IDictionary<string, CommandLineArgument> arguments)
       {
@@ -159,6 +140,23 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          return lowestRemainingIndex;
       }
 
+      private static CommandLineArgument GetHelpRequest(IDictionary<string, CommandLineArgument> arguments, ArgumentClassInfo argumentInfo)
+      {
+         if (argumentInfo.HelpCommand == null)
+            return null;
+
+         foreach (var identifier in argumentInfo.HelpCommand.Attribute.GetIdentifiers())
+         {
+            if (arguments.TryGetValue(identifier, out var commandLineArgument))
+            {
+               arguments.Remove(identifier);
+               return commandLineArgument;
+            }
+         }
+
+         return null;
+      }
+
       private static bool IsEqual(string declaredNameOrAlias, string givenName)
       {
          return string.Equals(declaredNameOrAlias, givenName, StringComparison.InvariantCultureIgnoreCase);
@@ -180,8 +178,13 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
             var genericType = mapperType.MakeGenericType(typeArgs);
             object mapper = factory.CreateInstance(genericType);
 
+            var eventInfo = genericType.GetEvent(nameof(IArgumentMapper.MappedCommandLineArgument));
+            EventHandler<MapperEventArgs> handler = OnMappedCommandLineArgument;
+
             try
             {
+               eventInfo.AddEventHandler(mapper, handler);
+
                var methodInfo = genericType.GetMethod(nameof(IArgumentMapper<T>.Map), new[] { typeof(IDictionary<string, CommandLineArgument>), argumentType });
                // ReSharper disable once PossibleNullReferenceException
                methodInfo.Invoke(mapper, new[] { arguments, argumentInstance });
@@ -190,6 +193,10 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
             {
                if (e.InnerException is CommandLineArgumentException exception)
                   throw exception;
+            }
+            finally
+            {
+               eventInfo.RemoveEventHandler(mapper, handler);
             }
 
             var command = factory.CreateInstance(commandType);
@@ -237,6 +244,25 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          argumentInfo.HelpCommand.PropertyInfo.SetValue(instance, helpCommand);
 
          MappedCommandLineArgument?.Invoke(this, new MapperEventArgs(helpRequest ?? new CommandLineArgument(), argumentInfo.HelpCommand.PropertyInfo, instance));
+      }
+
+      private void MappRemainingArguments(IDictionary<string, CommandLineArgument> arguments, T instance)
+      {
+         var defaultMapper = new ArgumentMapper<T>(factory);
+         try
+         {
+            defaultMapper.MappedCommandLineArgument += OnMappedCommandLineArgument;
+            defaultMapper.Map(arguments, instance);
+         }
+         finally
+         {
+            defaultMapper.MappedCommandLineArgument -= OnMappedCommandLineArgument;
+         }
+      }
+
+      private void OnMappedCommandLineArgument(object sender, MapperEventArgs e)
+      {
+         MappedCommandLineArgument?.Invoke(this, e);
       }
 
       private bool TryGetArgumentType(Type commandType, out Type argumentType)

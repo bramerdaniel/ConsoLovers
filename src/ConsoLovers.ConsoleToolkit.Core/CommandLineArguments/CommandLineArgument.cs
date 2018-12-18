@@ -3,10 +3,12 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
    using System.Diagnostics;
 
    /// <summary>Helper class containing information of the parsed command line arguments </summary>
-   [DebuggerDisplay("[{Index}] {Name}={Value}")]
+   [DebuggerDisplay("{" + nameof(DebuggerString) + "}")]
    public class CommandLineArgument
    {
       #region Public Properties
+
+      internal string DebuggerString => $"[{Index}] {Name}={Value}";
 
       /// <summary>Gets or sets the original string that was passed to the command line.</summary>
       public string OriginalString { get; set; }

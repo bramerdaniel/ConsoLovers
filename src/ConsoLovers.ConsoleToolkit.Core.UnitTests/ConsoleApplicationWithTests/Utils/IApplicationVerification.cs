@@ -6,6 +6,8 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests.Utils
 {
+   using System.Reflection;
+
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
    public interface IApplicationVerification<in T>
@@ -18,6 +20,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests.
       /// <param name="propertyName">The name of the parameters.</param>
       /// <param name="value">The value of the parameters.</param>
       void MappedCommandLineParameter(string propertyName, object value);
+
+      
+      void MappedCommandLineParameter(PropertyInfo property);
+
+      void MappedCommandLineParameter(PropertyInfo property, object value);
 
       /// <summary>Gets called when the .</summary>
       /// <returns></returns>

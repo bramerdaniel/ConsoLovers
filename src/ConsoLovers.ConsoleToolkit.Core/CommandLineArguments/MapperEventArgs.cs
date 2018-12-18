@@ -7,12 +7,14 @@
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
    using System;
+   using System.Diagnostics;
    using System.Reflection;
 
    using JetBrains.Annotations;
 
    /// <summary>Event args for the <see cref="IArgumentMapper{T}.UnmappedCommandLineArgument"/> event</summary>
    /// <seealso cref="System.EventArgs"/>
+   [DebuggerDisplay("{" + nameof(DebuggerString) + "}")]
    public class MapperEventArgs : EventArgs
    {
       #region Constructors and Destructors
@@ -32,6 +34,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       }
 
       #endregion
+
+      internal string DebuggerString => $"{PropertyInfo?.Name} <= {Argument?.DebuggerString}";
 
       #region Public Properties
 

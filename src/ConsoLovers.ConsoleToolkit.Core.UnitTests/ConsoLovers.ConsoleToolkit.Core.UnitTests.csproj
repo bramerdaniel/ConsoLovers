@@ -75,6 +75,7 @@
     <Compile Include="ArgumentEngine\ArgumentMapperSetup.cs" />
     <Compile Include="ArgumentEngine\Command.cs" />
     <Compile Include="CharRopeTests.cs" />
+    <Compile Include="IntegrationTests\WithCommands\IndexedArguments.cs" />
     <Compile Include="IntegrationTests\WithoutComamnds\ArgumentsWithIndex.cs" />
     <Compile Include="ParseFromString.cs" />
     <Compile Include="Setups\CommandLinerParserSetup.cs" />

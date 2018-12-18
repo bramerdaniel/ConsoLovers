@@ -9,9 +9,9 @@
 
    internal class CommandBase<T> : ICommand<T>
    {
-      private static IConsole Console = new ConsoleProxy();
+      protected IConsole Console { get; } = new ConsoleProxy();
 
-      private static void PrintArgs(T args)
+      private void PrintArgs(T args)
       {
          if (args == null)
          {
@@ -35,12 +35,18 @@
 
       public void Execute()
       {
+         BeforeExecute();
+
          Console.WriteLine(GetType().Name);
          PrintArgs(Arguments);
          ExecuteOverride();
+
       }
 
       protected virtual void ExecuteOverride()
+      {
+      }
+      protected virtual void BeforeExecute()
       {
       }
 
