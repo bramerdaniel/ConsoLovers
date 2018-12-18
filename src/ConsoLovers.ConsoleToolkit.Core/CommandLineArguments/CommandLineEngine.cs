@@ -145,6 +145,31 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          return Map(args, instance, false);
       }
 
+      public T Map<T>(string args)
+         where T : class
+      {
+         return Map<T>(args, false);
+      }
+
+      public T Map<T>(string args, bool caseSensitive)
+         where T : class
+      {
+         var arguments = ArgumentParser.ParseArguments(args, caseSensitive);
+         var mapper = CreateMapper<T>();
+
+         try
+         {
+            mapper.UnmappedCommandLineArgument += OnUnmappedCommandLineArgument;
+            mapper.MappedCommandLineArgument += OnMappedCommandLineArgument;
+            return mapper.Map(arguments);
+         }
+         finally
+         {
+            mapper.MappedCommandLineArgument -= OnMappedCommandLineArgument;
+            mapper.UnmappedCommandLineArgument -= OnUnmappedCommandLineArgument;
+         }
+      }
+
       public T Map<T>(string args, T instance, bool caseSensitive)
          where T : class
       {
