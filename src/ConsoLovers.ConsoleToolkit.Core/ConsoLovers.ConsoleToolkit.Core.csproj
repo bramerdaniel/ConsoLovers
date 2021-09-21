@@ -1,9 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
+    <TargetFramework>net5.0</TargetFramework>
     <Authors>Daniel Bramer</Authors>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Version>2.0.0-beta2</Version>
     <PackageTags>Console Shell ConsoleToolkit .Net CommandLineArgument CommandLineArguments CommandLineParser</PackageTags>
     <PackageIconUrl>https://raw.githubusercontent.com/bramerdaniel/ConsoLovers/master/src/ConsoLovers.ConsoleToolkit/Resources/Icon.ico</PackageIconUrl>
@@ -17,6 +17,8 @@ This package contains the basic funtionality like application handling and comma
 - Rewrite of indexed arguments handling.
 - Added support for sharing arguments between commands and the application
 - Removed IndexedArgument attribute (moved index to ArgumentAttribute)</PackageReleaseNotes>
+    <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
+    <EnableNETAnalyzers>false</EnableNETAnalyzers>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
