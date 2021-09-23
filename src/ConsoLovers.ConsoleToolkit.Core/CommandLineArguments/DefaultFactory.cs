@@ -1,49 +1,47 @@
 ﻿namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
-   using System;
+    using ConsoLovers.ConsoleToolkit.Core.DIContainer;
+    using JetBrains.Annotations;
+    using System;
 
-   using ConsoLovers.ConsoleToolkit.Core.DIContainer;
+    public class DefaultFactory : IObjectFactory
+    {
+        private readonly IContainer container;
 
-   using JetBrains.Annotations;
+        public DefaultFactory()
+           : this(new Container())
+        {
+        }
 
-   public class DefaultFactory : IObjectFactory
-   {
-      private readonly IContainer container;
+        public DefaultFactory([NotNull] IContainer container)
+        {
+            this.container = container ?? throw new ArgumentNullException(nameof(container));
 
-      public DefaultFactory()
-         :this(new Container())
-      {
-      }
+            container.Register<IObjectFactory>(this).WithLifetime(Lifetime.Singleton);
+            container.Register<ICommandLineEngine, CommandLineEngine>().WithLifetime(Lifetime.Singleton);
+            container.Register<IConsole>(new ConsoleProxy()).WithLifetime(Lifetime.Singleton);
+        }
 
-      public DefaultFactory([NotNull] IContainer container)
-      {
-         this.container = container ?? throw new ArgumentNullException(nameof(container));
+        public T CreateInstance<T>()
+           where T : class
+        {
+            return container.Create<T>();
+        }
 
-         container.Register<IObjectFactory>(this).WithLifetime(Lifetime.Singleton);
-         container.Register<ICommandLineEngine, CommandLineEngine>().WithLifetime(Lifetime.Singleton);
-         container.Register<IConsole>(new ConsoleProxy()).WithLifetime(Lifetime.Singleton);
-      }
+        public object CreateInstance(Type type)
+        {
+            return container.Create(type);
+        }
 
-      public T CreateInstance<T>()
-         where T : class
-      {
-         return container.Create<T>();
-      }
+        public T Resolve<T>()
+           where T : class
+        {
+            return container.Resolve<T>();
+        }
 
-      public object CreateInstance(Type type)
-      {
-         return container.Create(type);
-      }
-
-      public T Resolve<T>()
-         where T : class
-      {
-         return container.Resolve<T>();
-      }
-
-      public object Resolve(Type type)
-      {
-         return container.Resolve(type);
-      }
-   }
+        public object Resolve(Type type)
+        {
+            return container.Resolve(type);
+        }
+    }
 }

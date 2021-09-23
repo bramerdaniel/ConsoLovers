@@ -6,13 +6,13 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.DIContainer
 {
-   using System;
+    using System;
 
-   /// <summary>Attribute for a property that should be injected by the container</summary>
-   [AttributeUsage(AttributeTargets.Property | AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
-   public class DependencyAttribute : Attribute
-   {
-      /// <summary>Gets or sets the name of the dependency.</summary>
-      public string Name { get; set; }
-   }
+    /// <summary>Attribute for a property that should be injected by the container</summary>
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
+    public class DependencyAttribute : Attribute
+    {
+        /// <summary>Gets or sets the name of the dependency.</summary>
+        public string Name { get; set; }
+    }
 }

@@ -6,37 +6,36 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
-   using System;
-   using System.Reflection;
+    using JetBrains.Annotations;
+    using System;
+    using System.Reflection;
 
-   using JetBrains.Annotations;
+    public class PropertyHelpRequest
+    {
+        #region Constructors and Destructors
 
-   public class PropertyHelpRequest
-   {
-      #region Constructors and Destructors
+        public PropertyHelpRequest([NotNull] PropertyInfo property)
+        {
+            Property = property ?? throw new ArgumentNullException(nameof(property));
 
-      public PropertyHelpRequest([NotNull] PropertyInfo property)
-      {
-         Property = property ?? throw new ArgumentNullException(nameof(property));
+            CommandLineAttribute = Property.GetAttribute<CommandLineAttribute>();
+            DetailedHelpTextAttribute = Property.GetAttribute<DetailedHelpTextAttribute>();
+            HelpTextAttribute = Property.GetAttribute<HelpTextAttribute>();
+        }
 
-         CommandLineAttribute = Property.GetAttribute<CommandLineAttribute>();
-         DetailedHelpTextAttribute = Property.GetAttribute<DetailedHelpTextAttribute>();
-         HelpTextAttribute = Property.GetAttribute<HelpTextAttribute>();
-      }
+        #endregion Constructors and Destructors
 
-      #endregion
+        #region Public Properties
 
-      #region Public Properties
+        public CommandLineAttribute CommandLineAttribute { get; }
 
-      public CommandLineAttribute CommandLineAttribute { get; }
+        public DetailedHelpTextAttribute DetailedHelpTextAttribute { get; }
 
-      public DetailedHelpTextAttribute DetailedHelpTextAttribute { get; }
+        public HelpTextAttribute HelpTextAttribute { get; }
 
-      public HelpTextAttribute HelpTextAttribute { get; }
+        /// <summary>Gets the property.</summary>
+        public PropertyInfo Property { get; }
 
-      /// <summary>Gets the property.</summary>
-      public PropertyInfo Property { get; }
-
-      #endregion
-   }
+        #endregion Public Properties
+    }
 }

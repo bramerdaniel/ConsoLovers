@@ -6,102 +6,98 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core
 {
-   using System;
+    using System;
 
-   public interface IConsole
-   {
-      #region Public Properties
+    public interface IConsole
+    {
+        #region Public Properties
 
-      ConsoleColor BackgroundColor { get; set; }
+        ConsoleColor BackgroundColor { get; set; }
 
-      int CursorLeft { get; set; }
+        int CursorLeft { get; set; }
 
-      int CursorTop { get; set; }
+        int CursorSize { get; set; }
+        int CursorTop { get; set; }
 
-      ConsoleColor ForegroundColor { get; set; }
+        ConsoleColor ForegroundColor { get; set; }
 
-      int WindowWidth { get; set; }
+        int LargestWindowHeight { get; }
+        int LargestWindowWidth { get; }
+        int WindowHeight { get; set; }
+        int WindowWidth { get; set; }
 
-      int WindowHeight{ get; set; }
+        #endregion Public Properties
 
-      int LargestWindowHeight { get; }
+        #region Public Methods and Operators
 
-      int LargestWindowWidth { get; }
+        void Clear();
 
-      int CursorSize { get; set; }
+        void Clear(ConsoleColor color);
 
-      #endregion
+        ConsoleKeyInfo ReadKey();
 
-      #region Public Methods and Operators
+        ConsoleKeyInfo ReadKey(bool intercept);
 
-      void Clear();
+        string ReadLine();
 
-      void Clear(ConsoleColor color);
+        void ResetColor();
 
-      ConsoleKeyInfo ReadKey();
+        void SetCursorPosition(int left, int top);
 
-      ConsoleKeyInfo ReadKey(bool intercept);
+        void Write(string value);
 
-      string ReadLine();
+        void Write(char value);
 
-      void ResetColor();
+        void WriteLine();
 
-      void SetCursorPosition(int left, int top);
+        void WriteLine(string value);
 
-      void Write(string value);
+        void WriteLine(bool value);
 
-      void Write(char value);
+        void WriteLine(char value);
 
-      void WriteLine();
+        void WriteLine(char[] value);
 
-      void WriteLine(string value);
+        void WriteLine(decimal value);
 
-      void WriteLine(bool value);
+        void WriteLine(double value);
 
-      void WriteLine(char value);
+        void WriteLine(float value);
 
-      void WriteLine(char[] value);
+        void WriteLine(int value);
 
-      void WriteLine(decimal value);
+        void WriteLine(long value);
 
-      void WriteLine(double value);
+        void WriteLine(object value);
 
-      void WriteLine(float value);
+        void WriteLine(uint value);
 
-      void WriteLine(int value);
+        void WriteLine(ulong value);
 
-      void WriteLine(long value);
+        void WriteLine(string format, object arg0);
 
-      void WriteLine(object value);
+        void WriteLine(string format, params object[] args);
 
-      void WriteLine(uint value);
+        void WriteLine(char[] buffer, int index, int count);
 
-      void WriteLine(ulong value);
+        void WriteLine(string format, object arg0, object arg1);
 
-      void WriteLine(string format, object arg0);
+        void WriteLine(string format, object arg0, object arg1, object arg2);
 
-      void WriteLine(string format, params object[] args);
+        void WriteLine(string format, object arg0, object arg1, object arg2, object arg3);
 
-      void WriteLine(char[] buffer, int index, int count);
+        #endregion Public Methods and Operators
 
-      void WriteLine(string format, object arg0, object arg1);
+        void Beep();
 
-      void WriteLine(string format, object arg0, object arg1, object arg2);
+        void WaitForKey(ConsoleKey key);
 
-      void WriteLine(string format, object arg0, object arg1, object arg2, object arg3);
+        void Write(string value, ConsoleColor foreground, ConsoleColor background);
 
-      #endregion
+        void Write(string value, ConsoleColor foreground);
 
-      void Write(string value, ConsoleColor foreground, ConsoleColor background);
+        void WriteLine(string value, ConsoleColor foreground);
 
-      void Write(string value, ConsoleColor foreground);
-
-      void WriteLine(string value, ConsoleColor foreground);
-
-      void WriteLine(string value, ConsoleColor foreground, ConsoleColor background);
-
-      void Beep();
-
-      void WaitForKey(ConsoleKey key);
-   }
+        void WriteLine(string value, ConsoleColor foreground, ConsoleColor background);
+    }
 }

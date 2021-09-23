@@ -6,85 +6,82 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
 {
-   using System;
+    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+    using JetBrains.Annotations;
+    using System;
 
-   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+    /// <summary>The default <see cref="IBootstrapper"/> for non generic applications</summary>
+    /// <seealso cref="IBootstrapper" />
+    internal class DefaultBootstrapper : BootstrapperBase, IBootstrapper
+    {
+        #region Constants and Fields
 
-   using JetBrains.Annotations;
+        private readonly Type applicationType;
 
-   /// <summary>The default <see cref="IBootstrapper"/> for non generic applications</summary>
-   /// <seealso cref="IBootstrapper" />
-   internal class DefaultBootstrapper : BootstrapperBase, IBootstrapper
-   {
-      #region Constants and Fields
+        private Func<Type, object> createApplication;
 
-      private readonly Type applicationType;
+        #endregion Constants and Fields
 
-      private Func<Type, object> createApplication;
+        #region Constructors and Destructors
 
-      #endregion
+        public DefaultBootstrapper([NotNull] Type applicationType)
+        {
+            if (applicationType == null)
+                throw new ArgumentNullException(nameof(applicationType));
 
-      #region Constructors and Destructors
+            this.applicationType = applicationType;
+        }
 
-      public DefaultBootstrapper([NotNull] Type applicationType)
-      {
-         if (applicationType == null)
-            throw new ArgumentNullException(nameof(applicationType));
+        #endregion Constructors and Destructors
 
-         this.applicationType = applicationType;
-      }
+        #region IBootstrapper Members
 
-      #endregion
+        public IBootstrapper CreateApplication(Func<Type, object> applicationBuilder)
+        {
+            if (createApplication != null)
+                throw new InvalidOperationException("ApplicationBuilder function was already specified.");
 
-      #region IBootstrapper Members
+            createApplication = applicationBuilder ?? throw new ArgumentNullException(nameof(applicationBuilder));
+            return this;
+        }
 
-      public IBootstrapper CreateApplication(Func<Type, object> applicationBuilder)
-      {
-         if (createApplication != null)
-            throw new InvalidOperationException("ApplicationBuilder function was already specified.");
+        public IApplication Run(string[] args)
+        {
+            if (createApplication == null)
+                createApplication = new DefaultFactory().CreateInstance;
 
-         createApplication = applicationBuilder ?? throw new ArgumentNullException(nameof(applicationBuilder));
-         return this;
-      }
+            var applicationManager = new ConsoleApplicationManager(createApplication)
+            {
+                WindowTitle = WindowTitle,
+            };
 
-      public IApplication Run(string[] args)
-      {
-         if (createApplication == null)
-            createApplication = new DefaultFactory().CreateInstance;
+            return applicationManager.Run(applicationType, args);
+        }
 
-         var applicationManager = new ConsoleApplicationManager(createApplication)
-         {
-            WindowTitle = WindowTitle,
-            
-         };
+        public IBootstrapper SetWindowSize(int width, int height)
+        {
+            WindowWidth = width;
+            WindowHeight = height;
+            return this;
+        }
 
-         return applicationManager.Run(applicationType, args);
-      }
+        public IBootstrapper SetWindowTitle(string windowTitle)
+        {
+            WindowTitle = windowTitle;
+            return this;
+        }
 
-      public IBootstrapper UsingFactory(IObjectFactory objectFactory)
-      {
-         if (objectFactory == null)
-            throw new ArgumentNullException(nameof(objectFactory));
-         if (createApplication != null)
-            throw new InvalidOperationException("ApplicationBuilder function was already specified.");
+        public IBootstrapper UsingFactory(IObjectFactory objectFactory)
+        {
+            if (objectFactory == null)
+                throw new ArgumentNullException(nameof(objectFactory));
+            if (createApplication != null)
+                throw new InvalidOperationException("ApplicationBuilder function was already specified.");
 
-         createApplication = objectFactory.CreateInstance;
-         return this;
-      }
+            createApplication = objectFactory.CreateInstance;
+            return this;
+        }
 
-      public IBootstrapper SetWindowSize(int width, int height)
-      {
-         WindowWidth = width;
-         WindowHeight = height;
-         return this;
-      }
-
-      public IBootstrapper SetWindowTitle(string windowTitle)
-      {
-         WindowTitle = windowTitle;
-         return this;
-      }
-
-      #endregion
-   }
+        #endregion IBootstrapper Members
+    }
 }

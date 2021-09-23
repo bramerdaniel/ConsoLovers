@@ -6,34 +6,34 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
-   using System;
-   using System.Runtime.Serialization;
+    using System;
+    using System.Runtime.Serialization;
 
-   /// <summary>Occurs when an <see cref="IArgumentValidator{T}"/> was not implemented correctly</summary>
-   /// <seealso cref="ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.CommandLineArgumentException"/>
-   public class InvalidValidatorUsageException : CommandLineArgumentException
-   {
-      #region Constructors and Destructors
+    /// <summary>Occurs when an <see cref="IArgumentValidator{T}"/> was not implemented correctly</summary>
+    /// <seealso cref="ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.CommandLineArgumentException"/>
+    public class InvalidValidatorUsageException : CommandLineArgumentException
+    {
+        #region Constructors and Destructors
 
-      public InvalidValidatorUsageException()
-      {
-      }
+        protected InvalidValidatorUsageException(SerializationInfo info, StreamingContext context)
+           : base(info, context)
+        {
+        }
 
-      public InvalidValidatorUsageException(string message)
-         : base(message)
-      {
-      }
+        public InvalidValidatorUsageException()
+        {
+        }
 
-      public InvalidValidatorUsageException(string message, Exception innerException)
-         : base(message, innerException)
-      {
-      }
+        public InvalidValidatorUsageException(string message)
+           : base(message)
+        {
+        }
 
-      protected InvalidValidatorUsageException(SerializationInfo info, StreamingContext context)
-         : base(info, context)
-      {
-      }
+        public InvalidValidatorUsageException(string message, Exception innerException)
+           : base(message, innerException)
+        {
+        }
 
-      #endregion
-   }
+        #endregion Constructors and Destructors
+    }
 }

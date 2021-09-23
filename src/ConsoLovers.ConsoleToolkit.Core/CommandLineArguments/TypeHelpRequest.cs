@@ -6,18 +6,17 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
-   using System;
+    using JetBrains.Annotations;
+    using System;
 
-   using JetBrains.Annotations;
+    public class TypeHelpRequest
+    {
+        public TypeHelpRequest([NotNull] Type type)
+        {
+            Type = type ?? throw new ArgumentNullException(nameof(type));
+        }
 
-   public class TypeHelpRequest
-   {
-      /// <summary>Gets the type the request was created for.</summary>
-      public Type Type { get; }
-
-      public TypeHelpRequest([NotNull] Type type)
-      {
-         Type = type ?? throw new ArgumentNullException(nameof(type));
-      }
-   }
+        /// <summary>Gets the type the request was created for.</summary>
+        public Type Type { get; }
+    }
 }

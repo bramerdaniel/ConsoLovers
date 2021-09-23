@@ -6,38 +6,37 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.DIContainer
 {
-   #region
+    #region
 
-   using System;
-   using System.Linq;
-   using System.Reflection;
+    using ConsoLovers.ConsoleToolkit.Core.DIContainer.Strategies;
+    using System;
+    using System.Linq;
+    using System.Reflection;
 
-   using ConsoLovers.ConsoleToolkit.Core.DIContainer.Strategies;
+    #endregion
 
-   #endregion
+    /// <summary><see cref="ConstructorSelectionStrategy"/> that finds the first constructor with the most parameters</summary>
+    public class MostParametersSelectionStrategy : ConstructorSelectionStrategy
+    {
+        #region Constructors and Destructors
 
-   /// <summary><see cref="ConstructorSelectionStrategy"/> that finds the first constructor with the most parameters</summary>
-   public class MostParametersSelectionStrategy : ConstructorSelectionStrategy
-   {
-      #region Constructors and Destructors
+        /// <summary>Initializes a new instance of the <see cref="MostParametersSelectionStrategy"/> class.</summary>
+        internal MostParametersSelectionStrategy()
+        {
+        }
 
-      /// <summary>Initializes a new instance of the <see cref="MostParametersSelectionStrategy"/> class.</summary>
-      internal MostParametersSelectionStrategy()
-      {
-      }
+        #endregion
 
-      #endregion
+        #region Public Methods and Operators
 
-      #region Public Methods and Operators
+        /// <summary>Selects the constructor.</summary>
+        /// <param name="type">The type. </param>
+        /// <returns>The selected <see cref="ConstructorInfo"/> or null of no constructor matched the strategies selection conditions. </returns>
+        public override ConstructorInfo SelectCostructor(Type type)
+        {
+            return type.GetConstructors().OrderByDescending(c => c.GetParameters().Length).FirstOrDefault();
+        }
 
-      /// <summary>Selects the constructor.</summary>
-      /// <param name="type">The type. </param>
-      /// <returns>The selected <see cref="ConstructorInfo"/> or null of no constructor matched the strategies selection conditions. </returns>
-      public override ConstructorInfo SelectCostructor(Type type)
-      {
-         return type.GetConstructors().OrderByDescending(c => c.GetParameters().Length).FirstOrDefault();
-      }
-
-      #endregion
-   }
+        #endregion
+    }
 }

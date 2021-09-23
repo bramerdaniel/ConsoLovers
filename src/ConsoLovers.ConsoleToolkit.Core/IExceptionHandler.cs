@@ -6,18 +6,18 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core
 {
-   using System;
+    using System;
 
-   /// <summary>Interface that can be implemented by an <see cref="IApplication"/> to handle unhandled <see cref="Exception"/>s</summary>
-   public interface IExceptionHandler
-   {
-      #region Public Methods and Operators
+    /// <summary>Interface that can be implemented by an <see cref="IApplication"/> to handle unhandled <see cref="Exception"/>s</summary>
+    public interface IExceptionHandler
+    {
+        #region Public Methods and Operators
 
-      /// <summary>Handler method the should check if it is an known error e.g. missing command line argument</summary>
-      /// <param name="exception">The exception that occured.</param>
-      /// <returns>True if the exception was handled, otherwise false</returns>
-      bool HandleException(Exception exception);
+        /// <summary>Handler method the should check if it is an known error e.g. missing command line argument</summary>
+        /// <param name="exception">The exception that occured.</param>
+        /// <returns>True if the exception was handled, otherwise false</returns>
+        bool HandleException(Exception exception);
 
-      #endregion
-   }
+        #endregion Public Methods and Operators
+    }
 }

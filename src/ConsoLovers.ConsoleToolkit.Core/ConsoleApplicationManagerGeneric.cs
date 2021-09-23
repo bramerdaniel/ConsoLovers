@@ -6,39 +6,38 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core
 {
-   using System;
+    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+    using System;
 
-   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+    internal class ConsoleApplicationManagerGeneric<T> : ConsoleApplicationManager
+       where T : class, IApplication
+    {
+        #region Constructors and Destructors
 
-   internal class ConsoleApplicationManagerGeneric<T> : ConsoleApplicationManager
-      where T : class , IApplication
-   {
-      #region Constructors and Destructors
+        internal ConsoleApplicationManagerGeneric(Func<T> createApplication)
+           : base(type => createApplication())
+        {
+        }
 
-      internal ConsoleApplicationManagerGeneric(Func<T> createApplication)
-         : base(type => createApplication())
-      {
-      }
+        internal ConsoleApplicationManagerGeneric()
+           : this(() => new DefaultFactory().CreateInstance<T>())
+        {
+        }
 
-      internal ConsoleApplicationManagerGeneric()
-         : this(() => new DefaultFactory().CreateInstance<T>())
-      {
-      }
+        #endregion Constructors and Destructors
 
-      #endregion
+        #region Public Methods and Operators
 
-      #region Public Methods and Operators
+        public T Run(string[] args)
+        {
+            return (T)Run(typeof(T), args);
+        }
 
-      public T Run(string[] args)
-      {
-         return (T)Run(typeof(T), args);
-      }
+        public T Run(string args)
+        {
+            return (T)Run(typeof(T), args);
+        }
 
-      public T Run(string args)
-      {
-         return (T)Run(typeof(T), args);
-      }
-
-      #endregion
-   }
+        #endregion Public Methods and Operators
+    }
 }

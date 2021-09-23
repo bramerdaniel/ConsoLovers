@@ -1,78 +1,77 @@
 ﻿namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
 {
-   using System.Diagnostics;
+    using System.Diagnostics;
 
-   [DebuggerDisplay("{Previous} <- {Current} -> {Next}")]
-   public class CharInfo
-   {
-      private readonly bool insideQuotes;
+    [DebuggerDisplay("{Previous} <- {Current} -> {Next}")]
+    public class CharInfo
+    {
+        private readonly bool insideQuotes;
 
-      private readonly bool isLast;
+        private readonly bool isFirst;
+        private readonly bool isLast;
 
-      private readonly bool isFirst;
+        #region Constructors and Destructors
 
-      #region Constructors and Destructors
+        public CharInfo(char current, char? previous, char? next, bool insideQuotes)
+        {
+            Current = current;
+            Previous = previous ?? char.MinValue;
+            Next = next ?? char.MinValue;
+            isFirst = previous == null;
+            isLast = next == null;
 
-      public CharInfo(char current, char? previous, char? next, bool insideQuotes)
-      {
-         Current = current;
-         Previous = previous ?? char.MinValue;
-         Next = next ?? char.MinValue;
-         isFirst = previous == null;
-         isLast= next== null;
+            this.insideQuotes = insideQuotes;
+        }
 
-         this.insideQuotes = insideQuotes;
-      }
+        #endregion Constructors and Destructors
 
-      #endregion
+        #region Public Properties
 
-      #region Public Properties
+        public char Current { get; }
 
-      public char Current { get; }
+        public char Next { get; }
 
-      public char Next { get; }
+        public char Previous { get; }
 
-      public bool InsideQuotes()
-      {
-         return insideQuotes;
-      }
+        public bool InsideQuotes()
+        {
+            return insideQuotes;
+        }
 
-      public bool IsFirst()
-      {
-         return isFirst;
-      }
+        public bool IsFirst()
+        {
+            return isFirst;
+        }
 
-      public bool IsLast()
-      {
-         return isLast;
-      }
+        public bool IsLast()
+        {
+            return isLast;
+        }
 
-      public char Previous { get; }
+        #endregion Public Properties
 
-      #endregion
+        #region Public Methods and Operators
 
-      #region Public Methods and Operators
+        public bool IsQuote()
+        {
+            return Current == '"';
+        }
 
-      public bool IsQuote()
-      {
-         return Current == '"';
-      }
+        #endregion Public Methods and Operators
 
-      #endregion
+        public bool IsEscaped()
+        {
+            return Previous == '\\';
+        }
 
-      public bool IsWhiteSpace()
-      {
-         return char.IsWhiteSpace(Current);
-      }
+        public bool IsWhiteSpace()
+        {
+            return char.IsWhiteSpace(Current);
+        }
 
-      public override string ToString()
-      {
-         return Current.ToString();
-      }
-
-      public bool IsEscaped()
-      {
-         return Previous == '\\';
-      }
-   }
+        public override string ToString()
+        {
+            return Current.ToString();
+        }
+    }
 }
