@@ -6,47 +6,48 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
-    using JetBrains.Annotations;
-    using System;
-    using System.Diagnostics;
-    using System.Reflection;
+   using System;
+   using System.Diagnostics;
+   using System.Reflection;
 
-    /// <summary>Event args for the <see cref="IArgumentMapper{T}.UnmappedCommandLineArgument"/> event</summary>
-    /// <seealso cref="System.EventArgs"/>
-    [DebuggerDisplay("{" + nameof(DebuggerString) + "}")]
-    public class MapperEventArgs : EventArgs
-    {
-        #region Constructors and Destructors
+   using JetBrains.Annotations;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MapperEventArgs" /> class.
-        /// </summary>
-        /// <param name="argument">The argument.</param>
-        /// <param name="propertyInfo">The property information.</param>
-        /// <param name="instance"></param>
-        /// <exception cref="ArgumentNullException">argument</exception>
-        public MapperEventArgs([NotNull] CommandLineArgument argument, [CanBeNull] PropertyInfo propertyInfo, object instance)
-        {
-            Argument = argument ?? throw new ArgumentNullException(nameof(argument));
-            PropertyInfo = propertyInfo;
-            Instance = instance;
-        }
+   /// <summary>Event args for the <see cref="IArgumentMapper{T}.UnmappedCommandLineArgument"/> event</summary>
+   /// <seealso cref="System.EventArgs"/>
+   [DebuggerDisplay("{" + nameof(DebuggerString) + "}")]
+   public class MapperEventArgs : EventArgs
+   {
+      #region Constructors and Destructors
 
-        #endregion Constructors and Destructors
+      /// <summary>
+      /// Initializes a new instance of the <see cref="MapperEventArgs" /> class.
+      /// </summary>
+      /// <param name="argument">The argument.</param>
+      /// <param name="propertyInfo">The property information.</param>
+      /// <param name="instance"></param>
+      /// <exception cref="ArgumentNullException">argument</exception>
+      public MapperEventArgs([NotNull] CommandLineArgument argument, [CanBeNull] PropertyInfo propertyInfo, object instance)
+      {
+         Argument = argument ?? throw new ArgumentNullException(nameof(argument));
+         PropertyInfo = propertyInfo;
+         Instance = instance;
+      }
 
-        internal string DebuggerString => $"{PropertyInfo?.Name} <= {Argument?.DebuggerString}";
+      #endregion
 
-        #region Public Properties
+      internal string DebuggerString => $"{PropertyInfo?.Name} <= {Argument?.DebuggerString}";
 
-        /// <summary>Gets the argument that could not be mapped.</summary>
-        public CommandLineArgument Argument { get; }
+      #region Public Properties
 
-        /// <summary>Gets the instance of the arguments class the command <see cref="CommandLineArgument"/> was mapped to.</summary>
-        public object Instance { get; }
+      /// <summary>Gets the argument that could not be mapped.</summary>
+      public CommandLineArgument Argument { get; }
 
-        /// <summary>Gets the <see cref="PropertyInfo"/> of the property the argument was mapped to.</summary>
-        public PropertyInfo PropertyInfo { get; }
+      /// <summary>Gets the <see cref="PropertyInfo"/> of the property the argument was mapped to.</summary>
+      public PropertyInfo PropertyInfo { get; }
 
-        #endregion Public Properties
-    }
+      /// <summary>Gets the instance of the arguments class the command <see cref="CommandLineArgument"/> was mapped to.</summary>
+      public object Instance { get; }
+
+      #endregion
+   }
 }

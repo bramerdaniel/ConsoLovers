@@ -6,27 +6,28 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
-    using JetBrains.Annotations;
-    using System.Reflection;
+   using System.Reflection;
 
-    /// <summary>Helper class providing information about a command line parameter, that was decorated with the <see cref="ArgumentAttribute"/></summary>
-    /// <seealso cref="ParameterInfo"/>
-    public class ArgumentInfo : ParameterInfo
-    {
-        #region Constructors and Destructors
+   using JetBrains.Annotations;
 
-        internal ArgumentInfo([NotNull] PropertyInfo propertyInfo, [NotNull] ArgumentAttribute commandLineAttribute)
-           : base(propertyInfo, commandLineAttribute)
-        {
-        }
+   /// <summary>Helper class providing information about a command line parameter, that was decorated with the <see cref="ArgumentAttribute"/></summary>
+   /// <seealso cref="ParameterInfo"/>
+   public class ArgumentInfo : ParameterInfo
+   {
+      #region Constructors and Destructors
 
-        #endregion Constructors and Destructors
+      internal ArgumentInfo([NotNull] PropertyInfo propertyInfo, [NotNull] ArgumentAttribute commandLineAttribute)
+         : base(propertyInfo, commandLineAttribute)
+      {
+      }
 
-        #region Public Properties
+      #endregion
 
-        /// <summary>Gets the attribute.</summary>
-        public ArgumentAttribute Attribute => (ArgumentAttribute)CommandLineAttribute;
+      #region Public Properties
 
-        #endregion Public Properties
-    }
+      /// <summary>Gets the attribute.</summary>
+      public ArgumentAttribute Attribute => (ArgumentAttribute)CommandLineAttribute;
+
+      #endregion
+   }
 }

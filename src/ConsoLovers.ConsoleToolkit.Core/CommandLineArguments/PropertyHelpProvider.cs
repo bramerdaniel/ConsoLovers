@@ -6,171 +6,172 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
-    using ConsoLovers.ConsoleToolkit.Core.DIContainer;
-    using System;
-    using System.Reflection;
-    using System.Resources;
+   using System;
+   using System.Reflection;
+   using System.Resources;
 
-    /// <summary><see cref="IHelpProvider"/> implementation for properties</summary>
-    /// <seealso cref="IHelpProvider"/>
-    internal class PropertyHelpProvider : IHelpProvider
-    {
-        #region Constants and Fields
+   using ConsoLovers.ConsoleToolkit.Core.DIContainer;
 
-        private CommandLineAttribute commandLineAttribute;
+   /// <summary><see cref="IHelpProvider"/> implementation for properties</summary>
+   /// <seealso cref="IHelpProvider"/>
+   internal class PropertyHelpProvider : IHelpProvider
+   {
+      #region Constants and Fields
 
-        private IConsole console;
+      private CommandLineAttribute commandLineAttribute;
 
-        private DetailedHelpTextAttribute detailedHelpTextAttribute;
+      private IConsole console;
 
-        private HelpTextAttribute helpTextAttribute;
+      private DetailedHelpTextAttribute detailedHelpTextAttribute;
 
-        private PropertyInfo propertyInfo;
+      private HelpTextAttribute helpTextAttribute;
 
-        #endregion Constants and Fields
+      private PropertyInfo propertyInfo;
 
-        #region Constructors and Destructors
+      #endregion
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PropertyHelpProvider" /> class.
-        /// </summary>
-        /// <param name="resourceManager">The resource manager.</param>
-        [InjectionConstructor]
-        public PropertyHelpProvider(ResourceManager resourceManager)
-        {
-            ResourceManager = resourceManager;
-        }
+      #region Constructors and Destructors
 
-        /// <summary>Initializes a new instance of the <see cref="PropertyHelpProvider"/> class.</summary>
-        public PropertyHelpProvider()
-           : this(null)
-        {
-        }
+      /// <summary>
+      /// Initializes a new instance of the <see cref="PropertyHelpProvider" /> class.
+      /// </summary>
+      /// <param name="resourceManager">The resource manager.</param>
+      [InjectionConstructor]
+      public PropertyHelpProvider(ResourceManager resourceManager)
+      {
+         ResourceManager = resourceManager;
+      }
 
-        #endregion Constructors and Destructors
+      /// <summary>Initializes a new instance of the <see cref="PropertyHelpProvider"/> class.</summary>
+      public PropertyHelpProvider()
+         : this(null)
+      {
+      }
 
-        #region IHelpProvider Members
+      #endregion
 
-        public virtual void PrintPropertyHelp(PropertyInfo property)
-        {
-            propertyInfo = property;
-            commandLineAttribute = propertyInfo.GetAttribute<CommandLineAttribute>();
-            detailedHelpTextAttribute = propertyInfo.GetAttribute<DetailedHelpTextAttribute>();
-            helpTextAttribute = propertyInfo.GetAttribute<HelpTextAttribute>();
+      #region IHelpProvider Members
 
-            WriteHeader();
-            WriteContent();
-            WriteFooter();
-        }
+      public virtual void PrintTypeHelp(Type type)
+      {
+         throw new NotSupportedException();
+      }
 
-        public virtual void PrintTypeHelp(Type type)
-        {
-            throw new NotSupportedException();
-        }
+      public virtual void PrintPropertyHelp(PropertyInfo property)
+      {
+         propertyInfo = property;
+         commandLineAttribute = propertyInfo.GetAttribute<CommandLineAttribute>();
+         detailedHelpTextAttribute = propertyInfo.GetAttribute<DetailedHelpTextAttribute>();
+         helpTextAttribute = propertyInfo.GetAttribute<HelpTextAttribute>();
 
-        #endregion IHelpProvider Members
+         WriteHeader();
+         WriteContent();
+         WriteFooter();
+      }
 
-        #region Public Properties
+      #endregion
 
-        /// <summary>Gets or sets the resource manager.</summary>
-        public ResourceManager ResourceManager { get; set; }
+      #region Public Properties
 
-        #endregion Public Properties
+      /// <summary>Gets or sets the resource manager.</summary>
+      public ResourceManager ResourceManager { get; set; }
 
-        #region Properties
+      #endregion
 
-        /// <summary>Gets the console that should be used.</summary>
-        protected IConsole Console => console ?? (console = CreateConsole());
+      #region Properties
 
-        #endregion Properties
+      /// <summary>Gets the console that should be used.</summary>
+      protected IConsole Console => console ?? (console = CreateConsole());
 
-        #region Public Methods and Operators
+      #endregion
 
-        /// <summary>Prints the help.</summary>
-        public void PrintHelp()
-        {
-            WriteHeader();
-            WriteContent();
-            WriteFooter();
-        }
+      #region Public Methods and Operators
 
-        /// <summary>Writes the content.</summary>
-        public virtual void WriteContent()
-        {
-            if (detailedHelpTextAttribute != null)
-            {
-                WriteHelpText(detailedHelpTextAttribute.ResourceKey, detailedHelpTextAttribute.Description);
-            }
-            else if (helpTextAttribute != null)
-            {
-                WriteHelpText(helpTextAttribute.ResourceKey, helpTextAttribute.Description);
-            }
-            else
-            {
-                WriteNoHelpTextAvailable();
-            }
-        }
+      /// <summary>Prints the help.</summary>
+      public void PrintHelp()
+      {
+         WriteHeader();
+         WriteContent();
+         WriteFooter();
+      }
 
-        /// <summary>Writes the footer.</summary>
-        public virtual void WriteFooter()
-        {
-        }
+      /// <summary>Writes the content.</summary>
+      public virtual void WriteContent()
+      {
+         if (detailedHelpTextAttribute != null)
+         {
+            WriteHelpText(detailedHelpTextAttribute.ResourceKey, detailedHelpTextAttribute.Description);
+         }
+         else if (helpTextAttribute != null)
+         {
+            WriteHelpText(helpTextAttribute.ResourceKey, helpTextAttribute.Description);
+         }
+         else
+         {
+            WriteNoHelpTextAvailable();
+         }
+      }
 
-        /// <summary>Writes the header.</summary>
-        public virtual void WriteHeader()
-        {
-            Console.WriteLine($"Help for the {GetCommandLineTyp()} '{GetArgumentName()}'");
-            Console.WriteLine();
-        }
+      /// <summary>Writes the footer.</summary>
+      public virtual void WriteFooter()
+      {
+      }
 
-        #endregion Public Methods and Operators
+      /// <summary>Writes the header.</summary>
+      public virtual void WriteHeader()
+      {
+         Console.WriteLine($"Help for the {GetCommandLineTyp()} '{GetArgumentName()}'");
+         Console.WriteLine();
+      }
 
-        #region Methods
+      #endregion
 
-        private string GetArgumentName()
-        {
-            string primaryName = propertyInfo.Name;
+      #region Methods
 
-            if (commandLineAttribute?.Name != null)
-                return commandLineAttribute.Name.ToLowerInvariant();
+      protected virtual IConsole CreateConsole()
+      {
+         return new ConsoleProxy();
+      }
 
-            return primaryName.ToLowerInvariant();
-        }
+      protected virtual void WriteHelpText(string resourceKey, string description)
+      {
+         if (ResourceManager != null && !string.IsNullOrEmpty(resourceKey))
+         {
+            var helpTextString = CommandLineEngine.GetLocalizedDescription(ResourceManager, resourceKey);
+            Console.WriteLine($"- {helpTextString}");
+         }
+         else
+         {
+            if (description != null)
+               Console.WriteLine($"- {description}");
+         }
+      }
 
-        private string GetCommandLineTyp()
-        {
-            if (commandLineAttribute is OptionAttribute)
-                return "option";
-            if (commandLineAttribute is ArgumentAttribute)
-                return "argument";
-            if (commandLineAttribute is CommandAttribute)
-                return "command";
-            return "property";
-        }
+      protected virtual void WriteNoHelpTextAvailable()
+      {
+      }
 
-        protected virtual IConsole CreateConsole()
-        {
-            return new ConsoleProxy();
-        }
+      private string GetArgumentName()
+      {
+         string primaryName = propertyInfo.Name;
 
-        protected virtual void WriteHelpText(string resourceKey, string description)
-        {
-            if (ResourceManager != null && !string.IsNullOrEmpty(resourceKey))
-            {
-                var helpTextString = CommandLineEngine.GetLocalizedDescription(ResourceManager, resourceKey);
-                Console.WriteLine($"- {helpTextString}");
-            }
-            else
-            {
-                if (description != null)
-                    Console.WriteLine($"- {description}");
-            }
-        }
+         if (commandLineAttribute?.Name != null)
+            return commandLineAttribute.Name.ToLowerInvariant();
 
-        protected virtual void WriteNoHelpTextAvailable()
-        {
-        }
+         return primaryName.ToLowerInvariant();
+      }
 
-        #endregion Methods
-    }
+      private string GetCommandLineTyp()
+      {
+         if (commandLineAttribute is OptionAttribute)
+            return "option";
+         if (commandLineAttribute is ArgumentAttribute)
+            return "argument";
+         if (commandLineAttribute is CommandAttribute)
+            return "command";
+         return "property";
+      }
+
+      #endregion
+   }
 }

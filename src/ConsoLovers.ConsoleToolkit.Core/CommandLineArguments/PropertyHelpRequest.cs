@@ -6,36 +6,37 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
-    using JetBrains.Annotations;
-    using System;
-    using System.Reflection;
+   using System;
+   using System.Reflection;
 
-    public class PropertyHelpRequest
-    {
-        #region Constructors and Destructors
+   using JetBrains.Annotations;
 
-        public PropertyHelpRequest([NotNull] PropertyInfo property)
-        {
-            Property = property ?? throw new ArgumentNullException(nameof(property));
+   public class PropertyHelpRequest
+   {
+      #region Constructors and Destructors
 
-            CommandLineAttribute = Property.GetAttribute<CommandLineAttribute>();
-            DetailedHelpTextAttribute = Property.GetAttribute<DetailedHelpTextAttribute>();
-            HelpTextAttribute = Property.GetAttribute<HelpTextAttribute>();
-        }
+      public PropertyHelpRequest([NotNull] PropertyInfo property)
+      {
+         Property = property ?? throw new ArgumentNullException(nameof(property));
 
-        #endregion Constructors and Destructors
+         CommandLineAttribute = Property.GetAttribute<CommandLineAttribute>();
+         DetailedHelpTextAttribute = Property.GetAttribute<DetailedHelpTextAttribute>();
+         HelpTextAttribute = Property.GetAttribute<HelpTextAttribute>();
+      }
 
-        #region Public Properties
+      #endregion
 
-        public CommandLineAttribute CommandLineAttribute { get; }
+      #region Public Properties
 
-        public DetailedHelpTextAttribute DetailedHelpTextAttribute { get; }
+      public CommandLineAttribute CommandLineAttribute { get; }
 
-        public HelpTextAttribute HelpTextAttribute { get; }
+      public DetailedHelpTextAttribute DetailedHelpTextAttribute { get; }
 
-        /// <summary>Gets the property.</summary>
-        public PropertyInfo Property { get; }
+      public HelpTextAttribute HelpTextAttribute { get; }
 
-        #endregion Public Properties
-    }
+      /// <summary>Gets the property.</summary>
+      public PropertyInfo Property { get; }
+
+      #endregion
+   }
 }

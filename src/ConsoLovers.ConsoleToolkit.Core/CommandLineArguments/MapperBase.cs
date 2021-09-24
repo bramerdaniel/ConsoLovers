@@ -6,186 +6,186 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.Linq;
-    using System.Reflection;
+   using System;
+   using System.Collections.Generic;
+   using System.Globalization;
+   using System.Linq;
+   using System.Reflection;
 
-    /// <summary>Non generic base class for the <see cref="ArgumentMapper{T}"/> that provides static helper methods</summary>
-    public abstract class MapperBase
-    {
-        #region Methods
+   /// <summary>Non generic base class for the <see cref="ArgumentMapper{T}"/> that provides static helper methods</summary>
+   public abstract class MapperBase
+   {
+      #region Methods
 
-        private static string GetValue(string originalValue, bool trim)
-        {
-            return trim ? originalValue.Trim('"', '\'') : originalValue;
-        }
+      internal static bool SetArgumentValue<T>(T instance, MappingInfo mappingInfo, IDictionary<string, CommandLineArgument> arguments)
+      {
+         PropertyInfo propertyInfo = mappingInfo.PropertyInfo;
+         CommandLineAttribute attribute = mappingInfo.CommandLineAttribute;
+         var count = 0;
+         bool trim = attribute.TrimQuotation();
 
-        private static bool TryGetByIndex(IDictionary<string, CommandLineArgument> arguments, MappingInfo mappingInfo, out KeyValuePair<string, CommandLineArgument> argument)
-        {
-            var index = mappingInfo.CommandLineAttribute.GetIndex();
-            if (index >= 0)
+         CommandLineArgument argument;
+         string stringValue;
+
+         foreach (var name in mappingInfo.GetNames())
+         {
+            if (arguments.TryGetValue(name, out argument))
             {
-                foreach (var commandLineArgument in arguments)
-                {
-                    if (commandLineArgument.Value.Index == index)
-                    {
-                        var betterNameMatch = mappingInfo.GetNameMatch(commandLineArgument.Value.Name);
-                        if (betterNameMatch == null)
-                        {
-                            argument = commandLineArgument;
-                            return true;
-                        }
+               if (argument.Value == null)
+                  throw new CommandLineArgumentException($"The value of the argument '{argument.Name}' was not specified.") { Reason = ErrorReason.ArgumentWithoutValue };
 
-                        break;
-                    }
-                }
+               stringValue = GetValue(argument.Value, trim);
+               propertyInfo.SetValue(instance, ConvertValue(propertyInfo.PropertyType, stringValue, (t, v) => CreateErrorMessage(t, v, name)), null);
+               mappingInfo.CommandLineArgument = argument;
+               argument.Mapped = true;
+
+               if (!mappingInfo.IsShared())
+                  arguments.Remove(name);
+
+               count++;
             }
+         }
 
-            argument = new KeyValuePair<string, CommandLineArgument>();
-            return false;
-        }
-
-        protected static string CreateErrorMessage(Type targetType, string value, string name)
-        {
-            if (targetType.IsEnum)
+         if (count == 0 && TryGetByIndex(arguments, mappingInfo, out var entry))
+         {
+            argument = entry.Value;
+            if (argument != null && argument.Value == null)
             {
-                var names = Enum.GetNames(targetType);
-                var possibleValues = $"Possible values are {string.Join(", ", names)}.".Replace($", {names.Last()}", $" and {names.Last()}");
-                return $"The value {value} of parameter {name} can not be converted into the expected type {targetType.FullName}. {possibleValues}";
+               stringValue = GetValue(argument.Name, trim);
+
+               propertyInfo.SetValue(instance, ConvertValue(propertyInfo.PropertyType, stringValue, (t, v) => CreateErrorMessage(t, v, attribute.Name)), null);
+               mappingInfo.CommandLineArgument = argument;
+               arguments.Remove(entry.Key);
+               count++;
             }
+         }
 
-            return $"The value {value} of parameter {name} can not be converted into the expected type {targetType.FullName}";
-        }
+         if (count > 1)
+            throw new AmbiguousCommandLineArgumentsException($"The value for the argument '{mappingInfo.Name}' was specified multiple times.");
 
-        /// <summary>Converts the given string value to the expected target type when possible.</summary>
-        /// <param name="targetType">Type of the target.</param>
-        /// <param name="value">The value.</param>
-        /// <param name="createErrorMessage">The function that is called when an error message for the <see cref="CommandLineArgumentException"/> is required.</param>
-        /// <returns></returns>
-        /// <exception cref="CommandLineArgumentException"></exception>
-        protected internal static object ConvertValue(Type targetType, string value, Func<Type, string, string> createErrorMessage)
-        {
-            if (targetType.IsGenericType && targetType.GetGenericTypeDefinition() == typeof(Nullable<>))
+         if (count == 0 && attribute.IsRequired())
+            throw new MissingCommandLineArgumentException(mappingInfo.Name);
+
+         return count > 0;
+      }
+
+      internal static bool SetOptionValue<T>(T instance, MappingInfo mappingInfo, IDictionary<string, CommandLineArgument> arguments)
+      {
+         foreach (var name in mappingInfo.GetNames())
+         {
+            if (arguments.TryGetValue(name, out var argument))
             {
-                if (string.IsNullOrEmpty(value) || value.Equals("null", StringComparison.InvariantCultureIgnoreCase))
-                    return null;
+               if (argument.Value != null)
+                  throw new CommandLineArgumentException($"The option '{argument.Name}' was specified with a value. This is not allowed for option.")
+                  {
+                     Reason = ErrorReason.OptionWithValue
+                  };
 
-                targetType = targetType.GetGenericArguments().First();
+               mappingInfo.PropertyInfo.SetValue(instance, true, null);
+               mappingInfo.CommandLineArgument = argument;
+               argument.Mapped = true;
+
+               if (!mappingInfo.IsShared())
+                  arguments.Remove(name);
+
+               return true;
             }
+         }
 
-            if (targetType.IsEnum)
-            {
-                try
-                {
-                    return Enum.Parse(targetType, value);
-                }
+         return false;
+      }
 
-                // ReSharper disable CatchAllClause
-                catch (Exception ex)
-                {
-                    // ReSharper restore CatchAllClause
-                    var names = Enum.GetNames(targetType);
-                    var realName = names.FirstOrDefault(n => n.Equals(value, StringComparison.InvariantCultureIgnoreCase));
-                    if (realName == null)
-                        throw new CommandLineArgumentException(createErrorMessage(targetType, value), ex);
+      /// <summary>Converts the given string value to the expected target type when possible.</summary>
+      /// <param name="targetType">Type of the target.</param>
+      /// <param name="value">The value.</param>
+      /// <param name="createErrorMessage">The function that is called when an error message for the <see cref="CommandLineArgumentException"/> is required.</param>
+      /// <returns></returns>
+      /// <exception cref="CommandLineArgumentException"></exception>
+      protected internal static object ConvertValue(Type targetType, string value, Func<Type, string, string> createErrorMessage)
+      {
+         if (targetType.IsGenericType && targetType.GetGenericTypeDefinition() == typeof(Nullable<>))
+         {
+            if (string.IsNullOrEmpty(value) || value.Equals("null", StringComparison.InvariantCultureIgnoreCase))
+               return null;
 
-                    return Enum.Parse(targetType, realName);
-                }
-            }
+            targetType = targetType.GetGenericArguments().First();
+         }
 
-            if (string.IsNullOrEmpty(value) && targetType == typeof(bool))
-                return true;
-
+         if (targetType.IsEnum)
+         {
             try
             {
-                return Convert.ChangeType(value, targetType, CultureInfo.InvariantCulture);
+               return Enum.Parse(targetType, value);
             }
+
+            // ReSharper disable CatchAllClause
             catch (Exception ex)
             {
-                throw new CommandLineArgumentException(createErrorMessage(targetType, value), ex);
+               // ReSharper restore CatchAllClause
+               var names = Enum.GetNames(targetType);
+               var realName = names.FirstOrDefault(n => n.Equals(value, StringComparison.InvariantCultureIgnoreCase));
+               if (realName == null)
+                  throw new CommandLineArgumentException(createErrorMessage(targetType, value), ex);
+
+               return Enum.Parse(targetType, realName);
             }
-        }
+         }
 
-        internal static bool SetArgumentValue<T>(T instance, MappingInfo mappingInfo, IDictionary<string, CommandLineArgument> arguments)
-        {
-            PropertyInfo propertyInfo = mappingInfo.PropertyInfo;
-            CommandLineAttribute attribute = mappingInfo.CommandLineAttribute;
-            var count = 0;
-            bool trim = attribute.TrimQuotation();
+         if (string.IsNullOrEmpty(value) && targetType == typeof(bool))
+            return true;
 
-            CommandLineArgument argument;
-            string stringValue;
+         try
+         {
+            return Convert.ChangeType(value, targetType, CultureInfo.InvariantCulture);
+         }
+         catch (Exception ex)
+         {
+            throw new CommandLineArgumentException(createErrorMessage(targetType, value), ex);
+         }
+      }
 
-            foreach (var name in mappingInfo.GetNames())
+      protected static string CreateErrorMessage(Type targetType, string value, string name)
+      {
+         if (targetType.IsEnum)
+         {
+            var names = Enum.GetNames(targetType);
+            var possibleValues = $"Possible values are {string.Join(", ", names)}.".Replace($", {names.Last()}", $" and {names.Last()}");
+            return $"The value {value} of parameter {name} can not be converted into the expected type {targetType.FullName}. {possibleValues}";
+         }
+
+         return $"The value {value} of parameter {name} can not be converted into the expected type {targetType.FullName}";
+      }
+
+      private static string GetValue(string originalValue, bool trim)
+      {
+         return trim ? originalValue.Trim('"', '\'') : originalValue;
+      }
+
+      private static bool TryGetByIndex(IDictionary<string, CommandLineArgument> arguments, MappingInfo mappingInfo, out KeyValuePair<string, CommandLineArgument> argument)
+      {
+         var index = mappingInfo.CommandLineAttribute.GetIndex();
+         if (index >= 0)
+         {
+            foreach (var commandLineArgument in arguments)
             {
-                if (arguments.TryGetValue(name, out argument))
-                {
-                    if (argument.Value == null)
-                        throw new CommandLineArgumentException($"The value of the argument '{argument.Name}' was not specified.") { Reason = ErrorReason.ArgumentWithoutValue };
+               if (commandLineArgument.Value.Index == index)
+               {
+                  var betterNameMatch = mappingInfo.GetNameMatch(commandLineArgument.Value.Name);
+                  if (betterNameMatch == null)
+                  {
+                     argument = commandLineArgument;
+                     return true;
+                  }
 
-                    stringValue = GetValue(argument.Value, trim);
-                    propertyInfo.SetValue(instance, ConvertValue(propertyInfo.PropertyType, stringValue, (t, v) => CreateErrorMessage(t, v, name)), null);
-                    mappingInfo.CommandLineArgument = argument;
-                    argument.Mapped = true;
-
-                    if (!mappingInfo.IsShared())
-                        arguments.Remove(name);
-
-                    count++;
-                }
+                  break;
+               }
             }
+         }
 
-            if (count == 0 && TryGetByIndex(arguments, mappingInfo, out var entry))
-            {
-                argument = entry.Value;
-                if (argument != null && argument.Value == null)
-                {
-                    stringValue = GetValue(argument.Name, trim);
+         argument = new KeyValuePair<string, CommandLineArgument>();
+         return false;
+      }
 
-                    propertyInfo.SetValue(instance, ConvertValue(propertyInfo.PropertyType, stringValue, (t, v) => CreateErrorMessage(t, v, attribute.Name)), null);
-                    mappingInfo.CommandLineArgument = argument;
-                    arguments.Remove(entry.Key);
-                    count++;
-                }
-            }
-
-            if (count > 1)
-                throw new AmbiguousCommandLineArgumentsException($"The value for the argument '{mappingInfo.Name}' was specified multiple times.");
-
-            if (count == 0 && attribute.IsRequired())
-                throw new MissingCommandLineArgumentException(mappingInfo.Name);
-
-            return count > 0;
-        }
-
-        internal static bool SetOptionValue<T>(T instance, MappingInfo mappingInfo, IDictionary<string, CommandLineArgument> arguments)
-        {
-            foreach (var name in mappingInfo.GetNames())
-            {
-                if (arguments.TryGetValue(name, out var argument))
-                {
-                    if (argument.Value != null)
-                        throw new CommandLineArgumentException($"The option '{argument.Name}' was specified with a value. This is not allowed for option.")
-                        {
-                            Reason = ErrorReason.OptionWithValue
-                        };
-
-                    mappingInfo.PropertyInfo.SetValue(instance, true, null);
-                    mappingInfo.CommandLineArgument = argument;
-                    argument.Mapped = true;
-
-                    if (!mappingInfo.IsShared())
-                        arguments.Remove(name);
-
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        #endregion Methods
-    }
+      #endregion
+   }
 }

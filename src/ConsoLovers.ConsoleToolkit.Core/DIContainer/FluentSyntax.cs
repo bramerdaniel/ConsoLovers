@@ -6,24 +6,24 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.DIContainer
 {
-    using System.ComponentModel;
+   using System.ComponentModel;
 
-    /// <summary>Fluent syntax interface </summary>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public interface IContainerEntry : ILifetime
-    {
-    }
+   /// <summary>Fluent syntax interface </summary>
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public interface ILifetime : IFluentInterface
+   {
+      #region Public Methods and Operators
 
-    /// <summary>Fluent syntax interface </summary>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public interface ILifetime : IFluentInterface
-    {
-        #region Public Methods and Operators
+      /// <summary>Sets the lifetime of the created instance.</summary>
+      /// <param name="lifetime">The lifetime.</param>
+      void WithLifetime(Lifetime lifetime);
 
-        /// <summary>Sets the lifetime of the created instance.</summary>
-        /// <param name="lifetime">The lifetime.</param>
-        void WithLifetime(Lifetime lifetime);
+      #endregion
+   }
 
-        #endregion Public Methods and Operators
-    }
+   /// <summary>Fluent syntax interface </summary>
+   [EditorBrowsable(EditorBrowsableState.Never)]
+   public interface IContainerEntry : ILifetime
+   {
+   }
 }

@@ -1,16 +1,16 @@
 ﻿namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
-    using System;
-    using System.Reflection;
+   using System;
+   using System.Reflection;
 
-    public interface IHelpProvider
-    {
-        #region Public Methods and Operators
+   public interface IHelpProvider
+   {
+      #region Public Methods and Operators
 
-        void PrintPropertyHelp(PropertyInfo property);
+      void PrintTypeHelp(Type type);
 
-        void PrintTypeHelp(Type type);
+      void PrintPropertyHelp(PropertyInfo property);
 
-        #endregion Public Methods and Operators
-    }
+      #endregion
+   }
 }

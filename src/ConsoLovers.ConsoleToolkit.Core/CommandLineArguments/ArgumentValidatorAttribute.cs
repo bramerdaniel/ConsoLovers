@@ -6,29 +6,30 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
-    using JetBrains.Annotations;
-    using System;
+   using System;
 
-    /// <summary>Attribute that is used to specify the type of an <see cref="IArgumentValidator{T}"/> implementation.</summary>
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
-    public class ArgumentValidatorAttribute : Attribute
-    {
-        #region Constructors and Destructors
+   using JetBrains.Annotations;
 
-        /// <summary>Initializes a new instance of the <see cref="CommandLineAttribute"/> class.</summary>
-        /// <param name="type">The name.</param>
-        public ArgumentValidatorAttribute([NotNull] Type type)
-        {
-            Type = type ?? throw new ArgumentNullException(nameof(type));
-        }
+   /// <summary>Attribute that is used to specify the type of an <see cref="IArgumentValidator{T}"/> implementation.</summary>
+   [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
+   public class ArgumentValidatorAttribute : Attribute
+   {
+      #region Constructors and Destructors
 
-        #endregion Constructors and Destructors
+      /// <summary>Initializes a new instance of the <see cref="CommandLineAttribute"/> class.</summary>
+      /// <param name="type">The name.</param>
+      public ArgumentValidatorAttribute([NotNull] Type type)
+      {
+         Type = type ?? throw new ArgumentNullException(nameof(type));
+      }
 
-        #region Public Properties
+      #endregion
 
-        /// <summary>Gets the type of an <see cref="IArgumentValidator{T}"/> implementation.</summary>
-        public Type Type { get; }
+      #region Public Properties
 
-        #endregion Public Properties
-    }
+      /// <summary>Gets the type of an <see cref="IArgumentValidator{T}"/> implementation.</summary>
+      public Type Type { get; }
+
+      #endregion
+   }
 }

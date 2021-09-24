@@ -6,29 +6,30 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core
 {
-    using JetBrains.Annotations;
-    using System;
+   using System;
 
-    /// <summary>Attribute that is used to set the title of the console window</summary>
-    /// <seealso cref="System.Attribute"/>
-    public class ConsoleWindowTitleAttribute : Attribute
-    {
-        #region Constructors and Destructors
+   using JetBrains.Annotations;
 
-        /// <summary>Initializes a new instance of the <see cref="ConsoleWindowTitleAttribute"/> class.</summary>
-        /// <param name="title">The title.</param>
-        public ConsoleWindowTitleAttribute([NotNull] string title)
-        {
-            Title = title ?? throw new ArgumentNullException(nameof(title));
-        }
+   /// <summary>Attribute that is used to set the title of the console window</summary>
+   /// <seealso cref="System.Attribute"/>
+   public class ConsoleWindowTitleAttribute : Attribute
+   {
+      #region Constructors and Destructors
 
-        #endregion Constructors and Destructors
+      /// <summary>Initializes a new instance of the <see cref="ConsoleWindowTitleAttribute"/> class.</summary>
+      /// <param name="title">The title.</param>
+      public ConsoleWindowTitleAttribute([NotNull] string title)
+      {
+         Title = title ?? throw new ArgumentNullException(nameof(title));
+      }
 
-        #region Public Properties
+      #endregion
 
-        /// <summary>Gets the title that will be set to the console window.</summary>
-        public string Title { get; }
+      #region Public Properties
 
-        #endregion Public Properties
-    }
+      /// <summary>Gets the title that will be set to the console window.</summary>
+      public string Title { get; }
+
+      #endregion
+   }
 }

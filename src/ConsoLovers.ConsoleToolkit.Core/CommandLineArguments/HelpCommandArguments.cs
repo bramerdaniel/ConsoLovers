@@ -6,19 +6,19 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
-    using System.Collections.Generic;
+   using System.Collections.Generic;
 
-    /// <summary>Arguments class for the help command</summary>
-    public class HelpCommandArguments
-    {
-        #region Public Properties
+   /// <summary>Arguments class for the help command</summary>
+   public class HelpCommandArguments
+   {
+      #region Public Properties
 
-        /// <summary>Gets or sets the argument dictionary.</summary>
-        public IDictionary<string, CommandLineArgument> ArgumentDictionary { get; set; }
+      /// <summary>Gets or sets the argument dictionary.</summary>
+      public IDictionary<string, CommandLineArgument> ArgumentDictionary { get; set; }
 
-        /// <summary>Gets or sets the argument infos.</summary>
-        public ArgumentClassInfo ArgumentInfos { get; set; }
+      /// <summary>Gets or sets the argument infos.</summary>
+      public ArgumentClassInfo ArgumentInfos { get; set; }
 
-        #endregion Public Properties
-    }
+      #endregion
+   }
 }

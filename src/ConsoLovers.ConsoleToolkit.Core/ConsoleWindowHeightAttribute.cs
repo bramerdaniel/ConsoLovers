@@ -6,31 +6,31 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core
 {
-    using System;
+   using System;
 
-    /// <summary>Attribute that is used to set the window height of the console window</summary>
-    /// <seealso cref="System.Attribute"/>
-    public class ConsoleWindowHeightAttribute : Attribute
-    {
-        #region Constructors and Destructors
+   /// <summary>Attribute that is used to set the window height of the console window</summary>
+   /// <seealso cref="System.Attribute"/>
+   public class ConsoleWindowHeightAttribute : Attribute
+   {
+      #region Constructors and Destructors
 
-        /// <summary>Initializes a new instance of the <see cref="ConsoleWindowTitleAttribute"/> class.</summary>
-        /// <param name="height">The width.</param>
-        public ConsoleWindowHeightAttribute(int height)
-        {
-            ConsoleHeight = height;
-        }
+      /// <summary>Initializes a new instance of the <see cref="ConsoleWindowTitleAttribute"/> class.</summary>
+      /// <param name="height">The width.</param>
+      public ConsoleWindowHeightAttribute(int height)
+      {
+         ConsoleHeight = height;
+      }
 
-        #endregion Constructors and Destructors
+      #endregion
 
-        #region Public Properties
+      #region Public Properties
 
-        /// <summary>Gets or sets a value indicating whether shrinking of the height is allowed.</summary>
-        public bool AllowShrink { get; set; } = true;
+      /// <summary>Gets the height of the console window.</summary>
+      public int ConsoleHeight { get; }
 
-        /// <summary>Gets the height of the console window.</summary>
-        public int ConsoleHeight { get; }
+      /// <summary>Gets or sets a value indicating whether shrinking of the height is allowed.</summary>
+      public bool AllowShrink { get; set; } = true;
 
-        #endregion Public Properties
-    }
+      #endregion
+   }
 }

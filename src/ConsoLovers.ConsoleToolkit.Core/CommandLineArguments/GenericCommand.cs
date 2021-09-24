@@ -6,20 +6,20 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
-    public class GenericCommand<T> : ICommand<T>
-    {
-        #region ICommand Members
+   public class GenericCommand<T> : ICommand<T>
+   {
+      #region ICommand Members
 
-        public virtual void Execute()
-        {
-        }
+      public virtual void Execute()
+      {
+      }
 
-        #endregion ICommand Members
+      #endregion
 
-        #region ICommand<T> Members
+      #region ICommand<T> Members
 
-        public T Arguments { get; set; }
+      public T Arguments { get; set; }
 
-        #endregion ICommand<T> Members
-    }
+      #endregion
+   }
 }

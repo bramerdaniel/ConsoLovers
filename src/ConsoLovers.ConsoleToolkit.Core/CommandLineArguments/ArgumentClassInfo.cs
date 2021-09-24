@@ -6,136 +6,139 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
-    using JetBrains.Annotations;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
+   using System;
+   using System.Collections.Generic;
+   using System.Linq;
+   using System.Reflection;
 
-    /// <summary>The <see cref="ArgumentClassInfo"/> is a helper class, that is able to analyze the class representing the command line arguments. This is done by reflection</summary>
-    public class ArgumentClassInfo
-    {
-        #region Constants and Fields
+   using JetBrains.Annotations;
 
-        private List<CommandInfo> commandInfos;
-        private List<ParameterInfo> properties;
-        public bool? hasCommands;
+   /// <summary>The <see cref="ArgumentClassInfo"/> is a helper class, that is able to analyze the class representing the command line arguments. This is done by reflection</summary>
+   public class ArgumentClassInfo
+   {
+      #region Constants and Fields
 
-        #endregion Constants and Fields
+      public bool? hasCommands;
 
-        #region Constructors and Destructors
+      private List<CommandInfo> commandInfos;
 
-        private ArgumentClassInfo([NotNull] Type argumentType)
-        {
-            if (argumentType == null)
-                throw new ArgumentNullException(nameof(argumentType));
+      private List<ParameterInfo> properties;
 
-            ArgumentType = argumentType;
-            Initialize();
-        }
+      #endregion
 
-        #endregion Constructors and Destructors
+      #region Constructors and Destructors
 
-        #region Public Properties
+      private ArgumentClassInfo([NotNull] Type argumentType)
+      {
+         if (argumentType == null)
+            throw new ArgumentNullException(nameof(argumentType));
 
-        /// <summary>Gets the type of the class containing the argument definitions.</summary>
-        public Type ArgumentType { get; }
+         ArgumentType = argumentType;
+         Initialize();
+      }
 
-        public IReadOnlyCollection<CommandInfo> CommandInfos => commandInfos;
+      #endregion
 
-        public CommandInfo DefaultCommand { get; private set; }
+      #region Public Properties
 
-        public bool HasCommands => CommandInfos.Any();
+      /// <summary>Gets the type of the class containing the argument definitions.</summary>
+      public Type ArgumentType { get; }
 
-        public CommandInfo HelpCommand { get; private set; }
+      public IReadOnlyCollection<CommandInfo> CommandInfos => commandInfos;
 
-        public IReadOnlyCollection<ParameterInfo> Properties => properties;
+      public CommandInfo DefaultCommand { get; private set; }
 
-        #endregion Public Properties
+      public bool HasCommands => CommandInfos.Any();
 
-        #region Public Methods and Operators
+      public CommandInfo HelpCommand { get; private set; }
 
-        public static ArgumentClassInfo FromType(Type argumentClassType)
-        {
-            return new ArgumentClassInfo(argumentClassType);
-        }
+      public IReadOnlyCollection<ParameterInfo> Properties => properties;
 
-        public static ArgumentClassInfo FromType<T>()
-        {
-            return FromType(typeof(T));
-        }
+      #endregion
 
-        public ParameterInfo GetParameterInfo(string name)
-        {
-            foreach (var parmeterInfo in Properties)
+      #region Public Methods and Operators
+
+      public static ArgumentClassInfo FromType(Type argumentClassType)
+      {
+         return new ArgumentClassInfo(argumentClassType);
+      }
+
+      public static ArgumentClassInfo FromType<T>()
+      {
+         return FromType(typeof(T));
+      }
+
+      public ParameterInfo GetParameterInfo(string name)
+      {
+         foreach (var parmeterInfo in Properties)
+         {
+            if (parmeterInfo.Identifiers.Any(identifier => string.Equals(name, identifier, StringComparison.InvariantCultureIgnoreCase)))
+               return parmeterInfo;
+         }
+
+         return null;
+      }
+
+      public void Validate()
+      {
+      }
+
+      #endregion
+
+      #region Methods
+
+      private static ParameterInfo CreateInfo(PropertyInfo propertyInfo, CommandLineAttribute[] attributes)
+      {
+         foreach (var attribute in attributes)
+         {
+            if (attribute is CommandAttribute commandAttribute)
+               return new CommandInfo(propertyInfo, commandAttribute);
+
+            if (attribute is ArgumentAttribute argumentAttribute)
+               return new ArgumentInfo(propertyInfo, argumentAttribute);
+
+            if (attribute is OptionAttribute optionAttribute)
+               return new OptionInfo(propertyInfo, optionAttribute);
+         }
+
+         return null;
+      }
+
+      private void Initialize()
+      {
+         commandInfos = new List<CommandInfo>();
+         properties = new List<ParameterInfo>();
+
+         foreach (var propertyInfo in ArgumentType.GetProperties(BindingFlags.Instance | BindingFlags.Public))
+         {
+            var attributes = propertyInfo.GetCustomAttributes<CommandLineAttribute>(true).ToArray();
+            if (attributes.Any())
             {
-                if (parmeterInfo.Identifiers.Any(identifier => string.Equals(name, identifier, StringComparison.InvariantCultureIgnoreCase)))
-                    return parmeterInfo;
+               var parameterInfo = CreateInfo(propertyInfo, attributes);
+               properties.Add(parameterInfo);
+
+               if (parameterInfo is CommandInfo commandInfo)
+               {
+                  commandInfos.Add(commandInfo);
+                  if (IsHelpCommand(propertyInfo))
+                     HelpCommand = commandInfo;
+                  if (commandInfo.IsDefault)
+                  {
+                     if (DefaultCommand != null)
+                        throw new InvalidOperationException("Default command was defined twice.");
+
+                     DefaultCommand = commandInfo;
+                  }
+               }
             }
+         }
+      }
 
-            return null;
-        }
+      private bool IsHelpCommand(PropertyInfo propertyInfo)
+      {
+         return propertyInfo.PropertyType == typeof(HelpCommand);
+      }
 
-        public void Validate()
-        {
-        }
-
-        #endregion Public Methods and Operators
-
-        #region Methods
-
-        private static ParameterInfo CreateInfo(PropertyInfo propertyInfo, CommandLineAttribute[] attributes)
-        {
-            foreach (var attribute in attributes)
-            {
-                if (attribute is CommandAttribute commandAttribute)
-                    return new CommandInfo(propertyInfo, commandAttribute);
-
-                if (attribute is ArgumentAttribute argumentAttribute)
-                    return new ArgumentInfo(propertyInfo, argumentAttribute);
-
-                if (attribute is OptionAttribute optionAttribute)
-                    return new OptionInfo(propertyInfo, optionAttribute);
-            }
-
-            return null;
-        }
-
-        private void Initialize()
-        {
-            commandInfos = new List<CommandInfo>();
-            properties = new List<ParameterInfo>();
-
-            foreach (var propertyInfo in ArgumentType.GetProperties(BindingFlags.Instance | BindingFlags.Public))
-            {
-                var attributes = propertyInfo.GetCustomAttributes<CommandLineAttribute>(true).ToArray();
-                if (attributes.Any())
-                {
-                    var parameterInfo = CreateInfo(propertyInfo, attributes);
-                    properties.Add(parameterInfo);
-
-                    if (parameterInfo is CommandInfo commandInfo)
-                    {
-                        commandInfos.Add(commandInfo);
-                        if (IsHelpCommand(propertyInfo))
-                            HelpCommand = commandInfo;
-                        if (commandInfo.IsDefault)
-                        {
-                            if (DefaultCommand != null)
-                                throw new InvalidOperationException("Default command was defined twice.");
-
-                            DefaultCommand = commandInfo;
-                        }
-                    }
-                }
-            }
-        }
-
-        private bool IsHelpCommand(PropertyInfo propertyInfo)
-        {
-            return propertyInfo.PropertyType == typeof(HelpCommand);
-        }
-
-        #endregion Methods
-    }
+      #endregion
+   }
 }

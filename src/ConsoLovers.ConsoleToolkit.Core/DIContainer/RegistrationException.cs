@@ -6,20 +6,20 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.DIContainer
 {
-    using System;
+   using System;
 
-    /// <summary>Exception thrown while registration</summary>
-    public class RegistrationException : Exception
-    {
-        #region Constructors and Destructors
+   /// <summary>Exception thrown while registration</summary>
+   public class RegistrationException : Exception
+   {
+      #region Constructors and Destructors
 
-        /// <summary>Initializes a new instance of the <see cref="RegistrationException"/> class.</summary>
-        /// <param name="message">The message that describes the error.</param>
-        public RegistrationException(string message)
-           : base(message)
-        {
-        }
+      /// <summary>Initializes a new instance of the <see cref="RegistrationException"/> class.</summary>
+      /// <param name="message">The message that describes the error.</param>
+      public RegistrationException(string message)
+         : base(message)
+      {
+      }
 
-        #endregion Constructors and Destructors
-    }
+      #endregion
+   }
 }

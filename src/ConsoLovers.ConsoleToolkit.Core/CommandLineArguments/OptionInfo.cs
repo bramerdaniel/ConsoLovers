@@ -6,28 +6,29 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
-    using JetBrains.Annotations;
-    using System.Reflection;
+   using System.Reflection;
 
-    /// <summary>
-    ///
-    /// </summary>
-    /// <seealso cref="ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.ParameterInfo" />
-    public class OptionInfo : ParameterInfo
-    {
-        #region Constructors and Destructors
+   using JetBrains.Annotations;
 
-        public OptionInfo([NotNull] PropertyInfo propertyInfo, [NotNull] OptionAttribute commandLineAttribute)
-           : base(propertyInfo, commandLineAttribute)
-        {
-        }
+   /// <summary>
+   /// 
+   /// </summary>
+   /// <seealso cref="ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.ParameterInfo" />
+   public class OptionInfo : ParameterInfo
+   {
+      #region Constructors and Destructors
 
-        #endregion Constructors and Destructors
+      public OptionInfo([NotNull] PropertyInfo propertyInfo, [NotNull] OptionAttribute commandLineAttribute)
+         : base(propertyInfo, commandLineAttribute)
+      {
+      }
 
-        #region Public Properties
+      #endregion
 
-        public OptionAttribute Attribute => (OptionAttribute)CommandLineAttribute;
+      #region Public Properties
 
-        #endregion Public Properties
-    }
+      public OptionAttribute Attribute => (OptionAttribute)CommandLineAttribute;
+
+      #endregion
+   }
 }

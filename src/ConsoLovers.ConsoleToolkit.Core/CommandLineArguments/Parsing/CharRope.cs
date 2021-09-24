@@ -6,55 +6,56 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
 {
-    using JetBrains.Annotations;
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
+   using System;
+   using System.Collections;
+   using System.Collections.Generic;
 
-    public class CharRope : IEnumerable<CharInfo>
-    {
-        #region Constants and Fields
+   using JetBrains.Annotations;
 
-        private readonly string original;
+   public class CharRope : IEnumerable<CharInfo>
+   {
+      #region Constants and Fields
 
-        #endregion Constants and Fields
+      private readonly string original;
 
-        #region Constructors and Destructors
+      #endregion
 
-        public CharRope([NotNull] string original)
-        {
-            this.original = original ?? throw new ArgumentNullException(nameof(original));
-        }
+      #region Constructors and Destructors
 
-        #endregion Constructors and Destructors
+      public CharRope([NotNull] string original)
+      {
+         this.original = original ?? throw new ArgumentNullException(nameof(original));
+      }
 
-        #region IEnumerable Members
+      #endregion
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+      #region IEnumerable Members
 
-        #endregion IEnumerable Members
+      IEnumerator IEnumerable.GetEnumerator()
+      {
+         return GetEnumerator();
+      }
 
-        #region IEnumerable<CharInfo> Members
+      #endregion
 
-        public IEnumerator<CharInfo> GetEnumerator()
-        {
-            bool insideQuotes = false;
-            for (int i = 0; i < original.Length; i++)
-            {
-                var current = original[i];
-                var previous = i == 0 ? (char?)null : original[i - 1];
-                var next = i + 1 == original.Length ? (char?)null : original[i + 1];
+      #region IEnumerable<CharInfo> Members
 
-                if (current == '"' && previous != '\\')
-                    insideQuotes = !insideQuotes;
+      public IEnumerator<CharInfo> GetEnumerator()
+      {
+         bool insideQuotes = false;
+         for (int i = 0; i < original.Length; i++)
+         {
+            var current = original[i];
+            var previous = i == 0 ? (char?)null : original[i - 1];
+            var next = i + 1 == original.Length ? (char?)null : original[i + 1];
+            
+            if (current == '"' && previous != '\\')
+               insideQuotes = !insideQuotes;
 
-                yield return new CharInfo(current, previous, next, insideQuotes);
-            }
-        }
+            yield return new CharInfo(current, previous, next, insideQuotes);
+         }
+      }
 
-        #endregion IEnumerable<CharInfo> Members
-    }
+      #endregion
+   }
 }

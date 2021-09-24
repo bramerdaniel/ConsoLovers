@@ -6,107 +6,108 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
-    using JetBrains.Annotations;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
+   using System;
+   using System.Collections.Generic;
+   using System.Linq;
+   using System.Reflection;
 
-    /// <summary>Helper class that creates a list of <see cref="MappingInfo"/> for a specified type</summary>
-    /// <seealso cref="System.Collections.Generic.List{MappingInfo}"/>
-    internal class MappingList : List<MappingInfo>
-    {
-        #region Constants and Fields
+   using JetBrains.Annotations;
 
-        private readonly Dictionary<string, MappingInfo> definedNames = new Dictionary<string, MappingInfo>();
+   /// <summary>Helper class that creates a list of <see cref="MappingInfo"/> for a specified type</summary>
+   /// <seealso cref="System.Collections.Generic.List{MappingInfo}"/>
+   internal class MappingList : List<MappingInfo>
+   {
+      #region Constants and Fields
 
-        [NotNull]
-        private readonly Type type;
+      readonly Dictionary<string, MappingInfo> definedNames = new Dictionary<string, MappingInfo>();
 
-        #endregion Constants and Fields
+      [NotNull]
+      private readonly Type type;
 
-        #region Constructors and Destructors
+      #endregion
 
-        private MappingList([NotNull] Type type)
-        {
-            this.type = type ?? throw new ArgumentNullException(nameof(type));
-            Initialize();
-        }
+      #region Constructors and Destructors
 
-        #endregion Constructors and Destructors
+      private MappingList([NotNull] Type type)
+      {
+         this.type = type ?? throw new ArgumentNullException(nameof(type));
+         Initialize();
+      }
 
-        #region Public Methods and Operators
+      #endregion
 
-        public static MappingList FromType<T>()
-        {
-            return new MappingList(typeof(T));
-        }
+      #region Public Methods and Operators
 
-        public MappingInfo GetMappingInfo(string name)
-        {
-            return definedNames.TryGetValue(name, out var mappingInfo) ? mappingInfo : null;
-        }
+      public static MappingList FromType<T>()
+      {
+         return new MappingList(typeof(T));
+      }
 
-        public bool TryGetMappingInfo(string name, out MappingInfo mappingInfo)
-        {
-            return definedNames.TryGetValue(name, out mappingInfo);
-        }
+      public MappingInfo GetMappingInfo(string name)
+      {
+         return definedNames.TryGetValue(name, out var mappingInfo) ? mappingInfo : null;
+      }
 
-        #endregion Public Methods and Operators
+      public bool TryGetMappingInfo(string name, out MappingInfo mappingInfo)
+      {
+         return definedNames.TryGetValue(name, out mappingInfo);
+      }
 
-        #region Methods
+      #endregion
 
-        private static CommandLineAttribute GetCommandLineAttribute(PropertyInfo propertyInfo)
-        {
-            return propertyInfo.GetCustomAttributes<CommandLineAttribute>(true).FirstOrDefault();
-        }
+      #region Methods
 
-        private void Initialize()
-        {
-            var indexedArgs = new List<MappingInfo>();
-            foreach (var propertyInfo in type.GetProperties(BindingFlags.Instance | BindingFlags.Public))
+      internal void EnsureUnique(MappingInfo mappingInfo)
+      {
+         var namesToDefine = new List<string> { mappingInfo.CommandLineAttribute.Name ?? mappingInfo.PropertyInfo.Name };
+         namesToDefine.AddRange(mappingInfo.CommandLineAttribute.Aliases);
+
+         foreach (var name in namesToDefine)
+         {
+            if (definedNames.TryGetValue(name, out var existingMapping))
             {
-                var commandLineAttribute = GetCommandLineAttribute(propertyInfo);
-                if (commandLineAttribute != null)
-                {
-                    var mappingInfo = new MappingInfo(propertyInfo, commandLineAttribute, this);
-                    EnsureUnique(mappingInfo);
-
-                    if (mappingInfo.HasIndex)
-                    {
-                        indexedArgs.Add(mappingInfo);
-                    }
-                    else
-                    {
-                        // Options have to be mapped first to make sure that index based mapping of arguments still works later
-                        Add(mappingInfo);
-                    }
-                }
+               var message =
+                  $"The properties '{existingMapping.PropertyInfo.Name}' and '{mappingInfo.PropertyInfo.Name}' of the class '{mappingInfo.PropertyInfo.DeclaringType?.Name}' define both a name (or alias) called '{name}'";
+               throw new CommandLineAttributeException(message) { Name = name, FirstProperty = existingMapping.PropertyInfo, SecondProperty = mappingInfo.PropertyInfo };
             }
+         }
 
-            foreach (var mappingInfo in indexedArgs.OrderBy(x => x.Index))
-                Add(mappingInfo);
-        }
+         foreach (var name in namesToDefine)
+            definedNames[name] = mappingInfo;
+      }
 
-        internal void EnsureUnique(MappingInfo mappingInfo)
-        {
-            var namesToDefine = new List<string> { mappingInfo.CommandLineAttribute.Name ?? mappingInfo.PropertyInfo.Name };
-            namesToDefine.AddRange(mappingInfo.CommandLineAttribute.Aliases);
+      private static CommandLineAttribute GetCommandLineAttribute(PropertyInfo propertyInfo)
+      {
+         return propertyInfo.GetCustomAttributes<CommandLineAttribute>(true).FirstOrDefault();
+      }
 
-            foreach (var name in namesToDefine)
+      private void Initialize()
+      {
+         var indexedArgs = new List<MappingInfo>();
+         foreach (var propertyInfo in type.GetProperties(BindingFlags.Instance | BindingFlags.Public))
+         {
+            var commandLineAttribute = GetCommandLineAttribute(propertyInfo);
+            if (commandLineAttribute != null)
             {
-                if (definedNames.TryGetValue(name, out var existingMapping))
-                {
-                    var message =
-                       $"The properties '{existingMapping.PropertyInfo.Name}' and '{mappingInfo.PropertyInfo.Name}' of the class '{mappingInfo.PropertyInfo.DeclaringType?.Name}' define both a name (or alias) called '{name}'";
-                    throw new CommandLineAttributeException(message) { Name = name, FirstProperty = existingMapping.PropertyInfo, SecondProperty = mappingInfo.PropertyInfo };
-                }
+               var mappingInfo = new MappingInfo(propertyInfo, commandLineAttribute, this);
+               EnsureUnique(mappingInfo);
+
+               if (mappingInfo.HasIndex)
+               {
+                  indexedArgs.Add(mappingInfo);
+               }
+               else
+               {
+                  // Options have to be mapped first to make sure that index based mapping of arguments still works later
+                  Add(mappingInfo);
+               }
             }
+         }
 
-            foreach (var name in namesToDefine)
-                definedNames[name] = mappingInfo;
-        }
+         foreach (var mappingInfo in indexedArgs.OrderBy(x => x.Index))
+            Add(mappingInfo);
+      }
 
-        #endregion Methods
-    }
+      #endregion
+   }
 }

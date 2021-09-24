@@ -1,15 +1,15 @@
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
-    internal enum ErrorReason
-    {
-        Unknown,
+   internal enum ErrorReason
+   {
+      Unknown,
 
-        ArgumentWithoutValue,
+      ArgumentWithoutValue,
 
-        OptionWithValue,
+      OptionWithValue,
 
-        NoValidatorImplementation,
+      NoValidatorImplementation,
 
-        InvalidValidatorImplementation
-    }
+      InvalidValidatorImplementation
+   }
 }

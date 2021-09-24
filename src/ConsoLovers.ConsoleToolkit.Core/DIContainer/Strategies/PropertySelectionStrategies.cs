@@ -6,37 +6,37 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.DIContainer.Strategies
 {
-    /// <summary>Predefined strategies for selecting the properties to inject</summary>
-    public class PropertySelectionStrategies
-    {
-        #region Constants and Fields
+   /// <summary>Predefined strategies for selecting the properties to inject</summary>
+   public class PropertySelectionStrategies
+   {
+      #region Constants and Fields
 
-        private static readonly AttributePropertySelectionStrategy allWithAttribute = new AttributePropertySelectionStrategy(true);
+      private static readonly AttributePropertySelectionStrategy allWithAttribute = new AttributePropertySelectionStrategy(true);
 
-        private static readonly AttributePropertySelectionStrategy publicWithAttribute = new AttributePropertySelectionStrategy(false);
+      private static readonly AttributePropertySelectionStrategy publicWithAttribute = new AttributePropertySelectionStrategy(false);
 
-        #endregion Constants and Fields
+      #endregion
 
-        #region Public Properties
+      #region Public Properties
 
-        /// <summary>Gets all properties decorated with the <see cref="DependencyAttribute"/>.</summary>
-        public static AttributePropertySelectionStrategy AllWithDepencencyAttribute
-        {
-            get
-            {
-                return allWithAttribute;
-            }
-        }
+      /// <summary>Gets all properties decorated with the <see cref="DependencyAttribute"/>.</summary>
+      public static AttributePropertySelectionStrategy AllWithDepencencyAttribute
+      {
+         get
+         {
+            return allWithAttribute;
+         }
+      }
 
-        /// <summary>Gets the public properties decorated with the <see cref="DependencyAttribute"/>.</summary>
-        public static AttributePropertySelectionStrategy OnlyPublicWithDepencencyAttribute
-        {
-            get
-            {
-                return publicWithAttribute;
-            }
-        }
+      /// <summary>Gets the public properties decorated with the <see cref="DependencyAttribute"/>.</summary>
+      public static AttributePropertySelectionStrategy OnlyPublicWithDepencencyAttribute
+      {
+         get
+         {
+            return publicWithAttribute;
+         }
+      }
 
-        #endregion Public Properties
-    }
+      #endregion
+   }
 }

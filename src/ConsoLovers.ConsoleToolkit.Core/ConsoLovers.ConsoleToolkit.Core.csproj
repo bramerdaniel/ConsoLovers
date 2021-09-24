@@ -1,8 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!--<TargetFramework>net5.0</TargetFramework>-->
-    <TargetFrameworks>netstandard2.0;net461;net5.0</TargetFrameworks>
+    <TargetFramework>net5.0</TargetFramework>
     <Authors>Daniel Bramer</Authors>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Version>2.0.0-beta2</Version>
@@ -20,26 +19,22 @@ This package contains the basic funtionality like application handling and comma
 - Removed IndexedArgument attribute (moved index to ArgumentAttribute)</PackageReleaseNotes>
     <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
     <EnableNETAnalyzers>false</EnableNETAnalyzers>
-    <Platforms>ARM32;x86</Platforms>
+    <Platforms>arm;x86</Platforms>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
-    <PlatformTarget>x86</PlatformTarget>
     <OutputPath>Debug</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM32'">
-    <PlatformTarget>arm</PlatformTarget>
     <OutputPath>Debug</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
-    <PlatformTarget>x86</PlatformTarget>
     <OutputPath>Release</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM32'">
-    <PlatformTarget>arm</PlatformTarget>
     <OutputPath>Release</OutputPath>
   </PropertyGroup>
 

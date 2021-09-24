@@ -6,65 +6,65 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
-    using System;
-    using System.Diagnostics;
+   using System;
+   using System.Diagnostics;
 
-    /// <summary>Attribute for defining command line arguments with values</summary>
-    [AttributeUsage(AttributeTargets.Property)]
-    [DebuggerDisplay("Argument: Name={Name}, Index={Index}, Required={Required}")]
-    public class ArgumentAttribute : CommandLineAttribute
-    {
-        #region Constants and Fields
+   /// <summary>Attribute for defining command line arguments with values</summary>
+   [AttributeUsage(AttributeTargets.Property)]
+   [DebuggerDisplay("Argument: Name={Name}, Index={Index}, Required={Required}")]
+   public class ArgumentAttribute : CommandLineAttribute
+   {
+      #region Constants and Fields
 
-        private int? index;
+      private int? index;
 
-        #endregion Constants and Fields
+      #endregion
 
-        #region Constructors and Destructors
+      #region Constructors and Destructors
 
-        /// <summary>
-        ///    Initializes a new instance of the <see cref="ArgumentAttribute"/> class. Initializes a new instance of the <see cref="OptionAttribute"/> class. Initializes a new instance
-        ///    of the <see cref="ArgumentAttribute"/> class.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <param name="aliases">The aliases.</param>
-        public ArgumentAttribute(string name, params string[] aliases)
-           : base(name, aliases)
-        {
-        }
+      /// <summary>
+      ///    Initializes a new instance of the <see cref="ArgumentAttribute"/> class. Initializes a new instance of the <see cref="OptionAttribute"/> class. Initializes a new instance
+      ///    of the <see cref="ArgumentAttribute"/> class.
+      /// </summary>
+      /// <param name="name">The name.</param>
+      /// <param name="aliases">The aliases.</param>
+      public ArgumentAttribute(string name, params string[] aliases)
+         : base(name, aliases)
+      {
+      }
 
-        /// <summary>Initializes a new instance of the <see cref="ArgumentAttribute"/> class.</summary>
-        public ArgumentAttribute()
-           : this(null)
-        {
-        }
+      /// <summary>Initializes a new instance of the <see cref="ArgumentAttribute"/> class.</summary>
+      public ArgumentAttribute()
+         : this(null)
+      {
+      }
 
-        /// <summary>Initializes a new instance of the <see cref="ArgumentAttribute"/> class.</summary>
-        public ArgumentAttribute(int index)
-           : this(null)
-        {
-            if (index < 0)
-                throw new ArgumentOutOfRangeException(nameof(index));
+      /// <summary>Initializes a new instance of the <see cref="ArgumentAttribute"/> class.</summary>
+      public ArgumentAttribute(int index)
+         : this(null)
+      {
+         if (index < 0)
+            throw new ArgumentOutOfRangeException(nameof(index));
 
-            Index = index;
-        }
+         Index = index;
+      }
 
-        #endregion Constructors and Destructors
+      #endregion
 
-        #region Public Properties
+      #region Public Properties
 
-        /// <summary>Gets the index of the argument.</summary>
-        public int Index
-        {
-            get => index.GetValueOrDefault(-1);
-            set => index = value;
-        }
+      /// <summary>Gets the index of the argument.</summary>
+      public int Index
+      {
+         get => index.GetValueOrDefault(-1);
+         set => index = value;
+      }
 
-        /// <summary>Gets a value indicating whether the command line argument is required.</summary>
-        public bool Required { get; set; }
+      /// <summary>Gets a value indicating whether the command line argument is required.</summary>
+      public bool Required { get; set; }
 
-        public bool TrimQuotation { get; set; }
+      public bool TrimQuotation { get; set; }
 
-        #endregion Public Properties
-    }
+      #endregion
+   }
 }
