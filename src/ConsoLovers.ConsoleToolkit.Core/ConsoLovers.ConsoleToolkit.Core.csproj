@@ -20,7 +20,7 @@ This package contains the basic funtionality like application handling and comma
 - Removed IndexedArgument attribute (moved index to ArgumentAttribute)</PackageReleaseNotes>
     <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
     <EnableNETAnalyzers>false</EnableNETAnalyzers>
-    <Platforms>arm;x86</Platforms>
+    <Platforms>ARM32;x86</Platforms>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
@@ -28,8 +28,8 @@ This package contains the basic funtionality like application handling and comma
     <OutputPath>Debug</OutputPath>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|arm'">
-    <PlatformTarget>ARM32</PlatformTarget>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM32'">
+    <PlatformTarget>arm</PlatformTarget>
     <OutputPath>Debug</OutputPath>
   </PropertyGroup>
 
@@ -38,8 +38,8 @@ This package contains the basic funtionality like application handling and comma
     <OutputPath>Release</OutputPath>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|arm'">
-    <PlatformTarget>ARM32</PlatformTarget>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM32'">
+    <PlatformTarget>arm</PlatformTarget>
     <OutputPath>Release</OutputPath>
   </PropertyGroup>
 
