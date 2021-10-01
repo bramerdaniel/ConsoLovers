@@ -19,7 +19,11 @@ This package contains the basic funtionality like application handling and comma
 - Removed IndexedArgument attribute (moved index to ArgumentAttribute)</PackageReleaseNotes>
     <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
     <EnableNETAnalyzers>false</EnableNETAnalyzers>
+    <PublishSingleFile>false</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <RuntimeIdentifier>linux-arm</RuntimeIdentifier>
     <Platforms>ARM32</Platforms>
+    <PublishReadyToRun>true</PublishReadyToRun>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM32'">
