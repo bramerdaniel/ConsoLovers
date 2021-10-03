@@ -19,18 +19,18 @@ This package contains the basic funtionality like application handling and comma
 - Removed IndexedArgument attribute (moved index to ArgumentAttribute)</PackageReleaseNotes>
     <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
     <EnableNETAnalyzers>false</EnableNETAnalyzers>
-    <Platforms>ARM32</Platforms>
+    <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM32'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>Debug</OutputPath>
-    <PlatformTarget>ARM32</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM32'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>Release</OutputPath>
-    <PlatformTarget>ARM32</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DefineConstants />
   </PropertyGroup>
 
