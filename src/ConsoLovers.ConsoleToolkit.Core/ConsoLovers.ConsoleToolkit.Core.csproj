@@ -19,8 +19,8 @@ This package contains the basic funtionality like application handling and comma
 - Removed IndexedArgument attribute (moved index to ArgumentAttribute)</PackageReleaseNotes>
     <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
     <EnableNETAnalyzers>false</EnableNETAnalyzers>
-    <RuntimeIdentifiers>win-x86;linux-arm;win-arm</RuntimeIdentifiers>
-    <PublishSingleFile>false</PublishSingleFile>
+    <RuntimeIdentifiers>win-x64;win-arm;win-arm64;linux-arm;linux-arm64;linux-x64</RuntimeIdentifiers>
+    <PublishSingleFile>true</PublishSingleFile>
     <SelfContained>false</SelfContained>
     <PublishReadyToRun>false</PublishReadyToRun>
   </PropertyGroup>
