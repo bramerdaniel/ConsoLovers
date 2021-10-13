@@ -6,56 +6,51 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
 {
-   using System;
-   using System.Collections;
-   using System.Collections.Generic;
+    using JetBrains.Annotations;
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
 
-   using JetBrains.Annotations;
+    public class CharRope : IEnumerable<CharInfo>
+    {
+        #region Private Fields
 
-   public class CharRope : IEnumerable<CharInfo>
-   {
-      #region Constants and Fields
+        private readonly string original;
 
-      private readonly string original;
+        #endregion Private Fields
 
-      #endregion
+        #region Public Constructors
 
-      #region Constructors and Destructors
+        public CharRope([NotNull] string original)
+        {
+            this.original = original ?? throw new ArgumentNullException(nameof(original));
+        }
 
-      public CharRope([NotNull] string original)
-      {
-         this.original = original ?? throw new ArgumentNullException(nameof(original));
-      }
+        #endregion Public Constructors
 
-      #endregion
+        #region Public Methods
 
-      #region IEnumerable Members
+        public IEnumerator<CharInfo> GetEnumerator()
+        {
+            bool insideQuotes = false;
+            for (int i = 0; i < original.Length; i++)
+            {
+                var current = original[i];
+                var previous = i == 0 ? (char?)null : original[i - 1];
+                var next = i + 1 == original.Length ? (char?)null : original[i + 1];
 
-      IEnumerator IEnumerable.GetEnumerator()
-      {
-         return GetEnumerator();
-      }
+                if (current == '"' && previous != '\\')
+                    insideQuotes = !insideQuotes;
 
-      #endregion
+                yield return new CharInfo(current, previous, next, insideQuotes);
+            }
+        }
 
-      #region IEnumerable<CharInfo> Members
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
 
-      public IEnumerator<CharInfo> GetEnumerator()
-      {
-         bool insideQuotes = false;
-         for (int i = 0; i < original.Length; i++)
-         {
-            var current = original[i];
-            var previous = i == 0 ? (char?)null : original[i - 1];
-            var next = i + 1 == original.Length ? (char?)null : original[i + 1];
-            
-            if (current == '"' && previous != '\\')
-               insideQuotes = !insideQuotes;
-
-            yield return new CharInfo(current, previous, next, insideQuotes);
-         }
-      }
-
-      #endregion
-   }
+        #endregion Public Methods
+    }
 }

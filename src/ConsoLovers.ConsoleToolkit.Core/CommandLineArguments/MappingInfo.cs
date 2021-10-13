@@ -6,95 +6,94 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
-   using System;
-   using System.Collections.Generic;
-   using System.Diagnostics;
-   using System.Reflection;
+    using JetBrains.Annotations;
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Reflection;
 
-   using JetBrains.Annotations;
+    [DebuggerDisplay("{" + nameof(GetDebuggerString) + "()}")]
+    internal class MappingInfo
+    {
+        #region Private Fields
 
-   [DebuggerDisplay("{" + nameof(GetDebuggerString) + "()}")]
-   internal class MappingInfo
-   {
-      #region Constants and Fields
+        private readonly MappingList mappingList;
 
-      private readonly MappingList mappingList;
+        #endregion Private Fields
 
-      #endregion
+        #region Private Methods
 
-      #region Constructors and Destructors
+        private string GetDebuggerString()
+        {
+            return $"{(IsOption() ? "Option" : "Argument")}: {Name}";
+        }
 
-      internal MappingInfo([NotNull] PropertyInfo propertyInfo, [NotNull] CommandLineAttribute commandLineAttribute, [NotNull] MappingList mappingList)
-      {
-         this.mappingList = mappingList ?? throw new ArgumentNullException(nameof(mappingList));
-         PropertyInfo = propertyInfo ?? throw new ArgumentNullException(nameof(propertyInfo));
-         CommandLineAttribute = commandLineAttribute ?? throw new ArgumentNullException(nameof(commandLineAttribute));
-      }
+        #endregion Private Methods
 
-      #endregion
+        #region Internal Constructors
 
-      #region Public Properties
+        internal MappingInfo([NotNull] PropertyInfo propertyInfo, [NotNull] CommandLineAttribute commandLineAttribute, [NotNull] MappingList mappingList)
+        {
+            this.mappingList = mappingList ?? throw new ArgumentNullException(nameof(mappingList));
+            PropertyInfo = propertyInfo ?? throw new ArgumentNullException(nameof(propertyInfo));
+            CommandLineAttribute = commandLineAttribute ?? throw new ArgumentNullException(nameof(commandLineAttribute));
+        }
 
-      /// <summary>Gets or sets the command line argument.</summary>
-      public CommandLineArgument CommandLineArgument { get; set; }
+        #endregion Internal Constructors
 
-      /// <summary>Gets the command line attribute.</summary>
-      public CommandLineAttribute CommandLineAttribute { get; }
+        #region Public Properties
 
-      /// <summary>Gets a value indicating whether an index was specified on argument.</summary>
-      public bool HasIndex => CommandLineAttribute.GetIndex() >= 0;
-      
-      public int Index => CommandLineAttribute.GetIndex();
+        /// <summary>Gets or sets the command line argument.</summary>
+        public CommandLineArgument CommandLineArgument { get; set; }
 
-      public string Name => CommandLineAttribute.Name ?? PropertyInfo.Name;
+        /// <summary>Gets the command line attribute.</summary>
+        public CommandLineAttribute CommandLineAttribute { get; }
 
-      /// <summary>Gets the property information.</summary>
-      public PropertyInfo PropertyInfo { get; }
+        /// <summary>Gets a value indicating whether an index was specified on argument.</summary>
+        public bool HasIndex => CommandLineAttribute.GetIndex() >= 0;
 
-      #endregion
+        public int Index => CommandLineAttribute.GetIndex();
 
-      #region Public Methods and Operators
+        /// <summary>Gets the property information.</summary>
+        public PropertyInfo PropertyInfo { get; }
 
-      /// <summary>Gets a name match of the given name.</summary>
-      /// <param name="name">The name to get the <see cref="MappingInfo"/> for.</param>
-      /// <returns>The found <see cref="MappingInfo"/> or null</returns>
-      public MappingInfo GetNameMatch(string name)
-      {
-         return mappingList.GetMappingInfo(name);
-      }
+        public string Name => CommandLineAttribute.Name ?? PropertyInfo.Name;
 
-      /// <summary>Gets all names the mapping defines.</summary>
-      /// <returns>An <see cref="IEnumerable{T}"/> of strings</returns>
-      public IEnumerable<string> GetNames()
-      {
-         yield return Name;
-         foreach (var aliase in CommandLineAttribute.Aliases)
-            yield return aliase;
-      }
+        #endregion Public Properties
 
-      /// <summary>Determines whether the mapping is an option.</summary>
-      /// <returns><c>true</c> if this instance is option; otherwise, <c>false</c>.</returns>
-      public bool IsOption()
-      {
-         return CommandLineAttribute is OptionAttribute;
-      }
+        #region Public Methods
 
-      /// <summary>Determines whether the mapping is shared.</summary>
-      /// <returns><c>true</c> if this instance is shared; otherwise, <c>false</c>.</returns>
-      public bool IsShared()
-      {
-         return CommandLineAttribute.Shared;
-      }
+        /// <summary>Gets a name match of the given name.</summary>
+        /// <param name="name">The name to get the <see cref="MappingInfo"/> for.</param>
+        /// <returns>The found <see cref="MappingInfo"/> or null</returns>
+        public MappingInfo GetNameMatch(string name)
+        {
+            return mappingList.GetMappingInfo(name);
+        }
 
-      #endregion
+        /// <summary>Gets all names the mapping defines.</summary>
+        /// <returns>An <see cref="IEnumerable{T}"/> of strings</returns>
+        public IEnumerable<string> GetNames()
+        {
+            yield return Name;
+            foreach (var aliase in CommandLineAttribute.Aliases)
+                yield return aliase;
+        }
 
-      #region Methods
+        /// <summary>Determines whether the mapping is an option.</summary>
+        /// <returns><c>true</c> if this instance is option; otherwise, <c>false</c>.</returns>
+        public bool IsOption()
+        {
+            return CommandLineAttribute is OptionAttribute;
+        }
 
-      private string GetDebuggerString()
-      {
-         return $"{(IsOption() ? "Option" : "Argument")}: {Name}";
-      }
+        /// <summary>Determines whether the mapping is shared.</summary>
+        /// <returns><c>true</c> if this instance is shared; otherwise, <c>false</c>.</returns>
+        public bool IsShared()
+        {
+            return CommandLineAttribute.Shared;
+        }
 
-      #endregion
-   }
+        #endregion Public Methods
+    }
 }

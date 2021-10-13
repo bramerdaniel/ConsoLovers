@@ -6,136 +6,132 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
-   using System;
-   using System.Linq;
-   using System.Resources;
+    using ConsoLovers.ConsoleToolkit.Core.DIContainer;
+    using JetBrains.Annotations;
+    using System;
+    using System.Linq;
+    using System.Resources;
 
-   using ConsoLovers.ConsoleToolkit.Core.DIContainer;
+    /// <summary>Implementation of the help command</summary>
+    public class HelpCommand : ICommand<HelpCommandArguments>
+    {
+        #region Private Fields
 
-   using JetBrains.Annotations;
+        private readonly ICommandLineEngine engine;
+        private readonly ResourceManager resourceManager;
 
-   /// <summary>Implementation of the help command</summary>
-   public class HelpCommand : ICommand<HelpCommandArguments>
-   {
-      public IConsole Console { get; }
+        #endregion Private Fields
 
-      #region Constants and Fields
+        #region Private Methods
 
-      private readonly ICommandLineEngine engine;
-
-      private readonly ResourceManager resourceManager;
-
-      #endregion
-
-      #region Constructors and Destructors
-
-      /// <summary>
-      /// Initializes a new instance of the <see cref="HelpCommand" /> class.
-      /// </summary>
-      /// <param name="engine">The <see cref="ICommandLineEngine" /> that should be used.</param>
-      /// <param name="console">The console that should be used by the command.</param>
-      /// <param name="resourceManager">The resource manager.</param>
-      /// <exception cref="System.ArgumentNullException">engine</exception>
-      [InjectionConstructor]
-      public HelpCommand([NotNull] ICommandLineEngine engine, [CanBeNull] IConsole console, [CanBeNull] ResourceManager resourceManager)
-      {
-         this.engine = engine ?? throw new ArgumentNullException(nameof(engine));
-
-         Console = console ?? new ConsoleProxy();
-         this.resourceManager = resourceManager;
-      }
-
-      #endregion
-
-      #region ICommand Members
-
-      /// <summary>Executes this instance.</summary>
-      public virtual void Execute()
-      {
-         var helpRequest = Arguments.ArgumentDictionary.Values.OrderBy(x => x.Index).Select(x => x.Name).ToArray();
-         PrintHelp(helpRequest);
-      }
-
-      #endregion
-
-      #region ICommand<HelpCommandArguments> Members
-
-      public HelpCommandArguments Arguments { get; set; }
-
-      #endregion
-
-      #region Methods
-
-      private void PrintArgumentHelp(ParameterInfo parameterInfo)
-      {
-         if (parameterInfo.ParameterType.IsPrimitive)
-         {
-            engine.PrintHelp(parameterInfo.PropertyInfo, resourceManager);
-         }
-         else
-         {
-            engine.PrintHelp(parameterInfo.ParameterType, resourceManager);
-         }
-      }
-
-      private void PrintCommandHelp(CommandInfo commandInfo, string argumentName)
-      {
-         if (!string.IsNullOrEmpty(argumentName))
-         {
-            if (commandInfo.ArgumentType != null)
+        private void PrintArgumentHelp(ParameterInfo parameterInfo)
+        {
+            if (parameterInfo.ParameterType.IsPrimitive)
             {
-               var classInfo = ArgumentClassInfo.FromType(commandInfo.ArgumentType);
-               var parameterInfo = classInfo.GetParameterInfo(argumentName);
-               if (parameterInfo != null)
-               {
-                  engine.PrintHelp(parameterInfo.PropertyInfo, resourceManager);
-                  return;
-               }
+                engine.PrintHelp(parameterInfo.PropertyInfo, resourceManager);
             }
             else
             {
-               // TODO: Forward to help provider ???
-               Console.WriteLine("The command does not take any parameters. So no help could be found");
-               return;
+                engine.PrintHelp(parameterInfo.ParameterType, resourceManager);
             }
-         }
+        }
 
-         if (commandInfo.ArgumentType != null)
-         {
-            engine.PrintHelp(commandInfo.ArgumentType, resourceManager);
-         }
-         else
-         {
-            engine.PrintHelp(commandInfo.PropertyInfo.PropertyType, resourceManager);
-         }
-      }
+        private void PrintCommandHelp(CommandInfo commandInfo, string argumentName)
+        {
+            if (!string.IsNullOrEmpty(argumentName))
+            {
+                if (commandInfo.ArgumentType != null)
+                {
+                    var classInfo = ArgumentClassInfo.FromType(commandInfo.ArgumentType);
+                    var parameterInfo = classInfo.GetParameterInfo(argumentName);
+                    if (parameterInfo != null)
+                    {
+                        engine.PrintHelp(parameterInfo.PropertyInfo, resourceManager);
+                        return;
+                    }
+                }
+                else
+                {
+                    // TODO: Forward to help provider ???
+                    Console.WriteLine("The command does not take any parameters. So no help could be found");
+                    return;
+                }
+            }
 
-      private void PrintHelp(params string[] helpRequest)
-      {
-         if (helpRequest == null || helpRequest.Length <= 0)
-         {
-            engine.PrintHelp(Arguments.ArgumentInfos.ArgumentType, resourceManager);
-            return;
-         }
+            if (commandInfo.ArgumentType != null)
+            {
+                engine.PrintHelp(commandInfo.ArgumentType, resourceManager);
+            }
+            else
+            {
+                engine.PrintHelp(commandInfo.PropertyInfo.PropertyType, resourceManager);
+            }
+        }
 
-         var parameterInfo = Arguments.ArgumentInfos.GetParameterInfo(helpRequest[0]);
-         if (parameterInfo == null)
-         {
-            Console.WriteLine("UnknownHelpRequest");
-            return;
-         }
+        private void PrintHelp(params string[] helpRequest)
+        {
+            if (helpRequest == null || helpRequest.Length <= 0)
+            {
+                engine.PrintHelp(Arguments.ArgumentInfos.ArgumentType, resourceManager);
+                return;
+            }
 
-         var commandInfo = parameterInfo as CommandInfo;
-         if (commandInfo != null)
-         {
-            PrintCommandHelp(commandInfo, helpRequest.Length > 1 ? helpRequest[1] : null);
-         }
-         else
-         {
-            PrintArgumentHelp(parameterInfo);
-         }
-      }
+            var parameterInfo = Arguments.ArgumentInfos.GetParameterInfo(helpRequest[0]);
+            if (parameterInfo == null)
+            {
+                Console.WriteLine("UnknownHelpRequest");
+                return;
+            }
 
-      #endregion
-   }
+            var commandInfo = parameterInfo as CommandInfo;
+            if (commandInfo != null)
+            {
+                PrintCommandHelp(commandInfo, helpRequest.Length > 1 ? helpRequest[1] : null);
+            }
+            else
+            {
+                PrintArgumentHelp(parameterInfo);
+            }
+        }
+
+        #endregion Private Methods
+
+        #region Public Constructors
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HelpCommand" /> class.
+        /// </summary>
+        /// <param name="engine">The <see cref="ICommandLineEngine" /> that should be used.</param>
+        /// <param name="console">The console that should be used by the command.</param>
+        /// <param name="resourceManager">The resource manager.</param>
+        /// <exception cref="System.ArgumentNullException">engine</exception>
+        [InjectionConstructor]
+        public HelpCommand([NotNull] ICommandLineEngine engine, [CanBeNull] IConsole console, [CanBeNull] ResourceManager resourceManager)
+        {
+            this.engine = engine ?? throw new ArgumentNullException(nameof(engine));
+
+            Console = console ?? new ConsoleProxy();
+            this.resourceManager = resourceManager;
+        }
+
+        #endregion Public Constructors
+
+        #region Public Properties
+
+        public HelpCommandArguments Arguments { get; set; }
+        public IConsole Console { get; }
+
+        #endregion Public Properties
+
+        #region Public Methods
+
+        /// <summary>Executes this instance.</summary>
+        public virtual void Execute()
+        {
+            var helpRequest = Arguments.ArgumentDictionary.Values.OrderBy(x => x.Index).Select(x => x.Name).ToArray();
+            PrintHelp(helpRequest);
+        }
+
+        #endregion Public Methods
+    }
 }

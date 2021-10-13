@@ -6,47 +6,47 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.DIContainer.Strategies
 {
-   public class ConstructorSelectionStrategies
-   {
-      #region Constants and Fields
+    public class ConstructorSelectionStrategies
+    {
+        #region Private Fields
 
-      private static readonly CombinedSelectionStrategy withCombinedLogic = new CombinedSelectionStrategy();
+        private static readonly CombinedSelectionStrategy withCombinedLogic = new CombinedSelectionStrategy();
 
-      private static readonly AttributSelectionStrategy withInjectionConstructorAttribute = new AttributSelectionStrategy();
+        private static readonly AttributSelectionStrategy withInjectionConstructorAttribute = new AttributSelectionStrategy();
 
-      private static readonly MostParametersSelectionStrategy withMostParameters = new MostParametersSelectionStrategy();
+        private static readonly MostParametersSelectionStrategy withMostParameters = new MostParametersSelectionStrategy();
 
-      #endregion
+        #endregion Private Fields
 
-      #region Public Properties
+        #region Public Properties
 
-      /// <summary>Gets a strategy that combines <see cref="AttributSelectionStrategy"/> with the <see cref="MostParametersSelectionStrategy"/>.</summary>
-      public static CombinedSelectionStrategy WithCombinedLogic
-      {
-         get
-         {
-            return withCombinedLogic;
-         }
-      }
+        /// <summary>Gets a strategy that combines <see cref="AttributSelectionStrategy"/> with the <see cref="MostParametersSelectionStrategy"/>.</summary>
+        public static CombinedSelectionStrategy WithCombinedLogic
+        {
+            get
+            {
+                return withCombinedLogic;
+            }
+        }
 
-      /// <summary>Gets a strategy for selection the constructor with the most parameters.</summary>
-      public static AttributSelectionStrategy WithInjectionConstructorAttribute
-      {
-         get
-         {
-            return withInjectionConstructorAttribute;
-         }
-      }
+        /// <summary>Gets a strategy for selection the constructor with the most parameters.</summary>
+        public static AttributSelectionStrategy WithInjectionConstructorAttribute
+        {
+            get
+            {
+                return withInjectionConstructorAttribute;
+            }
+        }
 
-      /// <summary>Gets a strategy for selection the constructor with the most parameters.</summary>
-      public static MostParametersSelectionStrategy WithMostParameters
-      {
-         get
-         {
-            return withMostParameters;
-         }
-      }
+        /// <summary>Gets a strategy for selection the constructor with the most parameters.</summary>
+        public static MostParametersSelectionStrategy WithMostParameters
+        {
+            get
+            {
+                return withMostParameters;
+            }
+        }
 
-      #endregion
-   }
+        #endregion Public Properties
+    }
 }

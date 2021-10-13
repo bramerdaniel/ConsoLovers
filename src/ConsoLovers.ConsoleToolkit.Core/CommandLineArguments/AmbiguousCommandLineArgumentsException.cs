@@ -1,28 +1,35 @@
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
-   using System;
-   using System.Runtime.Serialization;
+    using System;
+    using System.Runtime.Serialization;
 
-   public class AmbiguousCommandLineArgumentsException : CommandLineArgumentException
-   {
-      public AmbiguousCommandLineArgumentsException()
-      {
-      }
+    public class AmbiguousCommandLineArgumentsException : CommandLineArgumentException
+    {
+        #region Protected Constructors
 
-      public AmbiguousCommandLineArgumentsException(string message)
-         : base(message)
-      {
-      }
+        protected AmbiguousCommandLineArgumentsException(SerializationInfo info, StreamingContext context)
+           : base(info, context)
+        {
+        }
 
-      public AmbiguousCommandLineArgumentsException(string message, Exception innerException)
-         : base(message, innerException)
-      {
-         
-      }
+        #endregion Protected Constructors
 
-      protected AmbiguousCommandLineArgumentsException(SerializationInfo info, StreamingContext context)
-         : base(info, context)
-      {
-      }
-   }
+        #region Public Constructors
+
+        public AmbiguousCommandLineArgumentsException()
+        {
+        }
+
+        public AmbiguousCommandLineArgumentsException(string message)
+           : base(message)
+        {
+        }
+
+        public AmbiguousCommandLineArgumentsException(string message, Exception innerException)
+           : base(message, innerException)
+        {
+        }
+
+        #endregion Public Constructors
+    }
 }

@@ -6,28 +6,28 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
-   using System;
+    using System;
 
-   /// <summary>Abstraction for a dependency injection container. This could be forwarded to the container of your choice.</summary>
-   public interface IObjectFactory
-   {
-      #region Public Methods and Operators
+    /// <summary>Abstraction for a dependency injection container. This could be forwarded to the container of your choice.</summary>
+    public interface IObjectFactory
+    {
+        #region Public Methods
 
-      /// <summary>Creates an instance of the given argument type.</summary>
-      /// <typeparam name="T">The type of the arguments</typeparam>
-      /// <returns>The created instance</returns>
-      T CreateInstance<T>()
+        /// <summary>Creates an instance of the given argument type.</summary>
+        /// <typeparam name="T">The type of the arguments</typeparam>
+        /// <returns>The created instance</returns>
+        T CreateInstance<T>()
          where T : class;
 
-      /// <summary>Creates the instance by the given type.</summary>
-      /// <param name="type">The type.</param>
-      /// <returns>The created type</returns>
-      object CreateInstance(Type type);
+        /// <summary>Creates the instance by the given type.</summary>
+        /// <param name="type">The type.</param>
+        /// <returns>The created type</returns>
+        object CreateInstance(Type type);
 
-      #endregion
+        T Resolve<T>() where T : class;
 
-      T Resolve<T>() where T : class;
+        object Resolve(Type type);
 
-      object Resolve(Type type);
-   }
+        #endregion Public Methods
+    }
 }

@@ -6,11 +6,11 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.DIContainer
 {
-   using System;
+    using System;
 
-   /// <summary>Attribute for the constructor that should be used, if an <see cref="IContainer"/> creates the instance.</summary>
-   [AttributeUsage(AttributeTargets.Constructor, AllowMultiple = false, Inherited = true)]
-   public class InjectionConstructorAttribute : Attribute
-   {
-   }
+    /// <summary>Attribute for the constructor that should be used, if an <see cref="IContainer"/> creates the instance.</summary>
+    [AttributeUsage(AttributeTargets.Constructor, AllowMultiple = false, Inherited = true)]
+    public class InjectionConstructorAttribute : Attribute
+    {
+    }
 }

@@ -6,34 +6,38 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
-   using System;
-   using System.Runtime.Serialization;
+    using System;
+    using System.Runtime.Serialization;
 
-   /// <summary>Exception that is thrown when the validation of a command line argument failed</summary>
-   /// <seealso cref="ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.CommandLineArgumentException"/>
-   public class CommandLineArgumentValidationException : CommandLineArgumentException
-   {
-      #region Constructors and Destructors
+    /// <summary>Exception that is thrown when the validation of a command line argument failed</summary>
+    /// <seealso cref="ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.CommandLineArgumentException"/>
+    public class CommandLineArgumentValidationException : CommandLineArgumentException
+    {
+        #region Protected Constructors
 
-      public CommandLineArgumentValidationException()
-      {
-      }
+        protected CommandLineArgumentValidationException(SerializationInfo info, StreamingContext context)
+           : base(info, context)
+        {
+        }
 
-      public CommandLineArgumentValidationException(string message)
-         : base(message)
-      {
-      }
+        #endregion Protected Constructors
 
-      public CommandLineArgumentValidationException(string message, Exception innerException)
-         : base(message, innerException)
-      {
-      }
+        #region Public Constructors
 
-      protected CommandLineArgumentValidationException(SerializationInfo info, StreamingContext context)
-         : base(info, context)
-      {
-      }
+        public CommandLineArgumentValidationException()
+        {
+        }
 
-      #endregion
-   }
+        public CommandLineArgumentValidationException(string message)
+           : base(message)
+        {
+        }
+
+        public CommandLineArgumentValidationException(string message, Exception innerException)
+           : base(message, innerException)
+        {
+        }
+
+        #endregion Public Constructors
+    }
 }

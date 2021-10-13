@@ -6,47 +6,59 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.DIContainer.Strategies
 {
-   #region
+    #region
 
-   using System;
-   using System.Reflection;
+    using System;
+    using System.Reflection;
 
-   #endregion
+    #endregion
 
-   /// <summary><see cref="ConstructorSelectionStrategy"/> that finds the first constructor decoreated with the <see cref="InjectionConstructorAttribute"/></summary>
-   public class CombinedSelectionStrategy : MostParametersSelectionStrategy
-   {
-      #region Constants and Fields
+    /// <summary><see cref="ConstructorSelectionStrategy"/> that finds the first constructor decoreated with the <see cref="InjectionConstructorAttribute"/></summary>
+    public class CombinedSelectionStrategy : MostParametersSelectionStrategy
+    {
+        #region Constants and Fields
 
-      private readonly AttributSelectionStrategy defaultSelection = new AttributSelectionStrategy();
+        #region Private Fields
 
-      #endregion
+        private readonly AttributSelectionStrategy defaultSelection = new AttributSelectionStrategy();
 
-      #region Constructors and Destructors
+        #endregion Private Fields
 
-      /// <summary>Initializes a new instance of the <see cref="CombinedSelectionStrategy"/> class.</summary>
-      internal CombinedSelectionStrategy()
-      {
-      }
+        #endregion
 
-      #endregion
+        #region Constructors and Destructors
 
-      #region Public Methods and Operators
+        #region Internal Constructors
 
-      /// <summary>
-      ///    Selects the first costructor that has a <see cref="InjectionConstructorAttribute"/> . If no constructor has a <see cref="InjectionConstructorAttribute"/> the one with the
-      ///    most parameters is selected.
-      /// </summary>
-      /// <param name="type">The type. </param>
-      /// <returns>The selected <see cref="ConstructorInfo"/> or null of no constructor matched the stategies selection conditions. </returns>
-      public override ConstructorInfo SelectCostructor(Type type)
-      {
-         var costructor = defaultSelection.SelectCostructor(type, true);
-         if (costructor == null)
-            costructor = base.SelectCostructor(type);
-         return costructor;
-      }
+        /// <summary>Initializes a new instance of the <see cref="CombinedSelectionStrategy"/> class.</summary>
+        internal CombinedSelectionStrategy()
+        {
+        }
 
-      #endregion
-   }
+        #endregion Internal Constructors
+
+        #endregion
+
+        #region Public Methods and Operators
+
+        #region Public Methods
+
+        /// <summary>
+        ///    Selects the first costructor that has a <see cref="InjectionConstructorAttribute"/> . If no constructor has a <see cref="InjectionConstructorAttribute"/> the one with the
+        ///    most parameters is selected.
+        /// </summary>
+        /// <param name="type">The type. </param>
+        /// <returns>The selected <see cref="ConstructorInfo"/> or null of no constructor matched the stategies selection conditions. </returns>
+        public override ConstructorInfo SelectCostructor(Type type)
+        {
+            var costructor = defaultSelection.SelectCostructor(type, true);
+            if (costructor == null)
+                costructor = base.SelectCostructor(type);
+            return costructor;
+        }
+
+        #endregion Public Methods
+
+        #endregion
+    }
 }

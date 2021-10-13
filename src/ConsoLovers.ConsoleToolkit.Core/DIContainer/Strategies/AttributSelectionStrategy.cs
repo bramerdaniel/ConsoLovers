@@ -6,65 +6,69 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.DIContainer.Strategies
 {
-   using System;
-   using System.Linq;
-   using System.Reflection;
+    using System;
+    using System.Linq;
+    using System.Reflection;
 
-   /// <summary><see cref="ConstructorSelectionStrategy"/> that finds the first constructor decoreated with the <see cref="InjectionConstructorAttribute"/></summary>
-   public class AttributSelectionStrategy : ConstructorSelectionStrategy
-   {
-      #region Constructors and Destructors
+    /// <summary><see cref="ConstructorSelectionStrategy"/> that finds the first constructor decoreated with the <see cref="InjectionConstructorAttribute"/></summary>
+    public class AttributSelectionStrategy : ConstructorSelectionStrategy
+    {
+        #region Private Methods
 
-      /// <summary>Initializes a new instance of the <see cref="AttributSelectionStrategy"/> class.</summary>
-      internal AttributSelectionStrategy()
-      {
-      }
+        private bool HasInjectionConstructorAttribute(ConstructorInfo constructor)
+        {
+            return constructor.GetCustomAttributes(typeof(InjectionConstructorAttribute), true).Length > 0;
+        }
 
-      #endregion
+        private int ParametersCount(ConstructorInfo constructor)
+        {
+            return constructor.GetParameters().Length;
+        }
 
-      #region Public Methods and Operators
+        #endregion Private Methods
 
-      /// <summary>Selects the first costructor decorated with the <see cref="InjectionConstructorAttribute"/>.</summary>
-      /// <param name="type">The type.</param>
-      /// <returns>The selected <see cref="ConstructorInfo"/> or null of no constructor matched the stategies selection conditions.</returns>
-      public override ConstructorInfo SelectCostructor(Type type)
-      {
-         return SelectCostructor(type, false);
-      }
+        #region Internal Constructors
 
-      #endregion
+        /// <summary>Initializes a new instance of the <see cref="AttributSelectionStrategy"/> class.</summary>
+        internal AttributSelectionStrategy()
+        {
+        }
 
-      #region Methods
+        #endregion Internal Constructors
 
-      /// <summary>
-      ///    Selects the first costructor decorated with the <see cref="InjectionConstructorAttribute"/>. If <paramref name="maximalParameters"/> is set to true and more than one
-      ///    constructor has the <see cref="InjectionConstructorAttribute"/>, the one with the most parameters ist selected.
-      /// </summary>
-      /// <param name="type">The type.</param>
-      /// <param name="maximalParameters">if set to <c>true</c> the one with the most parameters ist selected.</param>
-      /// <returns>The selected <see cref="ConstructorInfo"/> or null of no constructor matched the stategies selection conditions.</returns>
-      internal ConstructorInfo SelectCostructor(Type type, bool maximalParameters)
-      {
-         if (maximalParameters)
-         {
-            return type.GetConstructors().Where(HasInjectionConstructorAttribute).OrderByDescending(ParametersCount).FirstOrDefault();
-         }
-         else
-         {
-            return type.GetConstructors().Where(HasInjectionConstructorAttribute).OrderBy(ParametersCount).FirstOrDefault();
-         }
-      }
+        #region Internal Methods
 
-      private bool HasInjectionConstructorAttribute(ConstructorInfo constructor)
-      {
-         return constructor.GetCustomAttributes(typeof(InjectionConstructorAttribute), true).Length > 0;
-      }
+        /// <summary>
+        ///    Selects the first costructor decorated with the <see cref="InjectionConstructorAttribute"/>. If <paramref name="maximalParameters"/> is set to true and more than one
+        ///    constructor has the <see cref="InjectionConstructorAttribute"/>, the one with the most parameters ist selected.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <param name="maximalParameters">if set to <c>true</c> the one with the most parameters ist selected.</param>
+        /// <returns>The selected <see cref="ConstructorInfo"/> or null of no constructor matched the stategies selection conditions.</returns>
+        internal ConstructorInfo SelectCostructor(Type type, bool maximalParameters)
+        {
+            if (maximalParameters)
+            {
+                return type.GetConstructors().Where(HasInjectionConstructorAttribute).OrderByDescending(ParametersCount).FirstOrDefault();
+            }
+            else
+            {
+                return type.GetConstructors().Where(HasInjectionConstructorAttribute).OrderBy(ParametersCount).FirstOrDefault();
+            }
+        }
 
-      private int ParametersCount(ConstructorInfo constructor)
-      {
-         return constructor.GetParameters().Length;
-      }
+        #endregion Internal Methods
 
-      #endregion
-   }
+        #region Public Methods
+
+        /// <summary>Selects the first costructor decorated with the <see cref="InjectionConstructorAttribute"/>.</summary>
+        /// <param name="type">The type.</param>
+        /// <returns>The selected <see cref="ConstructorInfo"/> or null of no constructor matched the stategies selection conditions.</returns>
+        public override ConstructorInfo SelectCostructor(Type type)
+        {
+            return SelectCostructor(type, false);
+        }
+
+        #endregion Public Methods
+    }
 }

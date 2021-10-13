@@ -6,26 +6,26 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
-   /// <summary>Exception that is thrown when a command line argument is missing</summary>
-   public class MissingCommandLineArgumentException : CommandLineArgumentException
-   {
-      #region Constructors and Destructors
+    /// <summary>Exception that is thrown when a command line argument is missing</summary>
+    public class MissingCommandLineArgumentException : CommandLineArgumentException
+    {
+        #region Public Constructors
 
-      /// <summary>Initializes a new instance of the <see cref="MissingCommandLineArgumentException"/> class. Initializes a new instance of the <see cref="T:System.Exception"/> class.</summary>
-      /// <param name="argument">The message that describes the error.</param>
-      public MissingCommandLineArgumentException(string argument)
+        /// <summary>Initializes a new instance of the <see cref="MissingCommandLineArgumentException"/> class. Initializes a new instance of the <see cref="T:System.Exception"/> class.</summary>
+        /// <param name="argument">The message that describes the error.</param>
+        public MissingCommandLineArgumentException(string argument)
          : base($"The command line argument '{argument}' is missing but is specified as required.")
-      {
-         Argument = argument;
-      }
+        {
+            Argument = argument;
+        }
 
-      #endregion
+        #endregion Public Constructors
 
-      #region Public Properties
+        #region Public Properties
 
-      /// <summary>Gets the missing command line argument name .</summary>
-      public string Argument { get; }
+        /// <summary>Gets the missing command line argument name .</summary>
+        public string Argument { get; }
 
-      #endregion
-   }
+        #endregion Public Properties
+    }
 }
