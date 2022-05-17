@@ -1,11 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFrameworks>net6.0;netstandard2.0;net461</TargetFrameworks>
 		<OutputPath>$(SolutionDir)$(Configuration)</OutputPath>
 		<Authors>Daniel Bramer</Authors>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>2.0.0-beta3</Version>
+		<Version>2.0.0-rc.1</Version>
 		<PackageTags>Console Shell ConsoleToolkit .Net CommandLineArgument CommandLineArguments CommandLineParser</PackageTags>
 		<PackageIconUrl>https://raw.githubusercontent.com/bramerdaniel/ConsoLovers/master/src/ConsoLovers.ConsoleToolkit/Resources/Icon.ico</PackageIconUrl>
 		<PackageProjectUrl>https://github.com/bramerdaniel/ConsoLovers</PackageProjectUrl>
@@ -15,13 +15,14 @@
 			Collection of tools for developing console applications.
 			This package contains the basic funtionality like application handling and command line argument parsing/mapping like the 4.* version of the ConsoLovers.ConsoleToolkit did, but usable for .NetStandard 2.0
 		</Description>
-		<PackageReleaseNotes>
-			2.0.0
-			- Rewrite of command line argument parsing (now from string and not only string[])
-			- Rewrite of indexed arguments handling.
-			- Added support for sharing arguments between commands and the application
-			- Removed IndexedArgument attribute (moved index to ArgumentAttribute)
+		<PackageReleaseNotes>2.0.0
+ - Rewrite of command line argument parsing (now from string and not only string[])
+ - Rewrite of indexed arguments handling.
+ - Added support for sharing arguments between commands and the application
+ - Removed IndexedArgument attribute (moved index to ArgumentAttribute)
 		</PackageReleaseNotes>
+		<RepositoryUrl>https://github.com/bramerdaniel/ConsoLovers</RepositoryUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	</PropertyGroup>
 
 
