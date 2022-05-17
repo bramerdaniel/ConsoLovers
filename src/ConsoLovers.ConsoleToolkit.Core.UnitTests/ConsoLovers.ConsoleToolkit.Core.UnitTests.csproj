@@ -4,6 +4,8 @@
 		<TargetFrameworks>net6.0</TargetFrameworks>
 		<Authors>Daniel Bramer</Authors>
 		<OutputPath>$(SolutionDir)$(Configuration)</OutputPath>
+		<SignAssembly>True</SignAssembly>
+		<AssemblyOriginatorKeyFile>..\..\certificate\ConsoleToolkit.Core.snk</AssemblyOriginatorKeyFile>
 	</PropertyGroup>
 
 	<ItemGroup>
