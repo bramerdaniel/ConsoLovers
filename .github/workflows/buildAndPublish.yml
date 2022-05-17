@@ -11,8 +11,7 @@ on:
 
 env:
   SOLUTION_DIRECTORY : src
-  SOLUTION_PATH : src/FluentSetups.sln
-  INTEGRATION_TEST_SOLUTION : src/FluentSetups.IntegrationTests/FluentSetups.IntegrationTests.sln
+  SOLUTION_PATH : src/ConsoLovers.ConsoleToolkit.Core.sln
   
 jobs:
   build:
