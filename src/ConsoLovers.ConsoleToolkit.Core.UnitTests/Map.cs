@@ -36,17 +36,17 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       public void EnsureUnprocessedArgumentsRaisesEventCorrectly()
       {
          var engine = GetTarget();
-         engine.MonitorEvents();
+         var monitor = engine.Monitor();
          engine.Map<Arguments>(new[] { " -Integer=1", "-SpellingError=5" });
 
-         engine.ShouldRaise(nameof(CommandLineEngine.UnhandledCommandLineArgument))
+         monitor.Should().Raise(nameof(CommandLineEngine.UnhandledCommandLineArgument))
             .WithArgs<CommandLineArgumentEventArgs>(e => e.Argument.Name == "SpellingError" && e.Argument.Value == "5" && e.Argument.Index == 1);
 
          engine = GetTarget();
-         engine.MonitorEvents();
+         monitor = engine.Monitor();
          engine.Map<Arguments>(new[] { "-SpellingError=5", " -Integer=1" });
 
-         engine.ShouldRaise(nameof(CommandLineEngine.UnhandledCommandLineArgument))
+         monitor.Should().Raise(nameof(CommandLineEngine.UnhandledCommandLineArgument))
             .WithArgs<CommandLineArgumentEventArgs>(e => e.Argument.Name == "SpellingError" && e.Argument.Value == "5" && e.Argument.Index == 0);
       }
 
@@ -73,19 +73,19 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       [TestMethod]
       public void MapInvalidTypesShouldThrowException()
       {
-         this.Invoking(x => GetTarget().Map<Arguments>(new[] { "Enum:Null" })).ShouldThrow<CommandLineArgumentException>().WithMessage(
+         this.Invoking(x => GetTarget().Map<Arguments>(new[] { "Enum:Null" })).Should().Throw<CommandLineArgumentException>().WithMessage(
             "The value Null of parameter Enum can not be converted into the expected type " + typeof(Boolenum).FullName + ". Possible values are True and False.");
 
-         this.Invoking(x => GetTarget().Map<Arguments>(new[] { "ali:TRUE" })).ShouldThrow<CommandLineArgumentException>()
+         this.Invoking(x => GetTarget().Map<Arguments>(new[] { "ali:TRUE" })).Should().Throw<CommandLineArgumentException>()
             .WithMessage("The value TRUE of parameter ali can not be converted into the expected type System.Int32");
 
-         this.Invoking(x => GetTarget().Map<Arguments>(new[] { "Integer:TRUE" })).ShouldThrow<CommandLineArgumentException>()
+         this.Invoking(x => GetTarget().Map<Arguments>(new[] { "Integer:TRUE" })).Should().Throw<CommandLineArgumentException>()
             .WithMessage("The value TRUE of parameter Integer can not be converted into the expected type System.Int32");
 
-         this.Invoking(x => GetTarget().Map<Arguments>(new[] { "ElBool:Tuere" })).ShouldThrow<CommandLineArgumentException>()
+         this.Invoking(x => GetTarget().Map<Arguments>(new[] { "ElBool:Tuere" })).Should().Throw<CommandLineArgumentException>()
             .WithMessage("The value Tuere of parameter ElBool can not be converted into the expected type System.Boolean");
 
-         this.Invoking(x => GetTarget().Map<Arguments>(new[] { "Dooby:Twentyfive" })).ShouldThrow<CommandLineArgumentException>()
+         this.Invoking(x => GetTarget().Map<Arguments>(new[] { "Dooby:Twentyfive" })).Should().Throw<CommandLineArgumentException>()
             .WithMessage("The value Twentyfive of parameter Dooby can not be converted into the expected type System.Double");
       }
 
@@ -236,19 +236,19 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       [TestMethod]
       public void MappingANamedBooleanArgumentWithoutValueMustThrowException()
       {
-         GetTarget().Invoking(t => t.Map<Arguments>(new[] { " -ElBool" })).ShouldThrow<CommandLineArgumentException>().Where(e => e.Reason == ErrorReason.ArgumentWithoutValue);
+         GetTarget().Invoking(t => t.Map<Arguments>(new[] { " -ElBool" })).Should().Throw<CommandLineArgumentException>().Where(e => e.Reason == ErrorReason.ArgumentWithoutValue);
       }
 
       [TestMethod]
       public void MappingANamedBooleanArgumentWithoutValueMustThrowExceptionForAliasAlso()
       {
-         GetTarget().Invoking(t => t.Map<Arguments>(new[] { " -ali" })).ShouldThrow<CommandLineArgumentException>().Where(e => e.Reason == ErrorReason.ArgumentWithoutValue);
+         GetTarget().Invoking(t => t.Map<Arguments>(new[] { " -ali" })).Should().Throw<CommandLineArgumentException>().Where(e => e.Reason == ErrorReason.ArgumentWithoutValue);
       }
 
       [TestMethod]
       public void MappingAnOptionWithValueMustThrowException()
       {
-         GetTarget().Invoking(t => t.Map<Options>(new[] { "-Debug=true" })).ShouldThrow<CommandLineArgumentException>();
+         GetTarget().Invoking(t => t.Map<Options>(new[] { "-Debug=true" })).Should().Throw<CommandLineArgumentException>();
       }
 
       [TestMethod]
@@ -270,7 +270,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       [TestMethod]
       public void ParseMissingRequiredArgumentsShouldThrowException()
       {
-         this.Invoking(t => GetTarget().Map<RequiredArguments>(new[] { string.Empty })).ShouldThrow<MissingCommandLineArgumentException>().Where(e => e.Argument == "Name");
+         this.Invoking(t => GetTarget().Map<RequiredArguments>(new[] { string.Empty })).Should().Throw<MissingCommandLineArgumentException>().Where(e => e.Argument == "Name");
       }
 
       #endregion

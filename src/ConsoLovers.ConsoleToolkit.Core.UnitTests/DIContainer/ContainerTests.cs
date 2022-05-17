@@ -370,7 +370,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.DIContainer
          var demo2 = new Demo { Name = "second" };
 
          container.RegisterNamed<IDemo>(demo1, "same");
-         container.Invoking(c => c.RegisterNamed<IDemo>(demo2, "same")).ShouldThrow<InvalidOperationException>();
+         container.Invoking(c => c.RegisterNamed<IDemo>(demo2, "same")).Should().Throw<InvalidOperationException>();
       }
 
       [TestMethod]
@@ -379,7 +379,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.DIContainer
          Container container = new Container();
 
          container.Register<IDemo>(new Demo { Name = "first" });
-         container.Invoking(c => c.Register<IDemo>(new Demo { Name = "second" })).ShouldThrow<InvalidOperationException>();
+         container.Invoking(c => c.Register<IDemo>(new Demo { Name = "second" })).Should().Throw<InvalidOperationException>();
       }
 
       /// <summary>Tests, if a unregistered component of the <see cref="Container"/> will return <c>null</c> if resolved.</summary>

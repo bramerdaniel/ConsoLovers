@@ -69,15 +69,15 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
       [TestMethod]
       public void EnsureInvalidEnumValueThrowsException()
       {
-         this.Invoking(x => Convert<TestCommandType>("INVALID")).ShouldThrow<CommandLineArgumentException>().WithMessage("INVALID");
+         this.Invoking(x => Convert<TestCommandType>("INVALID")).Should().Throw<CommandLineArgumentException>().WithMessage("INVALID");
       }
 
       [TestMethod]
       public void EnsureInvalidValueThrowsException()
       {
-         this.Invoking(x => Convert<bool>("TURE")).ShouldThrow<CommandLineArgumentException>().WithMessage("TURE");
-         this.Invoking(x => Convert<int>("5.0")).ShouldThrow<CommandLineArgumentException>().WithMessage("5.0");
-         this.Invoking(x => Convert<double>("5.0.0")).ShouldThrow<CommandLineArgumentException>().WithMessage("5.0.0");
+         this.Invoking(x => Convert<bool>("TURE")).Should().Throw<CommandLineArgumentException>().WithMessage("TURE");
+         this.Invoking(x => Convert<int>("5.0")).Should().Throw<CommandLineArgumentException>().WithMessage("5.0");
+         this.Invoking(x => Convert<double>("5.0.0")).Should().Throw<CommandLineArgumentException>().WithMessage("5.0.0");
       }
 
       [TestMethod]

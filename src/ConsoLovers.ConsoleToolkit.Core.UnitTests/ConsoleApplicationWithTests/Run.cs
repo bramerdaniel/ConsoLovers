@@ -64,7 +64,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests
       {
          using (var testContext = new ApplicationTestContext<ArgumentsTwoDefaultCommands>())
          {
-            testContext.Invoking(x => x.RunApplication()).ShouldThrow<InvalidOperationException>();
+            testContext.Invoking(x => x.RunApplication()).Should().Throw<InvalidOperationException>();
          }
       }
 

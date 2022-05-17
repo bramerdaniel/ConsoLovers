@@ -24,7 +24,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.DIContainer
       public void BuildUp_null_must_throw_ArgumentNullException()
       {
          var container = CreateTarget();
-         container.Invoking(c => c.BuildUp(null)).ShouldThrow<ArgumentNullException>();
+         container.Invoking(c => c.BuildUp(null)).Should().Throw<ArgumentNullException>();
       }
 
       [TestMethod]

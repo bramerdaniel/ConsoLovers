@@ -83,28 +83,28 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       public void EnsureSharedArgumentsDontCauseErrorsInRootClass()
       {
          var engine = GetTarget();
-         engine.MonitorEvents();
+         var monitor = engine.Monitor();
          var arguments = engine.Map<ApplicationCommands>(new[] {  "Execute", "-sharedButAlone=22.4" });
 
          arguments.Execute.Should().NotBeNull();
          arguments.Execute.Arguments.Should().NotBeNull();
 
          arguments.Execute.Arguments.SharedButAlone.Should().Be(22.4);
-         engine.ShouldNotRaise(nameof(CommandLineEngine.UnhandledCommandLineArgument));
+         monitor.Should().NotRaise(nameof(CommandLineEngine.UnhandledCommandLineArgument));
       }
 
       [TestMethod]
       public void EnsureSharedOptionsDontCauseErrorsInRootClass()
       {
          var engine = GetTarget();
-         engine.MonitorEvents();
+         var monitor = engine.Monitor();
          var arguments = engine.Map<ApplicationCommands>(new[] {  "Execute", "-sharedOptionAlone" });
 
          arguments.Execute.Should().NotBeNull();
          arguments.Execute.Arguments.Should().NotBeNull();
 
          arguments.Execute.Arguments.SharedOptionAlone.Should().BeTrue();
-         engine.ShouldNotRaise(nameof(CommandLineEngine.UnhandledCommandLineArgument));
+         monitor.Should().NotRaise(nameof(CommandLineEngine.UnhandledCommandLineArgument));
       }
 
       [TestMethod]
@@ -124,10 +124,10 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       public void EnsureUnmappedOptionsRaiseUnhandledCommandLineArgumentEventCorrectly()
       {
          var engine = GetTarget();
-         engine.MonitorEvents();
+         var monitor = engine.Monitor();
          engine.Map<ApplicationCommands>(new[] { "execute", "-Path=C:\\Path\\File.txt", "-unknown" });
 
-         engine.ShouldRaise(nameof(CommandLineEngine.UnhandledCommandLineArgument))
+         monitor.Should().Raise(nameof(CommandLineEngine.UnhandledCommandLineArgument))
             .WithArgs<CommandLineArgumentEventArgs>(e => e.Argument.Name == "unknown");
       }
 
@@ -135,10 +135,10 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       public void EnsureUnmappedArgumentsRaiseUnhandledCommandLineArgumentEventCorrectly()
       {
          var engine = GetTarget();
-         engine.MonitorEvents();
+         var monitor = engine.Monitor();
          engine.Map<ApplicationCommands>(new[] { "execute", "-Path=C:\\Path\\File.txt", "-unknown=666" });
 
-         engine.ShouldRaise(nameof(CommandLineEngine.UnhandledCommandLineArgument))
+         monitor.Should().Raise(nameof(CommandLineEngine.UnhandledCommandLineArgument))
             .WithArgs<CommandLineArgumentEventArgs>(e => e.Argument.Name == "unknown");
       }
 
@@ -146,15 +146,15 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       public void EnsureUnmappedArgumentsForNonGenericCommandRaiseUnhandledCommandLineArgumentEventCorrectly()
       {
          var engine = GetTarget();
-         engine.MonitorEvents();
+         var monitor = engine.Monitor();
          engine.Map<NonGenericApplicationCommands>(new[] { "execute", "-unknown=666" });
 
-         engine.ShouldRaise(nameof(CommandLineEngine.UnhandledCommandLineArgument))
+         monitor.Should().Raise(nameof(CommandLineEngine.UnhandledCommandLineArgument))
             .WithArgs<CommandLineArgumentEventArgs>(e => e.Argument.Name == "unknown" && e.Argument.Index == 0 && e.Argument.Value == "666");
 
          var args = engine.Map<NonGenericApplicationCommands>(new[] { "execute", "-wait", "-unknown=234" });
 
-         engine.ShouldRaise(nameof(CommandLineEngine.UnhandledCommandLineArgument))
+         monitor.Should().Raise(nameof(CommandLineEngine.UnhandledCommandLineArgument))
             .WithArgs<CommandLineArgumentEventArgs>(e => e.Argument.Name == "unknown" && e.Argument.Index == 1 && e.Argument.Value == "234");
 
          args.Wait.Should().BeTrue();
@@ -164,22 +164,22 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       public void EnsureUnhandledCommandLineArgumentEventIsNotRaisedWhenDefaultCommandIsUsed()
       {
          var engine = GetTarget();
-         engine.MonitorEvents();
+         var monitor = engine.Monitor();
          engine.Map<ApplicationCommandsWithDefault>(new[] { "path=SomeValue" });
 
-         engine.ShouldNotRaise(nameof(CommandLineEngine.UnhandledCommandLineArgument));
+         monitor.Should().NotRaise(nameof(CommandLineEngine.UnhandledCommandLineArgument));
       }
 
       [TestMethod]
       public void EnsureBaseClassArgumentsAreSetAndDoNotRaisedUnhandledCommandLineArgument()
       {
          var engine = GetTarget();
-         engine.MonitorEvents();
+         var monitor = engine.Monitor();
 
          var args = engine.Map<ApplicationCommandsWithBaseClass>(new[] { "execute", "-loglevel=Trace" });
 
          args.LogLevel.Should().Be("Trace");
-         engine.ShouldNotRaise(nameof(CommandLineEngine.UnhandledCommandLineArgument));
+         monitor.Should().NotRaise(nameof(CommandLineEngine.UnhandledCommandLineArgument));
       }
 
       [TestMethod]
@@ -188,7 +188,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
          var engine = GetTarget();
 
          engine.Invoking(x => x.Map<ApplicationCommandsWithDefaultAndIndexedArgs>(new[] { "nam=hans" }))
-            .ShouldThrow<MissingCommandLineArgumentException>().Where(x => x.Argument == "Name");
+            .Should().Throw<MissingCommandLineArgumentException>().Where(x => x.Argument == "Name");
       }
 
       [TestMethod]
@@ -197,7 +197,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
          var engine = GetTarget();
 
          engine.Invoking(x => x.Map<ApplicationCommandsWithDefaultAndIndexedArgs>(new[] { "path=aPath" }))
-            .ShouldThrow<MissingCommandLineArgumentException>().Where(x => x.Argument == "Name");
+            .Should().Throw<MissingCommandLineArgumentException>().Where(x => x.Argument == "Name");
       }
 
       [TestMethod]
@@ -228,10 +228,10 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
          var engine = GetTarget();
 
          engine.Invoking(x => x.Map<ApplicationCommandsWithDefaultAndIndexedArgs>(new[] { "execute", "hans" })).
-            ShouldNotThrow<MissingCommandLineArgumentException>();
+            Should().NotThrow<MissingCommandLineArgumentException>();
 
          engine.Invoking(x => x.Map<ApplicationCommandsWithDefaultAndIndexedArgs>(new[] { "hans" })).
-            ShouldNotThrow<MissingCommandLineArgumentException>();
+            Should().NotThrow<MissingCommandLineArgumentException>();
       }
 
       [TestMethod]
@@ -240,7 +240,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
          var engine = GetTarget();
 
          engine.Invoking(x => x.Map<ApplicationCommandsWithDefaultAndIndexedArgs>(new[] { "Name=hans" })).
-            ShouldNotThrow<MissingCommandLineArgumentException>();
+            Should().NotThrow<MissingCommandLineArgumentException>();
       }
 
       #endregion

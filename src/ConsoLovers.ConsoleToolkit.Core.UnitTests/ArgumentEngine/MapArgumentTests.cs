@@ -59,7 +59,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
          var dictionary = new Dictionary<string, CommandLineArgument>();
 
          var argumentMapper = Setup.ArgumentMapper().ForType<ArgumentTestClass>().Done();
-         argumentMapper.Invoking(x => x.Map(dictionary, commandTestClass)).ShouldThrow<MissingCommandLineArgumentException>();
+         argumentMapper.Invoking(x => x.Map(dictionary, commandTestClass)).Should().Throw<MissingCommandLineArgumentException>();
       }
 
       [TestMethod]
@@ -111,11 +111,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
             .ForType<ArgumentTestClass>()
             .Done();
 
-         target.MonitorEvents();
+         var monitor = target.Monitor();
          var result = target.Map(dictionary, args);
 
          Assert.AreEqual(result.RequiredArgument, "RequiredArgumentValue");
-         target.ShouldRaise(nameof(IArgumentMapper<ArgumentTestClass>.UnmappedCommandLineArgument))
+         monitor.Should().Raise(nameof(IArgumentMapper<ArgumentTestClass>.UnmappedCommandLineArgument))
             .WithArgs<MapperEventArgs>(e => e.Argument.Name == "MisspelledArgument" && e.Argument.Value == "AnyValue");
       }
       
@@ -130,11 +130,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
             .ForType<ArgumentTestClass>()
             .Done();
 
-         target.MonitorEvents();
+         var monitor = target.Monitor();
          var result = target.Map(dictionary, args);
 
          result.RequiredArgument.Should().Be(argument.Value);
-         target.ShouldRaise(nameof(IArgumentMapper<ArgumentTestClass>.MappedCommandLineArgument))
+         monitor.Should().Raise(nameof(IArgumentMapper<ArgumentTestClass>.MappedCommandLineArgument))
             .WithArgs<MapperEventArgs>(e => e.Argument == argument)
             .WithArgs<MapperEventArgs>(e => e.PropertyInfo == property);
       }      
@@ -150,11 +150,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
             .ForType<OptionsTestClass>()
             .Done();
 
-         target.MonitorEvents();
+         var monitor = target.Monitor();
          var result = target.Map(dictionary, args);
 
          result.Wait.Should().BeTrue();
-         target.ShouldRaise(nameof(IArgumentMapper<OptionsTestClass>.MappedCommandLineArgument))
+         monitor.Should().Raise(nameof(IArgumentMapper<OptionsTestClass>.MappedCommandLineArgument))
             .WithArgs<MapperEventArgs>(e => e.Argument == argument)
             .WithArgs<MapperEventArgs>(e => e.PropertyInfo == property);
       }

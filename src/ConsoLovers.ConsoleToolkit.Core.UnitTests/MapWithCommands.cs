@@ -34,14 +34,14 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       public void EnsureExceptionForInvalidParameterClasses()
       {
          var target = GetTarget();
-         target.Invoking(t => t.Map<InvalidCommands>(new[] { "execute" })).ShouldThrow<ArgumentException>();
+         target.Invoking(t => t.Map<InvalidCommands>(new[] { "execute" })).Should().Throw<ArgumentException>();
       }
 
       [TestMethod]
       public void EnsureCommandPropertiesImplementICommand()
       {
          var target = GetTarget();
-         target.Invoking(t => t.Map<InvalidCommands>(new[] { "noCommand" })).ShouldThrow<ArgumentException>();
+         target.Invoking(t => t.Map<InvalidCommands>(new[] { "noCommand" })).Should().Throw<ArgumentException>();
       }
 
 

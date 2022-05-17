@@ -58,13 +58,13 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
       public void EnsureMultipleSameAliasesAreDetected()
       {
          var target = Setup.ArgumentMapper().ForType<InvalidAliases>().Done();
-         target.Invoking(t => t.Map(new Dictionary<string, CommandLineArgument>())).ShouldThrow<CommandLineAttributeException>();
+         target.Invoking(t => t.Map(new Dictionary<string, CommandLineArgument>())).Should().Throw<CommandLineAttributeException>();
 
          var target2 = Setup.ArgumentMapper().ForType<InvalidNameAliases>().Done();
-         target2.Invoking(t => t.Map(new Dictionary<string, CommandLineArgument>())).ShouldThrow<CommandLineAttributeException>();
+         target2.Invoking(t => t.Map(new Dictionary<string, CommandLineArgument>())).Should().Throw<CommandLineAttributeException>();
 
          var target3 = Setup.ArgumentMapper().ForType<InvalidOptionArgument>().Done();
-         target3.Invoking(t => t.Map(new Dictionary<string, CommandLineArgument>())).ShouldThrow<CommandLineAttributeException>();
+         target3.Invoking(t => t.Map(new Dictionary<string, CommandLineArgument>())).Should().Throw<CommandLineAttributeException>();
       }
 
       [TestMethod]
@@ -116,14 +116,14 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
             { "Inv", new CommandLineArgument { Value = "AnyString" } }
          };
 
-         target.Invoking(t => t.Map(dictionary)).ShouldThrow<CommandLineArgumentException>().Where(e => e.Reason == ErrorReason.OptionWithValue);
+         target.Invoking(t => t.Map(dictionary)).Should().Throw<CommandLineArgumentException>().Where(e => e.Reason == ErrorReason.OptionWithValue);
 
          var second = new Dictionary<string, CommandLineArgument>(StringComparer.InvariantCultureIgnoreCase)
          {
             { "sec", new CommandLineArgument { Value = "true" } }
          };
 
-         target.Invoking(t => t.Map(second)).ShouldThrow<CommandLineArgumentException>().Where(e => e.Reason == ErrorReason.OptionWithValue);
+         target.Invoking(t => t.Map(second)).Should().Throw<CommandLineArgumentException>().Where(e => e.Reason == ErrorReason.OptionWithValue);
       }
 
 
@@ -137,7 +137,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
             { "3rd", new CommandLineArgument{ Value = "TRUE"} },
          };
 
-         target.Invoking(t => t.Map(dictionary)).ShouldThrow<AmbiguousCommandLineArgumentsException>();
+         target.Invoking(t => t.Map(dictionary)).Should().Throw<AmbiguousCommandLineArgumentsException>();
       }
 
 

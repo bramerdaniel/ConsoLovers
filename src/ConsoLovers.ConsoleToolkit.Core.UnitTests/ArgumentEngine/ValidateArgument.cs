@@ -24,8 +24,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
       public void EnsureValidationFails()
       {
          var target = GetTarget();
-         target.Invoking(t => t.Map<Arguments>(new[] { "Percentage=55" })).ShouldNotThrow<CommandLineArgumentValidationException>();
-         target.Invoking(t => t.Map<Arguments>(new[] { "Percentage=500" })).ShouldThrow<CommandLineArgumentValidationException>();
+         target.Invoking(t => t.Map<Arguments>(new[] { "Percentage=55" })).Should().NotThrow<CommandLineArgumentValidationException>();
+         target.Invoking(t => t.Map<Arguments>(new[] { "Percentage=500" })).Should().Throw<CommandLineArgumentValidationException>();
       }
 
 
@@ -33,7 +33,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
       public void EnsureInvalidValidatorTypeFails()
       {
          var target = GetTarget();
-         target.Invoking(t => t.Map<Arguments>(new[] { "Text=HelloWorld" })).ShouldThrow<InvalidValidatorUsageException>()
+         target.Invoking(t => t.Map<Arguments>(new[] { "Text=HelloWorld" })).Should().Throw<InvalidValidatorUsageException>()
             .Where(e => e.Reason == ErrorReason.InvalidValidatorImplementation);
       }
 
@@ -41,7 +41,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
       public void EnsureValidatorsWithoutInterfacesFail()
       {
          var target = GetTarget();
-         target.Invoking(t => t.Map<Arguments>(new[] { "NoValidator=44" })).ShouldThrow<InvalidValidatorUsageException>()
+         target.Invoking(t => t.Map<Arguments>(new[] { "NoValidator=44" })).Should().Throw<InvalidValidatorUsageException>()
             .Where(e => e.Reason == ErrorReason.NoValidatorImplementation);
       }
 
