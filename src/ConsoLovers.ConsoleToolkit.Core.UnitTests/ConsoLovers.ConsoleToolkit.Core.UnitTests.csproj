@@ -1,9 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-
-    <TargetFrameworks>net6.0</TargetFrameworks>
-    <Authors>Daniel Bramer</Authors>
+		<TargetFrameworks>net6.0</TargetFrameworks>
+		<Authors>Daniel Bramer</Authors>
+		<OutputPath>$(SolutionDir)$(Configuration)</OutputPath>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -17,11 +17,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\ConsoLovers.ConsoleToolkit.Core\ConsoLovers.ConsoleToolkit.Core.csproj" />
+		<ProjectReference Include="..\ConsoLovers.ConsoleToolkit.Core\ConsoLovers.ConsoleToolkit.Core.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Properties\" />
+		<Folder Include="Properties\" />
 	</ItemGroup>
 
 </Project>

@@ -11,11 +11,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandLineEngineDemo", "Co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoLovers.ConsoleToolkit.Core", "ConsoLovers.ConsoleToolkit.Core\ConsoLovers.ConsoleToolkit.Core.csproj", "{5CD277EB-585C-4891-B8B9-4A6F53D94A2E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoLovers.ConsoleToolkit.Core.UnitTests", "ConsoLovers.ConsoleToolkit.Core.UnitTests\ConsoLovers.ConsoleToolkit.Core.UnitTests.csproj", "{5A6F83F2-F6CE-40A8-9E63-C97F7C6AAA4E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoLovers.ConsoleToolkit.Core.UnitTests", "ConsoLovers.ConsoleToolkit.Core.UnitTests\ConsoLovers.ConsoleToolkit.Core.UnitTests.csproj", "{5A6F83F2-F6CE-40A8-9E63-C97F7C6AAA4E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCopyApplication", "DemoApplications\XCopyApplication\XCopyApplication.csproj", "{9C3A99DB-0AE9-4F86-9810-FBEBD8FF8493}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProgressDemo", "DemoApplications\ProgressDemo\ProgressDemo.csproj", "{DC869073-3032-433A-9EBE-1E8C4429D2A8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{86446116-073B-400E-B218-EDF8A774051F}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\workflows\buildAndPublish.yml = ..\.github\workflows\buildAndPublish.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
