@@ -12,6 +12,7 @@ on:
 env:
   SOLUTION_DIRECTORY : src
   SOLUTION_PATH : src/ConsoLovers.ConsoleToolkit.Core.sln
+  OUTPUT_DIRECTORY : src/Release
   
 jobs:
   build:
@@ -44,36 +45,14 @@ jobs:
       run: msbuild ${{ env.SOLUTION_PATH }} -property:Configuration=Release
 
     - name: show build results
-      run: dir ${{ env.SOLUTION_DIRECTORY }}\Release
-    
-    - name: show binaries
-      run: dir testBinaries
+      run: dir ${{ env.OUTPUT_DIRECTORY }}
  
     - name: setup VSTest.console.exe
       uses: darenm/Setup-VSTest@v1
 
     - name: run unit tests
-      run: vstest.console.exe {{ env.SOLUTION_DIRECTORY }}\Release\net6.0\ConsoLovers.ConsoleToolkit.Core.UnitTests.dll
-
-  publish:
-    needs: [build]
-    runs-on: windows-latest
-    if: ${{ github.ref == 'refs/heads/master' }}
-    steps:
-    - name: download artifacts
-      uses: actions/download-artifact@v3.0.0
-      with:
-        name: nugetPackage
-        path: packages
-        
-    - name: show packages
-      run: dir packages
-      
-    - name: setup NuGet.exe
-      uses: NuGet/setup-nuget@v1.0.6
-      with:
-        nuget-version: latest
-      
+      run: vstest.console.exe ${{ env.OUTPUT_DIRECTORY }}\net6.0\ConsoLovers.ConsoleToolkit.Core.UnitTests.dll
+    
     - name: push to nuget.org
-      run: nuget push packages\*.nupkg -src https://api.nuget.org/v3/index.json -ApiKey ${{secrets.NUGET_API_KEY}} -SkipDuplicate
-  
+      if: ${{ github.ref == 'refs/heads/master' }}
+      run: nuget push ${{ env.OUTPUT_DIRECTORY }}\*.nupkg -src https://api.nuget.org/v3/index.json -ApiKey ${{secrets.NUGET_API_KEY}} -SkipDuplicate
