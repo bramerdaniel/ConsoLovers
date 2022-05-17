@@ -22,12 +22,12 @@ jobs:
     - name: checkout branch
       uses: actions/checkout@v3
     
-#    - name: restore certificate
-#      run: |
-#        New-Item -ItemType directory -Path certificate
-#        Set-Content -Path certificate\FluentSetups.txt -Value '${{ secrets.FLUENT_SETUP_CERTIFICATE }}'
-#        certutil -decode certificate\FluentSetups.txt certificate\FluentSetups.snk
-#        dir certificate
+    - name: restore certificate
+      run: |
+        New-Item -ItemType directory -Path certificate
+        Set-Content -Path certificate\ConsoleToolkit.Core.txt -Value '${{ secrets.CONSOLOVERS_CERTIFICATE }}'
+        certutil -decode certificate\ConsoleToolkit.Core.txt certificate\ConsoleToolkit.Core.snk
+        dir certificate
 
     - name: setup NuGet.exe
       uses: NuGet/setup-nuget@v1.0.6
