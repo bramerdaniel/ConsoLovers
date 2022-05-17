@@ -45,7 +45,7 @@ jobs:
       run: msbuild ${{ env.SOLUTION_PATH }} -property:Configuration=Release
 
     - name: show build results
-      run: dir ${{ env.OUTPUT_DIRECTORY }}
+      run: tree ${{ env.OUTPUT_DIRECTORY }} /F
  
     - name: setup VSTest.console.exe
       uses: darenm/Setup-VSTest@v1
@@ -55,4 +55,4 @@ jobs:
     
     - name: push to nuget.org
       if: ${{ github.ref == 'refs/heads/master' }}
-      run: nuget push ${{ env.OUTPUT_DIRECTORY }}\*.nupkg -src https://api.nuget.org/v3/index.json -ApiKey ${{secrets.NUGET_API_KEY}} -SkipDuplicate
+      run: nuget push ${{ env.OUTPUT_DIRECTORY }}/*.nupkg -src https://api.nuget.org/v3/index.json -ApiKey ${{secrets.NUGET_API_KEY}} -SkipDuplicate
