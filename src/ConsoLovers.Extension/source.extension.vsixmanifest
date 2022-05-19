@@ -1,28 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="ConsoLovers.ConsoleToolkit.Extension" Version="0.1" Language="en-US" Publisher="ConsoLovers" />
+        <Identity Id="ConsoLovers.ConsoleToolkit.Extension" Version="0.3" Language="en-US" Publisher="ConsoLovers" />
         <DisplayName>ConsoLovers.ConsoleToolkit.Extension</DisplayName>
         <Description xml:space="preserve">Project templates for the ConsoLovers.ConsoleToolkit.Core package</Description>
         <MoreInfo>https://github.com/bramerdaniel/ConsoLovers/wiki</MoreInfo>
         <GettingStartedGuide>https://github.com/bramerdaniel/ConsoLovers/wiki</GettingStartedGuide>
+        <ReleaseNotes>Update for Visual Studio 2022</ReleaseNotes>
         <Icon>Icon.ico</Icon>
         <PreviewImage>Icon.ico</PreviewImage>
         <Tags>Console Toolkit ConsoleToolkit Shell C#</Tags>
     </Metadata>
     <Installation>
-        <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[15.0, 16.0)" />
-        <InstallationTarget Version="[15.0,16.0)" Id="Microsoft.VisualStudio.Enterprise" />
-        <InstallationTarget Version="[15.0,16.0)" Id="Microsoft.VisualStudio.Pro" />
+        <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0, 18.0)">
+            <ProductArchitecture>amd64</ProductArchitecture>
+        </InstallationTarget>
+        <InstallationTarget Version="[17.0,18.0)" Id="Microsoft.VisualStudio.Enterprise">
+            <ProductArchitecture>amd64</ProductArchitecture>
+        </InstallationTarget>
+        <InstallationTarget Version="[17.0,18.0)" Id="Microsoft.VisualStudio.Pro">
+            <ProductArchitecture>amd64</ProductArchitecture>
+        </InstallationTarget>
     </Installation>
     <Dependencies>
-        <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
     </Dependencies>
     <Assets>
         <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="File" Path="ProjectTemplates" d:TargetPath="ProjectTemplates\Consolovers.CommandApplication.zip" />
         <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="File" Path="ProjectTemplates" d:TargetPath="ProjectTemplates\Consolovers.Application.zip" />
     </Assets>
     <Prerequisites>
-        <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0,16.0)" DisplayName="Visual Studio core editor" />
+        <Prerequisite Id="Microsoft.VisualStudio.Component.Roslyn.LanguageServices" Version="[17.2.32408.312,18.0)" DisplayName="C# and Visual Basic" />
     </Prerequisites>
 </PackageManifest>

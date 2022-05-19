@@ -33,7 +33,7 @@ namespace CommandLineEngineDemo
 
       #region Methods
 
-      private static IConsole Console = new ConsoleProxy();
+      private new static readonly IConsole Console = new ConsoleProxy();
 
       static void Main()
       {
@@ -68,7 +68,7 @@ namespace CommandLineEngineDemo
             if (value != null)
             {
                color = color == ConsoleColor.White ? ConsoleColor.Gray : ConsoleColor.White;
-               Console.WriteLine($"  - {propertyInfo.Name.PadRight(10)} = {value.ToString().PadRight(40)} [Shared={commandLineAttribute?.Shared}]", color);
+               Console.WriteLine($"  - {propertyInfo.Name,-10} = {value,-40} [Shared={commandLineAttribute?.Shared}]", color);
             }
          }
       }

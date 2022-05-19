@@ -5,17 +5,18 @@
 		<OutputPath>$(SolutionDir)$(Configuration)</OutputPath>
 		<Authors>Daniel Bramer</Authors>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>2.0.0</Version>
+		<Version>3.0.0</Version>
 		<PackageTags>Console Shell ConsoleToolkit .Net CommandLineArgument CommandLineArguments CommandLineParser</PackageTags>
 		<PackageIconUrl>https://raw.githubusercontent.com/bramerdaniel/ConsoLovers/master/src/ConsoLovers.ConsoleToolkit/Resources/Icon.ico</PackageIconUrl>
 		<PackageProjectUrl>https://github.com/bramerdaniel/ConsoLovers</PackageProjectUrl>
 		<Company>ConsoLovers</Company>
 		<Copyright>Copyright 2018-2022</Copyright>
-		<Description>
-			Collection of tools for developing console applications.
+		<Description>Collection of tools for developing console applications.
 			This package contains the basic funtionality like application handling and command line argument parsing/mapping like the 4.* version of the ConsoLovers.ConsoleToolkit did, but usable for .NetStandard 2.0
 		</Description>
-		<PackageReleaseNotes>2.0.0
+		<PackageReleaseNotes>3.0.0
+ - Assembly got a strong name, this normaly should not brake compatibility, but who knows :-)
+2.0.0
  - Support for .Net6
  - Rewrite of command line argument parsing (now from string and not only string[])
  - Rewrite of indexed arguments handling.
@@ -24,6 +25,8 @@
 		</PackageReleaseNotes>
 		<RepositoryUrl>https://github.com/bramerdaniel/ConsoLovers</RepositoryUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<SignAssembly>True</SignAssembly>
+		<AssemblyOriginatorKeyFile>..\..\certificate\ConsoleToolkit.Core.snk</AssemblyOriginatorKeyFile>
 	</PropertyGroup>
 
 
