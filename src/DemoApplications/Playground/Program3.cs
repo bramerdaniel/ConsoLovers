@@ -39,7 +39,7 @@ namespace Playground
 
       #region Public Methods and Operators
 
-      protected override void OnUnhandledCommandLineArgument(object sender, UnhandledCommandLineArgumentEventArgs e)
+      protected override void OnUnhandledCommandLineArgument(object sender, CommandLineArgumentEventArgs e)
       {
       }
 

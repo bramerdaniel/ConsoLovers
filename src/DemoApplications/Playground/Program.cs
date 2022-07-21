@@ -138,8 +138,13 @@ namespace Playground
       {
          return this;
       }
+      
+      public void InitializeFromString(OnlyInterfacesUsed instance, string args)
+      {
+         instance.Path = args;
+      }
 
-      public void InitializeArguments(OnlyInterfacesUsed instance, string[] args)
+      public void InitializeFromArray(OnlyInterfacesUsed instance, string[] args)
       {
          instance.Path = args.FirstOrDefault();
       }
