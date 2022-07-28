@@ -7,6 +7,7 @@
 namespace ConsoLovers.ConsoleToolkit.Core
 {
    using System;
+   using System.Threading.Tasks;
 
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Core.DIContainer;
@@ -38,21 +39,27 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       #region IApplication Members
 
-      /// <summary>Runs the application logic by executing the specified command,
-      ///  or calling one of the RunWith or RunWithoutArguments methods.</summary>
-      public virtual void Run()
+      public virtual async Task RunAsync()
       {
-         if (ExecuteCommand())
+         if (await ExecuteCommandAsync())
             return;
 
          if (HasArguments)
          {
-            RunWith(Arguments);
+            await RunWithAsync(Arguments);
          }
          else
          {
-            RunWithoutArguments();
+            await RunWithoutArgumentsAsync();
          }
+      }
+
+
+      /// <summary>Runs the application logic by executing the specified command,
+      ///  or calling one of the RunWith or RunWithoutArguments methods.</summary>
+      public virtual void Run()
+      {
+         RunAsync().GetAwaiter().GetResult();
       }
 
       #endregion
@@ -64,7 +71,20 @@ namespace ConsoLovers.ConsoleToolkit.Core
       ///    application is called with one of those, this method is not called any more, because the command is executed.
       /// </summary>
       /// <param name="arguments">The initialized arguments for the application.</param>
-      public abstract void RunWith(T arguments);
+      [Obsolete("Use RunWithAsync to execute your logic")]
+      public virtual void RunWith(T arguments)
+      {
+         RunWithAsync(arguments).GetAwaiter().GetResult();
+      }
+
+      /// <summary>This method is called when the application was started with command line arguments. NOTE: If there are <see cref="T:ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.ICommand" />s specified in the arguments and theapplication is called with one of those. This method is not called any more, because the command is executed instead.
+      /// </summary>
+      /// <param name="arguments">The initialized arguments for the application.</param>
+      /// <returns></returns>
+      public virtual Task RunWithAsync(T arguments)
+      {
+         return Task.CompletedTask;
+      }
 
       #endregion
 
@@ -137,9 +157,11 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       #region Public Methods and Operators
 
-      public virtual void RunWithCommand(ICommand command)
+      public virtual Task RunWithCommandAsync(ICommand command)
       {
+         // TODO introduce async commands
          command.Execute();
+         return Task.CompletedTask;
       }
 
       #endregion
@@ -151,7 +173,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       ///    simulated command
       /// </summary>
       /// <returns></returns>
-      protected virtual bool ExecuteCommand()
+      protected virtual async Task<bool> ExecuteCommandAsync()
       {
          var applicationArguments = ArgumentClassInfo.FromType<T>();
          if (!applicationArguments.HasCommands)
@@ -161,7 +183,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
          if (command == null)
             return false;
 
-         RunWithCommand(command);
+         await RunWithCommandAsync(command);
          return true;
       }
 
@@ -197,9 +219,9 @@ namespace ConsoLovers.ConsoleToolkit.Core
       {
       }
 
-      protected virtual void RunWithoutArguments()
+      protected virtual async Task RunWithoutArgumentsAsync()
       {
-         RunWith(Arguments);
+         await RunWithAsync(Arguments);
       }
 
       protected void WaitForEnter(string waitText = "Press ENTER to continue.")

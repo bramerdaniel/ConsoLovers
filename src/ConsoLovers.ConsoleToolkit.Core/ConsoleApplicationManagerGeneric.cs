@@ -7,6 +7,7 @@
 namespace ConsoLovers.ConsoleToolkit.Core
 {
    using System;
+   using System.Threading.Tasks;
 
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
@@ -31,12 +32,26 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       public T Run(string[] args)
       {
-         return (T)Run(typeof(T), args);
+         return (T)RunAsync(typeof(T), args)
+            .GetAwaiter()
+            .GetResult();
       }
 
       public T Run(string args)
       {
-         return (T)Run(typeof(T), args);
+         return RunAsync(args)
+            .GetAwaiter()
+            .GetResult();
+      }
+
+      public async Task<T> RunAsync(string args)
+      {
+         return (T)await RunAsync(typeof(T), args);
+      }
+
+      public async Task<T> RunAsync(string[] args)
+      {
+         return (T)await RunAsync(typeof(T), args);
       }
 
       #endregion

@@ -1,6 +1,7 @@
 ﻿namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests.Utils
 {
    using System;
+   using System.Threading.Tasks;
 
    using ConsoLovers.ConsoleToolkit.Core;
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
@@ -12,9 +13,16 @@
    {
       private readonly IApplicationVerification<T> application;
 
+      public override Task RunAsync()
+      {
+         application.RunAsync();
+         return base.RunAsync();
+      }
+
       public override void RunWith(T arguments)
       {
          application.RunWith(arguments);
+         base.RunWith(arguments);
       }
 
       public override void InitializeFromString(T instance, string args)
@@ -55,18 +63,26 @@
          application.Run();
          base.Run();
       }
+      
 
-      public override void RunWithCommand(ICommand command)
+      public override Task RunWithAsync(T arguments)
+      {
+         application.RunWithAsync(arguments);
+         return base.RunWithAsync(arguments);
+      }
+
+      public override Task RunWithCommandAsync(ICommand command)
       {
          application.RunWithCommand(command);
-         base.RunWithCommand(command);
+         return base.RunWithCommandAsync(command);
       }
 
-      protected override void RunWithoutArguments()
+      protected override Task RunWithoutArgumentsAsync()
       {
          application.RunWithoutArguments();
-         base.RunWithoutArguments();
+         return base.RunWithoutArgumentsAsync();
       }
+
 
       public TestApplication([NotNull] ICommandLineEngine commandLineEngine, [NotNull] IApplicationVerification<T> application)
          : base(commandLineEngine)

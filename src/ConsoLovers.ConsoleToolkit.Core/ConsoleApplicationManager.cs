@@ -10,6 +10,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
    using System.Diagnostics;
    using System.Linq;
    using System.Reflection;
+   using System.Threading.Tasks;
 
    using ConsoLovers.ConsoleToolkit.Core.BootStrappers;
 
@@ -77,11 +78,17 @@ namespace ConsoLovers.ConsoleToolkit.Core
          return For(applicationType).Run(args);
       }
 
+      [Obsolete("Use RunAsync")]
+      public IApplication Run(Type applicationType, string[] args)
+      {
+         return RunAsync(applicationType, args).GetAwaiter().GetResult();
+      }
+
       /// <summary>Creates and runs an application of the given type with the given arguments.</summary>
       /// <param name="applicationType">Type of the application.</param>
       /// <param name="args">The arguments.</param>
       /// <returns>The application </returns>
-      public IApplication Run(Type applicationType, string[] args)
+      public async Task<IApplication> RunAsync(Type applicationType, string[] args)
       {
          SetTitle(applicationType);
          ApplySize(applicationType);
@@ -91,7 +98,30 @@ namespace ConsoLovers.ConsoleToolkit.Core
          try
          {
             InitializeApplication(applicationType, application, args);
-            return RunApplication(application);
+            return await RunApplicationAsync(application);
+         }
+         catch (Exception exception)
+         {
+            // ReSharper disable once UsePatternMatching
+            var handler = application as IExceptionHandler;
+            if (handler == null || !handler.HandleException(exception))
+               throw;
+
+            return application;
+         }
+      }
+
+      public async Task<IApplication> RunAsync(Type applicationType, string args)
+      {
+         SetTitle(applicationType);
+         ApplySize(applicationType);
+
+         var application = CreateApplicationInternal(applicationType);
+
+         try
+         {
+            InitializeApplication(applicationType, application, args);
+            return await RunApplicationAsync(application);
          }
          catch (Exception exception)
          {
@@ -106,25 +136,9 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       public IApplication Run(Type applicationType, string args)
       {
-         SetTitle(applicationType);
-         ApplySize(applicationType);
-
-         var application = CreateApplicationInternal(applicationType);
-
-         try
-         {
-            InitializeApplication(applicationType, application, args);
-            return RunApplication(application);
-         }
-         catch (Exception exception)
-         {
-            // ReSharper disable once UsePatternMatching
-            var handler = application as IExceptionHandler;
-            if (handler == null || !handler.HandleException(exception))
-               throw;
-
-            return application;
-         }
+         return RunAsync(applicationType, args)
+            .GetAwaiter()
+            .GetResult();
       }
 
       private void SetTitle(Type applicationType)
@@ -248,9 +262,9 @@ namespace ConsoLovers.ConsoleToolkit.Core
          return false;
       }
 
-      private static IApplication RunApplication(IApplication application)
+      private static async Task<IApplication> RunApplicationAsync(IApplication application)
       {
-         application.Run();
+         await application.RunAsync();
          return application;
       }
 
