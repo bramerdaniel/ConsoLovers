@@ -14,6 +14,7 @@
 		<Description>Collection of tools for developing console applications.
 			This package contains the basic funtionality like application handling and command line argument parsing/mapping like the 4.* version of the ConsoLovers.ConsoleToolkit did, but usable for .NetStandard 2.0
 		</Description>
+		<LangVersion>latest</LangVersion>
 		<PackageReleaseNotes>3.0.0
  - Assembly got a strong name, this normaly should not brake compatibility, but who knows :-)
 2.0.0

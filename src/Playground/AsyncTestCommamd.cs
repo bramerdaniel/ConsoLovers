@@ -1,18 +1,18 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="TestArgs.cs" company="ConsoLovers">
+// <copyright file="AsyncTestCommamd.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
-public class TestArgs
+public class AsyncTestCommamd : IAsyncCommand<TestArgs>
 {
-   #region Public Properties
+   public TestArgs Arguments { get; set; }
 
-   [Argument("n", Index = 0)]
-   [HelpText("Number of the async command")]
-   public int Number { get; set; }
-
-   #endregion
+   public Task ExecuteAsync()
+   {
+      Console.WriteLine($"Number = {Arguments.Number}");
+      return Task.CompletedTask;
+   }
 }

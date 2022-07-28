@@ -7,7 +7,6 @@
 namespace ConsoLovers.ConsoleToolkit.Core
 {
    using System;
-   using System.Diagnostics;
    using System.Linq;
    using System.Reflection;
    using System.Threading.Tasks;
@@ -61,21 +60,6 @@ namespace ConsoLovers.ConsoleToolkit.Core
       public static IBootstrapper For(Type applicationType)
       {
          return new DefaultBootstrapper(applicationType);
-      }
-
-      /// <summary>Runs the caller class. Caller must implement at least the <see cref="IApplication"/> interface</summary>
-      /// <param name="args">The arguments to run the caller with.</param>
-      /// <returns></returns>
-      /// <exception cref="InvalidOperationException">Application type could not be detected from stack trace.</exception>
-      /// <exception cref="System.InvalidOperationException">Application type could not be detected from stack trace.</exception>
-      public static object RunThis(string[] args)
-      {
-         var callingMethod = new StackTrace().GetFrame(1).GetMethod();
-         var applicationType = callingMethod.DeclaringType;
-         if (applicationType == null)
-            throw new InvalidOperationException("Application type could not be detected from stack trace.");
-
-         return For(applicationType).Run(args);
       }
 
       [Obsolete("Use RunAsync")]

@@ -24,7 +24,7 @@
       public void EnsureRunIsCalledOnRunable()
       {
 
-         var runned = new ConsoleApplicationManagerGeneric<Runable>().Run(new string[0]);
+         var runned = new ConsoleApplicationManagerGeneric<Runable>().RunAsync(new string[0]).GetAwaiter().GetResult();
 
          runned.Mock.Verify(x => x.RunAsync(), Times.Once);
       }
@@ -33,7 +33,8 @@
       public void EnsureRunInitializesWhenRequired()
       {
          var args = string.Empty;
-         var runned = new ConsoleApplicationManagerGeneric<ApplicationWithArguments>().Run(args);
+         var runned = new ConsoleApplicationManagerGeneric<ApplicationWithArguments>().RunAsync(args)
+            .GetAwaiter().GetResult();
 
          runned.Args.Should().BeSameAs(args);
          runned.TestParameters.Should().NotBeNull();

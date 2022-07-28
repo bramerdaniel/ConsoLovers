@@ -17,7 +17,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       #region Constructors and Destructors
 
       internal ConsoleApplicationManagerGeneric(Func<T> createApplication)
-         : base(type => createApplication())
+         : base(_ => createApplication())
       {
       }
 
@@ -29,21 +29,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       #endregion
 
       #region Public Methods and Operators
-
-      public T Run(string[] args)
-      {
-         return (T)RunAsync(typeof(T), args)
-            .GetAwaiter()
-            .GetResult();
-      }
-
-      public T Run(string args)
-      {
-         return RunAsync(args)
-            .GetAwaiter()
-            .GetResult();
-      }
-
+      
       public async Task<T> RunAsync(string args)
       {
          return (T)await RunAsync(typeof(T), args);

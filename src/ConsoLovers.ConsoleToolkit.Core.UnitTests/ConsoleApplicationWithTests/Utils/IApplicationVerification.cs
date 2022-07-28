@@ -35,7 +35,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests.
 
       void RunWithAsync<T>(T arguments);
 
-      string RunWithCommand(ICommand command);
+      string RunWithCommand(ICommandBase command);
 
       string RunWithoutArguments();
 

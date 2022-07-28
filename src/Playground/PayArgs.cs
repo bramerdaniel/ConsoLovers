@@ -9,5 +9,14 @@ using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 public class PayArgs
 {
    [Command("test")]
-   public TestCommamd Test { get; set; } = null!;
+   [HelpText("Normal command test")]
+   public TestCommamd Test { get; set; } = null!;   
+   
+   [Command("async")]
+   [HelpText("Async command test")]
+   public AsyncTestCommamd AsyncTest{ get; set; } = null!;  
+   
+   [Command("help", "?")]
+   [HelpText("Shows this help")]
+   public HelpCommand Help{ get; set; } = null!;
 }

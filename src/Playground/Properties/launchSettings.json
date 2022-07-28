@@ -2,7 +2,11 @@
   "profiles": {
     "Playground": {
       "commandName": "Project",
-      "commandLineArgs": "-test 123"
+      "commandLineArgs": "-async 123"
+    },
+    "help": {
+      "commandName": "Project",
+      "commandLineArgs": "-async -?"
     }
   }
 }

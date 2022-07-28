@@ -8,8 +8,8 @@ public static class Program
 {
    public static async Task Main()
    {
-      await ConsoleApplicationManager.For<PlaygroundApp>()
-         .RunAsync();
+      ConsoleApplicationManager.For<PlaygroundApp>()
+         .Run();
 
       Console.ReadLine();
    }

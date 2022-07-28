@@ -7,7 +7,7 @@
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
    /// <summary>Basic interface for commands without arguments</summary>
-   public interface ICommand
+   public interface ICommand : ICommandBase
    {
       #region Public Methods and Operators
 
@@ -19,13 +19,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
    /// <summary>Basic interface for commands that required arguments for execution</summary>
    /// <typeparam name="T">The type of the arguments the command required</typeparam>
-   public interface ICommand<T> : ICommand
+   public interface ICommand<T> : ICommand, ICommandArguments<T>
    {
-      #region Public Properties
-
-      /// <summary>Gets or sets the arguments that were specified for the command.</summary>
-      T Arguments { get; set; }
-
-      #endregion
    }
 }

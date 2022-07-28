@@ -157,11 +157,19 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       #region Public Methods and Operators
 
-      public virtual Task RunWithCommandAsync(ICommand command)
+      public virtual async Task RunWithCommandAsync(ICommandBase executable)
       {
-         // TODO introduce async commands
-         command.Execute();
-         return Task.CompletedTask;
+         switch (executable)
+         {
+            case IAsyncCommand asyncCommand:
+               await asyncCommand.ExecuteAsync();
+               break;
+            case ICommand command:
+               command.Execute();
+               break;
+            default:
+               throw new InvalidOperationException("Command type not supported");
+         }
       }
 
       #endregion
@@ -179,7 +187,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
          if (!applicationArguments.HasCommands)
             return false;
 
-         ICommand command = GetMappedCommand();
+         ICommandBase command = GetMappedCommand();
          if (command == null)
             return false;
 
@@ -187,16 +195,16 @@ namespace ConsoLovers.ConsoleToolkit.Core
          return true;
       }
 
-      protected ICommand GetMappedCommand()
+      protected ICommandBase GetMappedCommand()
       {
          if (Arguments == null)
             return null;
 
          foreach (var propertyInfo in typeof(T).GetProperties())
          {
-            if (propertyInfo.PropertyType.GetInterface(typeof(ICommand).FullName) != null)
+            if (propertyInfo.PropertyType.GetInterface(typeof(ICommandBase).FullName) != null)
             {
-               if (propertyInfo.GetValue(Arguments) is ICommand value)
+               if (propertyInfo.GetValue(Arguments) is ICommandBase value)
                   return value;
             }
          }

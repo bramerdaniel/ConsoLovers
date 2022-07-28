@@ -79,12 +79,17 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
       /// <summary>Runs the configured application with the given commandline arguments.</summary>
       /// <param name="args">The command line arguments.</param>
       /// <returns>The created <see cref="T:ConsoLovers.ConsoleToolkit.IApplication"/> of type <see cref="!:T"/></returns>
-      public T Run(string[] args) => CreateApplicationManager().Run(args);
+      public T Run(string[] args) => CreateApplicationManager()
+         .RunAsync(args).GetAwaiter()
+         .GetResult();
+
 
       /// <summary>Runs the configured application with the given commandline arguments.</summary>
       /// <param name="args">The command line arguments as string.</param>
       /// <returns>The created <see cref="T:ConsoLovers.ConsoleToolkit.IApplication"/> of type <see cref="!:T"/></returns>
-      public T Run(string args) => CreateApplicationManager().Run(args);
+      public T Run(string args) => CreateApplicationManager().RunAsync(args)
+         .GetAwaiter()
+         .GetResult();
 
       /// <summary>Runs the configured application with the commandline arguments <see cref="Environment.CommandLine"/>.</summary>
       /// <returns>The created <see cref="T:ConsoLovers.ConsoleToolkit.IApplication"/> of type <see cref="!:T"/></returns>
