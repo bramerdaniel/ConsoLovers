@@ -5,7 +5,7 @@
 		<OutputPath>$(SolutionDir)$(Configuration)</OutputPath>
 		<Authors>Daniel Bramer</Authors>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>3.0.0</Version>
+		<Version>4.0.0-rc1</Version>
 		<PackageTags>Console Shell ConsoleToolkit .Net CommandLineArgument CommandLineArguments CommandLineParser</PackageTags>
 		<PackageIconUrl>https://raw.githubusercontent.com/bramerdaniel/ConsoLovers/master/src/ConsoLovers.ConsoleToolkit/Resources/Icon.ico</PackageIconUrl>
 		<PackageProjectUrl>https://github.com/bramerdaniel/ConsoLovers</PackageProjectUrl>
@@ -15,9 +15,11 @@
 			This package contains the basic funtionality like application handling and command line argument parsing/mapping like the 4.* version of the ConsoLovers.ConsoleToolkit did, but usable for .NetStandard 2.0
 		</Description>
 		<LangVersion>latest</LangVersion>
-		<PackageReleaseNotes>3.0.0
+		<PackageReleaseNotes>4.0.0
+ - Support for async application and commands
+ 3.0.0
  - Assembly got a strong name, this normaly should not brake compatibility, but who knows :-)
-2.0.0
+ 2.0.0
  - Support for .Net6
  - Rewrite of command line argument parsing (now from string and not only string[])
  - Rewrite of indexed arguments handling.

@@ -7,7 +7,6 @@
 namespace ConsoLovers.ConsoleToolkit.Core
 {
    using System;
-   using System.Linq;
    using System.Reflection;
    using System.Threading.Tasks;
 
@@ -30,7 +29,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       #region Properties
 
       /// <summary>Gets the function that creates the application object itself.</summary>
-      protected Func<Type, object> CreateApplication { get; }
+      private Func<Type, object> CreateApplication { get; }
 
       #endregion
 
@@ -61,17 +60,11 @@ namespace ConsoLovers.ConsoleToolkit.Core
       {
          return new DefaultBootstrapper(applicationType);
       }
-
-      [Obsolete("Use RunAsync")]
-      public IApplication Run(Type applicationType, string[] args)
-      {
-         return RunAsync(applicationType, args).GetAwaiter().GetResult();
-      }
-
+      
       /// <summary>Creates and runs an application of the given type with the given arguments.</summary>
       /// <param name="applicationType">Type of the application.</param>
       /// <param name="args">The arguments.</param>
-      /// <returns>The application </returns>
+      /// <returns>The executed application</returns>
       public async Task<IApplication> RunAsync(Type applicationType, string[] args)
       {
          SetTitle(applicationType);
@@ -95,6 +88,10 @@ namespace ConsoLovers.ConsoleToolkit.Core
          }
       }
 
+      /// <summary>Creates and runs an application of the given type with the given arguments.</summary>
+      /// <param name="applicationType">Type of the application.</param>
+      /// <param name="args">The arguments.</param>
+      /// <returns></returns>
       public async Task<IApplication> RunAsync(Type applicationType, string args)
       {
          SetTitle(applicationType);
@@ -118,12 +115,28 @@ namespace ConsoLovers.ConsoleToolkit.Core
          }
       }
 
+      /// <summary>Runs the specified application type.</summary>
+      /// <param name="applicationType">Type of the application.</param>
+      /// <param name="args">The arguments.</param>
+      /// <returns>The executed application</returns>
       public IApplication Run(Type applicationType, string args)
       {
          return RunAsync(applicationType, args)
             .GetAwaiter()
             .GetResult();
       }
+
+      /// <summary>Runs the specified application type.</summary>
+      /// <param name="applicationType">Type of the application.</param>
+      /// <param name="args">The arguments.</param>
+      /// <returns>The executed application</returns>
+      public IApplication Run(Type applicationType, string[] args)
+      {
+         return RunAsync(applicationType, args)
+            .GetAwaiter()
+            .GetResult();
+      }
+
 
       private void SetTitle(Type applicationType)
       {
@@ -136,7 +149,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       #region Methods
 
-      internal void InitializeApplication(Type applicationType, IApplication application, object args)
+      private void InitializeApplication(Type applicationType, IApplication application, object args)
       {
          try
          {
@@ -264,7 +277,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
             throw new InvalidOperationException($"Could not create instance of type {type.FullName}");
 
          if (!(instance is IApplication application))
-            throw new InvalidOperationException($"The application type {type.Name} to run must inherit the {typeof(IApplication).Name} interface");
+            throw new InvalidOperationException($"The application type {type.Name} to run must inherit the {nameof(IApplication)} interface");
 
          return application;
       }
