@@ -17,6 +17,7 @@
 		<LangVersion>latest</LangVersion>
 		<PackageReleaseNotes>4.0.0
  - Support for async application and commands
+ - Added InputBox from console toolkit 
  3.0.0
  - Assembly got a strong name, this normaly should not brake compatibility, but who knows :-)
  2.0.0
