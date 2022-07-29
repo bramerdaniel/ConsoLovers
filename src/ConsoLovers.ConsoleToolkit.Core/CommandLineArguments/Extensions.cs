@@ -16,11 +16,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       public static bool IsCommandType(this Type type)
       {
-         var command = type.GetInterface(typeof(ICommand).FullName);
-         if (command != null)
-            return true;
-
-         command = type.GetInterface(typeof(ICommand<>).FullName);
+         var command = type.GetInterface(typeof(ICommandBase).FullName);
          return command != null;
       }
 

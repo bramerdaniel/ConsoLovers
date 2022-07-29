@@ -162,7 +162,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          var commandType = commandInfo.PropertyInfo.PropertyType;
          if (!ImplementsICommand(commandType))
             throw new ArgumentException(
-               $"The type '{commandType}' of the property '{commandInfo.PropertyInfo.Name}' does not implement the {typeof(ICommand).FullName} interface");
+               $"The type '{commandType}' of the property '{commandInfo.PropertyInfo.Name}' does not implement the {typeof(ICommandBase).FullName} interface");
 
          if (TryGetArgumentType(commandType, out var argumentType))
          {
@@ -208,7 +208,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       private bool ImplementsICommand(Type commandType)
       {
-         return commandType.GetInterface(typeof(ICommand).FullName) != null;
+         return commandType.GetInterface(typeof(ICommandBase).FullName) != null;
       }
 
       /// <summary>Tries to map all the <see cref="arguments"/> to one of the specified commands.</summary>
@@ -270,7 +270,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       private bool TryGetArgumentType(Type commandType, out Type argumentType)
       {
-         var commandInterface = commandType.GetInterface(typeof(ICommand<>).FullName);
+         var commandInterface = commandType.GetInterface(typeof(ICommandArguments<>).FullName);
          if (commandInterface == null)
          {
             argumentType = null;

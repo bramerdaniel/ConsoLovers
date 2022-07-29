@@ -1,6 +1,7 @@
 ﻿namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
 {
    using System.Diagnostics.CodeAnalysis;
+   using System.Threading.Tasks;
 
    using ConsoLovers.ConsoleToolkit.Core;
    using ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine;
@@ -23,21 +24,22 @@
       public void EnsureRunIsCalledOnRunable()
       {
 
-         var runned = new ConsoleApplicationManagerGeneric<Runable>().Run(new string[0]);
+         var runned = new ConsoleApplicationManagerGeneric<Runable>().RunAsync(new string[0]).GetAwaiter().GetResult();
 
-         runned.Mock.Verify(x => x.Run(), Times.Once);
+         runned.Mock.Verify(x => x.RunAsync(), Times.Once);
       }
 
       [TestMethod]
       public void EnsureRunInitializesWhenRequired()
       {
          var args = string.Empty;
-         var runned = new ConsoleApplicationManagerGeneric<ApplicationWithArguments>().Run(args);
+         var runned = new ConsoleApplicationManagerGeneric<ApplicationWithArguments>().RunAsync(args)
+            .GetAwaiter().GetResult();
 
          runned.Args.Should().BeSameAs(args);
          runned.TestParameters.Should().NotBeNull();
 
-         runned.Mock.Verify(x => x.Run(), Times.Once);
+         runned.Mock.Verify(x => x.RunAsync(), Times.Once);
       }
 
       private class ApplicationWithArguments : IApplication, IArgumentInitializer<TestArguments>
@@ -59,6 +61,11 @@
          public void Run()
          {
             Mock.Object.Run();
+         }
+
+         public Task RunAsync()
+         {
+            return Mock.Object.RunAsync();
          }
 
          public TestArguments CreateArguments()
@@ -91,6 +98,11 @@
          public void Run()
          {
             Mock.Object.Run();
+         }
+
+         public Task RunAsync()
+         {
+            return Mock.Object.RunAsync();
          }
       }
 

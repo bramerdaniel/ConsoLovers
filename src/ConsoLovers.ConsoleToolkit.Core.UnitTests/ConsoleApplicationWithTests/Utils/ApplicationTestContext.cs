@@ -66,6 +66,14 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests.
          ConsoleApplicationManager.For<TestApplication<T>>().UsingFactory(Factory).Run(args);
       }
 
+      public void RunApplicationAsync(string args)
+      {
+         ConsoleApplicationManager.For<TestApplication<T>>()
+            .UsingFactory(Factory)
+            .RunAsync(args)
+            .GetAwaiter().GetResult();
+      }
+
       public void RunApplication(params string[] args)
       {
          RunApplication(string.Join(" ", args));
@@ -76,7 +84,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests.
       public void VerifyCommandExecuted<TC>()
        where TC : ICommand
       {
-         Application.Verify(a => a.Run(), Times.Once);
+         Application.Verify(a => a.RunAsync(), Times.Once);
          Application.Verify(a => a.RunWithCommand(It.IsAny<TC>()), Times.Once);
       }
    }

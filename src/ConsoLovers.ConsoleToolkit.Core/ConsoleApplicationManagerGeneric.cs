@@ -7,6 +7,7 @@
 namespace ConsoLovers.ConsoleToolkit.Core
 {
    using System;
+   using System.Threading.Tasks;
 
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
@@ -16,7 +17,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       #region Constructors and Destructors
 
       internal ConsoleApplicationManagerGeneric(Func<T> createApplication)
-         : base(type => createApplication())
+         : base(_ => createApplication())
       {
       }
 
@@ -28,15 +29,15 @@ namespace ConsoLovers.ConsoleToolkit.Core
       #endregion
 
       #region Public Methods and Operators
-
-      public T Run(string[] args)
+      
+      public async Task<T> RunAsync(string args)
       {
-         return (T)Run(typeof(T), args);
+         return (T)await RunAsync(typeof(T), args);
       }
 
-      public T Run(string args)
+      public async Task<T> RunAsync(string[] args)
       {
-         return (T)Run(typeof(T), args);
+         return (T)await RunAsync(typeof(T), args);
       }
 
       #endregion

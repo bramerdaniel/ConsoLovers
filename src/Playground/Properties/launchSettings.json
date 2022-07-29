@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Playground": {
+      "commandName": "Project",
+      "commandLineArgs": "-async 123"
+    },
+    "help": {
+      "commandName": "Project",
+      "commandLineArgs": "-async -?"
+    }
+  }
+}

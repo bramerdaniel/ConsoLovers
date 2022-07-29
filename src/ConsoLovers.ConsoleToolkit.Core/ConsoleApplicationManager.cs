@@ -7,9 +7,8 @@
 namespace ConsoLovers.ConsoleToolkit.Core
 {
    using System;
-   using System.Diagnostics;
-   using System.Linq;
    using System.Reflection;
+   using System.Threading.Tasks;
 
    using ConsoLovers.ConsoleToolkit.Core.BootStrappers;
 
@@ -30,7 +29,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       #region Properties
 
       /// <summary>Gets the function that creates the application object itself.</summary>
-      protected Func<Type, object> CreateApplication { get; }
+      private Func<Type, object> CreateApplication { get; }
 
       #endregion
 
@@ -61,27 +60,39 @@ namespace ConsoLovers.ConsoleToolkit.Core
       {
          return new DefaultBootstrapper(applicationType);
       }
-
-      /// <summary>Runs the caller class. Caller must implement at least the <see cref="IApplication"/> interface</summary>
-      /// <param name="args">The arguments to run the caller with.</param>
-      /// <returns></returns>
-      /// <exception cref="InvalidOperationException">Application type could not be detected from stack trace.</exception>
-      /// <exception cref="System.InvalidOperationException">Application type could not be detected from stack trace.</exception>
-      public static object RunThis(string[] args)
+      
+      /// <summary>Creates and runs an application of the given type with the given arguments.</summary>
+      /// <param name="applicationType">Type of the application.</param>
+      /// <param name="args">The arguments.</param>
+      /// <returns>The executed application</returns>
+      public async Task<IApplication> RunAsync(Type applicationType, string[] args)
       {
-         var callingMethod = new StackTrace().GetFrame(1).GetMethod();
-         var applicationType = callingMethod.DeclaringType;
-         if (applicationType == null)
-            throw new InvalidOperationException("Application type could not be detected from stack trace.");
+         SetTitle(applicationType);
+         ApplySize(applicationType);
 
-         return For(applicationType).Run(args);
+         var application = CreateApplicationInternal(applicationType);
+
+         try
+         {
+            InitializeApplication(applicationType, application, args);
+            return await RunApplicationAsync(application);
+         }
+         catch (Exception exception)
+         {
+            // ReSharper disable once UsePatternMatching
+            var handler = application as IExceptionHandler;
+            if (handler == null || !handler.HandleException(exception))
+               throw;
+
+            return application;
+         }
       }
 
       /// <summary>Creates and runs an application of the given type with the given arguments.</summary>
       /// <param name="applicationType">Type of the application.</param>
       /// <param name="args">The arguments.</param>
-      /// <returns>The application </returns>
-      public IApplication Run(Type applicationType, string[] args)
+      /// <returns></returns>
+      public async Task<IApplication> RunAsync(Type applicationType, string args)
       {
          SetTitle(applicationType);
          ApplySize(applicationType);
@@ -91,7 +102,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
          try
          {
             InitializeApplication(applicationType, application, args);
-            return RunApplication(application);
+            return await RunApplicationAsync(application);
          }
          catch (Exception exception)
          {
@@ -104,28 +115,28 @@ namespace ConsoLovers.ConsoleToolkit.Core
          }
       }
 
+      /// <summary>Runs the specified application type.</summary>
+      /// <param name="applicationType">Type of the application.</param>
+      /// <param name="args">The arguments.</param>
+      /// <returns>The executed application</returns>
       public IApplication Run(Type applicationType, string args)
       {
-         SetTitle(applicationType);
-         ApplySize(applicationType);
-
-         var application = CreateApplicationInternal(applicationType);
-
-         try
-         {
-            InitializeApplication(applicationType, application, args);
-            return RunApplication(application);
-         }
-         catch (Exception exception)
-         {
-            // ReSharper disable once UsePatternMatching
-            var handler = application as IExceptionHandler;
-            if (handler == null || !handler.HandleException(exception))
-               throw;
-
-            return application;
-         }
+         return RunAsync(applicationType, args)
+            .GetAwaiter()
+            .GetResult();
       }
+
+      /// <summary>Runs the specified application type.</summary>
+      /// <param name="applicationType">Type of the application.</param>
+      /// <param name="args">The arguments.</param>
+      /// <returns>The executed application</returns>
+      public IApplication Run(Type applicationType, string[] args)
+      {
+         return RunAsync(applicationType, args)
+            .GetAwaiter()
+            .GetResult();
+      }
+
 
       private void SetTitle(Type applicationType)
       {
@@ -138,7 +149,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       #region Methods
 
-      internal void InitializeApplication(Type applicationType, IApplication application, object args)
+      private void InitializeApplication(Type applicationType, IApplication application, object args)
       {
          try
          {
@@ -248,9 +259,9 @@ namespace ConsoLovers.ConsoleToolkit.Core
          return false;
       }
 
-      private static IApplication RunApplication(IApplication application)
+      private static async Task<IApplication> RunApplicationAsync(IApplication application)
       {
-         application.Run();
+         await application.RunAsync();
          return application;
       }
 
@@ -266,7 +277,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
             throw new InvalidOperationException($"Could not create instance of type {type.FullName}");
 
          if (!(instance is IApplication application))
-            throw new InvalidOperationException($"The application type {type.Name} to run must inherit the {typeof(IApplication).Name} interface");
+            throw new InvalidOperationException($"The application type {type.Name} to run must inherit the {nameof(IApplication)} interface");
 
          return application;
       }

@@ -1,12 +1,13 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="GenericBootstrapper.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2018
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
 {
    using System;
+   using System.Threading.Tasks;
 
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
@@ -78,16 +79,43 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
       /// <summary>Runs the configured application with the given commandline arguments.</summary>
       /// <param name="args">The command line arguments.</param>
       /// <returns>The created <see cref="T:ConsoLovers.ConsoleToolkit.IApplication"/> of type <see cref="!:T"/></returns>
-      public T Run(string[] args) => CreateApplicationManager().Run(args);
+      public T Run(string[] args) => CreateApplicationManager()
+         .RunAsync(args).GetAwaiter()
+         .GetResult();
+
 
       /// <summary>Runs the configured application with the given commandline arguments.</summary>
       /// <param name="args">The command line arguments as string.</param>
       /// <returns>The created <see cref="T:ConsoLovers.ConsoleToolkit.IApplication"/> of type <see cref="!:T"/></returns>
-      public T Run(string args) => CreateApplicationManager().Run(args);
+      public T Run(string args) => CreateApplicationManager().RunAsync(args)
+         .GetAwaiter()
+         .GetResult();
 
       /// <summary>Runs the configured application with the commandline arguments <see cref="Environment.CommandLine"/>.</summary>
       /// <returns>The created <see cref="T:ConsoLovers.ConsoleToolkit.IApplication"/> of type <see cref="!:T"/></returns>
       public T Run() => Run(Environment.CommandLine);
+
+      /// <summary>
+      /// Runs the configured application with the given commandline arguments.
+      /// </summary>
+      /// <param name="args">The command line arguments.</param>
+      /// <returns>
+      /// The created <see cref="T:ConsoLovers.ConsoleToolkit.Core.IApplication" /> of type <see cref="!:T" />
+      /// </returns>
+      public Task<T> RunAsync(string[] args) => CreateApplicationManager().RunAsync(args);
+
+      /// <summary>Runs the configured application with the given commandline arguments.</summary>
+      /// <param name="args">The command line arguments as string. Use <see cref="P:System.Environment.CommandLine"/></param>
+      /// <returns>The created <see cref="T:ConsoLovers.ConsoleToolkit.Core.IApplication"/> of type <see cref="!:T"/></returns>
+      public Task<T> RunAsync(string args) => CreateApplicationManager().RunAsync(args);
+
+      /// <summary>
+      /// Runs the configured application with the commandline arguments from <see cref="P:System.Environment.CommandLine" />.
+      /// </summary>
+      /// <returns>
+      /// The created <see cref="T:ConsoLovers.ConsoleToolkit.Core.IApplication" /> of type <see cref="!:T" />
+      /// </returns>
+      public Task<T> RunAsync() => RunAsync(Environment.CommandLine);
 
       /// <summary>
       ///    Specifies the <see cref="T:ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.IObjectFactory"/> that is used to create the
@@ -117,7 +145,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
          if (createApplication == null)
             createApplication = () => new DefaultFactory().CreateInstance<T>();
 
-         var applicationManager = new ConsoleApplicationManagerGeneric<T>(createApplication) { WindowTitle = WindowTitle, WindowHeight = WindowHeight, WindowWidth = WindowWidth };
+         var applicationManager =
+            new ConsoleApplicationManagerGeneric<T>(createApplication)
+            {
+               WindowTitle = WindowTitle, WindowHeight = WindowHeight, WindowWidth = WindowWidth
+            };
          return applicationManager;
       }
 
