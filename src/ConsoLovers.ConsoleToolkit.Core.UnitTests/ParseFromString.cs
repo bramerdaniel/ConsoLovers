@@ -325,9 +325,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
          var target = Setup.CommandLineArgumentParser().Done();
 
          var arguments = target.ParseArguments("-d /a -x");
-         arguments.ContainsKey("d").Should().BeTrue();
-         arguments.ContainsKey("a").Should().BeTrue();
-         arguments.ContainsKey("x").Should().BeTrue();
+         arguments.ContainsName("d").Should().BeTrue();
+         arguments.ContainsName("a").Should().BeTrue();
+         arguments.ContainsName("x").Should().BeTrue();
 
          arguments["D"].Value.Should().BeNull();
          arguments["A"].Value.Should().BeNull();
@@ -340,9 +340,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
          var target = Setup.CommandLineArgumentParser().Done();
 
          var arguments = target.ParseArguments("-Ä=4 /Ü:5.5 -Ö:Peter");
-         arguments.ContainsKey("ä").Should().BeTrue();
-         arguments.ContainsKey("ü").Should().BeTrue();
-         arguments.ContainsKey("ö").Should().BeTrue();
+         arguments.ContainsName("ä").Should().BeTrue();
+         arguments.ContainsName("ü").Should().BeTrue();
+         arguments.ContainsName("ö").Should().BeTrue();
 
          arguments["Ä"].Value.Should().Be("4");
          arguments["Ü"].Value.Should().Be("5.5");
@@ -445,7 +445,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
          var target = Setup.CommandLineArgumentParser().Done();
 
          var arguments = target.ParseArguments(@"D:\HelloWorld\Hansi.txt");
-         arguments.ContainsKey("D").Should().BeTrue();
+         arguments.ContainsName("D").Should().BeTrue();
 
          arguments["D"].OriginalString.Should().Be(@"D:\HelloWorld\Hansi.txt");
       }
@@ -456,9 +456,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
          var target = Setup.CommandLineArgumentParser().Done();
 
          var arguments = target.ParseArguments("Command");
-         arguments.ContainsKey("Command").Should().BeTrue();
-         arguments.ContainsKey("command").Should().BeTrue();
-         arguments.ContainsKey("COMMAND").Should().BeTrue();
+         arguments.ContainsName("Command").Should().BeTrue();
+         arguments.ContainsName("command").Should().BeTrue();
+         arguments.ContainsName("COMMAND").Should().BeTrue();
 
          arguments["COMMAND"].Value.Should().BeNull();
       }
@@ -470,16 +470,16 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
          var target = Setup.CommandLineArgumentParser().Done();
 
          var arguments = target.ParseArguments("-Name=Hans");
-         arguments.ContainsKey("Name").Should().BeTrue();
-         arguments.ContainsKey("name").Should().BeTrue();
-         arguments.ContainsKey("NAME").Should().BeTrue();
+         arguments.ContainsName("Name").Should().BeTrue();
+         arguments.ContainsName("name").Should().BeTrue();
+         arguments.ContainsName("NAME").Should().BeTrue();
 
          arguments["Name"].Value.Should().Be("Hans");
 
          arguments = target.ParseArguments("-Name:Olga");
-         arguments.ContainsKey("Name").Should().BeTrue();
-         arguments.ContainsKey("name").Should().BeTrue();
-         arguments.ContainsKey("NAME").Should().BeTrue();
+         arguments.ContainsName("Name").Should().BeTrue();
+         arguments.ContainsName("name").Should().BeTrue();
+         arguments.ContainsName("NAME").Should().BeTrue();
 
          arguments["Name"].Value.Should().Be("Olga");
       }
@@ -490,22 +490,22 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
          var target = Setup.CommandLineArgumentParser().Done();
 
          var arguments = target.ParseArguments(" -Debug");
-         arguments.ContainsKey("Debug").Should().BeTrue();
-         arguments.ContainsKey("debug").Should().BeTrue();
-         arguments.ContainsKey("DEBUG").Should().BeTrue();
-         arguments.ContainsKey("Release").Should().BeFalse();
-         arguments.ContainsKey("release").Should().BeFalse();
-         arguments.ContainsKey("RELEASE").Should().BeFalse();
+         arguments.ContainsName("Debug").Should().BeTrue();
+         arguments.ContainsName("debug").Should().BeTrue();
+         arguments.ContainsName("DEBUG").Should().BeTrue();
+         arguments.ContainsName("Release").Should().BeFalse();
+         arguments.ContainsName("release").Should().BeFalse();
+         arguments.ContainsName("RELEASE").Should().BeFalse();
 
          arguments["DEBUg"].Value.Should().BeNull();
 
          arguments = target.ParseArguments(" -Release");
-         arguments.ContainsKey("Debug").Should().BeFalse();
-         arguments.ContainsKey("debug").Should().BeFalse();
-         arguments.ContainsKey("DEBUG").Should().BeFalse();
-         arguments.ContainsKey("Release").Should().BeTrue();
-         arguments.ContainsKey("release").Should().BeTrue();
-         arguments.ContainsKey("RELEASE").Should().BeTrue();
+         arguments.ContainsName("Debug").Should().BeFalse();
+         arguments.ContainsName("debug").Should().BeFalse();
+         arguments.ContainsName("DEBUG").Should().BeFalse();
+         arguments.ContainsName("Release").Should().BeTrue();
+         arguments.ContainsName("release").Should().BeTrue();
+         arguments.ContainsName("RELEASE").Should().BeTrue();
 
          arguments["ReleasE"].Value.Should().BeNull();
       }
@@ -514,13 +514,13 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
 
       #region Methods
 
-      private static void AssertContains(IDictionary<string, CommandLineArgument> arguments, string expectedKey, string expectedValue = null, int index = -1)
+      private static void AssertContains(CommandLineArgumentList arguments, string expectedKey, string expectedValue = null, int index = -1)
       {
-         arguments.Should().ContainKey(expectedKey);
-         arguments.Should().ContainKey(expectedKey.ToLower());
-         arguments.Should().ContainKey(expectedKey.ToUpper());
+         arguments.ContainsName(expectedKey).Should().BeTrue();
+         arguments.ContainsName(expectedKey.ToLower()).Should().BeTrue();
+         arguments.ContainsName(expectedKey.ToUpper()).Should().BeTrue();
 
-         var argument = arguments[expectedKey];
+         arguments.TryGetValue(expectedKey, out var argument).Should().BeTrue();
 
          string.Equals(argument.Name, expectedKey, StringComparison.InvariantCultureIgnoreCase).Should().BeTrue();
          argument.Value.Should().Be(expectedValue);
@@ -536,13 +536,13 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       public static CommandLineArgument GetSingleArgument(this CommandLineArgumentParser paser, string args)
       {
          var arguments = paser.ParseArguments(args);
-         return arguments.Values.Single(arg => arg.Index == 0);
+         return arguments.Single(arg => arg.Index == 0);
       }
 
       public static IList<CommandLineArgument> GetArguments(this CommandLineArgumentParser paser, string args)
       {
          var arguments = paser.ParseArguments(args);
-         return arguments.Values.ToArray();
+         return arguments.ToArray();
       }
    }
 }

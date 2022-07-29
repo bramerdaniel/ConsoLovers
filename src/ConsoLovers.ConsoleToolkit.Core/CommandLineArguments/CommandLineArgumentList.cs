@@ -40,6 +40,8 @@ public class CommandLineArgumentList : List<CommandLineArgument>
       }
    }
 
+   public CommandLineArgument this[string name] => this.FirstOrDefault(x => Comparer.Equals(x.Name, name));
+
    #endregion
 
    #region Properties

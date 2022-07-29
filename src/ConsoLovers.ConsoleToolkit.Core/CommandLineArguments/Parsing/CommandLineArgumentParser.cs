@@ -48,7 +48,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
          return arguments;
       }
 
-      public IDictionary<string, CommandLineArgument> ParseArguments(string args, bool caseSensitive)
+      public IDictionary<string, CommandLineArgument> ParseArgumentsOld(string args, bool caseSensitive)
       {
          int skippFirst = args.Equals(Environment.CommandLine) ? 1 : 0;
 
@@ -64,7 +64,24 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
          return arguments;
       }
 
-      public IDictionary<string, CommandLineArgument> ParseArguments(string args)
+      public CommandLineArgumentList ParseArguments(string args, bool caseSensitive)
+      {
+         int skippFirst = args.Equals(Environment.CommandLine) ? 1 : 0;
+
+         var arguments = new Dictionary<string, CommandLineArgument>(caseSensitive ? StringComparer.InvariantCulture : StringComparer.InvariantCultureIgnoreCase);
+         int index = 0;
+         foreach (var arg in SplitIntoArgs(args).Skip(skippFirst))
+         {
+            var commandLineArgument = ParseSingleArgument(arg, index);
+            arguments[commandLineArgument.Name] = commandLineArgument;
+            index++;
+         }
+
+         return CommandLineArgumentList.FromDictionary(arguments);
+
+      }
+
+      public CommandLineArgumentList ParseArguments(string args)
       {
          return ParseArguments(args, false);
       }
