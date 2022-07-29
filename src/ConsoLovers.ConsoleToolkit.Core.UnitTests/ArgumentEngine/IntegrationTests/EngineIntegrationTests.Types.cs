@@ -20,7 +20,7 @@ public partial class EngineIntegrationTests
    {
       #region Public Properties
 
-      [Argument("permission")] 
+      [Argument("permission", Index = 0)] 
       public string Permission { get; [UsedImplicitly] set; }
 
       #endregion
@@ -32,7 +32,12 @@ public partial class EngineIntegrationTests
    {
       #region Public Properties
 
-      [Argument("name")] public string RoleName { get; [UsedImplicitly] set; }
+      [Argument("name")] 
+      public string RoleName { get; [UsedImplicitly] set; }
+
+      [Option("force")]
+      [UsedImplicitly]
+      public bool Force { get; [UsedImplicitly] set; }
 
       #endregion
    }
@@ -55,15 +60,15 @@ public partial class EngineIntegrationTests
       #region Public Properties
 
       [Command("permission")]
-      // ReSharper disable once UnusedAutoPropertyAccessor.Local
+      [UsedImplicitly]
       public CommandMock<DeletePermissionArgs> Permission { get; set; }
 
       [Command("role")]
-      // ReSharper disable once UnusedAutoPropertyAccessor.Local
+      [UsedImplicitly]
       public CommandMock<DeleteRoleArgs> Role { get; set; }
 
       [Command("user")]
-      // ReSharper disable once UnusedAutoPropertyAccessor.Local
+      [UsedImplicitly]
       public CommandMock<DeleteUserArgs> User { get; set; }
 
       #endregion
@@ -75,7 +80,79 @@ public partial class EngineIntegrationTests
    {
       #region Public Properties
 
-      [Command("delete")] public CommandMock<DeleteArgs> Delete { get; [UsedImplicitly] set; }
+      [Command("delete")]
+      [UsedImplicitly]
+      public CommandMock<DeleteArgs> Delete { get; [UsedImplicitly] set; }
+
+      [Command("add")]
+      [UsedImplicitly]
+      public CommandMock<AddArgs> Add { get; [UsedImplicitly] set; }
+      
+      [Option("force", Shared = true)]
+      [UsedImplicitly]
+      public bool Force { get; [UsedImplicitly] set; }
+
+
+
+      #endregion
+   }
+
+   [DebuggerDisplay("AddArgs")]
+   [UsedImplicitly]
+   private class AddArgs
+   {
+      #region Public Properties
+
+      [Command("permission")]
+      [UsedImplicitly]
+      public CommandMock<AddPermissionArgs> Permission { get; set; }
+
+      [Command("role")]
+      [UsedImplicitly]
+      public CommandMock<AddRoleArgs> Role { get; set; }
+
+      [Command("user")]
+      [UsedImplicitly]
+      public CommandMock<AddUserArgs> User { get; set; }
+
+      #endregion
+   }
+
+   [DebuggerDisplay("AddPermissionArgs")]
+   [UsedImplicitly]
+   internal class AddPermissionArgs
+   {
+      #region Public Properties
+
+      [Argument("permission")]
+      [UsedImplicitly]
+      public string Permission { get; [UsedImplicitly] set; }
+
+      #endregion
+   }
+
+   [DebuggerDisplay("AddRoleArgs")]
+   [UsedImplicitly]
+   internal class AddRoleArgs
+   {
+      #region Public Properties
+
+      [Argument("name")]
+      [UsedImplicitly]
+      public string RoleName { get; [UsedImplicitly] set; }
+
+      #endregion
+   }
+
+   [DebuggerDisplay("AddUserArgs")]
+   [UsedImplicitly]
+   internal class AddUserArgs
+   {
+      #region Public Properties
+
+      [Argument("name", Index = 0)]
+      [UsedImplicitly] 
+      public string UserName { get; [UsedImplicitly] set; }
 
       #endregion
    }

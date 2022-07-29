@@ -79,6 +79,14 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          return CommandLineAttribute is OptionAttribute;
       }
 
+      /// <summary>Determines whether the mapping is an command.</summary>
+      /// <returns><c>true</c> if this instance is command; otherwise, <c>false</c>.</returns>
+      public bool IsCommand()
+      {
+         return CommandLineAttribute is CommandAttribute;
+      }
+
+
       /// <summary>Determines whether the mapping is shared.</summary>
       /// <returns><c>true</c> if this instance is shared; otherwise, <c>false</c>.</returns>
       public bool IsShared()

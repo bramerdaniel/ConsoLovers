@@ -98,6 +98,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       internal static bool SetArgumentValue<T>(T instance, MappingInfo mappingInfo, CommandLineArgumentList arguments)
       {
+         if (mappingInfo.IsCommand())
+            return false;
+
          PropertyInfo propertyInfo = mappingInfo.PropertyInfo;
          CommandLineAttribute attribute = mappingInfo.CommandLineAttribute;
          var count = 0;
