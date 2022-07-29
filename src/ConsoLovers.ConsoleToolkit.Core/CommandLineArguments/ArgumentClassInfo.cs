@@ -8,12 +8,14 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
    using System;
    using System.Collections.Generic;
+   using System.Diagnostics;
    using System.Linq;
    using System.Reflection;
 
    using JetBrains.Annotations;
 
    /// <summary>The <see cref="ArgumentClassInfo"/> is a helper class, that is able to analyze the class representing the command line arguments. This is done by reflection</summary>
+   [DebuggerDisplay("{ArgumentType?.Name}")]
    public class ArgumentClassInfo
    {
       #region Constants and Fields

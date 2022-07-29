@@ -1,4 +1,10 @@
-namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="CommandMapperTests.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine.CommandMapperTests
 {
    using System.Collections.Generic;
 
@@ -16,31 +22,27 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
       #region Public Methods and Operators
 
       [TestMethod]
-      public void EnsureCommandIsParsedCorrectly()
+      public void EnsureCommandIsMappedCorrectlyEvenIfNoNameIsSpecified()
       {
-         var applicationArgs = new ApplicationArgs();
-         var dictionary = new Dictionary<string, CommandLineArgument>
-         {
-            { "execute", new CommandLineArgument { Name = "execute" } },
-            { "path", new CommandLineArgument { Name = "path" , Value = "C:\\temp"} }
-         };
+         var applicationArgs = new CommandsWithoutName();
+         var dictionary = new Dictionary<string, CommandLineArgument> { { "Execute", new CommandLineArgument { Name = "Execute" } }, };
 
-         var commandMapper = new CommandMapper<ApplicationArgs>(Setup.EngineFactory().Done());
+         var commandMapper = new CommandMapper<CommandsWithoutName>(Setup.EngineFactory().Done());
          var result = commandMapper.Map(dictionary, applicationArgs);
 
          result.Execute.Should().NotBeNull();
       }
 
       [TestMethod]
-      public void EnsureCommandIsMappedCorrectlyEvenIfNoNameIsSpecified()
+      public void EnsureCommandIsParsedCorrectly()
       {
-         var applicationArgs = new CommandsWithoutName();
+         var applicationArgs = new ApplicationArgs();
          var dictionary = new Dictionary<string, CommandLineArgument>
          {
-            { "Execute", new CommandLineArgument { Name = "Execute" } },
+            { "execute", new CommandLineArgument { Name = "execute" } }, { "path", new CommandLineArgument { Name = "path", Value = "C:\\temp" } }
          };
 
-         var commandMapper = new CommandMapper<CommandsWithoutName>(Setup.EngineFactory().Done());
+         var commandMapper = new CommandMapper<ApplicationArgs>(Setup.EngineFactory().Done());
          var result = commandMapper.Map(dictionary, applicationArgs);
 
          result.Execute.Should().NotBeNull();
@@ -52,7 +54,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
          var applicationArgs = new CommandsWithName();
          var commandLineArgument = new CommandLineArgument { Name = "name" };
          var property = typeof(CommandsWithName).GetProperty(nameof(CommandsWithName.Execute));
-         var dictionary = new Dictionary<string, CommandLineArgument>{{ commandLineArgument.Name, commandLineArgument }};
+         var dictionary = new Dictionary<string, CommandLineArgument> { { commandLineArgument.Name, commandLineArgument } };
 
          var commandMapper = new CommandMapper<CommandsWithName>(Setup.EngineFactory().Done());
          var monitor = commandMapper.Monitor();
@@ -64,13 +66,13 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
             .WithArgs<MapperEventArgs>(args => args.Argument == commandLineArgument)
             .WithArgs<MapperEventArgs>(args => args.PropertyInfo == property);
       }
-      
+
       [TestMethod]
       public void EnsureEventIsRaisedWhenHelpCommandIsMapped()
       {
          var applicationArgs = new CommandsWithName();
          var commandLineArgument = new CommandLineArgument { Name = "?" };
-         var dictionary = new Dictionary<string, CommandLineArgument>{{ "?", commandLineArgument }};
+         var dictionary = new Dictionary<string, CommandLineArgument> { { "?", commandLineArgument } };
 
          var commandMapper = new CommandMapper<CommandsWithName>(Setup.EngineFactory().Done());
          var monitor = commandMapper.Monitor();
@@ -82,15 +84,24 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
             .WithArgs<MapperEventArgs>(args => args.Argument == commandLineArgument);
       }
 
-      class CommandsWithoutName
+      #endregion
+
+      #region Methods
+
+      private T Mapp<T>(IDictionary<string, CommandLineArgument> arguments)
+         where T : class, new()
       {
-         [Command]
-         // ReSharper disable once UnusedAutoPropertyAccessor.Local
-         public Command Execute { get; set; }
+         var args = new T();
+         var commandMapper = new CommandMapper<T>(Setup.EngineFactory().Done());
+         return commandMapper.Map(arguments, args);
       }
+
+      #endregion
 
       class CommandsWithName
       {
+         #region Public Properties
+
          [Command("name")]
          // ReSharper disable once UnusedAutoPropertyAccessor.Local
          public Command Execute { get; set; }
@@ -98,8 +109,19 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
          [Command("?")]
          // ReSharper disable once UnusedAutoPropertyAccessor.Local
          public HelpCommand Help { get; set; }
+
+         #endregion
       }
 
-      #endregion
+      class CommandsWithoutName
+      {
+         #region Public Properties
+
+         [Command]
+         // ReSharper disable once UnusedAutoPropertyAccessor.Local
+         public Command Execute { get; set; }
+
+         #endregion
+      }
    }
 }

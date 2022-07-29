@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="EngineTestBase.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2016
+// <copyright file="CommandLineEngineSetup.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -9,13 +9,13 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups;
 
-   public class EngineTestBase
+   public class CommandLineEngineSetup : SetupBase<CommandLineEngine>
    {
       #region Methods
 
-      protected CommandLineEngine GetTarget()
+      protected override CommandLineEngine CreateInstance()
       {
-         return Setup.CommandLineEngine().Done();
+         return new CommandLineEngine();
       }
 
       #endregion
