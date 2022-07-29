@@ -6,7 +6,7 @@
     },
     "help": {
       "commandName": "Project",
-      "commandLineArgs": "create user name=Hans "
+      "commandLineArgs": "create user ?"
     },
     "delete user": {
       "commandName": "Project",

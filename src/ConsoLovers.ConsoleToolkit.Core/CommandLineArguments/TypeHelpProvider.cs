@@ -19,6 +19,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
    public class TypeHelpProvider : IHelpProvider
    {
+      public IObjectFactory ObjectFactory { get; }
+
       #region Constants and Fields
 
       private readonly ResourceManager resourceManager;
@@ -34,8 +36,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       }
 
       [InjectionConstructor]
-      public TypeHelpProvider([CanBeNull] ResourceManager resourceManager)
+      public TypeHelpProvider([CanBeNull] ResourceManager resourceManager, [NotNull] IObjectFactory objectFactory)
       {
+         ObjectFactory = objectFactory ?? throw new ArgumentNullException(nameof(objectFactory));
          this.resourceManager = resourceManager;
       }
 
@@ -136,11 +139,24 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       /// <param name="helpRequest"></param>
       public virtual void WriteTypeFooter(TypeHelpRequest helpRequest)
       {
-         WriteSeparator();
+         if (helpRequest.IsCustomFooter() && ObjectFactory.CreateInstance(helpRequest.Type) is ICustomizedFooter customizedFooter)
+         {
+            customizedFooter.WriteFooter(Console);
+         }
+         else
+         {
+            WriteSeparator();
+         }
       }
 
       public virtual void WriteTypeHeader(TypeHelpRequest helpRequest)
       {
+         if (helpRequest.IsCustomHeader() && ObjectFactory.CreateInstance(helpRequest.Type) is ICustomizedHeader customizedHeader)
+         {
+            customizedHeader.WriteHeader(Console);
+            return;
+         }
+
          if (helpRequest.Type.IsCommandType())
          {
             Console.WriteLine($"Help for the '{GetCommandName(helpRequest.Type)}' command");

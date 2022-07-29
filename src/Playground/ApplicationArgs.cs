@@ -16,11 +16,11 @@ public class ApplicationArgs
    
    [Command("delete")]
    [HelpText("Entry point for the delete stuff")]
-   public DeleteCommandProxy DeleteCommand { get; set; } = null!;     
+   public CommandGroup<DeleteArgs> DeleteCommand { get; set; } = null!;     
 
-   [Command("async")]
+   [Command("modify")]
    [HelpText("Async command test")]
-   public AsyncTestCommamd AsyncTest{ get; set; } = null!;  
+   public ModifyCommamd AsyncTest{ get; set; } = null!;  
    
    [Command("help", "?")]
    [HelpText("Shows this help")]

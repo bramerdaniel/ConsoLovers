@@ -10,12 +10,6 @@ public class CreateCommand : IAsyncCommand<CreateArgs>
 {
    public CreateArgs Arguments { get; set; }
 
-   public void Execute()
-   {
-      CommandExecutor.ExecuteCommandAsync<CreateArgs>(Arguments)
-         .GetAwaiter()
-         .GetResult();
-   }
 
    public async Task ExecuteAsync()
    {

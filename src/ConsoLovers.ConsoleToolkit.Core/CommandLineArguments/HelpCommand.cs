@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="HelpCommand.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2017
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -17,8 +17,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
    /// <summary>Implementation of the help command</summary>
    public class HelpCommand : ICommand<HelpCommandArguments>
    {
-      public IConsole Console { get; }
-
       #region Constants and Fields
 
       private readonly ICommandLineEngine engine;
@@ -29,10 +27,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       #region Constructors and Destructors
 
-      /// <summary>
-      /// Initializes a new instance of the <see cref="HelpCommand" /> class.
-      /// </summary>
-      /// <param name="engine">The <see cref="ICommandLineEngine" /> that should be used.</param>
+      /// <summary>Initializes a new instance of the <see cref="HelpCommand"/> class.</summary>
+      /// <param name="engine">The <see cref="ICommandLineEngine"/> that should be used.</param>
       /// <param name="console">The console that should be used by the command.</param>
       /// <param name="resourceManager">The resource manager.</param>
       /// <exception cref="System.ArgumentNullException">engine</exception>
@@ -47,7 +43,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       #endregion
 
-      #region ICommand Members
+      #region ICommand<HelpCommandArguments> Members
 
       /// <summary>Executes this instance.</summary>
       public virtual void Execute()
@@ -56,11 +52,13 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          PrintHelp(helpRequest);
       }
 
+      public HelpCommandArguments Arguments { get; set; }
+
       #endregion
 
-      #region ICommand<HelpCommandArguments> Members
+      #region Properties
 
-      public HelpCommandArguments Arguments { get; set; }
+      private IConsole Console { get; }
 
       #endregion
 
@@ -95,7 +93,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
             if (parameterInfo != null)
             {
-
                if (parameterInfo is CommandInfo nextCommand)
                {
                   var withoutCurrent = remainingParameters.Length > 1 ? remainingParameters.Skip(1).ToArray() : Array.Empty<string>();
@@ -108,15 +105,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
                return;
             }
-
-            //if (parameterInfo is CommandInfo nextCommand)
-            //{
-            //   var withoutCurrent = remainingParameters.Length > 1 ? remainingParameters.Skip(1).ToArray() : Array.Empty<string>();
-            //   PrintCommandHelp(nextCommand, withoutCurrent);
-            //   return;
-            //}
-
-
          }
 
          if (commandInfo.ArgumentType != null)

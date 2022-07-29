@@ -9,6 +9,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine.IntegrationTe
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 using ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups;
@@ -62,6 +63,18 @@ public partial class EngineIntegrationTests
 
       // As the force option is shared, the force should also be set on the command
       result.Delete.Arguments.Role.Arguments.Force.Should().BeTrue();
+   }
+
+   [TestMethod]
+   public void EnsureApplicationUnmappedArgumentsAreCorrect()
+   {
+      var result = CreateArgumentFromString<RootArgs>("add user robert green", out var unhandledArguments);
+
+      result.Add.Should().NotBeNull();
+      result.Add.Arguments.User.Should().NotBeNull();
+      result.Add.Arguments.User.Arguments.UserName.Should().Be("robert");
+
+      unhandledArguments.First().Name.Should().Be("green");
    }
 
    private static T CreateArgumentFromString<T>(string commandLine)

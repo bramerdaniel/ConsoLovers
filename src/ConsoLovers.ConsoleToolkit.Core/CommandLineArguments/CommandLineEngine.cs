@@ -390,7 +390,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          if (providerType != null && ObjectFactory.CreateInstance(providerType) is IHelpProvider provider)
             return provider;
 
-         return new TypeHelpProvider(resourceManager);
+         return new TypeHelpProvider(resourceManager, ObjectFactory);
       }
 
       private IHelpProvider GetHelpTextProvider(PropertyInfo propertyInfo, ResourceManager resourceManager)

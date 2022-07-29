@@ -16,11 +16,11 @@ public class DeleteArgs
    #region Public Properties
 
    [Command("role")]
-   [HelpText("creates a role")]
+   [HelpText("Deletes an existing role")]
    public DeleteRoleCommand Role { get; set; } = null!;
 
    [Command("user")]
-   [HelpText("creates a user")]
+   [HelpText("Deletes an existing user")]
    public DeleteUserCommand User { get; set; } = null!;
 
    #endregion
