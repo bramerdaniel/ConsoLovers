@@ -24,5 +24,8 @@ public class ApplicationArgs
    
    [Command("help", "?")]
    [HelpText("Shows this help")]
-   public HelpCommand Help{ get; set; } = null!;
+   public HelpCommand Help{ get; set; } = null!;   
+
+   [Option("w")]
+   public bool Wait{ get; set; } = false;
 }

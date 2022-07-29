@@ -13,4 +13,10 @@ public class PlaygroundApp : ConsoleApplication<ApplicationArgs>
       : base(commandLineEngine)
    {
    }
+
+   protected override void OnUnhandledCommandLineArgument(object sender, CommandLineArgumentEventArgs e)
+   {
+      Console.WriteLine($"{e.Argument.Name} was not handled", ConsoleColor.DarkMagenta);
+      base.OnUnhandledCommandLineArgument(sender, e);
+   }
 }

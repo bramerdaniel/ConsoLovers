@@ -10,7 +10,11 @@
     },
     "delete user": {
       "commandName": "Project",
-      "commandLineArgs": "delete user username=Hans "
+      "commandLineArgs": "delete user username=Hans -w"
+    },
+    "delete file": {
+      "commandName": "Project",
+      "commandLineArgs": "delete files first.cs foo.abc test.123 -w"
     }
   }
 }

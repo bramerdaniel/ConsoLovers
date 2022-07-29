@@ -7,8 +7,11 @@ public static class Program
 {
    public static async Task Main()
    {
-      await ConsoleApplicationManager.For<PlaygroundApp>()
+      var app = await ConsoleApplicationManager
+         .For<PlaygroundApp>()
          .RunAsync();
-      
+
+      if (app.Arguments?.Wait ?? true)
+         Console.ReadLine();
    }
 }
