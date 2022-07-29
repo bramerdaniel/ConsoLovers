@@ -28,7 +28,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine.CommandMapper
          var dictionary = new Dictionary<string, CommandLineArgument> { { "Execute", new CommandLineArgument { Name = "Execute" } }, };
 
          var commandMapper = new CommandMapper<CommandsWithoutName>(Setup.EngineFactory().Done());
-         var result = commandMapper.Map(dictionary, applicationArgs);
+         var result = commandMapper.Map(CommandLineArgumentList.FromDictionary(dictionary), applicationArgs);
 
          result.Execute.Should().NotBeNull();
       }
@@ -43,7 +43,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine.CommandMapper
          };
 
          var commandMapper = new CommandMapper<ApplicationArgs>(Setup.EngineFactory().Done());
-         var result = commandMapper.Map(dictionary, applicationArgs);
+         var result = commandMapper.Map(CommandLineArgumentList.FromDictionary(dictionary), applicationArgs);
 
          result.Execute.Should().NotBeNull();
       }
@@ -59,7 +59,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine.CommandMapper
          var commandMapper = new CommandMapper<CommandsWithName>(Setup.EngineFactory().Done());
          var monitor = commandMapper.Monitor();
 
-         var result = commandMapper.Map(dictionary, applicationArgs);
+         var result = commandMapper.Map(CommandLineArgumentList.FromDictionary(dictionary), applicationArgs);
 
          result.Execute.Should().NotBeNull();
          monitor.Should().Raise(nameof(CommandMapper<CommandsWithName>.MappedCommandLineArgument))
@@ -77,7 +77,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine.CommandMapper
          var commandMapper = new CommandMapper<CommandsWithName>(Setup.EngineFactory().Done());
          var monitor = commandMapper.Monitor();
 
-         var result = commandMapper.Map(dictionary, applicationArgs);
+         var result = commandMapper.Map(CommandLineArgumentList.FromDictionary(dictionary), applicationArgs);
 
          result.Help.Should().NotBeNull();
          monitor.Should().Raise(nameof(CommandMapper<CommandsWithName>.MappedCommandLineArgument))
@@ -93,7 +93,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine.CommandMapper
       {
          var args = new T();
          var commandMapper = new CommandMapper<T>(Setup.EngineFactory().Done());
-         return commandMapper.Map(arguments, args);
+         return commandMapper.Map(CommandLineArgumentList.FromDictionary(arguments), args);
       }
 
       #endregion

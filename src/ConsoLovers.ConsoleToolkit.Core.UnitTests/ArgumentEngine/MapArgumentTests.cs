@@ -31,7 +31,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
          };
 
          var target = Setup.ArgumentMapper().ForType<ArgumentTestClass>().Done();
-         var result = target.Map(dictionary, commandTestClass);
+         var result = target.Map(CommandLineArgumentList.FromDictionary(dictionary), commandTestClass);
 
          Assert.AreEqual(result.NamedArgument, "TheNameValue");
       }
@@ -47,7 +47,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
          };
 
          var argumentMapper = Setup.ArgumentMapper().ForType<ArgumentTestClass>().Done();
-         var result = argumentMapper.Map(dictionary, commandTestClass);
+         var result = argumentMapper.Map(CommandLineArgumentList.FromDictionary(dictionary), commandTestClass);
 
          Assert.AreEqual(result.NamedArgument, "TheNameValue");
       }
@@ -59,7 +59,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
          var dictionary = new Dictionary<string, CommandLineArgument>();
 
          var argumentMapper = Setup.ArgumentMapper().ForType<ArgumentTestClass>().Done();
-         argumentMapper.Invoking(x => x.Map(dictionary, commandTestClass)).Should().Throw<MissingCommandLineArgumentException>();
+         argumentMapper.Invoking(x => x.Map(CommandLineArgumentList.FromDictionary(dictionary), commandTestClass)).Should().Throw<MissingCommandLineArgumentException>();
       }
 
       [TestMethod]
@@ -74,7 +74,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
             { "RequiredArgument", new CommandLineArgument { Value = "RequiredArgumentValue" } }
          };
          var argumentMapper = Setup.ArgumentMapper().ForType<ArgumentTestClass>().Done();
-         var result = argumentMapper.Map(dictionary, commandTestClass);
+         var result = argumentMapper.Map(CommandLineArgumentList.FromDictionary(dictionary), commandTestClass);
 
          Assert.AreEqual(result.SimpleArgument, "\"SimpleArgumentValue\"");
          Assert.AreEqual(result.NamedArgument, "TheNameValue");
@@ -93,7 +93,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
          };
 
          var argumentMapper = Setup.ArgumentMapper().ForType<ArgumentTestClass>().Done();
-         var result = argumentMapper.Map(dictionary, commandTestClass);
+         var result = argumentMapper.Map(CommandLineArgumentList.FromDictionary(dictionary), commandTestClass);
 
          Assert.AreEqual(result.TrimmedArgument, "UntrimmedValue");
       }
@@ -112,7 +112,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
             .Done();
 
          var monitor = target.Monitor();
-         var result = target.Map(dictionary, args);
+         var result = target.Map(CommandLineArgumentList.FromDictionary(dictionary), args);
 
          Assert.AreEqual(result.RequiredArgument, "RequiredArgumentValue");
          monitor.Should().Raise(nameof(IArgumentMapper<ArgumentTestClass>.UnmappedCommandLineArgument))
@@ -131,7 +131,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
             .Done();
 
          var monitor = target.Monitor();
-         var result = target.Map(dictionary, args);
+         var result = target.Map(CommandLineArgumentList.FromDictionary(dictionary), args);
 
          result.RequiredArgument.Should().Be(argument.Value);
          monitor.Should().Raise(nameof(IArgumentMapper<ArgumentTestClass>.MappedCommandLineArgument))
@@ -151,7 +151,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
             .Done();
 
          var monitor = target.Monitor();
-         var result = target.Map(dictionary, args);
+         var result = target.Map(CommandLineArgumentList.FromDictionary(dictionary), args);
 
          result.Wait.Should().BeTrue();
          monitor.Should().Raise(nameof(IArgumentMapper<OptionsTestClass>.MappedCommandLineArgument))

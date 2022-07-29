@@ -11,17 +11,17 @@ using System.Collections.Generic;
 
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
-public class CommandLineArgumentsSetup : SetupBase<IDictionary<string, CommandLineArgument>>
+public class CommandLineArgumentsSetup : SetupBase<CommandLineArgumentList>
 {
-   private IDictionary<string, CommandLineArgument> arguments = new Dictionary<string, CommandLineArgument>();
+   private readonly CommandLineArgumentList arguments = new();
 
-   public CommandLineArgumentsSetup Add(string key, CommandLineArgument commandLineArgument)
+   public CommandLineArgumentsSetup Add(CommandLineArgument commandLineArgument)
    {
-      arguments.Add(key, commandLineArgument);
+      arguments.Add(commandLineArgument);
       return this;
    }
    
-   protected override IDictionary<string, CommandLineArgument> CreateInstance()
+   protected override CommandLineArgumentList CreateInstance()
    {
       return arguments;
    }

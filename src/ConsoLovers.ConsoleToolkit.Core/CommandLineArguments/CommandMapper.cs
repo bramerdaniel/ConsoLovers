@@ -7,8 +7,6 @@
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
    using System;
-   using System.Collections.Generic;
-   using System.IO;
    using System.Linq;
    using System.Reflection;
 
@@ -51,29 +49,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       #region IArgumentMapper<T> Members
 
-      /// <summary>Maps the give argument dictionary to the given instance.</summary>
-      /// <param name="arguments">The arguments to map.</param>
-      /// <param name="instance">The instance to map the arguments to.</param>
-      /// <returns>The instance of the class, the command line argument were mapped to</returns>
-      [Obsolete("Use overload with CommandLineArgumentList")]
-      public T Map(IDictionary<string, CommandLineArgument> arguments, T instance)
-      {
-         var argumentInfo = ArgumentClassInfo.FromType<T>();
-         var helpRequest = GetHelpRequest(arguments, argumentInfo);
-         if (helpRequest != null)
-         {
-            MapHelpOnly(instance, argumentInfo, arguments, helpRequest);
-            return instance;
-         }
-
-         if (argumentInfo.HasCommands)
-            MapArgumentsToCommand(instance, argumentInfo, arguments);
-
-         foreach (var argument in arguments.Values.Where(x => !x.Mapped))
-            UnmappedCommandLineArgument?.Invoke(this, new MapperEventArgs(argument, null, instance));
-
-         return instance;
-      }
 
       /// <summary>Maps the give argument dictionary to the given instance.</summary>
       /// <param name="arguments">The arguments to map.</param>
@@ -103,17 +78,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          return instance;
       }
 
-      /// <summary>Maps the give argument dictionary to a new created instance.</summary>
-      /// <param name="arguments">The arguments to map.</param>
-      /// <returns>The instance of the class, the command line argument were mapped to</returns>
-      /// <exception cref="System.IO.InvalidDataException">Option attribute can only be applied to boolean properties</exception>
-      /// <exception cref="InvalidDataException">Option attribute can only be applied to boolean properties</exception>
-      [Obsolete("Use overload with CommandLineArgumentList")]
-      public T Map(IDictionary<string, CommandLineArgument> arguments)
-      {
-         var instance = factory.CreateInstance<T>();
-         return Map(arguments, instance);
-      }
 
       #endregion
 
@@ -123,41 +87,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       {
          foreach (var argument in arguments)
             argument.Index--;
-      }
-
-      private static void DecreaseIndices(IDictionary<string, CommandLineArgument> arguments)
-      {
-         foreach (var argument in arguments.Values)
-            argument.Index--;
-      }
-
-      private static CommandInfo GetCommandByNameOrDefault(ArgumentClassInfo argumentInfo, string commandName,
-         IDictionary<string, CommandLineArgument> arguments)
-      {
-         if (commandName == null)
-            return argumentInfo.DefaultCommand;
-
-         foreach (var commandInfo in argumentInfo.CommandInfos)
-         {
-            if (IsEqual(commandInfo.ParameterName, commandName))
-            {
-               arguments.Remove(commandName);
-               DecreaseIndices(arguments);
-               return commandInfo;
-            }
-
-            foreach (var alias in commandInfo.Attribute.GetIdentifiers())
-            {
-               if (IsEqual(alias, commandName))
-               {
-                  arguments.Remove(commandName);
-                  DecreaseIndices(arguments);
-                  return commandInfo;
-               }
-            }
-         }
-
-         return argumentInfo.DefaultCommand;
       }
 
       private static CommandInfo GetCommandByNameOrDefault(ArgumentClassInfo argumentInfo, string commandName, CommandLineArgumentList arguments)
@@ -188,18 +117,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          return argumentInfo.DefaultCommand;
       }
 
-      private static CommandLineArgument GetFirstArgument(IDictionary<string, CommandLineArgument> arguments)
-      {
-         CommandLineArgument lowestRemainingIndex = null;
-         foreach (var argument in arguments.Values)
-         {
-            if (lowestRemainingIndex == null || lowestRemainingIndex.Index > argument.Index)
-               lowestRemainingIndex = argument;
-         }
-
-         return lowestRemainingIndex;
-      }
-
       private static CommandLineArgument GetFirstArgument(CommandLineArgumentList arguments)
       {
          CommandLineArgument lowestRemainingIndex = null;
@@ -210,23 +127,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          }
 
          return lowestRemainingIndex;
-      }
-
-      private static CommandLineArgument GetHelpRequest(IDictionary<string, CommandLineArgument> arguments, ArgumentClassInfo argumentInfo)
-      {
-         if (argumentInfo.HelpCommand == null)
-            return null;
-
-         foreach (var identifier in argumentInfo.HelpCommand.Attribute.GetIdentifiers())
-         {
-            if (arguments.TryGetValue(identifier, out var commandLineArgument))
-            {
-               arguments.Remove(identifier);
-               return commandLineArgument;
-            }
-         }
-
-         return null;
       }
 
       private static CommandLineArgument GetHelpRequest(CommandLineArgumentList arguments, ArgumentClassInfo argumentInfo)
@@ -251,53 +151,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          return string.Equals(declaredNameOrAlias, givenName, StringComparison.InvariantCultureIgnoreCase);
       }
 
-      private object CreateCommandInstance(CommandInfo commandInfo, IDictionary<string, CommandLineArgument> arguments)
-      {
-         var commandType = commandInfo.PropertyInfo.PropertyType;
-         if (!ImplementsICommand(commandType))
-            throw new ArgumentException(
-               $"The type '{commandType}' of the property '{commandInfo.PropertyInfo.Name}' does not implement the {typeof(ICommandBase).FullName} interface");
-
-         if (TryGetArgumentType(commandType, out var argumentType))
-         {
-            var argumentInstance = factory.CreateInstance(argumentType);
-
-            CreateMapper(argumentType, out var mapper, out var genericType);
-
-            var eventInfo = genericType.GetEvent(nameof(IArgumentMapper.MappedCommandLineArgument));
-            EventHandler<MapperEventArgs> handler = OnMappedCommandLineArgument;
-
-            try
-            {
-               eventInfo.AddEventHandler(mapper, handler);
-
-               var methodInfo = genericType.GetMethod(nameof(IArgumentMapper<T>.Map),
-                  new[] { typeof(IDictionary<string, CommandLineArgument>), argumentType });
-               // ReSharper disable once PossibleNullReferenceException
-               methodInfo.Invoke(mapper, new[] { arguments, argumentInstance });
-            }
-            catch (TargetInvocationException e)
-            {
-               if (e.InnerException is CommandLineArgumentException exception)
-                  throw exception;
-            }
-            finally
-            {
-               eventInfo.RemoveEventHandler(mapper, handler);
-            }
-
-            var command = factory.CreateInstance(commandType);
-            var argumentsProperty = commandType.GetProperty(nameof(ICommand<T>.Arguments));
-            if (argumentsProperty == null)
-               throw new InvalidOperationException("The ICommand<T> implementation does not contain a Arguments property.");
-
-            argumentsProperty.SetValue(command, argumentInstance);
-            return command;
-         }
-
-         return factory.CreateInstance(commandType);
-      }
-
       private object CreateCommandInstance(CommandInfo commandInfo, CommandLineArgumentList arguments)
       {
          var commandType = commandInfo.PropertyInfo.PropertyType;
@@ -316,7 +169,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
             try
             {
-               eventInfo.AddEventHandler(mapper, handler);
+               eventInfo?.AddEventHandler(mapper, handler);
 
                var methodInfo = genericType.GetMethod(nameof(IArgumentMapper<T>.Map),
                   new[] { typeof(CommandLineArgumentList), argumentType });
@@ -330,7 +183,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
             }
             finally
             {
-               eventInfo.RemoveEventHandler(mapper, handler);
+               eventInfo?.RemoveEventHandler(mapper, handler);
             }
 
             var command = factory.CreateInstance(commandType);
@@ -365,22 +218,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       private bool ImplementsICommand(Type commandType)
       {
-         return commandType.GetInterface(typeof(ICommandBase).FullName) != null;
-      }
-
-      private void MapApplicationArguments(T instance, IDictionary<string, CommandLineArgument> arguments)
-      {
-         var defaultMapper = new ArgumentMapper<T>(factory);
-         try
-         {
-            // Here we do not care about unmapped arguments, because they could get mapped to the command later
-            defaultMapper.MappedCommandLineArgument += OnMappedCommandLineArgument;
-            defaultMapper.Map(arguments, instance);
-         }
-         finally
-         {
-            defaultMapper.MappedCommandLineArgument -= OnMappedCommandLineArgument;
-         }
+         return commandType.GetInterface(typeof(ICommandBase).FullName!) != null;
       }
 
       private void MapApplicationArguments(T instance, CommandLineArgumentList arguments)
@@ -395,34 +233,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          finally
          {
             defaultMapper.MappedCommandLineArgument -= OnMappedCommandLineArgument;
-         }
-      }
-
-      /// <summary>Tries to map all the <see cref="arguments"/> to one of the specified commands.</summary>
-      /// <param name="instance">The instance.</param>
-      /// <param name="argumentInfo">The argument information.</param>
-      /// <param name="arguments">The arguments.</param>
-      private void MapArgumentsToCommand(T instance, ArgumentClassInfo argumentInfo, IDictionary<string, CommandLineArgument> arguments)
-      {
-         // Note: per definition the help command has to be the first command line argument
-         var firstArgument = GetFirstArgument(arguments);
-
-         // NOTE: if the argument class contains a command that has the IsDefaultCommand property set to true,
-         // this call will always return a command!
-         var commandToCreate = GetCommandByNameOrDefault(argumentInfo, firstArgument?.Name, arguments);
-
-         // no mapper if we could not create a command but we try to map the arguments to the application arguments first.
-         // if there are remaining or shared argument, we map them to the command arguments later !
-         MapApplicationArguments(instance, arguments);
-
-         if (commandToCreate != null)
-         {
-            // Now that we found a command, we create it and map the remaining (and shared) parameters to the commands arguments class
-            var command = CreateCommandInstance(commandToCreate, arguments);
-            commandToCreate.PropertyInfo.SetValue(instance, command, null);
-
-            var commandLineArgument = firstArgument ?? new CommandLineArgument();
-            MappedCommandLineArgument?.Invoke(this, new MapperEventArgs(commandLineArgument, commandToCreate.PropertyInfo, instance));
          }
       }
 
@@ -454,20 +264,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          }
       }
 
-      private void MapHelpOnly(T instance, ArgumentClassInfo argumentInfo, IDictionary<string, CommandLineArgument> arguments,
-         CommandLineArgument helpRequest)
-      {
-         var helpCommand = factory.CreateInstance<HelpCommand>();
-         helpCommand.Arguments = new HelpCommandArguments
-         {
-            ArgumentInfos = argumentInfo, ArgumentDictionary = CommandLineArgumentList.FromDictionary(arguments)
-         };
-         argumentInfo.HelpCommand.PropertyInfo.SetValue(instance, helpCommand);
-
-         MappedCommandLineArgument?.Invoke(this,
-            new MapperEventArgs(helpRequest ?? new CommandLineArgument(), argumentInfo.HelpCommand.PropertyInfo, instance));
-      }
-
       private void MapHelpOnly(T instance, ArgumentClassInfo argumentInfo, CommandLineArgumentList arguments, CommandLineArgument helpRequest)
       {
          var helpCommand = factory.CreateInstance<HelpCommand>();
@@ -485,7 +281,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       private bool TryGetArgumentType(Type commandType, out Type argumentType)
       {
-         var commandInterface = commandType.GetInterface(typeof(ICommandArguments<>).FullName);
+         var commandInterface = commandType.GetInterface(typeof(ICommandArguments<>).FullName!);
          if (commandInterface == null)
          {
             argumentType = null;

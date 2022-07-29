@@ -24,8 +24,8 @@ public partial class NestedCommandTests
    public void EnsureNestedCommandIsMappedCorrectly()
    {
       var arguments = Setup.CommandLineArguments()
-         .Add("delete", new CommandLineArgument { Name = "delete" })
-         .Add("user", new CommandLineArgument { Name = "user" })
+         .Add( new CommandLineArgument { Name = "delete" })
+         .Add( new CommandLineArgument { Name = "user" })
          .Done();
 
       var result = Mapp<RootArgs>(arguments);
@@ -40,8 +40,8 @@ public partial class NestedCommandTests
    public void EnsureSecondNestedCommandIsMappedCorrectly()
    {
       var arguments = Setup.CommandLineArguments()
-         .Add("delete", new CommandLineArgument { Name = "delete" })
-         .Add("role", new CommandLineArgument { Name = "role" })
+         .Add( new CommandLineArgument { Name = "delete" })
+         .Add( new CommandLineArgument { Name = "role" })
          .Done();
 
       var result = Mapp<RootArgs>(arguments);
@@ -57,9 +57,9 @@ public partial class NestedCommandTests
    public void EnsureNameIsMappedToCorrectCommand()
    {
       var arguments = Setup.CommandLineArguments()
-         .Add("delete", new CommandLineArgument { Name = "delete" })
-         .Add("user", new CommandLineArgument { Name = "user" })
-         .Add("name", new CommandLineArgument { Name = "name" , Value = "Robert"})
+         .Add( new CommandLineArgument { Name = "delete" })
+         .Add( new CommandLineArgument { Name = "user" })
+         .Add( new CommandLineArgument { Name = "name" , Value = "Robert"})
          .Done();
 
       var result = Mapp<RootArgs>(arguments);
@@ -68,9 +68,9 @@ public partial class NestedCommandTests
       result.Delete.Arguments.Role.Should().BeNull();
 
       arguments = Setup.CommandLineArguments()
-         .Add("delete", new CommandLineArgument { Name = "delete" })
-         .Add("role", new CommandLineArgument { Name = "role" })
-         .Add("name", new CommandLineArgument { Name = "name", Value = "Robert" })
+         .Add(new CommandLineArgument { Name = "delete" })
+         .Add( new CommandLineArgument { Name = "role" })
+         .Add( new CommandLineArgument { Name = "name", Value = "Robert" })
          .Done();
 
       result = Mapp<RootArgs>(arguments);
@@ -79,7 +79,7 @@ public partial class NestedCommandTests
       result.Delete.Arguments.User.Should().BeNull();
    }
    
-   private static T Mapp<T>(IDictionary<string, CommandLineArgument> arguments)
+   private static T Mapp<T>(CommandLineArgumentList arguments)
       where T : class, new()
    {
       var args = new T();
