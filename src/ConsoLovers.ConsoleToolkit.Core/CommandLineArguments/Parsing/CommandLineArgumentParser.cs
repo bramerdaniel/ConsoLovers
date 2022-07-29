@@ -30,7 +30,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
       /// <param name="args">The command line arguments.</param>
       /// <param name="caseSensitive">if set to <c>true</c> the arguments should be treated case sensitive.</param>
       /// <returns>The created dictionary</returns>
-      public IDictionary<string, CommandLineArgument> ParseArguments(string[] args, bool caseSensitive)
+      public CommandLineArgumentList ParseArguments(string[] args, bool caseSensitive)
       {
          var arguments = new Dictionary<string, CommandLineArgument>(caseSensitive ? StringComparer.InvariantCulture : StringComparer.CurrentCultureIgnoreCase);
          int index = 0;
@@ -45,7 +45,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
             index++;
          }
 
-         return arguments;
+         return CommandLineArgumentList.FromDictionary(arguments);
       }
 
       public IDictionary<string, CommandLineArgument> ParseArgumentsOld(string args, bool caseSensitive)

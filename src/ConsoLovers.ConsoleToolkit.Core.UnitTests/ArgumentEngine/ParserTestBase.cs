@@ -21,12 +21,12 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
          return Setup.CommandLineArgumentParser().Done();
       }
 
-      protected IDictionary<string, CommandLineArgument> Parse(params string[] parameters)
+      protected CommandLineArgumentList Parse(params string[] parameters)
       {
          return GetTarget().ParseArguments(parameters, false);
       }
 
-      protected IDictionary<string, CommandLineArgument> Parse(string[] parameters, bool caseSensitive)
+      protected CommandLineArgumentList Parse(string[] parameters, bool caseSensitive)
       {
          return GetTarget().ParseArguments(parameters, caseSensitive);
       }
