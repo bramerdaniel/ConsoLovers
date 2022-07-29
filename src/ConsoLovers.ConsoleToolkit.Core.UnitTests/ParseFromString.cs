@@ -485,6 +485,30 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       }
 
       [TestMethod]
+      public void ParseMultipleSameArguments()
+      {
+         var target = Setup.CommandLineArgumentParser().Done();
+
+         var arguments = target.ParseArguments(" Run Run Run");
+         arguments.Should().HaveCount(3);
+         arguments[0].Name.Should().Be("Run");
+         arguments[1].Name.Should().Be("Run");
+         arguments[2].Name.Should().Be("Run");
+      }
+
+      [TestMethod]
+      public void ParseMultipleSameArgumentsWithDifferentCharacter()
+      {
+         var target = Setup.CommandLineArgumentParser().Done();
+
+         var arguments = target.ParseArguments(" -Run /Run Run");
+         arguments.Should().HaveCount(3);
+         arguments[0].Name.Should().Be("Run");
+         arguments[1].Name.Should().Be("Run");
+         arguments[2].Name.Should().Be("Run");
+      }
+      
+      [TestMethod]
       public void ParseOption()
       {
          var target = Setup.CommandLineArgumentParser().Done();

@@ -6,9 +6,6 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine.IntegrationTests;
 
-using System.Collections.Generic;
-
-using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 using ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups;
 
 using FluentAssertions;
@@ -24,7 +21,7 @@ public partial class EngineIntegrationTests
    public void SpecialCaseTest()
    {
       
-      var result = Mapp<RootArgs>("delete permission delete");
+      var result = CreateArgumentFromString<RootArgs>("delete permission delete");
 
       result.Delete.Arguments.Permission.Arguments.Permission.Should().Be("Allowed");
    }
@@ -33,19 +30,19 @@ public partial class EngineIntegrationTests
    public void SpecialCaseTest2()
    {
       
-      var result = Mapp<RootArgs>("delete permission permission=Allowed");
+      var result = CreateArgumentFromString<RootArgs>("delete permission permission=Allowed");
 
       result.Delete.Arguments.Permission.Arguments.Permission.Should().Be("Allowed");
    }
 
 
 
-   private static T Mapp<T>(string commandLine)
+   private static T CreateArgumentFromString<T>(string commandLine)
       where T : class, new()
    {
       var args = new T();
       var engine = Setup.CommandLineEngine().Done();
-      return engine.Map<T>(commandLine, args);
+      return engine.Map(commandLine, args);
    }
 
 
