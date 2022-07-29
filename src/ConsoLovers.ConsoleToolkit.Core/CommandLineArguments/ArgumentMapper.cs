@@ -48,8 +48,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       #region IArgumentMapper<T> Members
 
 
+      [Obsolete("Use overload with CommandLineArgumentList")]
       public T Map(IDictionary<string, CommandLineArgument> arguments, T instance)
-      {
+      { 
+         return Map(CommandLineArgumentList.FromDictionary(arguments), instance);
+
          HashSet<CommandLineArgument> sharedArguments = new HashSet<CommandLineArgument>();
 
          foreach (var mapping in MappingList.FromType<T>())
@@ -83,7 +86,13 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       }
 
 
- 
+
+
+      public T Map(CommandLineArgumentList arguments)
+      {
+         var instance = engineFactory.CreateInstance<T>();
+         return Map(arguments, instance);
+      }
 
       public T Map(CommandLineArgumentList arguments, T instance)
       {
@@ -124,6 +133,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       /// <returns>The instance of the class, the command line argument were mapped to</returns>
       /// <exception cref="T:System.IO.InvalidDataException">Option attribute can only be applied to boolean properties</exception>
       /// <exception cref="T:System.IO.InvalidDataException">Option attribute can only be applied to boolean properties</exception>
+      [Obsolete("Use overload with CommandLineArgumentList")]
       public T Map(IDictionary<string, CommandLineArgument> arguments)
       {
          var instance = engineFactory.CreateInstance<T>();

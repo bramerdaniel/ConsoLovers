@@ -17,7 +17,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
    {
       #region Methods
 
-
       private static bool TryGetByIndex(IDictionary<string, CommandLineArgument> arguments, MappingInfo mappingInfo, out KeyValuePair<string, CommandLineArgument> argument)
       {
          var index = mappingInfo.CommandLineAttribute.GetIndex();

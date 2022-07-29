@@ -50,8 +50,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
          result.First.Should().Be(45);
          result.Second.Should().BeTrue();
          result.Third.Should().Be("Nick O'Teen");
-
-         dictionary.Count.Should().Be(0);
       }
 
       [TestMethod]
@@ -83,8 +81,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
          result.First.Should().BeTrue();
          result.Second.Should().BeTrue();
          result.Third.Should().BeTrue();
-
-         dictionary.Count.Should().Be(0);
       }
 
       [TestMethod]
@@ -103,12 +99,10 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
          result.First.Should().BeTrue();
          result.Second.Should().BeTrue();
          result.Third.Should().BeTrue();
-
-         dictionary.Count.Should().Be(0);
       }
 
       [TestMethod]
-      public void EnsureOptionsCanOnlyBeMappedToBoolenProperties()
+      public void EnsureOptionsCanOnlyBeMappedToBoolaenProperties()
       {
          var target = Setup.ArgumentMapper().ForType<Options>().Done();
          var dictionary = new Dictionary<string, CommandLineArgument>(StringComparer.InvariantCultureIgnoreCase)
@@ -142,7 +136,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
 
 
       [TestMethod]
-      public void EnsureUnsusedArgumentStaysInTheArgumentsDictionary()
+      public void EnsureUnusedArgumentStaysInTheArgumentsDictionary()
       {
          var target = Setup.ArgumentMapper().ForType<Arguments>().Done();
          var dictionary = new Dictionary<string, CommandLineArgument>(StringComparer.InvariantCultureIgnoreCase)
@@ -150,16 +144,39 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
             { "First", new CommandLineArgument { Value = "45" } },
             { "invalid", new CommandLineArgument { Value = "45" } }
          };
-         var result = target.Map(dictionary);
+
+         var argumentList = CommandLineArgumentList.FromDictionary(dictionary);
+
+         var result = target.Map(argumentList);
 
          result.First.Should().Be(45);
 
-         dictionary.Count.Should().Be(1);
-         dictionary.ContainsKey("invalid").Should().BeTrue();
+         argumentList.Count.Should().Be(1);
+         argumentList.ContainsName("invalid").Should().BeTrue();
       }
 
       [TestMethod]
-      public void EnsureUnsusedOptionStaysInTheArgumentsDictionary()
+      public void EnsureUnusedArgumentStaysInTheArgumentsList()
+      {
+         var target = Setup.ArgumentMapper().ForType<Arguments>().Done();
+         var dictionary = new Dictionary<string, CommandLineArgument>(StringComparer.InvariantCultureIgnoreCase)
+         {
+            { "First", new CommandLineArgument { Value = "45" } },
+            { "invalid", new CommandLineArgument { Value = "45" } }
+         };
+
+         var argumentList = CommandLineArgumentList.FromDictionary(dictionary);
+         
+         var result = target.Map(argumentList);
+
+         result.First.Should().Be(45);
+
+         argumentList.Count.Should().Be(1);
+         argumentList.ContainsName("invalid").Should().BeTrue();
+      }
+
+      [TestMethod]
+      public void EnsureUnusedOptionStaysInTheArgumentsDictionary()
       {
          var target = Setup.ArgumentMapper().ForType<Options>().Done();
          var dictionary = new Dictionary<string, CommandLineArgument>(StringComparer.InvariantCultureIgnoreCase)
@@ -170,14 +187,16 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
             { "unmaped", new CommandLineArgument() }
          };
 
-         var result = target.Map(dictionary);
+         var argumentList = CommandLineArgumentList.FromDictionary(dictionary);
+
+         var result = target.Map(argumentList);
 
          result.First.Should().BeTrue();
          result.Second.Should().BeTrue();
          result.Third.Should().BeTrue();
 
-         dictionary.Count.Should().Be(1);
-         dictionary.ContainsKey("unmaped").Should().BeTrue();
+         argumentList.Count.Should().Be(1);
+         argumentList.ContainsName("unmaped").Should().BeTrue();
       }
 
       [TestMethod]

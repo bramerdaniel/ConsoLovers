@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="IArgumentMapper.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2018
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -9,7 +9,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
    using System;
    using System.Collections.Generic;
    using System.IO;
-   using System.Linq;
 
    public interface IArgumentMapper
    {
@@ -35,7 +34,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       /// <returns>The instance of the class, the command line argument were mapped to</returns>
       /// <exception cref="System.IO.InvalidDataException">Option attribute can only be applied to boolean properties</exception>
       /// <exception cref="InvalidDataException">Option attribute can only be applied to boolean properties</exception>
-      T Map(IDictionary<string, CommandLineArgument> arguments);
+      // [Obsolete("Use overload with CommandLineArgumentList")]
+      // T Map(IDictionary<string, CommandLineArgument> arguments);
 
       /// <summary>Maps the give argument dictionary to the given instance.</summary>
       /// <param name="arguments">The arguments to map.</param>
@@ -43,6 +43,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       /// <returns>The instance of the class, the command line argument were mapped to</returns>
       /// <exception cref="System.IO.InvalidDataException">Option attribute can only be applied to boolean properties</exception>
       /// <exception cref="InvalidDataException">Option attribute can only be applied to boolean properties</exception>
+      [Obsolete("Use overload with CommandLineArgumentList")]
       T Map(IDictionary<string, CommandLineArgument> arguments, T instance);
 
       /// <summary>Maps the give argument dictionary to the given instance.</summary>
@@ -53,51 +54,13 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       /// <exception cref="InvalidDataException">Option attribute can only be applied to boolean properties</exception>
       T Map(CommandLineArgumentList arguments, T instance);
 
+      /// <summary>Maps the give argument dictionary to the given instance.</summary>
+      /// <param name="arguments">The arguments to map.</param>
+      /// <returns>The instance of the class, the command line argument were mapped to</returns>
+      /// <exception cref="System.IO.InvalidDataException">Option attribute can only be applied to boolean properties</exception>
+      /// <exception cref="InvalidDataException">Option attribute can only be applied to boolean properties</exception>
+      T Map(CommandLineArgumentList arguments);
+
       #endregion
-   }
-
-   public class CommandLineArgumentList : List<CommandLineArgument>
-   {
-      internal StringComparison Comparer { get; }
-
-      public CommandLineArgumentList()
-      : this(StringComparison.InvariantCultureIgnoreCase)
-      {
-      }
-
-      public CommandLineArgumentList(StringComparison comparer)
-      {
-         Comparer = comparer;
-      }
-
-      public CommandLineArgumentList(IDictionary<string, CommandLineArgument> arguments)
-      {
-         AddRange(arguments.Values);
-         return;
-         foreach (var argument in arguments)
-         {
-            if (string.IsNullOrWhiteSpace(argument.Value.Value))
-            {
-               argument.Value.Value = argument.Key;
-            }
-
-            Add(argument.Value);
-         }
-
-      }
-
-      public bool TryGetValue(string name, out CommandLineArgument commandLineArgument)
-      {
-         commandLineArgument = this.FirstOrDefault(x => string.Equals(x.Name, name, Comparer));
-         return commandLineArgument != null;
-      }
-
-      public void RemoveFirst(string name)
-      {
-         var argument = this.FirstOrDefault(x => string.Equals(x.Name, name, Comparer));
-         if (argument != null)
-            Remove(argument);
-
-      }
    }
 }

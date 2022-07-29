@@ -119,7 +119,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          {
             mapper.UnmappedCommandLineArgument += OnUnmappedCommandLineArgument;
             mapper.MappedCommandLineArgument += OnMappedCommandLineArgument;
-            return mapper.Map(arguments);
+            return mapper.Map(CommandLineArgumentList.FromDictionary(arguments));
          }
          finally
          {
@@ -161,7 +161,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          {
             mapper.UnmappedCommandLineArgument += OnUnmappedCommandLineArgument;
             mapper.MappedCommandLineArgument += OnMappedCommandLineArgument;
-            return mapper.Map(arguments);
+            return mapper.Map(CommandLineArgumentList.FromDictionary(arguments));
          }
          finally
          {
@@ -180,7 +180,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          {
             mapper.UnmappedCommandLineArgument += OnUnmappedCommandLineArgument;
             mapper.MappedCommandLineArgument += OnMappedCommandLineArgument;
-            return mapper.Map(arguments, instance);
+            return mapper.Map(CommandLineArgumentList.FromDictionary(arguments), instance);
          }
          finally
          {
@@ -205,7 +205,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          {
             mapper.UnmappedCommandLineArgument += OnUnmappedCommandLineArgument;
             mapper.MappedCommandLineArgument += OnMappedCommandLineArgument;
-            return mapper.Map(arguments, instance);
+            return mapper.Map(CommandLineArgumentList.FromDictionary(arguments), instance);
          }
          finally
          {
