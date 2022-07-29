@@ -52,7 +52,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       /// <summary>Executes this instance.</summary>
       public virtual void Execute()
       {
-         var helpRequest = Arguments.ArgumentDictionary.Values.OrderBy(x => x.Index).Select(x => x.Name).ToArray();
+         var helpRequest = Arguments.ArgumentDictionary.OrderBy(x => x.Index).Select(x => x.Name).ToArray();
          PrintHelp(helpRequest);
       }
 

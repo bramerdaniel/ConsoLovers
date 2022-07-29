@@ -29,8 +29,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests.
       /// <returns></returns>
       string Run();
 
-      string RunAsync();
-
       string RunWith(T arguments);
 
       void RunWithAsync<T>(T arguments);

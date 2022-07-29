@@ -28,7 +28,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.IntegrationTests.WithoutComa
             var path = "C:\\SomeDirectory\\SomeFile.txt";
             testContext.RunApplication($"\"{path}\"");
 
-            testContext.Application.Verify(a => a.RunAsync(), Times.Once);
             testContext.Application.Verify(a => a.RunWithAsync(It.Is<SimpleArgs>(x => x.Path == path)), Times.Once);
             testContext.Application.Verify(a => a.RunWithCommand(It.IsAny<ICommand>()), Times.Never);
             
@@ -45,7 +44,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.IntegrationTests.WithoutComa
             var secondPath = "C:\\SomeOther\\SomeOther.txt";
             testContext.RunApplication($"\"{path}\" \"{secondPath}\"");
 
-            testContext.Application.Verify(a => a.RunAsync(), Times.Once);
             testContext.Application.Verify(a => a.RunWithAsync(It.Is<SimpleArgs>(x => x.Path == path && x.SecondPath == secondPath)), Times.Once);
             testContext.Application.Verify(a => a.RunWithCommand(It.IsAny<ICommand>()), Times.Never);
             
@@ -62,7 +60,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.IntegrationTests.WithoutComa
             var path = "C:\\SomeDirectory\\SomeFile.txt";
             testContext.RunApplication(path);
 
-            testContext.Application.Verify(a => a.RunAsync(), Times.Once);
             testContext.Application.Verify(a => a.RunWithAsync(It.Is<SimpleArgs>(x => x.Path == null)), Times.Once);
             testContext.Application.Verify(a => a.RunWithCommand(It.IsAny<ICommand>()), Times.Never);
 

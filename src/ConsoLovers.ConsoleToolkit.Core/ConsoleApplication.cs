@@ -39,10 +39,15 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       #region IApplication Members
 
-      public virtual async Task RunAsync()
+      /// <summary>Runs the application asynchronous.</summary>
+      public async Task RunAsync()
       {
-         if (await CommandExecutor.ExecuteCommandAsync(Arguments))
+         var executedCommand = await CommandExecutor.ExecuteCommandAsync(Arguments);
+         if (executedCommand != null)
+         {
+            await OnCommandExecutedAsync(executedCommand);
             return;
+         }
 
          if (HasArguments)
          {
@@ -54,6 +59,12 @@ namespace ConsoLovers.ConsoleToolkit.Core
          }
       }
 
+      /// <summary>Called directly after a command was executed.</summary>
+      /// <param name="command">The command that was executed</param>
+      protected virtual Task OnCommandExecutedAsync(ICommandBase command)
+      {
+         return Task.CompletedTask;
+      }
 
       /// <summary>Runs the application logic by executing the specified command,
       ///  or calling one of the RunWith or RunWithoutArguments methods.</summary>

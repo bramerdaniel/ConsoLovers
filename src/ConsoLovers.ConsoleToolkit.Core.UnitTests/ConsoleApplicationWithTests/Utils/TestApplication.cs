@@ -13,12 +13,12 @@
    {
       private readonly IApplicationVerification<T> application;
 
-      public override Task RunAsync()
+      protected override Task OnCommandExecutedAsync(ICommandBase command)
       {
-         application.RunAsync();
-         return base.RunAsync();
+         application.RunWithCommand(command);
+         return base.OnCommandExecutedAsync(command);
       }
-
+      
       public override void RunWith(T arguments)
       {
          application.RunWith(arguments);

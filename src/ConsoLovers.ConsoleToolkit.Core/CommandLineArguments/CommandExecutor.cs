@@ -9,35 +9,39 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 using System;
 using System.Threading.Tasks;
 
+using JetBrains.Annotations;
+
 public class CommandExecutor
 {
-   private static async Task RunWithCommandAsync(ICommandBase executable)
+   private static async Task<ICommandBase> RunWithCommandAsync(ICommandBase executable)
    {
       switch (executable)
       {
          case IAsyncCommand asyncCommand:
             await asyncCommand.ExecuteAsync();
-            break;
+            return executable;
          case ICommand command:
             command.Execute();
-            break;
+            return executable;
          default:
             throw new InvalidOperationException("Command type not supported");
       }
    }
-
-   public static async Task<bool> ExecuteCommandAsync<T>(T arguments)
+   
+   public static async Task<ICommandBase> ExecuteCommandAsync<T>(T arguments)
    {
       var applicationArguments = ArgumentClassInfo.FromType<T>();
       if (!applicationArguments.HasCommands)
-         return false;
+         return null;
 
       ICommandBase command = GetMappedCommand<T>(arguments);
-      if (command == null)
-         return false;
+      if (command != null)
+      {
+         await RunWithCommandAsync(command);
+         return command;
+      }
 
-      await RunWithCommandAsync(command);
-      return true;
+      return null;
    }
 
    private static ICommandBase GetMappedCommand<T>(T arguments)

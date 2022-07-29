@@ -84,7 +84,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests.
       public void VerifyCommandExecuted<TC>()
        where TC : ICommand
       {
-         Application.Verify(a => a.RunAsync(), Times.Once);
          Application.Verify(a => a.RunWithCommand(It.IsAny<TC>()), Times.Once);
       }
    }
