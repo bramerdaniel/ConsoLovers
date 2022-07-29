@@ -6,7 +6,11 @@
     },
     "help": {
       "commandName": "Project",
-      "commandLineArgs": "-async -?"
+      "commandLineArgs": "create user name=Hans "
+    },
+    "delete user": {
+      "commandName": "Project",
+      "commandLineArgs": "delete user username=Hans "
     }
   }
 }

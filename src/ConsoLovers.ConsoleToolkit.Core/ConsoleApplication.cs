@@ -41,7 +41,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       public virtual async Task RunAsync()
       {
-         if (await ExecuteCommandAsync())
+         if (await CommandExecutor.ExecuteCommandAsync(Arguments))
             return;
 
          if (HasArguments)
@@ -157,60 +157,9 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       #region Public Methods and Operators
 
-      public virtual async Task RunWithCommandAsync(ICommandBase executable)
-      {
-         switch (executable)
-         {
-            case IAsyncCommand asyncCommand:
-               await asyncCommand.ExecuteAsync();
-               break;
-            case ICommand command:
-               command.Execute();
-               break;
-            default:
-               throw new InvalidOperationException("Command type not supported");
-         }
-      }
-
       #endregion
 
       #region Methods
-
-      /// <summary>
-      ///    Executes the command that was specified in the command line arguments. If no argument was specified but the IsDefaultCommand property was set at one of the commands, a
-      ///    simulated command
-      /// </summary>
-      /// <returns></returns>
-      protected virtual async Task<bool> ExecuteCommandAsync()
-      {
-         var applicationArguments = ArgumentClassInfo.FromType<T>();
-         if (!applicationArguments.HasCommands)
-            return false;
-
-         ICommandBase command = GetMappedCommand();
-         if (command == null)
-            return false;
-
-         await RunWithCommandAsync(command);
-         return true;
-      }
-
-      protected ICommandBase GetMappedCommand()
-      {
-         if (Arguments == null)
-            return null;
-
-         foreach (var propertyInfo in typeof(T).GetProperties())
-         {
-            if (propertyInfo.PropertyType.GetInterface(typeof(ICommandBase).FullName) != null)
-            {
-               if (propertyInfo.GetValue(Arguments) is ICommandBase value)
-                  return value;
-            }
-         }
-
-         return null;
-      }
 
       /// <summary>Called after the arguments were initialized. This is the first method the arguments can be accessed</summary>
       protected virtual void OnArgumentsInitialized()

@@ -1,18 +1,17 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AsyncTestCommamd.cs" company="ConsoLovers">
+// <copyright file="CreateUserCommand.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
-public class AsyncTestCommamd : IAsyncCommand<CreateArgs>
+public class CreateUserCommand : ICommand<CreateUserArgs>
 {
-   public CreateArgs Arguments { get; set; }
-
-   public Task ExecuteAsync()
+   public void Execute()
    {
-      
-      return Task.CompletedTask;
+      Console.WriteLine($"Create user {Arguments.UserName}");
    }
+
+   public CreateUserArgs Arguments { get; set; }
 }

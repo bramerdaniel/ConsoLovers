@@ -1,18 +1,24 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="TestArgs.cs" company="ConsoLovers">
+// <copyright file="CreateRoleArgs.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
-public class TestArgs
+namespace Playground.Commands.Create.Role;
+
+public class CreateRoleArgs
 {
    #region Public Properties
 
-   [Argument("n", Index = 0)]
-   [HelpText("Number of the async command")]
-   public int Number { get; set; }
+   [Argument("name", Index = 0)]
+   [HelpText("Name of the role to create")]
+   public string RoleName { get; set; } = null!;
+
+   [Argument("rank", Index = 1)]
+   [HelpText("Rank of the role to create")]
+   public int Rank { get; set; }
 
    #endregion
 }

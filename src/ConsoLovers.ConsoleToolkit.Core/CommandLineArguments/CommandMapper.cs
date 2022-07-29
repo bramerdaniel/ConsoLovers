@@ -161,17 +161,14 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       {
          var commandType = commandInfo.PropertyInfo.PropertyType;
          if (!ImplementsICommand(commandType))
-            throw new ArgumentException(
-               $"The type '{commandType}' of the property '{commandInfo.PropertyInfo.Name}' does not implement the {typeof(ICommandBase).FullName} interface");
+            throw new ArgumentException($"The type '{commandType}' of the property '{commandInfo.PropertyInfo.Name}' does not implement the {typeof(ICommandBase).FullName} interface");
 
          if (TryGetArgumentType(commandType, out var argumentType))
          {
             var argumentInstance = factory.CreateInstance(argumentType);
 
-            var mapperType = typeof(ArgumentMapper<>);
-            Type[] typeArgs = { argumentType };
-            var genericType = mapperType.MakeGenericType(typeArgs);
-            object mapper = factory.CreateInstance(genericType);
+
+            CreateMapper(argumentType, out var mapper, out var genericType);
 
             var eventInfo = genericType.GetEvent(nameof(IArgumentMapper.MappedCommandLineArgument));
             EventHandler<MapperEventArgs> handler = OnMappedCommandLineArgument;
@@ -206,6 +203,24 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          return factory.CreateInstance(commandType);
       }
 
+      private void CreateMapper(Type argumentType, out object mapper, out Type genericType)
+      {
+         var argumentClassInfo = ArgumentClassInfo.FromType(argumentType);
+         Type mapperType;
+         if (argumentClassInfo.HasCommands)
+         {
+            mapperType = typeof(CommandMapper<>);
+         }
+         else
+         {
+            mapperType = typeof(ArgumentMapper<>);
+         }
+
+         Type[] typeArgs = { argumentType };
+         genericType = mapperType.MakeGenericType(typeArgs);
+         mapper = factory.CreateInstance(genericType);
+      }
+
       private bool ImplementsICommand(Type commandType)
       {
          return commandType.GetInterface(typeof(ICommandBase).FullName) != null;
@@ -223,7 +238,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          // NOTE: if the argument class contains a command that has the IsDefaultCommand property set to true,
          // this call will always return a command!
          var commandToCreate = GetCommandByNameOrDefault(argumentInfo, firstArgument?.Name, arguments);
-         
+
          // no mapper if we could not create a command but we try to map the arguments to the application arguments first.
          // if there are remaining or shared argument, we map them to the command arguments later !
          MapApplicationArguments(instance, arguments);

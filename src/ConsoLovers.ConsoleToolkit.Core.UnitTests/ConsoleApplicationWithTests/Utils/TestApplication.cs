@@ -70,12 +70,7 @@
          application.RunWithAsync(arguments);
          return base.RunWithAsync(arguments);
       }
-
-      public override Task RunWithCommandAsync(ICommandBase command)
-      {
-         application.RunWithCommand(command);
-         return base.RunWithCommandAsync(command);
-      }
+      
 
       protected override Task RunWithoutArgumentsAsync()
       {

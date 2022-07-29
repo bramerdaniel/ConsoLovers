@@ -1,18 +1,17 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AsyncTestCommamd.cs" company="ConsoLovers">
+// <copyright file="RootCommand.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
-public class AsyncTestCommamd : IAsyncCommand<CreateArgs>
+public class RootCommand<T> : ICommand<T>
 {
-   public CreateArgs Arguments { get; set; }
-
-   public Task ExecuteAsync()
+   public void Execute()
    {
-      
-      return Task.CompletedTask;
+      CommandExecutor.ExecuteCommandAsync<T>(Arguments).GetAwaiter().GetResult();
    }
+
+   public T Arguments { get; set; }
 }

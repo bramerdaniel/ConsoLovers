@@ -11,4 +11,9 @@
     <ProjectReference Include="..\ConsoLovers.ConsoleToolkit.Core\ConsoLovers.ConsoleToolkit.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Commands\Delete\Role\" />
+    <Folder Include="Commands\Delete\User\" />
+  </ItemGroup>
+
 </Project>

@@ -78,26 +78,45 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          }
       }
 
-      private void PrintCommandHelp(CommandInfo commandInfo, string argumentName)
+      private void PrintCommandHelp(CommandInfo commandInfo, string[] remainingParameters)
       {
+         var argumentName = remainingParameters.FirstOrDefault();
          if (!string.IsNullOrEmpty(argumentName))
          {
-            if (commandInfo.ArgumentType != null)
-            {
-               var classInfo = ArgumentClassInfo.FromType(commandInfo.ArgumentType);
-               var parameterInfo = classInfo.GetParameterInfo(argumentName);
-               if (parameterInfo != null)
-               {
-                  engine.PrintHelp(parameterInfo.PropertyInfo, resourceManager);
-                  return;
-               }
-            }
-            else
+            if (commandInfo.ArgumentType == null)
             {
                // TODO: Forward to help provider ???
                Console.WriteLine("The command does not take any parameters. So no help could be found");
                return;
             }
+
+            var classInfo = ArgumentClassInfo.FromType(commandInfo.ArgumentType);
+            var parameterInfo = classInfo.GetParameterInfo(argumentName);
+
+            if (parameterInfo != null)
+            {
+
+               if (parameterInfo is CommandInfo nextCommand)
+               {
+                  var withoutCurrent = remainingParameters.Length > 1 ? remainingParameters.Skip(1).ToArray() : Array.Empty<string>();
+                  PrintCommandHelp(nextCommand, withoutCurrent);
+               }
+               else
+               {
+                  engine.PrintHelp(parameterInfo.PropertyInfo, resourceManager);
+               }
+
+               return;
+            }
+
+            //if (parameterInfo is CommandInfo nextCommand)
+            //{
+            //   var withoutCurrent = remainingParameters.Length > 1 ? remainingParameters.Skip(1).ToArray() : Array.Empty<string>();
+            //   PrintCommandHelp(nextCommand, withoutCurrent);
+            //   return;
+            //}
+
+
          }
 
          if (commandInfo.ArgumentType != null)
@@ -125,10 +144,10 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
             return;
          }
 
-         var commandInfo = parameterInfo as CommandInfo;
-         if (commandInfo != null)
+         if (parameterInfo is CommandInfo commandInfo)
          {
-            PrintCommandHelp(commandInfo, helpRequest.Length > 1 ? helpRequest[1] : null);
+            var remaining = helpRequest.Length > 1 ? helpRequest.Skip(1).ToArray() : Array.Empty<string>();
+            PrintCommandHelp(commandInfo, remaining);
          }
          else
          {

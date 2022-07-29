@@ -1,17 +1,23 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="PayArgs.cs" company="ConsoLovers">
+// <copyright file="ApplicationArgs.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
-public class PayArgs
+using Playground.Commands.Delete;
+
+public class ApplicationArgs
 {
-   [Command("test")]
-   [HelpText("Normal command test")]
-   public TestCommamd Test { get; set; } = null!;   
+   [Command("create")]
+   [HelpText("Root command for nested command")]
+   public CreateCommand Create { get; set; } = null!;   
    
+   [Command("delete")]
+   [HelpText("Entry point for the delete stuff")]
+   public DeleteCommandProxy DeleteCommand { get; set; } = null!;     
+
    [Command("async")]
    [HelpText("Async command test")]
    public AsyncTestCommamd AsyncTest{ get; set; } = null!;  

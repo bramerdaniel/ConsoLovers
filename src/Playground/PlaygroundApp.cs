@@ -7,7 +7,7 @@
 using ConsoLovers.ConsoleToolkit.Core;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
-public class PlaygroundApp : ConsoleApplication<PayArgs>
+public class PlaygroundApp : ConsoleApplication<ApplicationArgs>
 {
    public PlaygroundApp(ICommandLineEngine commandLineEngine)
       : base(commandLineEngine)
