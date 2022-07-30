@@ -16,7 +16,7 @@
 		</Description>
 		<LangVersion>latest</LangVersion>
 		<PackageReleaseNotes>4.0.0
- - Support for internal argument classes and properties
+ - Support for internal and private argument classes and properties
  - Support nested commands to support more complex applications
  - Support for async application and commands
  - Added InputBox from console toolkit 

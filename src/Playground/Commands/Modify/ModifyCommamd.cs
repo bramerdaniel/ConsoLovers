@@ -6,11 +6,11 @@
 
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
-public class ModifyCommamd : IAsyncCommand<CreateArgs>
+public class ModifyCommamd : IAsyncCommand<ModifyArgs>
 {
    #region IAsyncCommand<CreateArgs> Members
 
-   public CreateArgs Arguments { get; set; } = null!;
+   public ModifyArgs Arguments { get; set; } = null!;
 
    public Task ExecuteAsync(CancellationToken cancellationToken)
    {
