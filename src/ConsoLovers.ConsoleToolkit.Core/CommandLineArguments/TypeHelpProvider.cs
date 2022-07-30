@@ -329,7 +329,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       private void WriteArgument(ArgumentHelp argumentHelp, int longestNameWidth, int longestAliasWidth, int descriptionWidth, int leftWidth)
       {
          var name = $"-{argumentHelp.PropertyName}".PadRight(longestNameWidth);
-         var aliasString = $"[{argumentHelp.AliasString}]".PadRight(longestAliasWidth);
+         var aliasString = ComputeAliasString(argumentHelp, longestAliasWidth);
+
 
          Console.Write(name, GetNameForeground(argumentHelp));
          Console.Write(aliasString);
@@ -339,6 +340,13 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          Console.WriteLine(descriptionLines[0]);
          foreach (var part in descriptionLines.Skip(1))
             Console.WriteLine(" ".PadLeft(leftWidth) + part);
+      }
+
+      private static string ComputeAliasString(ArgumentHelp argumentHelp, int width)
+      {
+         if (string.IsNullOrWhiteSpace(argumentHelp.AliasString))
+            return "".PadRight(width);
+         return $"[{argumentHelp.AliasString}]".PadRight(width);
       }
 
       private void WritePropertyContent(PropertyHelpRequest property)
