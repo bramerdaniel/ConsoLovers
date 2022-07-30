@@ -7,6 +7,7 @@
 namespace ConsoLovers.ConsoleToolkit.Core
 {
    using System;
+   using System.Threading;
    using System.Threading.Tasks;
 
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
@@ -29,15 +30,21 @@ namespace ConsoLovers.ConsoleToolkit.Core
       #endregion
 
       #region Public Methods and Operators
-      
-      public async Task<T> RunAsync(string args)
+
+      /// <summary>Runs the application asynchronous.</summary>
+      /// <param name="args">The arguments as string.</param>
+      /// <param name="cancellationToken">The cancellation token.</param>
+      public async Task<T> RunAsync(string args, CancellationToken cancellationToken)
       {
-         return (T)await RunAsync(typeof(T), args);
+         return (T)await RunAsync(typeof(T), args, cancellationToken);
       }
 
-      public async Task<T> RunAsync(string[] args)
+      /// <summary>Runs the application asynchronous.</summary>
+      /// <param name="args">The arguments as string array.</param>
+      /// <param name="cancellationToken">The cancellation token.</param>
+      public async Task<T> RunAsync(string[] args, CancellationToken cancellationToken)
       {
-         return (T)await RunAsync(typeof(T), args);
+         return (T)await RunAsync(typeof(T), args, cancellationToken);
       }
 
       #endregion

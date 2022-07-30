@@ -8,11 +8,10 @@ using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
 public class CreateCommand : IAsyncCommand<CreateArgs>
 {
-   public CreateArgs Arguments { get; set; }
+   public CreateArgs Arguments { get; set; } = null!;
 
-
-   public async Task ExecuteAsync()
+   public async Task ExecuteAsync(CancellationToken cancellationToken)
    {
-      await CommandExecutor.ExecuteCommandAsync<CreateArgs>(Arguments);
+      await CommandExecutor.ExecuteCommandAsync<CreateArgs>(Arguments, cancellationToken);
    }
 }

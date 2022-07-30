@@ -20,8 +20,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
    {
       #region Constants and Fields
 
-      public bool? hasCommands;
-
       private List<CommandInfo> commandInfos;
 
       private List<ParameterInfo> properties;
@@ -32,10 +30,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       private ArgumentClassInfo([NotNull] Type argumentType)
       {
-         if (argumentType == null)
-            throw new ArgumentNullException(nameof(argumentType));
-
-         ArgumentType = argumentType;
+         ArgumentType = argumentType ?? throw new ArgumentNullException(nameof(argumentType));
          Initialize();
       }
 
@@ -81,10 +76,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          return null;
       }
 
-      public void Validate()
-      {
-      }
-
       #endregion
 
       #region Methods
@@ -111,7 +102,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          commandInfos = new List<CommandInfo>();
          properties = new List<ParameterInfo>();
 
-         foreach (var propertyInfo in ArgumentType.GetProperties(BindingFlags.Instance | BindingFlags.Public))
+         foreach (var propertyInfo in ArgumentType.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
          {
             var attributes = propertyInfo.GetCustomAttributes<CommandLineAttribute>(true).ToArray();
             if (attributes.Any())

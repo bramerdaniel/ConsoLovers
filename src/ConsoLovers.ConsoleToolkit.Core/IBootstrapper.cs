@@ -7,6 +7,7 @@
 namespace ConsoLovers.ConsoleToolkit.Core
 {
    using System;
+   using System.Threading;
    using System.Threading.Tasks;
 
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
@@ -81,17 +82,19 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       /// <summary>Runs the configured application with the given commandline arguments.</summary>
       /// <param name="args">The command line arguments.</param>
+      /// <param name="cancellationToken">The cancellation token.</param>
       /// <returns>The created <see cref="IApplication"/> of type <see cref="T"/></returns>
-      Task<T> RunAsync(string[] args);
+      Task<T> RunAsync(string[] args, CancellationToken cancellationToken);
 
       /// <summary>Runs the configured application with the given commandline arguments.</summary>
       /// <param name="args">The command line arguments as string. Use <see cref="Environment.CommandLine"/></param>
+      /// <param name="cancellationToken">The cancellation token.</param>
       /// <returns>The created <see cref="IApplication"/> of type <see cref="T"/></returns>
-      Task<T> RunAsync(string args);
+      Task<T> RunAsync(string args, CancellationToken cancellationToken);
 
       /// <summary>Runs the configured application with the commandline arguments from <see cref="Environment.CommandLine"/>.</summary>
       /// <returns>The created <see cref="IApplication"/> of type <see cref="T"/></returns>
-      Task<T> RunAsync();
+      Task<T> RunAsync(CancellationToken cancellationToken);
 
       /// <summary>
       ///    Specifies the window height of the console window that should be used. NOTE: this overwrites the values specified by the

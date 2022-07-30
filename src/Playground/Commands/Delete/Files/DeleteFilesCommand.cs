@@ -10,7 +10,7 @@ using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
 public class DeleteFilesCommand : IAsyncCommand<DeleteFileArgs>
 {
-   public Task ExecuteAsync()
+   public Task ExecuteAsync(CancellationToken cancellationToken)
    {
       if (Arguments.Files == null)
          return Task.CompletedTask;

@@ -7,6 +7,7 @@
 namespace ConsoLovers.ConsoleToolkit.Core
 {
    using System;
+   using System.Threading;
    using System.Threading.Tasks;
 
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
@@ -40,9 +41,9 @@ namespace ConsoLovers.ConsoleToolkit.Core
       #region IApplication Members
 
       /// <summary>Runs the application asynchronous.</summary>
-      public async Task RunAsync()
+      public async Task RunAsync(CancellationToken cancellationToken)
       {
-         var executedCommand = await CommandExecutor.ExecuteCommandAsync(Arguments);
+         var executedCommand = await CommandExecutor.ExecuteCommandAsync(Arguments, cancellationToken);
          if (executedCommand != null)
          {
             await OnCommandExecutedAsync(executedCommand);
@@ -70,7 +71,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       ///  or calling one of the RunWith or RunWithoutArguments methods.</summary>
       public virtual void Run()
       {
-         RunAsync().GetAwaiter().GetResult();
+         RunAsync(CancellationToken.None).GetAwaiter().GetResult();
       }
 
       #endregion
@@ -113,7 +114,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       public virtual void InitializeFromString(T instance, string args)
       {
-         HasArguments = ! string.IsNullOrWhiteSpace(args);
+         HasArguments = !string.IsNullOrWhiteSpace(args);
          Arguments = CommandLineEngine.Map(args, instance);
 
          OnArgumentsInitialized();

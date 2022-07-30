@@ -12,7 +12,7 @@ public class ApplicationArgs
 {
    [Command("create")]
    [HelpText("Root command for nested command")]
-   public CreateCommand Create { get; set; } = null!;   
+   protected internal CreateCommand Create { get; set; } = null!;   
    
    [Command("delete")]
    [HelpText("Entry point for the delete stuff")]

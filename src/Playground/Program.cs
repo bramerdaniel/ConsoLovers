@@ -9,7 +9,7 @@ public static class Program
    {
       var app = await ConsoleApplicationManager
          .For<PlaygroundApp>()
-         .RunAsync();
+         .RunAsync(CancellationToken.None);
 
       if (app.Arguments?.Wait ?? true)
          Console.ReadLine();

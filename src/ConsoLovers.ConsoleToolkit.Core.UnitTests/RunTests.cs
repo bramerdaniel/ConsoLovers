@@ -1,6 +1,7 @@
 ﻿namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
 {
    using System.Diagnostics.CodeAnalysis;
+   using System.Threading;
    using System.Threading.Tasks;
 
    using ConsoLovers.ConsoleToolkit.Core;
@@ -24,22 +25,23 @@
       public void EnsureRunIsCalledOnRunable()
       {
 
-         var runned = new ConsoleApplicationManagerGeneric<Runable>().RunAsync(new string[0]).GetAwaiter().GetResult();
+         var runned = new ConsoleApplicationManagerGeneric<Runable>()
+            .RunAsync(new string[0], CancellationToken.None).GetAwaiter().GetResult();
 
-         runned.Mock.Verify(x => x.RunAsync(), Times.Once);
+         runned.Mock.Verify(x => x.RunAsync(CancellationToken.None), Times.Once);
       }
 
       [TestMethod]
       public void EnsureRunInitializesWhenRequired()
       {
          var args = string.Empty;
-         var runned = new ConsoleApplicationManagerGeneric<ApplicationWithArguments>().RunAsync(args)
+         var runned = new ConsoleApplicationManagerGeneric<ApplicationWithArguments>().RunAsync(args, CancellationToken.None)
             .GetAwaiter().GetResult();
 
          runned.Args.Should().BeSameAs(args);
          runned.TestParameters.Should().NotBeNull();
 
-         runned.Mock.Verify(x => x.RunAsync(), Times.Once);
+         runned.Mock.Verify(x => x.RunAsync(CancellationToken.None), Times.Once);
       }
 
       private class ApplicationWithArguments : IApplication, IArgumentInitializer<TestArguments>
@@ -63,9 +65,9 @@
             Mock.Object.Run();
          }
 
-         public Task RunAsync()
+         public Task RunAsync(CancellationToken cancellationToken)
          {
-            return Mock.Object.RunAsync();
+            return Mock.Object.RunAsync(cancellationToken);
          }
 
          public TestArguments CreateArguments()
@@ -100,9 +102,9 @@
             Mock.Object.Run();
          }
 
-         public Task RunAsync()
+         public Task RunAsync(CancellationToken cancellationToken)
          {
-            return Mock.Object.RunAsync();
+            return Mock.Object.RunAsync(cancellationToken);
          }
       }
 

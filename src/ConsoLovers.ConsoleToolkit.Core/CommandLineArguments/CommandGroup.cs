@@ -6,6 +6,7 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
+using System.Threading;
 using System.Threading.Tasks;
 
 /// <summary>
@@ -22,10 +23,11 @@ public class CommandGroup<T> : IAsyncCommand<T>
    public T Arguments { get; set; }
 
    /// <summary>Executes the asynchronous.</summary>
-   public virtual async Task ExecuteAsync()
+   /// <param name="cancellationToken">The cancellation token.</param>
+   public virtual async Task ExecuteAsync(CancellationToken cancellationToken)
    {
       await BeforeChildExecutionAsync();
-      await CommandExecutor.ExecuteCommandAsync<T>(Arguments);
+      await CommandExecutor.ExecuteCommandAsync<T>(Arguments, cancellationToken);
       await AfterChildExecutionAsync();
    }
 

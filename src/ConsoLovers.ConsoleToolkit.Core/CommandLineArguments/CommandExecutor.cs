@@ -7,6 +7,7 @@
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 public static class CommandExecutor
@@ -19,33 +20,34 @@ public static class CommandExecutor
    /// <returns>The command that was executed</returns>
    public static ICommandBase ExecuteCommand<T>(T arguments)
    {
-      return ExecuteCommandAsync(arguments).GetAwaiter().GetResult();
+      return ExecuteCommandAsync(arguments, CancellationToken.None).GetAwaiter().GetResult();
    }
 
    /// <summary>Executes the first mapped command of the <see cref="arguments"/>.</summary>
    /// <typeparam name="T">The type of the arguments to execute</typeparam>
    /// <param name="arguments">The arguments.</param>
+   /// <param name="cancellationToken">The cancellation token.</param>
    /// <returns>The command that was executed</returns>
-   public static async Task<ICommandBase> ExecuteCommandAsync<T>(T arguments)
+   public static async Task<ICommandBase> ExecuteCommandAsync<T>(T arguments, CancellationToken cancellationToken)
    {
       var applicationArguments = ArgumentClassInfo.FromType<T>();
       if (!applicationArguments.HasCommands)
          return null;
 
       var command = GetMappedCommand(arguments);
-      return command != null ? await ExecuteCommandAsync(command) : null;
+      return command != null ? await ExecuteCommandAsync(command, cancellationToken) : null;
    }
 
    #endregion
 
    #region Methods
 
-   private static async Task<ICommandBase> ExecuteCommandAsync(ICommandBase executable)
+   private static async Task<ICommandBase> ExecuteCommandAsync(ICommandBase executable, CancellationToken cancellationToken)
    {
       switch (executable)
       {
          case IAsyncCommand asyncCommand:
-            await asyncCommand.ExecuteAsync();
+            await asyncCommand.ExecuteAsync(cancellationToken);
             return executable;
          case ICommand command:
             command.Execute();

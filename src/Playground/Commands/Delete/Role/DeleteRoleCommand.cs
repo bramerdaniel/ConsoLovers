@@ -10,7 +10,7 @@ using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
 public class DeleteRoleCommand : IAsyncCommand<DeleteRoleArgs>
 {
-   public Task ExecuteAsync()
+   public Task ExecuteAsync(CancellationToken cancellationToken)
    {
       Console.WriteLine($"Role {Arguments.RoleName} was delete");
       return Task.CompletedTask;

@@ -10,7 +10,7 @@ public class ModifyCommamd : IAsyncCommand<CreateArgs>
 {
    public CreateArgs Arguments { get; set; }
 
-   public Task ExecuteAsync()
+   public Task ExecuteAsync(CancellationToken cancellationToken)
    {
       
       return Task.CompletedTask;

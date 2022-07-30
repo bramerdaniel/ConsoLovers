@@ -90,7 +90,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          if (argumentType == null)
             throw new ArgumentNullException(nameof(argumentType));
 
-         PropertyInfo[] properties = argumentType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+         PropertyInfo[] properties = argumentType.GetPropertiesInternal(Modifiers.Internal).ToArray();
          foreach (PropertyInfo info in properties)
          {
             var commandLineAttribute = info.GetAttribute<CommandLineAttribute>();

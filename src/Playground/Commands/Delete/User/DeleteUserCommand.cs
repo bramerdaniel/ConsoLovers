@@ -12,7 +12,7 @@ public class DeleteUserCommand : IAsyncCommand<DeleteUserArgs>
 {
    #region IAsyncCommand<DeleteUserArgs> Members
 
-   public Task ExecuteAsync()
+   public Task ExecuteAsync(CancellationToken cancellationToken)
    {
       Console.WriteLine($"User {Arguments.UserName} was delete. Forced was {Arguments.Force}");
       return Task.CompletedTask;

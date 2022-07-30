@@ -12,9 +12,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups
    {
       #region Public Methods and Operators
 
-      public static CommandLineEngineSetup CommandLineEngine()
+      public static ArgumentClassInfoSetup ArgumentClassInfo()
       {
-         return new CommandLineEngineSetup();
+         return new ArgumentClassInfoSetup();
       }
 
       public static ArgumentMapperSetup ArgumentMapper()
@@ -30,6 +30,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups
       public static CommandLineArgumentsSetup CommandLineArguments()
       {
          return new CommandLineArgumentsSetup();
+      }
+
+      public static CommandLineEngineSetup CommandLineEngine()
+      {
+         return new CommandLineEngineSetup();
       }
 
       public static EngineFactorySetup EngineFactory()
