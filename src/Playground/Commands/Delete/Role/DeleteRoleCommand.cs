@@ -16,5 +16,5 @@ public class DeleteRoleCommand : IAsyncCommand<DeleteRoleArgs>
       return Task.CompletedTask;
    }
 
-   public DeleteRoleArgs Arguments { get; set; }
+   public DeleteRoleArgs Arguments { get; set; } = null!;
 }

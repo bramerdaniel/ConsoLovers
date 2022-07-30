@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="ConsoleApplication.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2018
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -26,9 +26,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
    {
       #region Constructors and Destructors
 
-      /// <summary>
-      /// Initializes a new instance of the <see cref="ConsoleApplication{T}" /> class.
-      /// </summary>
+      /// <summary>Initializes a new instance of the <see cref="ConsoleApplication{T}"/> class.</summary>
       /// <param name="commandLineEngine">The command line engine.</param>
       /// <exception cref="System.ArgumentNullException">commandLineEngine</exception>
       [InjectionConstructor]
@@ -41,7 +39,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       #endregion
 
-      #region IApplication Members
+      #region IApplication<T> Members
 
       /// <summary>Runs the application asynchronous.</summary>
       public async Task RunAsync(CancellationToken cancellationToken)
@@ -55,48 +53,34 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
          if (HasArguments)
          {
-            await RunWithAsync(Arguments);
+            await RunWithAsync(Arguments, cancellationToken);
          }
          else
          {
-            await RunWithoutArgumentsAsync();
+            await RunWithoutArgumentsAsync(cancellationToken);
          }
       }
 
-      /// <summary>Called directly after a command was executed.</summary>
-      /// <param name="command">The command that was executed</param>
-      protected virtual Task OnCommandExecutedAsync(ICommandBase command)
-      {
-         return Task.CompletedTask;
-      }
-
-      /// <summary>Runs the application logic by executing the specified command,
-      ///  or calling one of the RunWith or RunWithoutArguments methods.</summary>
-      public virtual void Run()
-      {
-         RunAsync(CancellationToken.None).GetAwaiter().GetResult();
-      }
-
-      #endregion
-
-      #region IApplication<T> Members
+      /// <summary>Runs the application logic by executing the specified command, or calling one of the RunWith or RunWithoutArguments methods.</summary>
+      public void Run() => RunAsync(CancellationToken.None).GetAwaiter().GetResult();
 
       /// <summary>
-      ///    This method is called when the application was started with command line arguments. NOTE: If there are <see cref="ICommand"/>s specified in the arguments and the
-      ///    application is called with one of those, this method is not called any more, because the command is executed.
+      ///    This method is called when the application was started with command line arguments. NOTE: If there are
+      ///    <see cref="T:ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.ICommand"/>s specified in the arguments and the application is called with one
+      ///    of those. This method is not called any more, because the command is executed instead.
       /// </summary>
       /// <param name="arguments">The initialized arguments for the application.</param>
-      [Obsolete("Use RunWithAsync to execute your logic")]
-      public virtual void RunWith(T arguments)
-      {
-         RunWithAsync(arguments).GetAwaiter().GetResult();
-      }
+      public void RunWith(T arguments) => RunWithAsync(arguments, CancellationToken.None).GetAwaiter().GetResult();
 
-      /// <summary>This method is called when the application was started with command line arguments. NOTE: If there are <see cref="T:ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.ICommand" />s specified in the arguments and theapplication is called with one of those. This method is not called any more, because the command is executed instead.
+      /// <summary>
+      ///    This method is called when the application was started with command line arguments. NOTE: If there are
+      ///    <see cref="T:ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.ICommand"/>s specified in the arguments and the application is called with one of
+      ///    those. This method is not called any more, because the command is executed instead.
       /// </summary>
       /// <param name="arguments">The initialized arguments for the application.</param>
+      /// <param name="cancellationToken">The cancellation token.</param>
       /// <returns></returns>
-      public virtual Task RunWithAsync(T arguments)
+      public virtual Task RunWithAsync(T arguments, CancellationToken cancellationToken)
       {
          return Task.CompletedTask;
       }
@@ -105,7 +89,10 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       #region IArgumentInitializer<T> Members
 
-      /// <summary>This method is responsible for creating the required default arguments. This could e.g. be a empty instance or an instance filled with data from the app.config...</summary>
+      /// <summary>
+      ///    This method is responsible for creating the required default arguments. This could e.g. be a empty instance or an instance filled with data
+      ///    from the app.config...
+      /// </summary>
       /// <returns>The created arguments instance</returns>
       public virtual T CreateArguments()
       {
@@ -133,7 +120,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       #endregion
 
-      #region IExeptionHandler Members
+      #region IExceptionHandler Members
 
       public virtual bool HandleException(Exception exception)
       {
@@ -157,6 +144,8 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       public T Arguments { get; private set; }
 
+      [NotNull] public ICommandExecutor CommandExecutor { get; }
+
       public IConsole Console { get; protected set; } = new ConsoleProxy();
 
       /// <summary>Gets a value indicating whether this application was called with arguments.</summary>
@@ -168,12 +157,6 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       protected ICommandLineEngine CommandLineEngine { get; }
 
-      [NotNull] public ICommandExecutor CommandExecutor { get; }
-
-      #endregion
-
-      #region Public Methods and Operators
-
       #endregion
 
       #region Methods
@@ -183,9 +166,16 @@ namespace ConsoLovers.ConsoleToolkit.Core
       {
       }
 
+      /// <summary>Called directly after a command was executed.</summary>
+      /// <param name="command">The command that was executed</param>
+      protected virtual Task OnCommandExecutedAsync(ICommandBase command)
+      {
+         return Task.CompletedTask;
+      }
+
       /// <summary>
-      ///    Called when a command line argument could not be handled (e.g when an argument was misspelled, and therefor could not be mapped to a property in the arguments class). The
-      ///    default behavior is to do nothing. This means that it is ignored.
+      ///    Called when a command line argument could not be handled (e.g when an argument was misspelled, and therefor could not be mapped to a
+      ///    property in the arguments class). The default behavior is to do nothing. This means that it is ignored.
       /// </summary>
       /// <param name="sender">The sender.</param>
       /// <param name="e">The <see cref="CommandLineArgumentEventArgs"/> instance containing the event data.</param>
@@ -193,9 +183,9 @@ namespace ConsoLovers.ConsoleToolkit.Core
       {
       }
 
-      protected virtual async Task RunWithoutArgumentsAsync()
+      protected virtual async Task RunWithoutArgumentsAsync(CancellationToken cancellationToken)
       {
-         await RunWithAsync(Arguments);
+         await RunWithAsync(Arguments, cancellationToken);
       }
 
       protected void WaitForEnter(string waitText = "Press ENTER to continue.")

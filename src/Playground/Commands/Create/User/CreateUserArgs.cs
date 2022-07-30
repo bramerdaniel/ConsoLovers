@@ -13,7 +13,7 @@ public class CreateUserArgs
 {
    [Argument("name", Index = 0, Required = true)]
    [HelpText("Name of the user to create")]
-   public string UserName { get; set; }
+   public string UserName { get; set; } = null!;
 
    [Command("withRole")]
    [HelpText("creates a role")]

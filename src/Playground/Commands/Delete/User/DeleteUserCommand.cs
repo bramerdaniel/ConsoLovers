@@ -18,7 +18,7 @@ public class DeleteUserCommand : IAsyncCommand<DeleteUserArgs>
       return Task.CompletedTask;
    }
 
-   public DeleteUserArgs Arguments { get; set; }
+   public DeleteUserArgs Arguments { get; set; } = null!;
 
    #endregion
 }

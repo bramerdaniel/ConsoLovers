@@ -8,11 +8,14 @@ using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
 public class ModifyCommamd : IAsyncCommand<CreateArgs>
 {
-   public CreateArgs Arguments { get; set; }
+   #region IAsyncCommand<CreateArgs> Members
+
+   public CreateArgs Arguments { get; set; } = null!;
 
    public Task ExecuteAsync(CancellationToken cancellationToken)
    {
-      
       return Task.CompletedTask;
    }
+
+   #endregion
 }

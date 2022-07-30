@@ -1,9 +1,15 @@
-﻿namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests.Utils
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="TestApplication.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests.Utils
 {
    using System;
+   using System.Threading;
    using System.Threading.Tasks;
 
-   using ConsoLovers.ConsoleToolkit.Core;
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
    using JetBrains.Annotations;
@@ -11,19 +17,23 @@
    public class TestApplication<T> : ConsoleApplication<T>
       where T : class
    {
+      #region Constants and Fields
+
       private readonly IApplicationVerification<T> application;
 
-      protected override Task OnCommandExecutedAsync(ICommandBase command)
+      #endregion
+
+      #region Constructors and Destructors
+
+      public TestApplication([NotNull] ICommandLineEngine commandLineEngine, [NotNull] IApplicationVerification<T> application)
+         : base(commandLineEngine)
       {
-         application.RunWithCommand(command);
-         return base.OnCommandExecutedAsync(command);
+         this.application = application ?? throw new ArgumentNullException(nameof(application));
       }
-      
-      public override void RunWith(T arguments)
-      {
-         application.RunWith(arguments);
-         base.RunWith(arguments);
-      }
+
+      #endregion
+
+      #region Public Methods and Operators
 
       public override void InitializeFromString(T instance, string args)
       {
@@ -58,31 +68,28 @@
          }
       }
 
-      public override void Run()
-      {
-         application.Run();
-         base.Run();
-      }
-      
-
-      public override Task RunWithAsync(T arguments)
+      public override Task RunWithAsync(T arguments, CancellationToken cancellationToken)
       {
          application.RunWithAsync(arguments);
-         return base.RunWithAsync(arguments);
+         return base.RunWithAsync(arguments, cancellationToken);
       }
-      
 
-      protected override Task RunWithoutArgumentsAsync()
+      #endregion
+
+      #region Methods
+
+      protected override Task OnCommandExecutedAsync(ICommandBase command)
+      {
+         application.RunWithCommand(command);
+         return base.OnCommandExecutedAsync(command);
+      }
+
+      protected override Task RunWithoutArgumentsAsync(CancellationToken cancellationToken)
       {
          application.RunWithoutArguments();
-         return base.RunWithoutArgumentsAsync();
+         return base.RunWithoutArgumentsAsync(cancellationToken);
       }
 
-
-      public TestApplication([NotNull] ICommandLineEngine commandLineEngine, [NotNull] IApplicationVerification<T> application)
-         : base(commandLineEngine)
-      {
-         this.application = application ?? throw new ArgumentNullException(nameof(application));
-      }
+      #endregion
    }
 }

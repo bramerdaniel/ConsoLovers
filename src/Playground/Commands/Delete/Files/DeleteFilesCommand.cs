@@ -21,5 +21,5 @@ public class DeleteFilesCommand : IAsyncCommand<DeleteFileArgs>
       return Task.CompletedTask;
    }
 
-   public DeleteFileArgs Arguments { get; set; }
+   public DeleteFileArgs Arguments { get; set; } = null!;
 }

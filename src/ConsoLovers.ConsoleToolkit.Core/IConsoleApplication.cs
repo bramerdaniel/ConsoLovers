@@ -42,11 +42,13 @@ namespace ConsoLovers.ConsoleToolkit.Core
       void RunWith(T arguments);
 
       /// <summary>
-      ///    This method is called when the application was started with command line arguments. NOTE: If there are <see cref="ICommand"/>s specified in
-      ///    the arguments and the application is called with one of those. This method is not called any more, because the command is executed instead.
+      /// This method is called when the application was started with command line arguments. NOTE: If there are <see cref="ICommand" />s specified in
+      /// the arguments and the application is called with one of those. This method is not called any more, because the command is executed instead.
       /// </summary>
       /// <param name="arguments">The initialized arguments for the application.</param>
-      Task RunWithAsync(T arguments);
+      /// <param name="cancellationToken">The cancellation token.</param>
+      /// <returns></returns>
+      Task RunWithAsync(T arguments, CancellationToken cancellationToken);
 
       #endregion
    }
