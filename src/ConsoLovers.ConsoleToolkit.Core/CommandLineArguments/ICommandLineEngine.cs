@@ -23,6 +23,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       /// <summary>Occurs when command line argument was passed to the <see cref="ICommandLineEngine"/> the could not be processed in any way.</summary>
       event EventHandler<CommandLineArgumentEventArgs> UnhandledCommandLineArgument;
 
+      /// <summary>Gets the command executor service.</summary>
+      ICommandExecutor CommandExecutor { get; }
+
       #endregion
 
       #region Public Methods and Operators

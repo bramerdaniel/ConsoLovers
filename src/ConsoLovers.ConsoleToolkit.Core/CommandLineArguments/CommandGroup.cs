@@ -6,8 +6,11 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
+
+using JetBrains.Annotations;
 
 /// <summary>
 ///    Command that serves a group for nested commands, or as base class for commands that want to execute logic before or after the child command
@@ -17,6 +20,13 @@ using System.Threading.Tasks;
 /// <seealso cref="ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.IAsyncCommand&lt;T&gt;"/>
 public class CommandGroup<T> : IAsyncCommand<T>
 {
+   private readonly ICommandExecutor commandExecutor;
+
+   public CommandGroup([NotNull] ICommandExecutor commandExecutor)
+   {
+      this.commandExecutor = commandExecutor ?? throw new ArgumentNullException(nameof(commandExecutor));
+   }
+
    #region IAsyncCommand<T> Members
 
    /// <summary>Gets or sets the arguments that were specified for the command.</summary>
@@ -27,7 +37,7 @@ public class CommandGroup<T> : IAsyncCommand<T>
    public virtual async Task ExecuteAsync(CancellationToken cancellationToken)
    {
       await BeforeChildExecutionAsync();
-      await CommandExecutor.ExecuteCommandAsync<T>(Arguments, cancellationToken);
+      await commandExecutor.ExecuteCommandAsync(Arguments, cancellationToken);
       await AfterChildExecutionAsync();
    }
 

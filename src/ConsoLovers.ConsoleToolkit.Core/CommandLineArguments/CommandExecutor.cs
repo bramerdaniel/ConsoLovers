@@ -10,15 +10,20 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-public static class CommandExecutor
+public class CommandExecutor : ICommandExecutor
 {
+   public CommandExecutor()
+   {
+      
+   }
+
    #region Public Methods and Operators
 
    /// <summary>Executes the first mapped command of the <see cref="arguments"/>.</summary>
    /// <typeparam name="T">The type of the arguments to execute</typeparam>
    /// <param name="arguments">The arguments.</param>
    /// <returns>The command that was executed</returns>
-   public static ICommandBase ExecuteCommand<T>(T arguments)
+   public ICommandBase ExecuteCommand<T>(T arguments)
    {
       return ExecuteCommandAsync(arguments, CancellationToken.None).GetAwaiter().GetResult();
    }
@@ -28,7 +33,7 @@ public static class CommandExecutor
    /// <param name="arguments">The arguments.</param>
    /// <param name="cancellationToken">The cancellation token.</param>
    /// <returns>The command that was executed</returns>
-   public static async Task<ICommandBase> ExecuteCommandAsync<T>(T arguments, CancellationToken cancellationToken)
+   public async Task<ICommandBase> ExecuteCommandAsync<T>(T arguments, CancellationToken cancellationToken)
    {
       var applicationArguments = ArgumentClassInfo.FromType<T>();
       if (!applicationArguments.HasCommands)
@@ -42,7 +47,7 @@ public static class CommandExecutor
 
    #region Methods
 
-   private static async Task<ICommandBase> ExecuteCommandAsync(ICommandBase executable, CancellationToken cancellationToken)
+   public async Task<ICommandBase> ExecuteCommandAsync(ICommandBase executable, CancellationToken cancellationToken)
    {
       switch (executable)
       {

@@ -26,13 +26,16 @@ namespace ConsoLovers.ConsoleToolkit.Core
    {
       #region Constructors and Destructors
 
-      /// <summary>Initializes a new instance of the <see cref="ConsoleApplication{T}"/> class.</summary>
+      /// <summary>
+      /// Initializes a new instance of the <see cref="ConsoleApplication{T}" /> class.
+      /// </summary>
       /// <param name="commandLineEngine">The command line engine.</param>
       /// <exception cref="System.ArgumentNullException">commandLineEngine</exception>
       [InjectionConstructor]
       protected ConsoleApplication([NotNull] ICommandLineEngine commandLineEngine)
       {
          CommandLineEngine = commandLineEngine ?? throw new ArgumentNullException(nameof(commandLineEngine));
+         CommandExecutor = CommandLineEngine.CommandExecutor;
          CommandLineEngine.UnhandledCommandLineArgument += OnUnhandledCommandLineArgument;
       }
 
@@ -164,6 +167,8 @@ namespace ConsoLovers.ConsoleToolkit.Core
       #region Properties
 
       protected ICommandLineEngine CommandLineEngine { get; }
+
+      [NotNull] public ICommandExecutor CommandExecutor { get; }
 
       #endregion
 

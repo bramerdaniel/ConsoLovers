@@ -15,7 +15,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
 
       protected override CommandLineEngine CreateInstance()
       {
-         return new CommandLineEngine();
+         var objectFactory = new DefaultFactory();
+         return new CommandLineEngine(objectFactory, objectFactory.Resolve<ICommandExecutor>());
       }
 
       #endregion
