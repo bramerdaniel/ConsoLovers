@@ -15,7 +15,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
 
       protected CommandLineEngine GetTarget()
       {
-         return Setup.ArgumentEngine().Done();
+         return Setup.CommandLineEngine().Done();
       }
 
       #endregion

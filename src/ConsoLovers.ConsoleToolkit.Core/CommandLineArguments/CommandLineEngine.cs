@@ -24,14 +24,10 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       #region Constructors and Destructors
 
       [InjectionConstructor]
-      public CommandLineEngine([NotNull] IObjectFactory objectFactory)
+      public CommandLineEngine([NotNull] IObjectFactory objectFactory, [NotNull] ICommandExecutor commandExecutor)
       {
          ObjectFactory = objectFactory ?? throw new ArgumentNullException(nameof(objectFactory));
-      }
-
-      public CommandLineEngine()
-         : this(new DefaultFactory())
-      {
+         CommandExecutor = commandExecutor ?? throw new ArgumentNullException(nameof(commandExecutor));
       }
 
       #endregion
@@ -50,6 +46,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       #endregion
 
       #region ICommandLineEngine Members
+
+      public ICommandExecutor CommandExecutor { get; }
 
       /// <summary>Prints the help to the <see cref="Console"/>.</summary>
       /// <typeparam name="T">Type of the argument class to print the help for</typeparam>
@@ -390,7 +388,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          if (providerType != null && ObjectFactory.CreateInstance(providerType) is IHelpProvider provider)
             return provider;
 
-         return new TypeHelpProvider(resourceManager);
+         return new TypeHelpProvider(resourceManager, ObjectFactory);
       }
 
       private IHelpProvider GetHelpTextProvider(PropertyInfo propertyInfo, ResourceManager resourceManager)

@@ -8,9 +8,12 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine.HelpCommandTe
 {
    using System.Collections.Generic;
    using System.Diagnostics.CodeAnalysis;
+   using System.Linq;
 
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups;
+
+   using FluentAssertions;
 
    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -76,16 +79,21 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine.HelpCommandTe
 
       private static HelpCommandArguments GetArguments<T>(params string[] args)
       {
-         var argumentDictionary = new Dictionary<string, CommandLineArgument>();
+         var argumentDictionary = new CommandLineArgumentList();
          int index = 0;
          foreach (var arg in args)
          {
-            argumentDictionary[arg] = new CommandLineArgument { Index = index, Name = arg };
+            argumentDictionary.Add(new CommandLineArgument { Index = index, Name = arg });
             index++;
          }
 
-         return new HelpCommandArguments { ArgumentInfos = ArgumentClassInfo.FromType<T>(), ArgumentDictionary = argumentDictionary };
+         return new HelpCommandArguments
+         {
+            ArgumentInfos = ArgumentClassInfo.FromType<T>(),
+            ArgumentDictionary = argumentDictionary
+         };
       }
+
 
       #endregion
    }

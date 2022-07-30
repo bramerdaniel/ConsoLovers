@@ -7,6 +7,7 @@
 namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
 {
    using System;
+   using System.Threading;
    using System.Threading.Tasks;
 
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
@@ -79,43 +80,26 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
       /// <summary>Runs the configured application with the given commandline arguments.</summary>
       /// <param name="args">The command line arguments.</param>
       /// <returns>The created <see cref="T:ConsoLovers.ConsoleToolkit.IApplication"/> of type <see cref="!:T"/></returns>
-      public T Run(string[] args) => CreateApplicationManager()
-         .RunAsync(args).GetAwaiter()
-         .GetResult();
-
+      public T Run(string[] args) =>
+         CreateApplicationManager()
+            .RunAsync(args, CancellationToken.None).GetAwaiter()
+            .GetResult();
 
       /// <summary>Runs the configured application with the given commandline arguments.</summary>
       /// <param name="args">The command line arguments as string.</param>
       /// <returns>The created <see cref="T:ConsoLovers.ConsoleToolkit.IApplication"/> of type <see cref="!:T"/></returns>
-      public T Run(string args) => CreateApplicationManager().RunAsync(args)
-         .GetAwaiter()
-         .GetResult();
+      public T Run(string args) =>
+         CreateApplicationManager().RunAsync(args, CancellationToken.None)
+            .GetAwaiter()
+            .GetResult();
 
       /// <summary>Runs the configured application with the commandline arguments <see cref="Environment.CommandLine"/>.</summary>
       /// <returns>The created <see cref="T:ConsoLovers.ConsoleToolkit.IApplication"/> of type <see cref="!:T"/></returns>
       public T Run() => Run(Environment.CommandLine);
 
-      /// <summary>
-      /// Runs the configured application with the given commandline arguments.
-      /// </summary>
-      /// <param name="args">The command line arguments.</param>
-      /// <returns>
-      /// The created <see cref="T:ConsoLovers.ConsoleToolkit.Core.IApplication" /> of type <see cref="!:T" />
-      /// </returns>
-      public Task<T> RunAsync(string[] args) => CreateApplicationManager().RunAsync(args);
-
-      /// <summary>Runs the configured application with the given commandline arguments.</summary>
-      /// <param name="args">The command line arguments as string. Use <see cref="P:System.Environment.CommandLine"/></param>
+      /// <summary>Runs the configured application with the commandline arguments from <see cref="P:System.Environment.CommandLine"/>.</summary>
       /// <returns>The created <see cref="T:ConsoLovers.ConsoleToolkit.Core.IApplication"/> of type <see cref="!:T"/></returns>
-      public Task<T> RunAsync(string args) => CreateApplicationManager().RunAsync(args);
-
-      /// <summary>
-      /// Runs the configured application with the commandline arguments from <see cref="P:System.Environment.CommandLine" />.
-      /// </summary>
-      /// <returns>
-      /// The created <see cref="T:ConsoLovers.ConsoleToolkit.Core.IApplication" /> of type <see cref="!:T" />
-      /// </returns>
-      public Task<T> RunAsync() => RunAsync(Environment.CommandLine);
+      public Task<T> RunAsync(CancellationToken cancellationToken) => RunAsync(Environment.CommandLine, cancellationToken);
 
       /// <summary>
       ///    Specifies the <see cref="T:ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.IObjectFactory"/> that is used to create the
@@ -135,6 +119,22 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
          createApplication = container.CreateInstance<T>;
          return this;
       }
+
+      #endregion
+
+      #region Public Methods and Operators
+
+      /// <summary>Runs the configured application with the given commandline arguments.</summary>
+      /// <param name="args">The command line arguments.</param>
+      /// <param name="cancellationToken">The cancellation token.</param>
+      /// <returns>The created <see cref="T:ConsoLovers.ConsoleToolkit.Core.IApplication"/> of type <see cref="!:T"/></returns>
+      public Task<T> RunAsync(string[] args, CancellationToken cancellationToken) => CreateApplicationManager().RunAsync(args, cancellationToken);
+
+      /// <summary>Runs the configured application with the given commandline arguments.</summary>
+      /// <param name="args">The command line arguments as string. Use <see cref="P:System.Environment.CommandLine"/></param>
+      /// <param name="cancellationToken">The cancellation token.</param>
+      /// <returns>The created <see cref="T:ConsoLovers.ConsoleToolkit.Core.IApplication"/> of type <see cref="!:T"/></returns>
+      public Task<T> RunAsync(string args, CancellationToken cancellationToken) => CreateApplicationManager().RunAsync(args, cancellationToken);
 
       #endregion
 

@@ -20,6 +20,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       private readonly MappingList mappingList;
 
+      private bool disableNameMatch =false;
+
       #endregion
 
       #region Constructors and Destructors
@@ -60,6 +62,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       /// <returns>The found <see cref="MappingInfo"/> or null</returns>
       public MappingInfo GetNameMatch(string name)
       {
+         if (disableNameMatch)
+            return null;
+
          return mappingList.GetMappingInfo(name);
       }
 
@@ -79,6 +84,14 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          return CommandLineAttribute is OptionAttribute;
       }
 
+      /// <summary>Determines whether the mapping is an command.</summary>
+      /// <returns><c>true</c> if this instance is command; otherwise, <c>false</c>.</returns>
+      public bool IsCommand()
+      {
+         return CommandLineAttribute is CommandAttribute;
+      }
+
+
       /// <summary>Determines whether the mapping is shared.</summary>
       /// <returns><c>true</c> if this instance is shared; otherwise, <c>false</c>.</returns>
       public bool IsShared()
@@ -96,5 +109,10 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       }
 
       #endregion
+
+      public void DisableNameMatch()
+      {
+          disableNameMatch = true;
+      }
    }
 }

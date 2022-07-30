@@ -8,6 +8,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests.
 {
    using System;
    using System.Linq;
+   using System.Threading;
 
    using ConsoLovers.ConsoleToolkit.Core;
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
@@ -70,7 +71,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests.
       {
          ConsoleApplicationManager.For<TestApplication<T>>()
             .UsingFactory(Factory)
-            .RunAsync(args)
+            .RunAsync(args, CancellationToken.None)
             .GetAwaiter().GetResult();
       }
 
@@ -84,7 +85,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests.
       public void VerifyCommandExecuted<TC>()
        where TC : ICommand
       {
-         Application.Verify(a => a.RunAsync(), Times.Once);
          Application.Verify(a => a.RunWithCommand(It.IsAny<TC>()), Times.Once);
       }
    }

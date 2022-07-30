@@ -8,17 +8,17 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
    using System;
    using System.Collections.Generic;
+   using System.Diagnostics;
    using System.Linq;
    using System.Reflection;
 
    using JetBrains.Annotations;
 
    /// <summary>The <see cref="ArgumentClassInfo"/> is a helper class, that is able to analyze the class representing the command line arguments. This is done by reflection</summary>
+   [DebuggerDisplay("{ArgumentType?.Name}")]
    public class ArgumentClassInfo
    {
       #region Constants and Fields
-
-      public bool? hasCommands;
 
       private List<CommandInfo> commandInfos;
 
@@ -30,10 +30,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       private ArgumentClassInfo([NotNull] Type argumentType)
       {
-         if (argumentType == null)
-            throw new ArgumentNullException(nameof(argumentType));
-
-         ArgumentType = argumentType;
+         ArgumentType = argumentType ?? throw new ArgumentNullException(nameof(argumentType));
          Initialize();
       }
 
@@ -79,27 +76,20 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          return null;
       }
 
-      public void Validate()
-      {
-      }
-
       #endregion
 
       #region Methods
 
-      private static ParameterInfo CreateInfo(PropertyInfo propertyInfo, CommandLineAttribute[] attributes)
+      private static ParameterInfo CreateInfo(PropertyInfo propertyInfo, CommandLineAttribute attribute)
       {
-         foreach (var attribute in attributes)
-         {
-            if (attribute is CommandAttribute commandAttribute)
-               return new CommandInfo(propertyInfo, commandAttribute);
+         if (attribute is CommandAttribute commandAttribute)
+            return new CommandInfo(propertyInfo, commandAttribute);
 
-            if (attribute is ArgumentAttribute argumentAttribute)
-               return new ArgumentInfo(propertyInfo, argumentAttribute);
+         if (attribute is ArgumentAttribute argumentAttribute)
+            return new ArgumentInfo(propertyInfo, argumentAttribute);
 
-            if (attribute is OptionAttribute optionAttribute)
-               return new OptionInfo(propertyInfo, optionAttribute);
-         }
+         if (attribute is OptionAttribute optionAttribute)
+            return new OptionInfo(propertyInfo, optionAttribute);
 
          return null;
       }
@@ -109,26 +99,25 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          commandInfos = new List<CommandInfo>();
          properties = new List<ParameterInfo>();
 
-         foreach (var propertyInfo in ArgumentType.GetProperties(BindingFlags.Instance | BindingFlags.Public))
+         foreach (var kvp in ArgumentType.GetPropertiesWithAttributes())
          {
-            var attributes = propertyInfo.GetCustomAttributes<CommandLineAttribute>(true).ToArray();
-            if (attributes.Any())
+            var propertyInfo = kvp.Key;
+            var attribute = kvp.Value;
+
+            var parameterInfo = CreateInfo(propertyInfo, attribute);
+            properties.Add(parameterInfo);
+
+            if (parameterInfo is CommandInfo commandInfo)
             {
-               var parameterInfo = CreateInfo(propertyInfo, attributes);
-               properties.Add(parameterInfo);
-
-               if (parameterInfo is CommandInfo commandInfo)
+               commandInfos.Add(commandInfo);
+               if (IsHelpCommand(propertyInfo))
+                  HelpCommand = commandInfo;
+               if (commandInfo.IsDefault)
                {
-                  commandInfos.Add(commandInfo);
-                  if (IsHelpCommand(propertyInfo))
-                     HelpCommand = commandInfo;
-                  if (commandInfo.IsDefault)
-                  {
-                     if (DefaultCommand != null)
-                        throw new InvalidOperationException("Default command was defined twice.");
+                  if (DefaultCommand != null)
+                     throw new InvalidOperationException("Default command was defined twice.");
 
-                     DefaultCommand = commandInfo;
-                  }
+                  DefaultCommand = commandInfo;
                }
             }
          }

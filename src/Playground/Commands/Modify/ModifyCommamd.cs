@@ -1,17 +1,21 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="TestCommamd.cs" company="ConsoLovers">
+// <copyright file="ModifyCommamd.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
-public class TestCommamd : ICommand<TestArgs>
+public class ModifyCommamd : IAsyncCommand<ModifyArgs>
 {
-   public void Execute()
+   #region IAsyncCommand<CreateArgs> Members
+
+   public ModifyArgs Arguments { get; set; } = null!;
+
+   public Task ExecuteAsync(CancellationToken cancellationToken)
    {
-      Console.WriteLine($"Number = {Arguments.Number}");
+      return Task.CompletedTask;
    }
 
-   public TestArgs Arguments { get; set; }
+   #endregion
 }

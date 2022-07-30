@@ -7,13 +7,11 @@ public static class Program
 {
    public static async Task Main()
    {
-      Console.WriteLine(new InputBox<int>("integer: ", 34).ReadLine());
-      Console.WriteLine(new InputBox<double>("double: ", 34.54).ReadLine());
-      Console.WriteLine(new InputBox<string>("password: ", "Amdin"){ IsPassword = true }.ReadLine());
+      var app = await ConsoleApplicationManager
+         .For<PlaygroundApp>()
+         .RunAsync(CancellationToken.None);
 
-      await ConsoleApplicationManager.For<PlaygroundApp>()
-         .RunAsync();
-
-      Console.ReadLine();
+      if (app.Arguments?.Wait ?? true)
+         Console.ReadLine();
    }
 }

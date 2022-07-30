@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="HelpCommand.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2017
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -17,8 +17,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
    /// <summary>Implementation of the help command</summary>
    public class HelpCommand : ICommand<HelpCommandArguments>
    {
-      public IConsole Console { get; }
-
       #region Constants and Fields
 
       private readonly ICommandLineEngine engine;
@@ -29,10 +27,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       #region Constructors and Destructors
 
-      /// <summary>
-      /// Initializes a new instance of the <see cref="HelpCommand" /> class.
-      /// </summary>
-      /// <param name="engine">The <see cref="ICommandLineEngine" /> that should be used.</param>
+      /// <summary>Initializes a new instance of the <see cref="HelpCommand"/> class.</summary>
+      /// <param name="engine">The <see cref="ICommandLineEngine"/> that should be used.</param>
       /// <param name="console">The console that should be used by the command.</param>
       /// <param name="resourceManager">The resource manager.</param>
       /// <exception cref="System.ArgumentNullException">engine</exception>
@@ -47,20 +43,22 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       #endregion
 
-      #region ICommand Members
+      #region ICommand<HelpCommandArguments> Members
 
       /// <summary>Executes this instance.</summary>
       public virtual void Execute()
       {
-         var helpRequest = Arguments.ArgumentDictionary.Values.OrderBy(x => x.Index).Select(x => x.Name).ToArray();
+         var helpRequest = Arguments.ArgumentDictionary.OrderBy(x => x.Index).Select(x => x.Name).ToArray();
          PrintHelp(helpRequest);
       }
 
+      public HelpCommandArguments Arguments { get; set; }
+
       #endregion
 
-      #region ICommand<HelpCommandArguments> Members
+      #region Properties
 
-      public HelpCommandArguments Arguments { get; set; }
+      private IConsole Console { get; }
 
       #endregion
 
@@ -78,24 +76,33 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          }
       }
 
-      private void PrintCommandHelp(CommandInfo commandInfo, string argumentName)
+      private void PrintCommandHelp(CommandInfo commandInfo, string[] remainingParameters)
       {
+         var argumentName = remainingParameters.FirstOrDefault();
          if (!string.IsNullOrEmpty(argumentName))
          {
-            if (commandInfo.ArgumentType != null)
-            {
-               var classInfo = ArgumentClassInfo.FromType(commandInfo.ArgumentType);
-               var parameterInfo = classInfo.GetParameterInfo(argumentName);
-               if (parameterInfo != null)
-               {
-                  engine.PrintHelp(parameterInfo.PropertyInfo, resourceManager);
-                  return;
-               }
-            }
-            else
+            if (commandInfo.ArgumentType == null)
             {
                // TODO: Forward to help provider ???
                Console.WriteLine("The command does not take any parameters. So no help could be found");
+               return;
+            }
+
+            var classInfo = ArgumentClassInfo.FromType(commandInfo.ArgumentType);
+            var parameterInfo = classInfo.GetParameterInfo(argumentName);
+
+            if (parameterInfo != null)
+            {
+               if (parameterInfo is CommandInfo nextCommand)
+               {
+                  var withoutCurrent = remainingParameters.Length > 1 ? remainingParameters.Skip(1).ToArray() : Array.Empty<string>();
+                  PrintCommandHelp(nextCommand, withoutCurrent);
+               }
+               else
+               {
+                  engine.PrintHelp(parameterInfo.PropertyInfo, resourceManager);
+               }
+
                return;
             }
          }
@@ -125,10 +132,10 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
             return;
          }
 
-         var commandInfo = parameterInfo as CommandInfo;
-         if (commandInfo != null)
+         if (parameterInfo is CommandInfo commandInfo)
          {
-            PrintCommandHelp(commandInfo, helpRequest.Length > 1 ? helpRequest[1] : null);
+            var remaining = helpRequest.Length > 1 ? helpRequest.Skip(1).ToArray() : Array.Empty<string>();
+            PrintCommandHelp(commandInfo, remaining);
          }
          else
          {

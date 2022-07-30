@@ -82,6 +82,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.IntegrationTests.WithCommand
       [TestMethod]
       public void EnsureApplicationParameterWorksCorrectlyEvenWhenIndexedArgumentsAreUsedAndOneIsMissing()
       {
+         // new TestApplication<AppArgs>();
+
          using (var testContext = new ApplicationTestContext<AppArgs>())
          {
             testContext.RunApplication("-e rudolf -wait");
@@ -166,6 +168,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.IntegrationTests.WithCommand
 
    public class CommandArgs
    {
+      private string lastName;
+
       internal static PropertyInfo FirstNameProperty => typeof(CommandArgs).GetProperty(nameof(FirstName));
 
       internal static PropertyInfo LastNameProperty => typeof(CommandArgs).GetProperty(nameof(LastName));
@@ -176,7 +180,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.IntegrationTests.WithCommand
       public string FirstName { get; set; }
 
       [Argument("LastName", Index = 1)]
-      public string LastName { get; set; }
+      public string LastName
+      {
+         get => lastName;
+         set => lastName = value;
+      }
 
       [Option("Code", "c")]
       public bool Code { get; set; }

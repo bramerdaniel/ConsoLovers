@@ -25,9 +25,6 @@
          Environment.Exit(666);
          return true;
       }
-
-      public override void RunWith(XCopyArguments arguments)
-      {
-      }
+      
    }
 }

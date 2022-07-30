@@ -1,11 +1,12 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="IConsoleApplication.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2018
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace ConsoLovers.ConsoleToolkit.Core
 {
+   using System.Threading;
    using System.Threading.Tasks;
 
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
@@ -19,8 +20,9 @@ namespace ConsoLovers.ConsoleToolkit.Core
       void Run();
 
       /// <summary>Runs the application asynchronous.</summary>
+      /// <param name="cancellationToken">The cancellation token.</param>
       /// <returns>The execution task</returns>
-      Task RunAsync();
+      Task RunAsync(CancellationToken cancellationToken);
 
       #endregion
    }
@@ -33,18 +35,20 @@ namespace ConsoLovers.ConsoleToolkit.Core
       #region Public Methods and Operators
 
       /// <summary>
-      ///    This method is called when the application was started with command line arguments. NOTE: If there are <see cref="ICommand"/>s specified in the arguments and the
-      ///    application is called with one of those. This method is not called any more, because the command is executed instead.
+      ///    This method is called when the application was started with command line arguments. NOTE: If there are <see cref="ICommand"/>s specified in
+      ///    the arguments and the application is called with one of those. This method is not called any more, because the command is executed instead.
       /// </summary>
       /// <param name="arguments">The initialized arguments for the application.</param>
       void RunWith(T arguments);
-      
+
       /// <summary>
-      ///    This method is called when the application was started with command line arguments. NOTE: If there are <see cref="ICommand"/>s specified in the arguments and the
-      ///    application is called with one of those. This method is not called any more, because the command is executed instead.
+      /// This method is called when the application was started with command line arguments. NOTE: If there are <see cref="ICommand" />s specified in
+      /// the arguments and the application is called with one of those. This method is not called any more, because the command is executed instead.
       /// </summary>
       /// <param name="arguments">The initialized arguments for the application.</param>
-      Task RunWithAsync(T arguments);
+      /// <param name="cancellationToken">The cancellation token.</param>
+      /// <returns></returns>
+      Task RunWithAsync(T arguments, CancellationToken cancellationToken);
 
       #endregion
    }
