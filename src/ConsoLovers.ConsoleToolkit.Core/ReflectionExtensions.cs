@@ -12,71 +12,23 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
+using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+
 public static class ReflectionExtensions
 {
-   internal static PropertyInfo[] GetProperties([JetBrains.Annotations.NotNull] this Type type, Modifiers modifiers)
-   {
-      if (type == null)
-         throw new ArgumentNullException(nameof(type));
-
-      return type.GetPropertiesInternal(modifiers).ToArray();
-   }
-
-   internal static PropertyInfo[] GetProperties(this Type type)
-   {
-      return type.GetProperties(Modifiers.PublicOrInternal);
-   }
-
    [SuppressMessage("sonar", "S3011:Reflection should not be used to increase accessibility of classes, methods, or fields")]
-   internal static IEnumerable<PropertyInfo> GetPropertiesInternal(this Type type, Modifiers modifiers)
+   internal static IEnumerable<KeyValuePair<PropertyInfo, CommandLineAttribute>> GetPropertiesWithAttributes(this Type type)
    {
-
       foreach (var property in type.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
       {
-         var setter = property.GetSetMethod(true);
-         if (modifiers.HasFlag(Modifiers.Public) && IsPublic(setter))
-         {
-            yield return property;
-         }
-         else if (modifiers.HasFlag(Modifiers.Internal) && IsInternal(setter))
-         {
-            yield return property;
-         }
-         else if (modifiers.HasFlag(Modifiers.Private) && setter?.IsPrivate == true)
-         {
-            yield return property;
-         }
+         var commandLineAttribute = property.GetAttribute<CommandLineAttribute>();
+         if (commandLineAttribute != null)
+            yield return new KeyValuePair<PropertyInfo, CommandLineAttribute>(property, commandLineAttribute);
       }
    }
 
-   private static bool IsPublic(MethodInfo setter)
+   public static T GetAttribute<T>(this PropertyInfo propertyInfo) where T : Attribute
    {
-      if (setter.IsPublic)
-         return true;
-      return false;
-
+      return propertyInfo.GetCustomAttributes<T>(true).FirstOrDefault();
    }
-
-   private static bool IsInternal(MethodInfo setter)
-   {
-      // only internal
-      if (setter?.IsAssembly == true)
-         return true;
-
-      // protected internal
-      if (setter?.IsFamilyOrAssembly == true)
-         return true;
-
-      return false;
-   }
-}
-
-[Flags]
-internal enum Modifiers
-{
-   None = 0,
-   Public = 0x1,
-   Internal = 0x2,
-   Private = 0x4,
-   PublicOrInternal = Public | Internal
 }

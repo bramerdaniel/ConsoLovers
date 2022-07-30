@@ -90,16 +90,17 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          if (argumentType == null)
             throw new ArgumentNullException(nameof(argumentType));
 
-         PropertyInfo[] properties = argumentType.GetPropertiesInternal(Modifiers.Internal).ToArray();
-         foreach (PropertyInfo info in properties)
+         foreach (var propAndAttribute in argumentType.GetPropertiesWithAttributes())
          {
-            var commandLineAttribute = info.GetAttribute<CommandLineAttribute>();
-            var helpText = info.GetAttribute<HelpTextAttribute>();
+            var propertyInfo = propAndAttribute.Key;
+            var commandLineAttribute = propAndAttribute.Value;
+
+            var helpText = propertyInfo.GetAttribute<HelpTextAttribute>();
             if (helpText != null)
             {
                yield return new ArgumentHelp
                {
-                  PropertyName = GetArgumentName(info, commandLineAttribute),
+                  PropertyName = GetArgumentName(propertyInfo, commandLineAttribute),
                   Aliases = GetAliases(commandLineAttribute),
                   UnlocalizedDescription = helpText.Description,
                   LocalizedDescription = CommandLineEngine.GetLocalizedDescription(resourceManager, helpText.ResourceKey),

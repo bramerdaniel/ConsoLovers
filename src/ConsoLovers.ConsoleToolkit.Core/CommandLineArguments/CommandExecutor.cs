@@ -12,11 +12,6 @@ using System.Threading.Tasks;
 
 public class CommandExecutor : ICommandExecutor
 {
-   public CommandExecutor()
-   {
-      
-   }
-
    #region Public Methods and Operators
 
    /// <summary>Executes the first mapped command of the <see cref="arguments"/>.</summary>

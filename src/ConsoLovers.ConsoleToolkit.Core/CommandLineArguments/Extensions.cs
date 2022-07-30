@@ -7,22 +7,20 @@
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
    using System;
-   using System.Linq;
-   using System.Reflection;
+
+   using JetBrains.Annotations;
 
    public static class Extensions
    {
       #region Public Methods and Operators
 
-      public static bool IsCommandType(this Type type)
+      public static bool IsCommandType([NotNull] this Type type)
       {
-         var command = type.GetInterface(typeof(ICommandBase).FullName);
-         return command != null;
-      }
+         if (type == null)
+            throw new ArgumentNullException(nameof(type));
 
-      public static T GetAttribute<T>(this PropertyInfo propertyInfo) where T : Attribute
-      {
-         return propertyInfo.GetCustomAttributes<T>(true).FirstOrDefault();
+         var command = type.GetInterface(typeof(ICommandBase).FullName!);
+         return command != null;
       }
 
       public static bool IsRequired(this CommandLineAttribute attribute)

@@ -8,9 +8,12 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine.HelpCommandTe
 {
    using System.Collections.Generic;
    using System.Diagnostics.CodeAnalysis;
+   using System.Linq;
 
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups;
+
+   using FluentAssertions;
 
    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -90,6 +93,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine.HelpCommandTe
             ArgumentDictionary = argumentDictionary
          };
       }
+
 
       #endregion
    }
