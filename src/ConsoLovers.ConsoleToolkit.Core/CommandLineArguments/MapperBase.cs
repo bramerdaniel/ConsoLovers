@@ -101,10 +101,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          if (mappingInfo.IsCommand())
             return false;
 
-         PropertyInfo propertyInfo = mappingInfo.PropertyInfo;
-         CommandLineAttribute attribute = mappingInfo.CommandLineAttribute;
+         var propertyInfo = mappingInfo.PropertyInfo;
+         var attribute = mappingInfo.CommandLineAttribute;
          var count = 0;
-         bool trim = attribute.TrimQuotation();
 
          CommandLineArgument argument;
          string stringValue;
@@ -114,9 +113,17 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
             if (arguments.TryGetValue(name, out argument))
             {
                if (argument.Value == null)
-                  throw new CommandLineArgumentException($"The value of the argument '{argument.Name}' was not specified.") { Reason = ErrorReason.ArgumentWithoutValue };
+               {
+                  if (mappingInfo.HasIndex && !argument.HasArgumentSign())
+                  {
+                     mappingInfo.DisableNameMatch();
+                     break;
+                  }
 
-               stringValue = GetValue(argument.Value, trim);
+                  throw new CommandLineArgumentException($"The value of the argument '{argument.Name}' was not specified.") { Reason = ErrorReason.ArgumentWithoutValue };
+               }
+
+               stringValue = GetValue(argument.Value, attribute.TrimQuotation());
                propertyInfo.SetValue(instance, ConvertValue(propertyInfo.PropertyType, stringValue, (t, v) => CreateErrorMessage(t, v, name)), null);
                mappingInfo.CommandLineArgument = argument;
                argument.Mapped = true;
@@ -130,13 +137,12 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
          if (count == 0 && TryGetByIndex(arguments, mappingInfo, out var argumentByIndex))
          {
-            argument = argumentByIndex;
-            if (argument != null && argument.Value == null)
+            if (argumentByIndex != null && argumentByIndex.Value == null)
             {
-               stringValue = GetValue(argument.Name, trim);
+               stringValue = GetValue(argumentByIndex.Name, attribute.TrimQuotation());
 
                propertyInfo.SetValue(instance, ConvertValue(propertyInfo.PropertyType, stringValue, (t, v) => CreateErrorMessage(t, v, attribute.Name)), null);
-               mappingInfo.CommandLineArgument = argument;
+               mappingInfo.CommandLineArgument = argumentByIndex;
                arguments.Remove(argumentByIndex);
                count++;
             }

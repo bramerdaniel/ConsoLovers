@@ -24,6 +24,24 @@ public partial class EngineIntegrationTests
    #region Public Methods and Operators
 
    [TestMethod]
+   public void EnsureNoMissingValueExceptionWhenIndexIsSpecified()
+   {
+      var result = CreateArgumentFromString<RootArgs>("delete user name");
+      result.Delete.Arguments.User.Should().NotBeNull();
+      result.Delete.Arguments.User.Arguments.UserName.Should().Be("name");
+   }
+
+   [TestMethod]
+   public void EnsureNoIndexMatchWhenArgumentSignIsUsed()
+   {
+      this.Invoking(_ => CreateArgumentFromString<RootArgs>("delete user /name"))
+         .Should().Throw<CommandLineArgumentException>();
+
+      this.Invoking(_ => CreateArgumentFromString<RootArgs>("delete user -name"))
+         .Should().Throw<CommandLineArgumentException>();
+   }
+
+   [TestMethod]
    public void EnsureIndexedArgumentsWorkForNestedCommands()
    {
       var result = CreateArgumentFromString<RootArgs>("add user Delete");

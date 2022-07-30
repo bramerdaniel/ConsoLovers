@@ -48,7 +48,8 @@ public partial class EngineIntegrationTests
    {
       #region Public Properties
 
-      [Argument("name")] public string UserName { get; [UsedImplicitly] set; }
+      [Argument("name", Index = 0)] 
+      public string UserName { get; [UsedImplicitly] set; }
 
       #endregion
    }

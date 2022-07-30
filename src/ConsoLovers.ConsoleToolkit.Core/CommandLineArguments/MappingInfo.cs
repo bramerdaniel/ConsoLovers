@@ -20,6 +20,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       private readonly MappingList mappingList;
 
+      private bool disableNameMatch =false;
+
       #endregion
 
       #region Constructors and Destructors
@@ -60,6 +62,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       /// <returns>The found <see cref="MappingInfo"/> or null</returns>
       public MappingInfo GetNameMatch(string name)
       {
+         if (disableNameMatch)
+            return null;
+
          return mappingList.GetMappingInfo(name);
       }
 
@@ -104,5 +109,10 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       }
 
       #endregion
+
+      public void DisableNameMatch()
+      {
+          disableNameMatch = true;
+      }
    }
 }
