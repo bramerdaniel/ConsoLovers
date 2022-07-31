@@ -11,13 +11,13 @@ You can now start your application async, to be able to use async apis easier.
          .RunAsync(CancellationToken.None);
    }
 ```
-You can now user the IAsyncCommand interface when you are working with commands.
-
+Wen you are useing commands, you can now use the `IAsyncCommand` interface when you want to get invoked async.
+Normal commands are ofcourse still supported.
 
 ```c#
 public class DeleteUserCommand : IAsyncCommand<DeleteUserArgs>
 {
-   public asynnc Task ExecuteAsync(CancellationToken cancellationToken)
+   public async Task ExecuteAsync(CancellationToken cancellationToken)
    {
       return await usermanager.DeleteUserAsync(Arguments.UserName);
    }
