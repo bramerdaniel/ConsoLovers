@@ -11,6 +11,20 @@ You can now start your application async, to be able to use async apis easier.
          .RunAsync(CancellationToken.None);
    }
 ```
+You can now user the IAsyncCommand interface when you are working with commands.
+
+
+```c#
+public class DeleteUserCommand : IAsyncCommand<DeleteUserArgs>
+{
+   public asynnc Task ExecuteAsync(CancellationToken cancellationToken)
+   {
+      return await usermanager.DeleteUserAsync(Arguments.UserName);
+   }
+
+   public DeleteUserArgs Arguments { get; set; }
+}
+```
 
 ### 2. Support nested commands to support more complex applications
 ### 3. Support for internal and private argument classes and properties
