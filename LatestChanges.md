@@ -27,6 +27,35 @@ public class DeleteUserCommand : IAsyncCommand<DeleteUserArgs>
 ```
 
 ### 2. Support nested commands to support more complex applications
+To support command lines like `usermanager.exe delete user -name=Robert` you can now defined nested commands.   
+This would look like this.
+
+```c#
+public class ApplicationArgs
+{
+   [Command("create")]
+   internal CommandGroup<CreateArgs> Create { get; set; } 
+   
+   [Command("delete")]
+   internal CommandGroup<DeleteArgs> Delete { get; set; }   
+
+   [Command("modify")]
+   internal ModifyCommamd Modify{ get; set; }  
+}
+
+public class CreateArgs
+{
+   [Command("role")]
+   public CreateRoleCommand Role { get; set; }
+
+   [Command("user")]
+   public CreateUserCommand User { get; set; }
+}
+
+```
+
+
+
 ### 3. Support for internal and private argument classes and properties
 
 Now argument classes like this are possible
@@ -38,6 +67,9 @@ internal class DeleteUserArgs
 }
 ```
 
-### 4. Added InputBox from console toolkit 
+### 4. Easy help text header customisation with the ICustomizedHeader interface
+
+
+### 5. Added InputBox from console toolkit 
 
 # Version 3.0.0
