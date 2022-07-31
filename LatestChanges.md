@@ -29,7 +29,15 @@ public class DeleteUserCommand : IAsyncCommand<DeleteUserArgs>
 ### 2. Support nested commands to support more complex applications
 ### 3. Support for internal and private argument classes and properties
 
- 
+Now argument classes like this are possible
+```c#
+internal class DeleteUserArgs
+{
+   [Argument("username", "user")]
+   internal string UserName { get; private set; }
+}
+```
+
 ### 4. Added InputBox from console toolkit 
 
 # Version 3.0.0
