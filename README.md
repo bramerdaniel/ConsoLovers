@@ -1,7 +1,9 @@
 ## ConsoLovers.ConsoleToolkit.Core and ConsoLovers.ConsoleToolkit
 The ConsoLovers.ConsoleToolkit is a collection of several independant tools that can be used to write console applications (better and faster).
 
-Check out he [Wiki](https://github.com/bramerdaniel/ConsoLovers/wiki) for detailed support of the most features.
+
+Check out he [Wiki](https://github.com/bramerdaniel/ConsoLovers/wiki) for detailed support of the most features.   
+To get an idea of the newest features and chages, have a look at the [latest changes](LatestChanges.md)
 
 ### Main features are:
 * A [ConsoleMenu](https://github.com/bramerdaniel/ConsoLovers/wiki/ConsoleMenu) that supports Keyboard and Mouse selection.
