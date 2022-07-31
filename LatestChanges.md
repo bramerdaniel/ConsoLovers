@@ -86,5 +86,11 @@ public class SomeArgs : ICustomizedHeader
 ```
 
 ### 5. Added InputBox from console toolkit 
+Like in the Consolovers.ToolKit there is now an improved InputBox class.   
+The usage looks still the same.
+
+```c#
+int number = new InputBox<int>("Enter your number: ", 123).ReadLine();
+```
 
 # Version 3.0.0
