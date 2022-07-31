@@ -27,10 +27,11 @@ public class DeleteUserCommand : IAsyncCommand<DeleteUserArgs>
 ```
 
 ### 2. Support nested commands to support more complex applications
-To support command lines like `usermanager.exe delete user -name=Robert` you can now defined nested commands.   
+To support command lines like `usermanager.exe create user -name=Robert` you can now defined nested commands.   
 This would look like this.
 
 ```c#
+// Parent command arg class
 public class ApplicationArgs
 {
    [Command("create")]
@@ -40,9 +41,10 @@ public class ApplicationArgs
    internal CommandGroup<DeleteArgs> Delete { get; set; }   
 
    [Command("modify")]
-   internal ModifyCommamd Modify{ get; set; }  
+   internal CommandGroup<ModifyArgs> Modify{ get; set; }  
 }
 
+// child command arg class
 public class CreateArgs
 {
    [Command("role")]
@@ -69,6 +71,19 @@ internal class DeleteUserArgs
 
 ### 4. Easy help text header customisation with the ICustomizedHeader interface
 
+To simplify the customization of a command header in the help, I introduzed the `ICustomizedHeader` interface.   
+Just umplement this interface in your args class.
+
+```c#
+public class SomeArgs : ICustomizedHeader
+{
+   public void WriteHeader(IConsole console)
+   {
+      console.WriteLine("HELP FOR THE CREATE COMMAND");
+      console.WriteLine();
+   }
+}
+```
 
 ### 5. Added InputBox from console toolkit 
 
