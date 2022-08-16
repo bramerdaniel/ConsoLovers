@@ -26,8 +26,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine.CommandMapper
       {
          var applicationArgs = new CommandsWithoutName();
          var dictionary = new Dictionary<string, CommandLineArgument> { { "Execute", new CommandLineArgument { Name = "Execute" } }, };
-
-         var commandMapper = new CommandMapper<CommandsWithoutName>(Setup.EngineFactory().Done());
+         
+         var commandMapper = Setup.CommandMapper<CommandsWithoutName>().Done();
          var result = commandMapper.Map(CommandLineArgumentList.FromDictionary(dictionary), applicationArgs);
 
          result.Execute.Should().NotBeNull();
@@ -42,7 +42,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine.CommandMapper
             { "execute", new CommandLineArgument { Name = "execute" } }, { "path", new CommandLineArgument { Name = "path", Value = "C:\\temp" } }
          };
 
-         var commandMapper = new CommandMapper<ApplicationArgs>(Setup.EngineFactory().Done());
+         var commandMapper = Setup.CommandMapper<ApplicationArgs>().Done();
          var result = commandMapper.Map(CommandLineArgumentList.FromDictionary(dictionary), applicationArgs);
 
          result.Execute.Should().NotBeNull();
@@ -55,8 +55,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine.CommandMapper
          var commandLineArgument = new CommandLineArgument { Name = "name" };
          var property = typeof(CommandsWithName).GetProperty(nameof(CommandsWithName.Execute));
          var dictionary = new Dictionary<string, CommandLineArgument> { { commandLineArgument.Name, commandLineArgument } };
-
-         var commandMapper = new CommandMapper<CommandsWithName>(Setup.EngineFactory().Done());
+         
+         var commandMapper = Setup.CommandMapper<CommandsWithName>().Done();
          var monitor = commandMapper.Monitor();
 
          var result = commandMapper.Map(CommandLineArgumentList.FromDictionary(dictionary), applicationArgs);
@@ -74,7 +74,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine.CommandMapper
          var commandLineArgument = new CommandLineArgument { Name = "?" };
          var dictionary = new Dictionary<string, CommandLineArgument> { { "?", commandLineArgument } };
 
-         var commandMapper = new CommandMapper<CommandsWithName>(Setup.EngineFactory().Done());
+         var commandMapper = Setup.CommandMapper<CommandsWithName>().Done();
+         
          var monitor = commandMapper.Monitor();
 
          var result = commandMapper.Map(CommandLineArgumentList.FromDictionary(dictionary), applicationArgs);
@@ -82,18 +83,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine.CommandMapper
          result.Help.Should().NotBeNull();
          monitor.Should().Raise(nameof(CommandMapper<CommandsWithName>.MappedCommandLineArgument))
             .WithArgs<MapperEventArgs>(args => args.Argument == commandLineArgument);
-      }
-
-      #endregion
-
-      #region Methods
-
-      private T Mapp<T>(IDictionary<string, CommandLineArgument> arguments)
-         where T : class, new()
-      {
-         var args = new T();
-         var commandMapper = new CommandMapper<T>(Setup.EngineFactory().Done());
-         return commandMapper.Map(CommandLineArgumentList.FromDictionary(arguments), args);
       }
 
       #endregion

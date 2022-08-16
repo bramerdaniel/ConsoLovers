@@ -21,15 +21,15 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
    {
       #region Constants and Fields
 
-      private readonly IObjectFactory engineFactory;
+      private readonly IServiceProvider serviceProvider;
 
       #endregion
 
       #region Constructors and Destructors
 
-      public ArgumentMapper([NotNull] IObjectFactory engineFactory)
+      public ArgumentMapper([NotNull] IServiceProvider engineFactory)
       {
-         this.engineFactory = engineFactory ?? throw new ArgumentNullException(nameof(engineFactory));
+         this.serviceProvider = engineFactory ?? throw new ArgumentNullException(nameof(engineFactory));
       }
 
       #endregion
@@ -49,7 +49,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       public T Map(CommandLineArgumentList arguments)
       {
-         var instance = engineFactory.CreateInstance<T>();
+         var instance = serviceProvider.GetService<T>();
          return Map(arguments, instance);
       }
 
@@ -127,7 +127,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       {
          foreach (var attribute in propertyInfo.GetCustomAttributes<ArgumentValidatorAttribute>(true))
          {
-            var instance = engineFactory.CreateInstance(attribute.Type);
+            var instance = serviceProvider.GetService(attribute.Type);
             if (instance != null)
             {
                var validatorName = typeof(IArgumentValidator<T>).Name;

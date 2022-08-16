@@ -21,18 +21,18 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
    {
       #region Constants and Fields
 
-      private readonly IObjectFactory factory;
+      private readonly IServiceProvider serviceProvider;
 
       #endregion
 
       #region Constructors and Destructors
 
       /// <summary>Initializes a new instance of the <see cref="CommandMapper{T}"/> class.</summary>
-      /// <param name="factory">The factory the command mapper should use.</param>
-      /// <exception cref="System.ArgumentNullException">factory</exception>
-      public CommandMapper([NotNull] IObjectFactory factory)
+      /// <param name="factory">The serviceProvider the command mapper should use.</param>
+      /// <exception cref="System.ArgumentNullException">serviceProvider</exception>
+      public CommandMapper([NotNull] IServiceProvider factory)
       {
-         this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
+         this.serviceProvider = factory ?? throw new ArgumentNullException(nameof(factory));
       }
 
       #endregion
@@ -55,7 +55,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       /// <returns>The instance of the class, the command line argument were mapped to</returns>
       public T Map(CommandLineArgumentList arguments)
       {
-         var instance = factory.CreateInstance<T>();
+         var instance = (T)serviceProvider.GetService(typeof(T));
          return Map(arguments, instance);
       }
 
@@ -160,7 +160,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
          if (TryGetArgumentType(commandType, out var argumentType))
          {
-            var argumentInstance = factory.CreateInstance(argumentType);
+            var argumentInstance = serviceProvider.GetService(argumentType);
 
             CreateMapper(argumentType, out var mapper, out var genericType);
 
@@ -186,7 +186,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
                eventInfo?.RemoveEventHandler(mapper, handler);
             }
 
-            var command = factory.CreateInstance(commandType);
+            var command = serviceProvider.GetService(commandType);
             var argumentsProperty = commandType.GetProperty(nameof(ICommand<T>.Arguments));
             if (argumentsProperty == null)
                throw new InvalidOperationException("The ICommand<T> implementation does not contain a Arguments property.");
@@ -195,7 +195,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
             return command;
          }
 
-         return factory.CreateInstance(commandType);
+         return serviceProvider.GetService(commandType);
       }
 
       private void CreateMapper(Type argumentType, out object mapper, out Type genericType)
@@ -213,7 +213,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
          Type[] typeArgs = { argumentType };
          genericType = mapperType.MakeGenericType(typeArgs);
-         mapper = factory.CreateInstance(genericType);
+         mapper = serviceProvider.GetService(genericType);
       }
 
       private bool ImplementsICommand(Type commandType)
@@ -223,7 +223,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       private void MapApplicationArguments(T instance, CommandLineArgumentList arguments)
       {
-         var defaultMapper = new ArgumentMapper<T>(factory);
+         var defaultMapper = new ArgumentMapper<T>(serviceProvider);
          try
          {
             // Here we do not care about unmapped arguments, because they could get mapped to the command later
@@ -266,7 +266,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       private void MapHelpOnly(T instance, ArgumentClassInfo argumentInfo, CommandLineArgumentList arguments, CommandLineArgument helpRequest)
       {
-         var helpCommand = factory.CreateInstance<HelpCommand>();
+         var helpCommand = serviceProvider.GetRequiredService<HelpCommand>();
          helpCommand.Arguments = new HelpCommandArguments { ArgumentInfos = argumentInfo, ArgumentDictionary = arguments };
          argumentInfo.HelpCommand.PropertyInfo.SetValue(instance, helpCommand);
 

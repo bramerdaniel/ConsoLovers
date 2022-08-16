@@ -83,7 +83,7 @@ public partial class NestedCommandTests
       where T : class, new()
    {
       var args = new T();
-      var commandMapper = new CommandMapper<T>(Setup.EngineFactory().Done());
+      var commandMapper = Setup.CommandMapper<T>().Done();
       return commandMapper.Map(arguments, args);
    }
 

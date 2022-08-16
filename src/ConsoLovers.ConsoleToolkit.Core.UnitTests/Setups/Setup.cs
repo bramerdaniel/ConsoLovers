@@ -53,5 +53,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups
       }
 
       #endregion
+
+      public static CommandMapperSetup<T> CommandMapper<T>()
+         where T : class
+      {
+         return new CommandMapperSetup<T>();
+      }
    }
 }

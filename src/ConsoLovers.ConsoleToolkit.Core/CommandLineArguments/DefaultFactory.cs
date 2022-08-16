@@ -6,7 +6,7 @@
 
    using JetBrains.Annotations;
 
-   public class DefaultFactory : IObjectFactory
+   public class DefaultFactory : IObjectFactory , IServiceProvider
    {
       private readonly IContainer container;
 
@@ -20,6 +20,7 @@
          this.container = container ?? throw new ArgumentNullException(nameof(container));
 
          container.Register<IObjectFactory>(this).WithLifetime(Lifetime.Singleton);
+         container.Register<IServiceProvider>(this).WithLifetime(Lifetime.Singleton);
          container.Register<ICommandLineEngine, CommandLineEngine>().WithLifetime(Lifetime.Singleton);
          container.Register<ICommandExecutor, CommandExecutor>().WithLifetime(Lifetime.Singleton);
          container.Register<IConsole>(new ConsoleProxy()).WithLifetime(Lifetime.Singleton);
@@ -41,10 +42,10 @@
       {
          return container.Resolve<T>();
       }
-
-      public object Resolve(Type type)
+      
+      public object GetService(Type serviceType)
       {
-         return container.Resolve(type);
+         return container.Resolve(serviceType) ?? container.Create(serviceType);
       }
    }
 }

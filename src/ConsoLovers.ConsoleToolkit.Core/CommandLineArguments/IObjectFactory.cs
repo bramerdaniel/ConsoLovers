@@ -27,7 +27,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       #endregion
 
       T Resolve<T>() where T : class;
-
-      object Resolve(Type type);
+      
    }
 }

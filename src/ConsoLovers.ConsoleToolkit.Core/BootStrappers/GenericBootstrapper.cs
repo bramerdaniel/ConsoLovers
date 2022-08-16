@@ -101,6 +101,12 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
       /// <returns>The created <see cref="T:ConsoLovers.ConsoleToolkit.Core.IApplication"/> of type <see cref="!:T"/></returns>
       public Task<T> RunAsync(CancellationToken cancellationToken) => RunAsync(Environment.CommandLine, cancellationToken);
 
+      public IBootstrapper<T> UseServiceProvider(IServiceProvider serviceProvider)
+      {
+
+         return this;
+      }
+
       /// <summary>
       ///    Specifies the <see cref="T:ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.IObjectFactory"/> that is used to create the
       ///    <see cref="T:ConsoLovers.ConsoleToolkit.Core.IApplication"/>.
