@@ -18,15 +18,20 @@ namespace ConsoLovers.ConsoleToolkit.Core
    /// <summary>This class is the starting point for running an <see cref="IApplication"/> or <see cref="IApplication{T}"/></summary>
    public class ConsoleApplicationManager
    {
+      /// <summary>Gets the type of the application the <see cref="ConsoleApplicationManager"/> was created for.</summary>
+      internal Type ApplicationType { get; }
+
       /// <summary>Gets the service provider.</summary>
       protected IServiceProvider ServiceProvider { get; }
 
       #region Constructors and Destructors
 
       /// <summary>Initializes a new instance of the <see cref="ConsoleApplicationManager"/> class.</summary>
+      /// <param name="applicationType"></param>
       /// <param name="serviceProvider">The create application.</param>
-      protected internal ConsoleApplicationManager([NotNull] IServiceProvider serviceProvider)
+      protected internal ConsoleApplicationManager([NotNull] Type applicationType, [NotNull] IServiceProvider serviceProvider)
       {
+         ApplicationType = applicationType ?? throw new ArgumentNullException(nameof(applicationType));
          ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
       }
 
@@ -72,39 +77,37 @@ namespace ConsoLovers.ConsoleToolkit.Core
       /// <param name="applicationType">Type of the application.</param>
       /// <param name="args">The arguments.</param>
       /// <returns>The executed application</returns>
-      public IApplication Run(Type applicationType, string args)
+      public IApplication Run(string args)
       {
-         return RunAsync(applicationType, args, CancellationToken.None)
+         return RunAsync(args, CancellationToken.None)
             .GetAwaiter()
             .GetResult();
       }
 
       /// <summary>Runs the specified application type.</summary>
-      /// <param name="applicationType">Type of the application.</param>
       /// <param name="args">The arguments.</param>
       /// <returns>The executed application</returns>
-      public IApplication Run(Type applicationType, string[] args)
+      public IApplication Run(string[] args)
       {
-         return RunAsync(applicationType, args, CancellationToken.None)
+         return RunAsync(args, CancellationToken.None)
             .GetAwaiter()
             .GetResult();
       }
 
       /// <summary>Creates and runs an application of the given type with the given arguments.</summary>
-      /// <param name="applicationType">Type of the application.</param>
       /// <param name="args">The arguments.</param>
       /// <param name="cancellationToken">The cancellation token.</param>
       /// <returns>The executed application</returns>
-      public async Task<IApplication> RunAsync(Type applicationType, string[] args, CancellationToken cancellationToken)
+      public async Task<IApplication> RunAsync(string[] args, CancellationToken cancellationToken)
       {
-         SetTitle(applicationType);
-         ApplySize(applicationType);
+         SetTitle(ApplicationType);
+         ApplySize(ApplicationType);
 
-         var application = CreateApplicationInternal(applicationType);
+         var application = CreateApplicationInternal();
 
          try
          {
-            InitializeApplication(applicationType, application, args);
+            InitializeApplication(ApplicationType, application, args);
             return await RunApplicationAsync(application, cancellationToken);
          }
          catch (Exception exception)
@@ -119,20 +122,19 @@ namespace ConsoLovers.ConsoleToolkit.Core
       }
 
       /// <summary>Creates and runs an application of the given type with the given arguments.</summary>
-      /// <param name="applicationType">Type of the application.</param>
       /// <param name="args">The arguments.</param>
       /// <param name="cancellationToken">The cancellation token.</param>
       /// <returns></returns>
-      public async Task<IApplication> RunAsync(Type applicationType, string args, CancellationToken cancellationToken)
+      public async Task<IApplication> RunAsync(string args, CancellationToken cancellationToken)
       {
-         SetTitle(applicationType);
-         ApplySize(applicationType);
+         SetTitle(ApplicationType);
+         ApplySize(ApplicationType);
 
-         var application = CreateApplicationInternal(applicationType);
+         var application = CreateApplicationInternal();
 
          try
          {
-            InitializeApplication(applicationType, application, args);
+            InitializeApplication(ApplicationType, application, args);
             return await RunApplicationAsync(application, cancellationToken);
          }
          catch (Exception exception)
@@ -164,6 +166,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
          argumentType = null;
          return false;
       }
+
 
       private static async Task<IApplication> RunApplicationAsync(IApplication application, CancellationToken cancellationToken)
       {
@@ -221,18 +224,17 @@ namespace ConsoLovers.ConsoleToolkit.Core
       }
 
       /// <summary>Creates the instance of the application to run. Override this method to create the <see cref="IApplication"/> instance by your own.</summary>
-      /// <param name="type">The type of the application to run.</param>
       /// <returns>The created uninitialized application</returns>
       /// <exception cref="InvalidOperationException"></exception>
       /// <exception cref="System.InvalidOperationException"></exception>
-      private IApplication CreateApplicationInternal(Type type)
+      protected IApplication CreateApplicationInternal()
       {
-         var instance = ServiceProvider.GetService(type);
+         var instance = ServiceProvider.GetService(ApplicationType);
          if (instance == null)
-            throw new InvalidOperationException($"Could not create instance of type {type.FullName}");
+            throw new InvalidOperationException($"Could not create instance of type {ApplicationType.FullName}");
 
          if (!(instance is IApplication application))
-            throw new InvalidOperationException($"The application type {type.Name} to run must inherit the {nameof(IApplication)} interface");
+            throw new InvalidOperationException($"The application type {ApplicationType.Name} to run must inherit the {nameof(IApplication)} interface");
 
          return application;
       }

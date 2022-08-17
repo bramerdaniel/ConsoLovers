@@ -15,6 +15,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
 
    internal class BootstrapperBase : IServiceConfigurationHandler
    {
+      /// <summary>Gets the type of the application.</summary>
+      protected Type ApplicationType { get; }
+
       #region Constants and Fields
 
       protected readonly IServiceCollection serviceCollection = new ServiceCollection();
@@ -22,6 +25,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
       protected Func<IServiceCollection, IServiceProvider> createServiceProvider;
 
       private readonly List<Action<IServiceProvider>> serviceConfigurationActions = new();
+
+      protected BootstrapperBase([NotNull] Type applicationType)
+      {
+         ApplicationType = applicationType ?? throw new ArgumentNullException(nameof(applicationType));
+      }
 
       #endregion
 
@@ -81,8 +89,10 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
          serviceConfigurationActions.Add(configAction);
       }
 
-      protected IServiceProvider CreateServiceProvider()
+      internal IServiceProvider CreateServiceProvider()
       {
+         EnsureRequiredServices();
+
          if (createServiceProvider != null)
             return createServiceProvider(serviceCollection);
 
@@ -96,10 +106,10 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
          return serviceProvider;
       }
 
-      protected void EnsureRequiredServices(Type applicationType)
+      protected void EnsureRequiredServices()
       {
          serviceCollection.AddRequiredServices();
-         serviceCollection.AddApplicationTypes(applicationType);
+         serviceCollection.AddApplicationTypes(ApplicationType);
       }
 
       protected void SetServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory)

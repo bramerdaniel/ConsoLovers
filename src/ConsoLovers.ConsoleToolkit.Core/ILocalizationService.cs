@@ -10,4 +10,6 @@ namespace ConsoLovers.ConsoleToolkit.Core;
 public interface ILocalizationService
 {
    string GetLocalizedSting(string resourceKey);
+
+   string GetLocalizedSting(string resourceKey, string fallbackValue);
 }

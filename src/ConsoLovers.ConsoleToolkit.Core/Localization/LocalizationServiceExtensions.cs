@@ -20,9 +20,7 @@ public static class LocalizationServiceExtensions
       if (configurationHandler == null)
          throw new InvalidOperationException("The bootstrapper does not support service configuration");
 
-      configurationHandler.ConfigureRequiredService<DefaultLocalizationService>(
-         localizationService => localizationService.AddResourceManager(resourceManager));
-
+      configurationHandler.ConfigureRequiredService<DefaultLocalizationService>(service => service.AddResourceManager(resourceManager));
       return bootstrapper;
    }
 }

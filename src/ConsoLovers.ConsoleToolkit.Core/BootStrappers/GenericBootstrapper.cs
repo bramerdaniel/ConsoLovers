@@ -19,6 +19,15 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
    internal class GenericBootstrapper<T> : BootstrapperBase, IBootstrapper<T>
       where T : class, IApplication
    {
+      #region Constructors and Destructors
+
+      public GenericBootstrapper()
+         : base(typeof(T))
+      {
+      }
+
+      #endregion
+
       #region IBootstrapper<T> Members
 
       /// <summary>
@@ -111,13 +120,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
 
       internal ConsoleApplicationManagerGeneric<T> CreateApplicationManager()
       {
-         EnsureRequiredServices(typeof(T));
-
          var applicationManager = new ConsoleApplicationManagerGeneric<T>(CreateServiceProvider())
          {
-            WindowTitle = WindowTitle, 
-            WindowHeight = WindowHeight, 
-            WindowWidth = WindowWidth
+            WindowTitle = WindowTitle, WindowHeight = WindowHeight, WindowWidth = WindowWidth
          };
 
          return applicationManager;

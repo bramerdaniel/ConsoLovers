@@ -16,29 +16,24 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
    /// <seealso cref="IBootstrapper"/>
    internal class DefaultBootstrapper : BootstrapperBase, IBootstrapper
    {
-      #region Constants and Fields
-
-      private readonly Type applicationType;
-
-      #endregion
-
+      
       #region Constructors and Destructors
 
       /// <summary>Initializes a new instance of the <see cref="DefaultBootstrapper"/> class.</summary>
       /// <param name="applicationType">Type of the application.</param>
       /// <exception cref="System.ArgumentNullException">applicationType</exception>
       public DefaultBootstrapper([NotNull] Type applicationType)
+         : base(applicationType)
       {
-         this.applicationType = applicationType ?? throw new ArgumentNullException(nameof(applicationType));
       }
 
       #endregion
 
       #region IBootstrapper Members
 
-      public IApplication Run(string[] args) => CreateApplicationManager().Run(applicationType, args);
+      public IApplication Run(string[] args) => CreateApplicationManager().Run(args);
 
-      public IApplication Run() => CreateApplicationManager().Run(applicationType, Environment.CommandLine);
+      public IApplication Run() => CreateApplicationManager().Run(Environment.CommandLine);
 
       public IBootstrapper SetWindowSize(int width, int height)
       {
@@ -74,8 +69,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
 
       private ConsoleApplicationManager CreateApplicationManager()
       {
-         EnsureRequiredServices(applicationType);
-         var applicationManager = new ConsoleApplicationManager(CreateServiceProvider()) { WindowTitle = WindowTitle };
+         var applicationManager = new ConsoleApplicationManager(ApplicationType, CreateServiceProvider()) { WindowTitle = WindowTitle };
          return applicationManager;
       }
 

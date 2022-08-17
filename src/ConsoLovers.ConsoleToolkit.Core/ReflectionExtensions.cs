@@ -13,6 +13,7 @@ using System.Linq;
 using System.Reflection;
 
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+using ConsoLovers.ConsoleToolkit.Core.Localization;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -38,10 +39,29 @@ public static class ReflectionExtensions
 
    internal static IServiceCollection AddRequiredServices([JetBrains.Annotations.NotNull] this IServiceCollection serviceCollection)
    {
-      serviceCollection.AddSingleton<ICommandExecutor, CommandExecutor>();
-      serviceCollection.AddSingleton<ICommandLineEngine, CommandLineEngine>();
-      serviceCollection.AddSingleton<IConsole, ConsoleProxy>();
+      EnsureServiceAndImplementation<ICommandExecutor, CommandExecutor>(serviceCollection);
+      EnsureServiceAndImplementation<ICommandLineEngine, CommandLineEngine>(serviceCollection);
+      EnsureServiceAndImplementation<ILocalizationService, DefaultLocalizationService>(serviceCollection);
+      EnsureServiceAndImplementation<IConsole, ConsoleProxy>(serviceCollection);
+
       return serviceCollection;
+   }
+
+   private static void EnsureServiceAndImplementation<TService, TImplementation>(IServiceCollection serviceCollection)
+   {
+      var serviceType = typeof(TService);
+      var implementationType = typeof(TImplementation);
+      if (TryAddSingleton(serviceCollection, serviceType, implementationType))
+         serviceCollection.AddSingleton(implementationType, x => x.GetService(serviceType));
+   }
+
+   private static bool TryAddSingleton(IServiceCollection serviceCollection, Type serviceType, Type implementationType)
+   {
+      if (serviceCollection.Any(x => x.ServiceType == serviceType))
+         return false;
+
+      serviceCollection.AddSingleton(serviceType, implementationType);
+      return true;
    }
 
    internal static void AddApplicationTypes([JetBrains.Annotations.NotNull] this IServiceCollection serviceCollection, [JetBrains.Annotations.NotNull] Type applicationType)
@@ -52,7 +72,7 @@ public static class ReflectionExtensions
          throw new ArgumentNullException(nameof(applicationType));
 
       serviceCollection.AddSingleton(applicationType);
-      
+
       var argumentType = applicationType.GetInterface("IApplication`1");
       if (argumentType != null)
       {

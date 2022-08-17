@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ConsoleApplicationManager.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2017
+// <copyright file="ConsoleApplicationManagerGeneric.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -11,17 +11,16 @@ namespace ConsoLovers.ConsoleToolkit.Core
    using System.Threading.Tasks;
 
    using ConsoLovers.ConsoleToolkit.Core.BootStrappers;
-   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
    using Microsoft.Extensions.DependencyInjection;
 
    internal class ConsoleApplicationManagerGeneric<T> : ConsoleApplicationManager
-      where T : class , IApplication
+      where T : class, IApplication
    {
       #region Constructors and Destructors
 
       internal ConsoleApplicationManagerGeneric(IServiceProvider serviceProvider)
-         : base(serviceProvider)
+         : base(typeof(T), serviceProvider)
       {
       }
 
@@ -37,17 +36,26 @@ namespace ConsoLovers.ConsoleToolkit.Core
       /// <summary>Runs the application asynchronous.</summary>
       /// <param name="args">The arguments as string.</param>
       /// <param name="cancellationToken">The cancellation token.</param>
-      public async Task<T> RunAsync(string args, CancellationToken cancellationToken)
+      public new async Task<T> RunAsync(string args, CancellationToken cancellationToken)
       {
-         return (T)await RunAsync(typeof(T), args, cancellationToken);
+         return (T)await base.RunAsync(args, cancellationToken);
       }
 
       /// <summary>Runs the application asynchronous.</summary>
       /// <param name="args">The arguments as string array.</param>
       /// <param name="cancellationToken">The cancellation token.</param>
-      public async Task<T> RunAsync(string[] args, CancellationToken cancellationToken)
+      public new async Task<T> RunAsync(string[] args, CancellationToken cancellationToken)
       {
-         return (T)await RunAsync(typeof(T), args, cancellationToken);
+         return (T)await base.RunAsync(args, cancellationToken);
+      }
+
+      #endregion
+
+      #region Methods
+
+      internal T CreateApplication()
+      {
+         return (T)CreateApplicationInternal();
       }
 
       #endregion
