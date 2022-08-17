@@ -57,7 +57,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       /// <returns>The instance of the class, the command line argument were mapped to</returns>
       public T Map(CommandLineArgumentList arguments)
       {
-         var instance = (T)serviceProvider.GetService(typeof(T));
+         var instance = serviceProvider.GetService<T>();
          return Map(arguments, instance);
       }
 

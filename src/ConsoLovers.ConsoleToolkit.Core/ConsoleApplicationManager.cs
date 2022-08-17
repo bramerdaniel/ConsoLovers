@@ -247,12 +247,16 @@ namespace ConsoLovers.ConsoleToolkit.Core
       {
          try
          {
-            if (IsArgumentInitializer(applicationType, out _))
+            if (IsArgumentInitializer(applicationType, out var argumentType))
             {
-               // TODO Ensure functionality with unit tests
-               var methodInfo = applicationType.GetMethod(nameof(IArgumentInitializer<Type>.CreateArguments));
-               // ReSharper disable once PossibleNullReferenceException
-               var argumentsInstance = methodInfo.Invoke(application, null);
+               var argumentsInstance = ServiceProvider.GetService(argumentType);
+               if (argumentsInstance == null)
+               {
+                  // TODO Ensure functionality with unit tests
+                  var methodInfo = applicationType.GetMethod(nameof(IArgumentInitializer<Type>.CreateArguments));
+                  // ReSharper disable once PossibleNullReferenceException
+                  argumentsInstance = methodInfo.Invoke(application, null);
+               }
 
                if (args is string stringArgs)
                {

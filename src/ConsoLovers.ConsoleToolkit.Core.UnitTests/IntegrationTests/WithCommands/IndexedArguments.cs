@@ -151,42 +151,45 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.IntegrationTests.WithCommand
             testContext.Application.Verify(a => a.MappedCommandLineParameter(AppArgs.WaitProperty, true), Times.Once);
          }
       }
-   }
 
-   public class AppArgs
-   {
-      [Command("e")]
-      public GenericCommand<CommandArgs> Execute { get; set; }
-
-      [Option("Wait", "w")]
-      public bool Wait { get; set; }
-
-      internal static PropertyInfo WaitProperty => typeof(AppArgs).GetProperty(nameof(Wait));
-
-      internal static PropertyInfo ExecuteProperty => typeof(AppArgs).GetProperty(nameof(Execute));
-   }
-
-   public class CommandArgs
-   {
-      private string lastName;
-
-      internal static PropertyInfo FirstNameProperty => typeof(CommandArgs).GetProperty(nameof(FirstName));
-
-      internal static PropertyInfo LastNameProperty => typeof(CommandArgs).GetProperty(nameof(LastName));
-
-      internal static PropertyInfo CodeProperty => typeof(CommandArgs).GetProperty(nameof(Code));
-
-      [Argument("FirstName", Index = 0)]
-      public string FirstName { get; set; }
-
-      [Argument("LastName", Index = 1)]
-      public string LastName
+      public class AppArgs
       {
-         get => lastName;
-         set => lastName = value;
+         [Command("e")]
+         public GenericCommand<CommandArgs> Execute { get; set; }
+
+         [Option("Wait", "w")]
+         public bool Wait { get; set; }
+
+         internal static PropertyInfo WaitProperty => typeof(AppArgs).GetProperty(nameof(Wait));
+
+         internal static PropertyInfo ExecuteProperty => typeof(AppArgs).GetProperty(nameof(Execute));
       }
 
-      [Option("Code", "c")]
-      public bool Code { get; set; }
+      public class CommandArgs
+      {
+         private string lastName;
+
+         internal static PropertyInfo FirstNameProperty => typeof(CommandArgs).GetProperty(nameof(FirstName));
+
+         internal static PropertyInfo LastNameProperty => typeof(CommandArgs).GetProperty(nameof(LastName));
+
+         internal static PropertyInfo CodeProperty => typeof(CommandArgs).GetProperty(nameof(Code));
+
+         [Argument("FirstName", Index = 0)]
+         public string FirstName { get; set; }
+
+         [Argument("LastName", Index = 1)]
+         public string LastName
+         {
+            get => lastName;
+            set => lastName = value;
+         }
+
+         [Option("Code", "c")]
+         public bool Code { get; set; }
+      }
    }
+
+
+
 }

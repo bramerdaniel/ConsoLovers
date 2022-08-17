@@ -114,6 +114,10 @@ namespace ConsoLovers.ConsoleToolkit.Core
       #endregion
 
 
+      /// <summary>Specifies the <see cref="IServiceProviderFactory{TContainerBuilder}"/> that should be used</summary>
+      /// <typeparam name="TContainerBuilder">The type of the container builder.</typeparam>
+      /// <param name="factory">The factory to use.</param>
+      /// <returns>The current <see cref="IBootstrapper{T}"/> for further configuration</returns>
       IBootstrapper<T> UseServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory);
    }
 }

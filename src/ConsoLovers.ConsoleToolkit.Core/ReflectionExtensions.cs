@@ -81,9 +81,12 @@ public static class ReflectionExtensions
       if (serviceCollection == null)
          throw new ArgumentNullException(nameof(serviceCollection));
 
-      return argumentType != null
-         ? serviceCollection.AddArgumentTypesInternal(argumentType, new HashSet<Type>())
-         : serviceCollection;
+      if (argumentType != null)
+      {
+         return serviceCollection.AddArgumentTypesInternal(argumentType, new HashSet<Type>());
+      }
+
+      return serviceCollection;
    }
 
    private static IServiceCollection AddArgumentTypesInternal([JetBrains.Annotations.NotNull] this IServiceCollection serviceCollection, Type argumentType, HashSet<Type> addedTypes)
