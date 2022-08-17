@@ -10,9 +10,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
    using System.Threading;
    using System.Threading.Tasks;
 
-   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
-
-   using JetBrains.Annotations;
+   using Microsoft.Extensions.DependencyInjection;
 
    /// <summary>Interface that provides a fluent configuration api for configuring the <see cref="IApplication"/> that should be started</summary>
    public interface IBootstrapper
@@ -46,11 +44,6 @@ namespace ConsoLovers.ConsoleToolkit.Core
       /// <returns>The current <see cref="IBootstrapper"/> for further configuration</returns>
       IBootstrapper SetWindowTitle(string windowTitle);
 
-      /// <summary>Specifies the <see cref="IObjectFactory"/> that is used to create the <see cref="IApplication"/>.</summary>
-      /// <param name="objectFactory">The container.</param>
-      /// <returns>The current <see cref="IBootstrapper"/> for further configuration</returns>
-      IBootstrapper UsingFactory([NotNull] IObjectFactory objectFactory);
-
       #endregion
    }
 
@@ -61,10 +54,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
    {
       #region Public Methods and Operators
 
-      /// <summary>Specifies the function that creates the instance of the application.</summary>
-      /// <param name="applicationBuilder">The application builder function.</param>
-      /// <returns>The current <see cref="IBootstrapper{T}"/> for further configuration</returns>
-      IBootstrapper<T> CreateApplication(Func<T> applicationBuilder);
+      IBootstrapper<T> ConfigureServices(Action<IServiceCollection> serviceSetup);
 
       /// <summary>Runs the configured application with the given commandline arguments.</summary>
       /// <param name="args">The command line arguments.</param>
@@ -120,11 +110,9 @@ namespace ConsoLovers.ConsoleToolkit.Core
       /// <returns>The current <see cref="IBootstrapper{T}"/> for further configuration</returns>
       IBootstrapper<T> SetWindowWidth(int width);
 
-      /// <summary>Specifies the <see cref="IObjectFactory"/> that is used to create the <see cref="IApplication"/>.</summary>
-      /// <param name="container">The container.</param>
-      /// <returns>The current <see cref="IBootstrapper{T}"/> for further configuration</returns>
-      IBootstrapper<T> UsingFactory([NotNull] IObjectFactory container);
-
       #endregion
+
+
+      IBootstrapper<T> UseServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory);
    }
 }

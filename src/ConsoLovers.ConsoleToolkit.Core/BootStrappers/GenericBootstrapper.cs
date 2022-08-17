@@ -7,10 +7,19 @@
 namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
 {
    using System;
+   using System.Collections.Generic;
    using System.Threading;
    using System.Threading.Tasks;
 
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+   using ConsoLovers.ConsoleToolkit.Core.DIContainer;
+
+   using JetBrains.Annotations;
+
+   using Microsoft.Extensions.DependencyInjection;
+
+   using IServiceCollection = Microsoft.Extensions.DependencyInjection.IServiceCollection;
+   using ServiceCollection = Microsoft.Extensions.DependencyInjection.ServiceCollection;
 
    /// <summary>Bootstrapper for generic <see cref="IApplication{T}"/>s/// </summary>
    /// <typeparam name="T">The type pf the application</typeparam>
@@ -21,25 +30,13 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
    {
       #region Constants and Fields
 
-      private Func<T> createApplication;
+      private readonly IServiceCollection serviceCollection = new ServiceCollection();
+      
+      private Func<IServiceCollection, IServiceProvider> createServiceProvider;
 
       #endregion
 
       #region IBootstrapper<T> Members
-
-      /// <summary>Specifies the function that creates the instance of the application.</summary>
-      /// <param name="applicationBuilder">The application builder function.</param>
-      /// <returns>The current <see cref="T:ConsoLovers.ConsoleToolkit.Core.IBootstrapper`1"/> for further configuration</returns>
-      /// <exception cref="InvalidOperationException">ApplicationBuilder function was already specified.</exception>
-      /// <exception cref="ArgumentNullException">applicationBuilder</exception>
-      public IBootstrapper<T> CreateApplication(Func<T> applicationBuilder)
-      {
-         if (createApplication != null)
-            throw new InvalidOperationException("ApplicationBuilder function was already specified.");
-
-         createApplication = applicationBuilder ?? throw new ArgumentNullException(nameof(applicationBuilder));
-         return this;
-      }
 
       /// <summary>
       ///    Specifies the window height of the console window that should be used. NOTE: this overwrites the values specified by the
@@ -64,6 +61,23 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
          WindowWidth = width;
          return this;
       }
+
+      public IBootstrapper<T> UseServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory) 
+         where TContainerBuilder : notnull
+      {
+         if (factory is null)
+            throw new ArgumentNullException(nameof(factory));
+
+         createServiceProvider = CreateWithFactory;
+         return this;
+
+         IServiceProvider CreateWithFactory(IServiceCollection arg)
+         {
+            var builder = factory.CreateBuilder(arg);
+            return factory.CreateServiceProvider(builder);
+         }
+      }
+
 
       /// <summary>
       ///    Specifies the title of the console window that should be used. NOTE: this overwrites the value specified by the
@@ -101,34 +115,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
       /// <returns>The created <see cref="T:ConsoLovers.ConsoleToolkit.Core.IApplication"/> of type <see cref="!:T"/></returns>
       public Task<T> RunAsync(CancellationToken cancellationToken) => RunAsync(Environment.CommandLine, cancellationToken);
 
-      public IBootstrapper<T> UseServiceProvider(IServiceProvider serviceProvider)
+      public IBootstrapper<T> ConfigureServices(Action<IServiceCollection> serviceSetup)
       {
-
+         serviceSetup(serviceCollection);
          return this;
       }
-
-      /// <summary>
-      ///    Specifies the <see cref="T:ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.IObjectFactory"/> that is used to create the
-      ///    <see cref="T:ConsoLovers.ConsoleToolkit.Core.IApplication"/>.
-      /// </summary>
-      /// <param name="container">The container.</param>
-      /// <returns>The current <see cref="T:ConsoLovers.ConsoleToolkit.Core.IBootstrapper`1"/> for further configuration</returns>
-      /// <exception cref="ArgumentNullException">container</exception>
-      /// <exception cref="InvalidOperationException">ApplicationBuilder function was already specified.</exception>
-      public IBootstrapper<T> UsingFactory(IObjectFactory container)
-      {
-         if (container == null)
-            throw new ArgumentNullException(nameof(container));
-         if (createApplication != null)
-            throw new InvalidOperationException("ApplicationBuilder function was already specified.");
-
-         createApplication = container.CreateInstance<T>;
-         return this;
-      }
-
-      #endregion
-
-      #region Public Methods and Operators
 
       /// <summary>Runs the configured application with the given commandline arguments.</summary>
       /// <param name="args">The command line arguments.</param>
@@ -146,17 +137,38 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
 
       #region Methods
 
+
+
       private ConsoleApplicationManagerGeneric<T> CreateApplicationManager()
       {
-         if (createApplication == null)
-            createApplication = () => new DefaultFactory().CreateInstance<T>();
+         EnsureRequiredServices();
 
-         var applicationManager =
-            new ConsoleApplicationManagerGeneric<T>(createApplication)
+         var serviceProvider = CreateServiceProvider(serviceCollection);
+
+         var applicationManager = new ConsoleApplicationManagerGeneric<T>(serviceProvider.GetRequiredService<T>)
             {
-               WindowTitle = WindowTitle, WindowHeight = WindowHeight, WindowWidth = WindowWidth
+               WindowTitle = WindowTitle,
+               WindowHeight = WindowHeight,
+               WindowWidth = WindowWidth
             };
+
          return applicationManager;
+      }
+
+      private void EnsureRequiredServices()
+      {
+         serviceCollection.AddRequiredServices();
+         serviceCollection.AddApplicationTypes<T>();
+      }
+
+      private IServiceProvider CreateServiceProvider(IServiceCollection services)
+      {
+         if (createServiceProvider != null)
+            return createServiceProvider(services);
+
+         var factory = new BuildInServiceProviderFactory();
+         var collection = factory.CreateBuilder(services);
+         return factory.CreateServiceProvider(collection);
       }
 
       #endregion

@@ -12,6 +12,10 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
    using JetBrains.Annotations;
 
+   using Microsoft.Extensions.DependencyInjection;
+
+   using ServiceProviderServiceExtensions = ConsoLovers.ConsoleToolkit.Core.ServiceProviderServiceExtensions;
+
    /// <summary><see cref="IArgumentMapper{T}"/> implementation that can also map commands</summary>
    /// <typeparam name="T">The type of the argument class</typeparam>
    /// <seealso cref="MapperBase"/>
@@ -160,7 +164,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
          if (TryGetArgumentType(commandType, out var argumentType))
          {
-            var argumentInstance = serviceProvider.GetService(argumentType);
+            var argumentInstance = serviceProvider.GetRequiredService(argumentType);
 
             CreateMapper(argumentType, out var mapper, out var genericType);
 
@@ -213,7 +217,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
          Type[] typeArgs = { argumentType };
          genericType = mapperType.MakeGenericType(typeArgs);
-         mapper = serviceProvider.GetService(genericType);
+         mapper = ActivatorUtilities.GetServiceOrCreateInstance(serviceProvider, genericType);
       }
 
       private bool ImplementsICommand(Type commandType)

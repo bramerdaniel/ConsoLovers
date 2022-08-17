@@ -27,9 +27,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       #region Constructors and Destructors
 
-      public ArgumentMapper([NotNull] IServiceProvider engineFactory)
+      public ArgumentMapper([NotNull] IServiceProvider serviceProvider)
       {
-         this.serviceProvider = engineFactory ?? throw new ArgumentNullException(nameof(engineFactory));
+         this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
       }
 
       #endregion
@@ -37,7 +37,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       #region Public Events
 
       /// <summary>Occurs when command line argument could be mapped to a specific property of the specified class of type.</summary>
-      // TODO raise it
       public event EventHandler<MapperEventArgs> MappedCommandLineArgument;
 
       /// <summary>Occurs when a command line argument of the given arguments dictionary could not be mapped to a arguments member</summary>
@@ -103,16 +102,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
          return null;
       }
-
-      private void CheckForUnmappedArguments(IDictionary<string, CommandLineArgument> arguments, HashSet<CommandLineArgument> sharedArguments, T instance)
-      {
-         if (arguments.Count <= 0)
-            return;
-
-         foreach (var argument in arguments.Values.Where(arg => !sharedArguments.Contains(arg)))
-            UnmappedCommandLineArgument?.Invoke(this, new MapperEventArgs(argument, null, instance));
-      }
-
 
       private void CheckForUnmappedArguments(CommandLineArgumentList arguments, HashSet<CommandLineArgument> sharedArguments, T instance)
       {

@@ -19,7 +19,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
    public class TypeHelpProvider : IHelpProvider
    {
-      public IObjectFactory ObjectFactory { get; }
+      public IServiceProvider ServiceProvider { get; }
 
       #region Constants and Fields
 
@@ -36,9 +36,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       }
 
       [InjectionConstructor]
-      public TypeHelpProvider([CanBeNull] ResourceManager resourceManager, [NotNull] IObjectFactory objectFactory)
+      public TypeHelpProvider([CanBeNull] ResourceManager resourceManager, [NotNull] IServiceProvider serviceProvider)
       {
-         ObjectFactory = objectFactory ?? throw new ArgumentNullException(nameof(objectFactory));
+         ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
          this.resourceManager = resourceManager;
       }
 
@@ -140,7 +140,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       /// <param name="helpRequest"></param>
       public virtual void WriteTypeFooter(TypeHelpRequest helpRequest)
       {
-         if (helpRequest.IsCustomFooter() && ObjectFactory.CreateInstance(helpRequest.Type) is ICustomizedFooter customizedFooter)
+         if (helpRequest.IsCustomFooter() && ServiceProvider.GetService(helpRequest.Type) is ICustomizedFooter customizedFooter)
          {
             customizedFooter.WriteFooter(Console);
          }
@@ -152,7 +152,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       public virtual void WriteTypeHeader(TypeHelpRequest helpRequest)
       {
-         if (helpRequest.IsCustomHeader() && ObjectFactory.CreateInstance(helpRequest.Type) is ICustomizedHeader customizedHeader)
+         if (helpRequest.IsCustomHeader() && ServiceProvider.GetService(helpRequest.Type) is ICustomizedHeader customizedHeader)
          {
             customizedHeader.WriteHeader(Console);
             return;

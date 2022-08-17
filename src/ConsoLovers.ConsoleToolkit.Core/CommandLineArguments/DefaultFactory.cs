@@ -19,11 +19,11 @@
       {
          this.container = container ?? throw new ArgumentNullException(nameof(container));
 
-         container.Register<IObjectFactory>(this).WithLifetime(Lifetime.Singleton);
-         container.Register<IServiceProvider>(this).WithLifetime(Lifetime.Singleton);
-         container.Register<ICommandLineEngine, CommandLineEngine>().WithLifetime(Lifetime.Singleton);
-         container.Register<ICommandExecutor, CommandExecutor>().WithLifetime(Lifetime.Singleton);
-         container.Register<IConsole>(new ConsoleProxy()).WithLifetime(Lifetime.Singleton);
+         //container.Register<IObjectFactory>(this).WithLifetime(Lifetime.Singleton);
+         //container.Register<IServiceProvider>(this).WithLifetime(Lifetime.Singleton);
+         //container.Register<ICommandLineEngine, CommandLineEngine>().WithLifetime(Lifetime.Singleton);
+         //container.Register<ICommandExecutor, CommandExecutor>().WithLifetime(Lifetime.Singleton);
+         //container.Register<IConsole>(new ConsoleProxy()).WithLifetime(Lifetime.Singleton);
       }
 
       public T CreateInstance<T>()

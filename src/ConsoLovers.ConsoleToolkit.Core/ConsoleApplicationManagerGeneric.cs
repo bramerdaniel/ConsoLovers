@@ -23,7 +23,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       }
 
       internal ConsoleApplicationManagerGeneric()
-         : this(() => new DefaultFactory().CreateInstance<T>())
+         : this(() => new DefaultFactory().GetRequiredService<T>())
       {
       }
 

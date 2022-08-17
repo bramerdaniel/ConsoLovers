@@ -58,16 +58,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
          return applicationManager.Run(applicationType, args);
       }
 
-      public IBootstrapper UsingFactory(IObjectFactory objectFactory)
-      {
-         if (objectFactory == null)
-            throw new ArgumentNullException(nameof(objectFactory));
-         if (createApplication != null)
-            throw new InvalidOperationException("ApplicationBuilder function was already specified.");
-
-         createApplication = objectFactory.CreateInstance;
-         return this;
-      }
 
       public IBootstrapper SetWindowSize(int width, int height)
       {

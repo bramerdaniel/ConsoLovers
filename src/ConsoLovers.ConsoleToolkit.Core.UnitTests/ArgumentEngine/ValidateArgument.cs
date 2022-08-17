@@ -23,7 +23,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
       [TestMethod]
       public void EnsureValidationFails()
       {
-         var target = GetTarget();
+         var target = GetTarget<Arguments>();
          target.Invoking(t => t.Map<Arguments>(new[] { "Percentage=55" })).Should().NotThrow<CommandLineArgumentValidationException>();
          target.Invoking(t => t.Map<Arguments>(new[] { "Percentage=500" })).Should().Throw<CommandLineArgumentValidationException>();
       }
@@ -32,7 +32,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
       [TestMethod]
       public void EnsureInvalidValidatorTypeFails()
       {
-         var target = GetTarget();
+         var target = GetTarget<Arguments>();
          target.Invoking(t => t.Map<Arguments>(new[] { "Text=HelloWorld" })).Should().Throw<InvalidValidatorUsageException>()
             .Where(e => e.Reason == ErrorReason.InvalidValidatorImplementation);
       }
@@ -40,7 +40,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
       [TestMethod]
       public void EnsureValidatorsWithoutInterfacesFail()
       {
-         var target = GetTarget();
+         var target = GetTarget<Arguments>();
          target.Invoking(t => t.Map<Arguments>(new[] { "NoValidator=44" })).Should().Throw<InvalidValidatorUsageException>()
             .Where(e => e.Reason == ErrorReason.NoValidatorImplementation);
       }

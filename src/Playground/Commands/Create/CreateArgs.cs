@@ -23,9 +23,6 @@ public class CreateArgs : ICustomizedHeader
 
    #region Public Properties
 
-   [Command("?")]
-   [HelpText("Create args help")]
-   public HelpCommand Help { get; set; } = null!;
 
    [Command("role")]
    [HelpText("creates a role")]

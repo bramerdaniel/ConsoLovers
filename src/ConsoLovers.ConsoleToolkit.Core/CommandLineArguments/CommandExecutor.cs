@@ -7,6 +7,7 @@
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
 using System;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -62,7 +63,7 @@ public class CommandExecutor : ICommandExecutor
       if (arguments == null)
          return null;
 
-      foreach (var propertyInfo in typeof(T).GetProperties())
+      foreach (var propertyInfo in typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
       {
          if (propertyInfo.PropertyType.GetInterface(typeof(ICommandBase).FullName!) != null)
          {

@@ -6,14 +6,32 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups;
 
+using ConsoLovers.ConsoleToolkit.Core.BootStrappers;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+
+using Microsoft.Extensions.DependencyInjection;
 
 public class CommandMapperSetup<T> : SetupBase<CommandMapper<T>>
    where T : class
 {
+   private readonly ServiceCollection serviceCollection = new();
+
    protected override CommandMapper<T> CreateInstance()
    {
+      var serviceProvider = new DefaultServiceProvider(serviceCollection);
+      return new CommandMapper<T>(serviceProvider);
+   }
 
-      return new CommandMapper<T>(Setup.EngineFactory().Done());
+   public CommandMapperSetup<T> WithDefaults()
+   {
+      serviceCollection.AddRequiredServices()
+         .AddArgumentTypes<T>();
+
+      return this;
+   }
+   public CommandMapperSetup<T> AddArgumentTypes()
+   {
+      serviceCollection.AddArgumentTypes<T>();
+      return this;
    }
 }

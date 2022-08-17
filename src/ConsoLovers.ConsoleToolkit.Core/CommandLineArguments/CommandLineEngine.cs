@@ -18,15 +18,19 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
    using JetBrains.Annotations;
 
+   using Microsoft.Extensions.DependencyInjection;
+
+   using ServiceProviderServiceExtensions = ConsoLovers.ConsoleToolkit.Core.ServiceProviderServiceExtensions;
+
    /// <summary>Main class that us is used for processing command line arguments</summary>
    public class CommandLineEngine : ICommandLineEngine
    {
       #region Constructors and Destructors
 
       [InjectionConstructor]
-      public CommandLineEngine([NotNull] IObjectFactory objectFactory, [NotNull] ICommandExecutor commandExecutor)
+      public CommandLineEngine([NotNull] IServiceProvider serviceProvider, [NotNull] ICommandExecutor commandExecutor)
       {
-         ObjectFactory = objectFactory ?? throw new ArgumentNullException(nameof(objectFactory));
+         ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
          CommandExecutor = commandExecutor ?? throw new ArgumentNullException(nameof(commandExecutor));
       }
 
@@ -249,7 +253,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       #region Properties
 
       /// <summary>Gets the factory.</summary>
-      internal IObjectFactory ObjectFactory { get; set; }
+      internal IServiceProvider ServiceProvider { get; set; }
 
       #endregion
 
@@ -379,22 +383,24 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          where T : class
       {
          var info = ArgumentClassInfo.FromType<T>();
-         return info.HasCommands ? (IArgumentMapper<T>)ObjectFactory.CreateInstance<CommandMapper<T>>() : ObjectFactory.CreateInstance<ArgumentMapper<T>>();
+         return info.HasCommands 
+            ? ActivatorUtilities.GetServiceOrCreateInstance<CommandMapper<T>>(ServiceProvider) 
+            : ActivatorUtilities.GetServiceOrCreateInstance<ArgumentMapper<T>>(ServiceProvider);
       }
 
       private IHelpProvider GetHelpTextProvider(Type argumentType, ResourceManager resourceManager)
       {
          var providerType = argumentType.GetCustomAttribute<HelpTextProviderAttribute>()?.Type;
-         if (providerType != null && ObjectFactory.CreateInstance(providerType) is IHelpProvider provider)
+         if (providerType != null && ServiceProvider.GetService(providerType) is IHelpProvider provider)
             return provider;
 
-         return new TypeHelpProvider(resourceManager, ObjectFactory);
+         return new TypeHelpProvider(resourceManager, ServiceProvider);
       }
 
       private IHelpProvider GetHelpTextProvider(PropertyInfo propertyInfo, ResourceManager resourceManager)
       {
          var propertyDeclaringType = propertyInfo.DeclaringType?.GetCustomAttribute<HelpTextProviderAttribute>()?.Type;
-         if (propertyDeclaringType != null && ObjectFactory.CreateInstance(propertyDeclaringType) is IHelpProvider provider)
+         if (propertyDeclaringType != null && ServiceProviderServiceExtensions.GetRequiredService(ServiceProvider, propertyDeclaringType) is IHelpProvider provider)
             return provider;
 
          return new PropertyHelpProvider(resourceManager);

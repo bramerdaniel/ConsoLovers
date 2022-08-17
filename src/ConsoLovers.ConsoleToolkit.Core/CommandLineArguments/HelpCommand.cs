@@ -7,6 +7,7 @@
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
    using System;
+   using System.Diagnostics.CodeAnalysis;
    using System.Linq;
    using System.Resources;
 
@@ -21,7 +22,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       private readonly ICommandLineEngine engine;
 
-      private readonly ResourceManager resourceManager;
 
       #endregion
 
@@ -33,12 +33,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       /// <param name="resourceManager">The resource manager.</param>
       /// <exception cref="System.ArgumentNullException">engine</exception>
       [InjectionConstructor]
-      public HelpCommand([NotNull] ICommandLineEngine engine, [CanBeNull] IConsole console, [CanBeNull] ResourceManager resourceManager)
-      {
+      public HelpCommand([JetBrains.Annotations.NotNull] ICommandLineEngine engine, [CanBeNull] IConsole console)
+      { 
          this.engine = engine ?? throw new ArgumentNullException(nameof(engine));
 
          Console = console ?? new ConsoleProxy();
-         this.resourceManager = resourceManager;
       }
 
       #endregion
@@ -68,11 +67,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       {
          if (parameterInfo.ParameterType.IsPrimitive)
          {
-            engine.PrintHelp(parameterInfo.PropertyInfo, resourceManager);
+            engine.PrintHelp(parameterInfo.PropertyInfo, null /* TODO */);
          }
          else
          {
-            engine.PrintHelp(parameterInfo.ParameterType, resourceManager);
+            engine.PrintHelp(parameterInfo.ParameterType, null /* TODO */);
          }
       }
 
@@ -100,7 +99,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
                }
                else
                {
-                  engine.PrintHelp(parameterInfo.PropertyInfo, resourceManager);
+                  engine.PrintHelp(parameterInfo.PropertyInfo, null /* TODO */);
                }
 
                return;
@@ -109,11 +108,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
          if (commandInfo.ArgumentType != null)
          {
-            engine.PrintHelp(commandInfo.ArgumentType, resourceManager);
+            engine.PrintHelp(commandInfo.ArgumentType, null /* TODO */);
          }
          else
          {
-            engine.PrintHelp(commandInfo.PropertyInfo.PropertyType, resourceManager);
+            engine.PrintHelp(commandInfo.PropertyInfo.PropertyType, null /* TODO */);
          }
       }
 
@@ -121,7 +120,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       {
          if (helpRequest == null || helpRequest.Length <= 0)
          {
-            engine.PrintHelp(Arguments.ArgumentInfos.ArgumentType, resourceManager);
+            engine.PrintHelp(Arguments.ArgumentInfos.ArgumentType, null /* TODO */);
             return;
          }
 

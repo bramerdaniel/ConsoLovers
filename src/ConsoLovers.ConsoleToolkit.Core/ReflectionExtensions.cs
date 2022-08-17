@@ -14,6 +14,10 @@ using System.Reflection;
 
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
+using Microsoft.Extensions.DependencyInjection;
+
+using ParameterInfo = ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.ParameterInfo;
+
 public static class ReflectionExtensions
 {
    [SuppressMessage("sonar", "S3011:Reflection should not be used to increase accessibility of classes, methods, or fields")]
@@ -30,5 +34,97 @@ public static class ReflectionExtensions
    public static T GetAttribute<T>(this PropertyInfo propertyInfo) where T : Attribute
    {
       return propertyInfo.GetCustomAttributes<T>(true).FirstOrDefault();
+   }
+
+   internal static IServiceCollection AddRequiredServices([JetBrains.Annotations.NotNull] this IServiceCollection serviceCollection)
+   {
+      serviceCollection.AddSingleton<ICommandExecutor, CommandExecutor>();
+      serviceCollection.AddSingleton<ICommandLineEngine, CommandLineEngine>();
+      serviceCollection.AddSingleton<IConsole, ConsoleProxy>();
+      return serviceCollection;
+   }
+
+   /// <summary>Adds the application type and the required commands and argument classes.</summary>
+   /// <typeparam name="TApplication">The type of the application.</typeparam>
+   /// <param name="serviceCollection">The service collection.</param>
+   /// <exception cref="System.ArgumentNullException">serviceCollection</exception>
+   internal static void AddApplicationTypes<TApplication>([JetBrains.Annotations.NotNull] this IServiceCollection serviceCollection)
+   where TApplication : class
+   {
+      if (serviceCollection == null)
+         throw new ArgumentNullException(nameof(serviceCollection));
+
+      serviceCollection.AddSingleton<TApplication>();
+
+      var applicationType = typeof(TApplication);
+
+      var argumentType = applicationType.GetInterface("IApplication`1");
+      if (argumentType != null)
+      {
+         foreach (var typeArgument in argumentType.GenericTypeArguments)
+            serviceCollection.AddArgumentTypes(typeArgument);
+      }
+   }
+
+   internal static IServiceCollection AddArgumentTypes<TArgument>([JetBrains.Annotations.NotNull] this IServiceCollection serviceCollection)
+   {
+      return serviceCollection.AddArgumentTypes(typeof(TArgument));
+   }
+
+   internal static IServiceCollection AddArgumentTypes([JetBrains.Annotations.NotNull] this IServiceCollection serviceCollection, Type argumentType)
+   {
+      if (serviceCollection == null)
+         throw new ArgumentNullException(nameof(serviceCollection));
+
+      return argumentType != null
+         ? serviceCollection.AddArgumentTypesInternal(argumentType, new HashSet<Type>())
+         : serviceCollection;
+   }
+
+   private static IServiceCollection AddArgumentTypesInternal([JetBrains.Annotations.NotNull] this IServiceCollection serviceCollection, Type argumentType, HashSet<Type> addedTypes)
+   {
+      if (addedTypes.Contains(argumentType))
+         return serviceCollection;
+
+      serviceCollection.AddTransient(argumentType);
+      addedTypes.Add(argumentType);
+
+      var argumentInfo = ArgumentClassInfo.FromType(argumentType);
+
+      AddCommandTypes(serviceCollection, argumentInfo, addedTypes);
+      AddValidatorTypes(serviceCollection, argumentInfo, addedTypes);
+
+      return serviceCollection;
+   }
+
+   private static void AddCommandTypes(IServiceCollection serviceCollection, ArgumentClassInfo argumentInfo, HashSet<Type> addedTypes)
+   {
+      foreach (var commandInfo in argumentInfo.CommandInfos)
+      {
+         if (!addedTypes.Contains(commandInfo.ParameterType))
+         {
+            serviceCollection.AddTransient(commandInfo.ParameterType);
+            addedTypes.Add(commandInfo.ParameterType);
+
+            if (commandInfo.ArgumentType != null)
+               serviceCollection.AddArgumentTypesInternal(commandInfo.ArgumentType, addedTypes);
+         }
+      }
+   }
+
+   private static void AddValidatorTypes(IServiceCollection serviceCollection, ArgumentClassInfo argumentInfo, HashSet<Type> registeredTypes)
+   {
+      foreach (ParameterInfo property in argumentInfo.Properties)
+      {
+         if (property is ArgumentInfo argument)
+         {
+            var validatorAttribute = argument.ValidatorAttribute;
+            if (validatorAttribute != null && !registeredTypes.Contains(validatorAttribute.Type))
+            {
+               serviceCollection.AddTransient(validatorAttribute.Type);
+               registeredTypes.Add(validatorAttribute.Type);
+            }
+         }
+      }
    }
 }

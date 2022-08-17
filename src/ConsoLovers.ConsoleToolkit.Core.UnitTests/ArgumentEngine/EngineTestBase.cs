@@ -18,6 +18,14 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
          return Setup.CommandLineEngine().Done();
       }
 
+      protected CommandLineEngine GetTarget<T>()
+         where T : class, new()
+      {
+         return Setup.CommandLineEngine()
+            .AddArgumentTypes<T>()
+            .Done();
+      }
+
       #endregion
    }
 }
