@@ -8,9 +8,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
 {
    using System;
 
-   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
-
    using JetBrains.Annotations;
+
+   using Microsoft.Extensions.DependencyInjection;
 
    /// <summary>The default <see cref="IBootstrapper"/> for non generic applications</summary>
    /// <seealso cref="IBootstrapper" />
@@ -20,7 +20,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
 
       private readonly Type applicationType;
 
-      private Func<Type, object> createApplication;
 
       #endregion
 
@@ -35,29 +34,27 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
 
       #region IBootstrapper Members
 
-      public IBootstrapper CreateApplication(Func<Type, object> applicationBuilder)
-      {
-         if (createApplication != null)
-            throw new InvalidOperationException("ApplicationBuilder function was already specified.");
-
-         createApplication = applicationBuilder ?? throw new ArgumentNullException(nameof(applicationBuilder));
-         return this;
-      }
 
       public IApplication Run(string[] args)
       {
-         if (createApplication == null)
-            createApplication = new DefaultFactory().CreateInstance;
 
-         var applicationManager = new ConsoleApplicationManager(createApplication)
+         var applicationManager = new ConsoleApplicationManager(CreateServiceProvider())
          {
             WindowTitle = WindowTitle,
-            
          };
 
          return applicationManager.Run(applicationType, args);
       }
 
+      public IApplication Run()
+      {
+         var applicationManager = new ConsoleApplicationManager(CreateServiceProvider())
+         {
+            WindowTitle = WindowTitle,
+         };
+
+         return applicationManager.Run(applicationType, Environment.CommandLine);
+      }
 
       public IBootstrapper SetWindowSize(int width, int height)
       {
@@ -69,6 +66,12 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
       public IBootstrapper SetWindowTitle(string windowTitle)
       {
          WindowTitle = windowTitle;
+         return this;
+      }
+
+      public IBootstrapper UseServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory)
+      {
+         SetServiceProviderFactory(factory);
          return this;
       }
 

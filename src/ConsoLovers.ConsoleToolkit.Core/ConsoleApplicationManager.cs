@@ -13,16 +13,27 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
    using ConsoLovers.ConsoleToolkit.Core.BootStrappers;
 
+   using JetBrains.Annotations;
+
    /// <summary>This class is the starting point for running an <see cref="IApplication"/> or <see cref="IApplication{T}"/></summary>
    public class ConsoleApplicationManager
    {
+      protected IServiceProvider ServiceProvider { get; }
+
       #region Constructors and Destructors
 
       /// <summary>Initializes a new instance of the <see cref="ConsoleApplicationManager"/> class.</summary>
       /// <param name="createApplication">The create application.</param>
-      protected internal ConsoleApplicationManager(Func<Type, object> createApplication)
+      //protected internal ConsoleApplicationManager(Func<Type, object> createApplication)
+      //{
+      //   CreateApplication = createApplication ?? Activator.CreateInstance;
+      //}
+
+      /// <summary>Initializes a new instance of the <see cref="ConsoleApplicationManager"/> class.</summary>
+      /// <param name="serviceProvider">The create application.</param>
+      protected internal ConsoleApplicationManager([NotNull] IServiceProvider serviceProvider)
       {
-         CreateApplication = createApplication ?? Activator.CreateInstance;
+         ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
       }
 
       #endregion
@@ -38,8 +49,6 @@ namespace ConsoLovers.ConsoleToolkit.Core
       /// <summary>Gets or sets the width of the window.</summary>
       protected internal int? WindowWidth { get; set; }
 
-      /// <summary>Gets the function that creates the application object itself.</summary>
-      private Func<Type, object> CreateApplication { get; }
 
       #endregion
 
@@ -224,7 +233,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       /// <exception cref="System.InvalidOperationException"></exception>
       private IApplication CreateApplicationInternal(Type type)
       {
-         var instance = CreateApplication(type);
+         var instance = ServiceProvider.GetService(type);
          if (instance == null)
             throw new InvalidOperationException($"Could not create instance of type {type.FullName}");
 

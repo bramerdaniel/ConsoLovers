@@ -44,6 +44,23 @@ public static class ReflectionExtensions
       return serviceCollection;
    }
 
+   internal static void AddApplicationTypes([JetBrains.Annotations.NotNull] this IServiceCollection serviceCollection, [JetBrains.Annotations.NotNull] Type applicationType)
+   {
+      if (serviceCollection == null)
+         throw new ArgumentNullException(nameof(serviceCollection));
+      if (applicationType == null)
+         throw new ArgumentNullException(nameof(applicationType));
+
+      serviceCollection.AddSingleton(applicationType);
+      
+      var argumentType = applicationType.GetInterface("IApplication`1");
+      if (argumentType != null)
+      {
+         foreach (var typeArgument in argumentType.GenericTypeArguments)
+            serviceCollection.AddArgumentTypes(typeArgument);
+      }
+   }
+
    /// <summary>Adds the application type and the required commands and argument classes.</summary>
    /// <typeparam name="TApplication">The type of the application.</typeparam>
    /// <param name="serviceCollection">The service collection.</param>
@@ -51,19 +68,7 @@ public static class ReflectionExtensions
    internal static void AddApplicationTypes<TApplication>([JetBrains.Annotations.NotNull] this IServiceCollection serviceCollection)
    where TApplication : class
    {
-      if (serviceCollection == null)
-         throw new ArgumentNullException(nameof(serviceCollection));
-
-      serviceCollection.AddSingleton<TApplication>();
-
-      var applicationType = typeof(TApplication);
-
-      var argumentType = applicationType.GetInterface("IApplication`1");
-      if (argumentType != null)
-      {
-         foreach (var typeArgument in argumentType.GenericTypeArguments)
-            serviceCollection.AddArgumentTypes(typeArgument);
-      }
+      serviceCollection.AddApplicationTypes(typeof(TApplication));
    }
 
    internal static IServiceCollection AddArgumentTypes<TArgument>([JetBrains.Annotations.NotNull] this IServiceCollection serviceCollection)

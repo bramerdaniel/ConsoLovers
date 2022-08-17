@@ -17,15 +17,12 @@ namespace ConsoLovers.ConsoleToolkit.Core
    {
       #region Public Methods and Operators
 
-      /// <summary>Specifies the function that creates the instance of the application.</summary>
-      /// <param name="applicationBuilder">The application builder function.</param>
-      /// <returns>The current <see cref="IBootstrapper"/> for further configuration</returns>
-      IBootstrapper CreateApplication(Func<Type, object> applicationBuilder);
-
       /// <summary>Runs the configured application with the given commandline arguments.</summary>
       /// <param name="args">The command line arguments.</param>
       /// <returns>The created <see cref="IApplication"/></returns>
       IApplication Run(string[] args);
+      
+      IApplication Run();
 
       /// <summary>
       ///    Specifies the window size of the console window. that should be used. NOTE: this overwrites the values specified by the
@@ -43,6 +40,8 @@ namespace ConsoLovers.ConsoleToolkit.Core
       /// <param name="windowTitle">The window title to set.</param>
       /// <returns>The current <see cref="IBootstrapper"/> for further configuration</returns>
       IBootstrapper SetWindowTitle(string windowTitle);
+
+      IBootstrapper UseServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory);
 
       #endregion
    }

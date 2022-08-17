@@ -15,6 +15,11 @@ public static class Program
    {
       var container = new ServiceContainer();
 
+      var anotherApp = ConsoleApplicationManager
+         .For(typeof(PlaygroundApp))
+         .Run();
+
+
       var app = await ConsoleApplicationManager
          .For<PlaygroundApp>()
          .UseServiceProviderFactory(new DefaultServiceProviderFactory())

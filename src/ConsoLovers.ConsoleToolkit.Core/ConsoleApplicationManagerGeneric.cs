@@ -10,20 +10,23 @@ namespace ConsoLovers.ConsoleToolkit.Core
    using System.Threading;
    using System.Threading.Tasks;
 
+   using ConsoLovers.ConsoleToolkit.Core.BootStrappers;
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+
+   using Microsoft.Extensions.DependencyInjection;
 
    internal class ConsoleApplicationManagerGeneric<T> : ConsoleApplicationManager
       where T : class , IApplication
    {
       #region Constructors and Destructors
 
-      internal ConsoleApplicationManagerGeneric(Func<T> createApplication)
-         : base(_ => createApplication())
+      internal ConsoleApplicationManagerGeneric(IServiceProvider serviceProvider)
+         : base(serviceProvider)
       {
       }
 
       internal ConsoleApplicationManagerGeneric()
-         : this(() => new DefaultFactory().GetRequiredService<T>())
+         : this(new DefaultServiceProvider(new ServiceCollection().AddArgumentTypes<T>()))
       {
       }
 

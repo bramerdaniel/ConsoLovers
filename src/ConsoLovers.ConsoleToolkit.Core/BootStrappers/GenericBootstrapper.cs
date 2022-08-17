@@ -28,14 +28,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
    internal class GenericBootstrapper<T> : BootstrapperBase, IBootstrapper<T>
       where T : class, IApplication
    {
-      #region Constants and Fields
-
-      private readonly IServiceCollection serviceCollection = new ServiceCollection();
-      
-      private Func<IServiceCollection, IServiceProvider> createServiceProvider;
-
-      #endregion
-
       #region IBootstrapper<T> Members
 
       /// <summary>
@@ -62,22 +54,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
          return this;
       }
 
-      public IBootstrapper<T> UseServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory) 
-         where TContainerBuilder : notnull
+      public IBootstrapper<T> UseServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory)
       {
-         if (factory is null)
-            throw new ArgumentNullException(nameof(factory));
-
-         createServiceProvider = CreateWithFactory;
+         SetServiceProviderFactory(factory);
          return this;
-
-         IServiceProvider CreateWithFactory(IServiceCollection arg)
-         {
-            var builder = factory.CreateBuilder(arg);
-            return factory.CreateServiceProvider(builder);
-         }
       }
-
 
       /// <summary>
       ///    Specifies the title of the console window that should be used. NOTE: this overwrites the value specified by the
@@ -141,11 +122,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
 
       private ConsoleApplicationManagerGeneric<T> CreateApplicationManager()
       {
-         EnsureRequiredServices();
+         EnsureRequiredServices(typeof(T));
 
-         var serviceProvider = CreateServiceProvider(serviceCollection);
-
-         var applicationManager = new ConsoleApplicationManagerGeneric<T>(serviceProvider.GetRequiredService<T>)
+         var applicationManager = new ConsoleApplicationManagerGeneric<T>(CreateServiceProvider())
             {
                WindowTitle = WindowTitle,
                WindowHeight = WindowHeight,
@@ -153,22 +132,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
             };
 
          return applicationManager;
-      }
-
-      private void EnsureRequiredServices()
-      {
-         serviceCollection.AddRequiredServices();
-         serviceCollection.AddApplicationTypes<T>();
-      }
-
-      private IServiceProvider CreateServiceProvider(IServiceCollection services)
-      {
-         if (createServiceProvider != null)
-            return createServiceProvider(services);
-
-         var factory = new BuildInServiceProviderFactory();
-         var collection = factory.CreateBuilder(services);
-         return factory.CreateServiceProvider(collection);
       }
 
       #endregion

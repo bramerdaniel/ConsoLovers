@@ -13,11 +13,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
    {
       #region Public Methods and Operators
 
-      /// <summary>Creates an instance of the given argument type.</summary>
-      /// <typeparam name="T">The type of the arguments</typeparam>
-      /// <returns>The created instance</returns>
-      T CreateInstance<T>()
-         where T : class;
 
       /// <summary>Creates the instance by the given type.</summary>
       /// <param name="type">The type.</param>
@@ -26,7 +21,5 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       #endregion
 
-      T Resolve<T>() where T : class;
-      
    }
 }
