@@ -95,6 +95,12 @@ public class DefaultServiceRegistrationTests
       EnsureServiceAndImplementationAvailable<ILocalizationService, DefaultLocalizationService>();
    }
 
+   [TestMethod]
+   public void EnsureArgumentReflectorServiceIsAddedCorrectly()
+   {
+      EnsureServiceAndImplementationAvailable<IArgumentReflector, ArgumentReflector>();
+   }
+
    #endregion
 
    #region Methods

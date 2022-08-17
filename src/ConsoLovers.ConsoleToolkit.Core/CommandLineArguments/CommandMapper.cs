@@ -31,10 +31,12 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       /// <summary>Initializes a new instance of the <see cref="CommandMapper{T}"/> class.</summary>
       /// <param name="serviceProvider">The serviceProvider the command mapper should use.</param>
+      /// <param name="argumentReflector"></param>
       /// <exception cref="System.ArgumentNullException">serviceProvider</exception>
-      public CommandMapper([NotNull] IServiceProvider serviceProvider)
+      public CommandMapper([NotNull] IServiceProvider serviceProvider, [NotNull] IArgumentReflector argumentReflector)
       {
          this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+         ArgumentReflector = argumentReflector ?? throw new ArgumentNullException(nameof(argumentReflector));
       }
 
       #endregion
@@ -51,7 +53,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       #region IArgumentMapper<T> Members
 
-
       /// <summary>Maps the give argument dictionary to the given instance.</summary>
       /// <param name="arguments">The arguments to map.</param>
       /// <returns>The instance of the class, the command line argument were mapped to</returns>
@@ -63,7 +64,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       public T Map(CommandLineArgumentList arguments, T instance)
       {
-         var argumentInfo = ArgumentClassInfo.FromType<T>();
+         var argumentInfo = ArgumentReflector.GetTypeInfo<T>();
          var helpRequest = GetHelpRequest(arguments, argumentInfo);
          if (helpRequest != null)
          {
@@ -80,6 +81,13 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          return instance;
       }
 
+      #endregion
+
+      #region Properties
+
+      /// <summary>Gets the argument reflector.</summary>
+      /// <value>The argument reflector.</value>
+      internal IArgumentReflector ArgumentReflector { get; }
 
       #endregion
 
@@ -202,7 +210,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       private void CreateMapper(Type argumentType, out object mapper, out Type genericType)
       {
-         var argumentClassInfo = ArgumentClassInfo.FromType(argumentType);
+         var argumentClassInfo = ArgumentReflector.GetTypeInfo(argumentType);
          Type mapperType;
          if (argumentClassInfo.HasCommands)
          {

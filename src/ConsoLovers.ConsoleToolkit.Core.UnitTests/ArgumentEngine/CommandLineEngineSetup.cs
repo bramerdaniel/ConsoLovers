@@ -21,8 +21,10 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
 
       protected override CommandLineEngine CreateInstance()
       {
-         var objectFactory = new DefaultServiceProvider(serviceCollection);
-         return new CommandLineEngine(objectFactory, new CommandExecutor(), new CommandLineArgumentParser());
+         var serviceProvider = new DefaultServiceProvider(serviceCollection);
+         var argumentReflector = new ArgumentReflector();
+         var commandExecutor = new CommandExecutor(argumentReflector);
+         return new CommandLineEngine(serviceProvider, commandExecutor, new CommandLineArgumentParser(), argumentReflector);
       }
 
       #endregion
@@ -38,6 +40,12 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
          where T : class, new()
       {
          serviceCollection.AddArgumentTypes<T>();
+         return this;
+      }
+
+      public CommandLineEngineSetup WithDefaults()
+      {
+         serviceCollection.AddRequiredServices();
          return this;
       }
    }

@@ -106,6 +106,7 @@ public partial class EngineIntegrationTests
    {
       var args = new T();
       var engine = Setup.CommandLineEngine()
+         .WithDefaults()
          .AddArgumentTypes<T>()
          .Done();
 

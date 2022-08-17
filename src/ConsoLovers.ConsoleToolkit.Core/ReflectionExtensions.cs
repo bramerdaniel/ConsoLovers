@@ -40,6 +40,10 @@ public static class ReflectionExtensions
 
    internal static IServiceCollection AddRequiredServices([JetBrains.Annotations.NotNull] this IServiceCollection serviceCollection)
    {
+      var argumentReflector = new ArgumentReflector();
+      serviceCollection.AddSingleton<IArgumentReflector>(argumentReflector);
+      serviceCollection.AddSingleton(argumentReflector);
+
       EnsureServiceAndImplementation<ICommandLineArgumentParser, CommandLineArgumentParser>(serviceCollection);
       EnsureServiceAndImplementation<ICommandLineEngine, CommandLineEngine>(serviceCollection);
       EnsureServiceAndImplementation<ICommandExecutor, CommandExecutor>(serviceCollection);
@@ -120,7 +124,11 @@ public static class ReflectionExtensions
       serviceCollection.AddTransient(argumentType);
       addedTypes.Add(argumentType);
 
-      var argumentInfo = ArgumentClassInfo.FromType(argumentType);
+      var argumentReflector = serviceCollection.Where(x => x.ImplementationInstance is IArgumentReflector)
+         .Select(x => (IArgumentReflector)x.ImplementationInstance)
+         .First();
+
+      var argumentInfo = argumentReflector.GetTypeInfo(argumentType);
 
       AddCommandTypes(serviceCollection, argumentInfo, addedTypes);
       AddValidatorTypes(serviceCollection, argumentInfo, addedTypes);

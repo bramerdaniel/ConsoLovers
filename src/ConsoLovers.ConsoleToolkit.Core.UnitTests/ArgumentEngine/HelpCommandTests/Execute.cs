@@ -89,7 +89,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine.HelpCommandTe
 
          return new HelpCommandArguments
          {
-            ArgumentInfos = ArgumentClassInfo.FromType<T>(),
+            ArgumentInfos = new ArgumentClassInfo(typeof(T)),
             ArgumentDictionary = argumentDictionary
          };
       }

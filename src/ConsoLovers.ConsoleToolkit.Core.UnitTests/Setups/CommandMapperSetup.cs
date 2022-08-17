@@ -19,7 +19,7 @@ public class CommandMapperSetup<T> : SetupBase<CommandMapper<T>>
    protected override CommandMapper<T> CreateInstance()
    {
       var serviceProvider = new DefaultServiceProvider(serviceCollection);
-      return new CommandMapper<T>(serviceProvider);
+      return new CommandMapper<T>(serviceProvider, new ArgumentReflector());
    }
 
    public CommandMapperSetup<T> WithDefaults()

@@ -30,13 +30,16 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       /// <param name="engine">The <see cref="ICommandLineEngine"/> that should be used.</param>
       /// <param name="console">The console that should be used by the command.</param>
       /// <param name="localizationService">The <see cref="ILocalizationService"/> that is used for translating resources.</param>
+      /// <param name="argumentReflector"></param>
       /// <exception cref="System.ArgumentNullException">engine</exception>
       [InjectionConstructor]
-      public HelpCommand([NotNull] ICommandLineEngine engine, [NotNull] ILocalizationService localizationService, [NotNull] IConsole console)
+      public HelpCommand([NotNull] ICommandLineEngine engine, [NotNull] ILocalizationService localizationService, 
+         [NotNull] IConsole console, [NotNull] IArgumentReflector argumentReflector)
       {
          this.engine = engine ?? throw new ArgumentNullException(nameof(engine));
          this.localizationService = localizationService ?? throw new ArgumentNullException(nameof(localizationService));
          Console = console ?? throw new ArgumentNullException(nameof(console));
+         ArgumentReflector = argumentReflector ?? throw new ArgumentNullException(nameof(argumentReflector));
       }
 
       #endregion
@@ -57,6 +60,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       #region Properties
 
       private IConsole Console { get; }
+
+      public IArgumentReflector ArgumentReflector { get; }
 
       #endregion
 
@@ -86,7 +91,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
                return;
             }
 
-            var classInfo = ArgumentClassInfo.FromType(commandInfo.ArgumentType);
+            var classInfo = ArgumentReflector.GetTypeInfo(commandInfo.ArgumentType);
             var parameterInfo = classInfo.GetParameterInfo(argumentName);
 
             if (parameterInfo != null)

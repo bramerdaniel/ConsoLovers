@@ -84,7 +84,7 @@ public partial class NestedCommandTests
    {
       var args = new T();
       var commandMapper = Setup.CommandMapper<T>()
-         .AddArgumentTypes()
+         .WithDefaults()
          .Done();
 
       return commandMapper.Map(arguments, args);

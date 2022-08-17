@@ -27,11 +27,12 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       [InjectionConstructor]
       public CommandLineEngine([NotNull] IServiceProvider serviceProvider, [NotNull] ICommandExecutor commandExecutor,
-         [NotNull] ICommandLineArgumentParser argumentParser)
+         [NotNull] ICommandLineArgumentParser argumentParser, [NotNull] IArgumentReflector argumentReflector)
       {
          ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
          CommandExecutor = commandExecutor ?? throw new ArgumentNullException(nameof(commandExecutor));
          ArgumentParser = argumentParser ?? throw new ArgumentNullException(nameof(argumentParser));
+         ArgumentReflector = argumentReflector ?? throw new ArgumentNullException(nameof(argumentReflector));
       }
 
       #endregion
@@ -249,6 +250,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       /// <summary>Gets the <see cref="ICommandLineArgumentParser"/> that will be used.</summary>
       internal ICommandLineArgumentParser ArgumentParser { get; }
 
+      public IArgumentReflector ArgumentReflector { get; }
+
       /// <summary>Gets the service provider.</summary>
       internal IServiceProvider ServiceProvider { get; }
 
@@ -380,7 +383,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       private IArgumentMapper<T> CreateMapper<T>()
          where T : class
       {
-         var info = ArgumentClassInfo.FromType<T>();
+         var info = ArgumentReflector.GetTypeInfo<T>();
          return info.HasCommands
             ? ActivatorUtilities.GetServiceOrCreateInstance<CommandMapper<T>>(ServiceProvider)
             : ActivatorUtilities.GetServiceOrCreateInstance<ArgumentMapper<T>>(ServiceProvider);

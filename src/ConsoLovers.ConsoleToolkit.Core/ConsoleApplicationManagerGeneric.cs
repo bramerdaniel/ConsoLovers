@@ -25,8 +25,17 @@ namespace ConsoLovers.ConsoleToolkit.Core
       }
 
       internal ConsoleApplicationManagerGeneric()
-         : this(new DefaultServiceProvider(new ServiceCollection().AddArgumentTypes<T>()))
+         : this(CreateDefaultServiceProvider())
       {
+      }
+
+      private static DefaultServiceProvider CreateDefaultServiceProvider()
+      {
+         var serviceCollection = new ServiceCollection()
+            .AddRequiredServices()
+            .AddArgumentTypes<T>();
+
+         return new DefaultServiceProvider(serviceCollection);
       }
 
       #endregion
