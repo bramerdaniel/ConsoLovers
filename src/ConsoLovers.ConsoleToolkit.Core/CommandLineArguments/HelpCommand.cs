@@ -32,13 +32,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       /// <param name="localizationService">The <see cref="ILocalizationService"/> that is used for translating resources.</param>
       /// <exception cref="System.ArgumentNullException">engine</exception>
       [InjectionConstructor]
-      public HelpCommand([JetBrains.Annotations.NotNull] ICommandLineEngine engine,
-         [JetBrains.Annotations.NotNull] ILocalizationService localizationService, [CanBeNull] IConsole console)
+      public HelpCommand([NotNull] ICommandLineEngine engine, [NotNull] ILocalizationService localizationService, [NotNull] IConsole console)
       {
          this.engine = engine ?? throw new ArgumentNullException(nameof(engine));
          this.localizationService = localizationService ?? throw new ArgumentNullException(nameof(localizationService));
-
-         Console = console ?? new ConsoleProxy();
+         Console = console ?? throw new ArgumentNullException(nameof(console));
       }
 
       #endregion
@@ -68,11 +66,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       {
          if (parameterInfo.ParameterType.IsPrimitive)
          {
-            engine.PrintHelp(parameterInfo.PropertyInfo, null /* TODO */);
+            engine.PrintHelp(parameterInfo.PropertyInfo, localizationService);
          }
          else
          {
-            engine.PrintHelp(parameterInfo.ParameterType, null /* TODO */);
+            engine.PrintHelp(parameterInfo.ParameterType, localizationService);
          }
       }
 
@@ -100,7 +98,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
                }
                else
                {
-                  engine.PrintHelp(parameterInfo.PropertyInfo, null /* TODO */);
+                  engine.PrintHelp(parameterInfo.PropertyInfo, localizationService);
                }
 
                return;
@@ -109,11 +107,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
          if (commandInfo.ArgumentType != null)
          {
-            engine.PrintHelp(commandInfo.ArgumentType, null /* TODO */);
+            engine.PrintHelp(commandInfo.ArgumentType, localizationService);
          }
          else
          {
-            engine.PrintHelp(commandInfo.PropertyInfo.PropertyType, null /* TODO */);
+            engine.PrintHelp(commandInfo.PropertyInfo.PropertyType, localizationService);
          }
       }
 
@@ -121,7 +119,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       {
          if (helpRequest == null || helpRequest.Length <= 0)
          {
-            engine.PrintHelp(Arguments.ArgumentInfos.ArgumentType, null /* TODO */);
+            engine.PrintHelp(Arguments.ArgumentInfos.ArgumentType, localizationService);
             return;
          }
 

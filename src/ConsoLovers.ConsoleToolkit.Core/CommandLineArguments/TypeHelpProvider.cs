@@ -22,8 +22,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       public IServiceProvider ServiceProvider { get; }
 
       #region Constants and Fields
-
-      private readonly ResourceManager resourceManager;
+      
+      private readonly ILocalizationService localizationService;
 
       private IConsole console;
 
@@ -36,10 +36,10 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       }
 
       [InjectionConstructor]
-      public TypeHelpProvider([CanBeNull] ResourceManager resourceManager, [NotNull] IServiceProvider serviceProvider)
+      public TypeHelpProvider([NotNull] IServiceProvider serviceProvider, [NotNull] ILocalizationService localizationService)
       {
          ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
-         this.resourceManager = resourceManager;
+         this.localizationService = localizationService ?? throw new ArgumentNullException(nameof(localizationService));
       }
 
       #endregion
@@ -103,7 +103,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
                   PropertyName = GetArgumentName(propertyInfo, commandLineAttribute),
                   Aliases = GetAliases(commandLineAttribute),
                   UnlocalizedDescription = helpText.Description,
-                  LocalizedDescription = CommandLineEngine.GetLocalizedDescription(resourceManager, helpText.ResourceKey),
+                  LocalizedDescription = CommandLineEngine.GetLocalizedDescription(localizationService, helpText.ResourceKey),
                   Priority = helpText.Priority,
                   Required = IsRequired(commandLineAttribute)
                };
@@ -213,9 +213,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       protected virtual void WriteHelpText(string resourceKey, string description)
       {
-         if (resourceManager != null && !string.IsNullOrEmpty(resourceKey))
+         if (localizationService != null && !string.IsNullOrEmpty(resourceKey))
          {
-            var helpTextString = CommandLineEngine.GetLocalizedDescription(resourceManager, resourceKey);
+            var helpTextString = CommandLineEngine.GetLocalizedDescription(localizationService, resourceKey);
             Console.WriteLine($"- {helpTextString}");
          }
          else

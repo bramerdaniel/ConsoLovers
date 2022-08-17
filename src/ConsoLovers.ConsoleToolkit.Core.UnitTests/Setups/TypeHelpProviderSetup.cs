@@ -10,6 +10,7 @@ using System;
 
 using ConsoLovers.ConsoleToolkit.Core.BootStrappers;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+using ConsoLovers.ConsoleToolkit.Core.Localization;
 
 public class TypeHelpProviderSetup : SetupBase<TypeHelpProvider>
 {
@@ -34,7 +35,7 @@ public class TypeHelpProviderSetup : SetupBase<TypeHelpProvider>
 
    protected override TypeHelpProvider CreateInstance()
    {
-      return new TypeHelpProvider(null, serviceProvider ?? new DefaultServiceProvider());
+      return new TypeHelpProvider(serviceProvider ?? new DefaultServiceProvider(), new DefaultLocalizationService());
    }
 
    #endregion
