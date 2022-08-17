@@ -24,7 +24,6 @@
       [TestMethod]
       public void EnsureRunIsCalledOnRunable()
       {
-
          var runned = new ConsoleApplicationManagerGeneric<Runable>()
             .RunAsync(new string[0], CancellationToken.None).GetAwaiter().GetResult();
 

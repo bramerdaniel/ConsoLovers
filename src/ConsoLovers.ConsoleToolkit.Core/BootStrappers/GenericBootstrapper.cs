@@ -7,19 +7,10 @@
 namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
 {
    using System;
-   using System.Collections.Generic;
    using System.Threading;
    using System.Threading.Tasks;
 
-   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
-   using ConsoLovers.ConsoleToolkit.Core.DIContainer;
-
-   using JetBrains.Annotations;
-
    using Microsoft.Extensions.DependencyInjection;
-
-   using IServiceCollection = Microsoft.Extensions.DependencyInjection.IServiceCollection;
-   using ServiceCollection = Microsoft.Extensions.DependencyInjection.ServiceCollection;
 
    /// <summary>Bootstrapper for generic <see cref="IApplication{T}"/>s/// </summary>
    /// <typeparam name="T">The type pf the application</typeparam>
@@ -118,18 +109,16 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
 
       #region Methods
 
-
-
-      private ConsoleApplicationManagerGeneric<T> CreateApplicationManager()
+      internal ConsoleApplicationManagerGeneric<T> CreateApplicationManager()
       {
          EnsureRequiredServices(typeof(T));
 
          var applicationManager = new ConsoleApplicationManagerGeneric<T>(CreateServiceProvider())
-            {
-               WindowTitle = WindowTitle,
-               WindowHeight = WindowHeight,
-               WindowWidth = WindowWidth
-            };
+         {
+            WindowTitle = WindowTitle, 
+            WindowHeight = WindowHeight, 
+            WindowWidth = WindowWidth
+         };
 
          return applicationManager;
       }

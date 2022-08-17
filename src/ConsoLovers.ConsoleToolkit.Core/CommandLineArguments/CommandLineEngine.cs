@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="CommandLineEngine.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2018
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -39,8 +39,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       #region Public Events
 
       /// <summary>
-      ///    Occurs when command line argument was passed to the <see cref="T:ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.ICommandLineEngine"/> and it was processed and
-      ///    mapped to a specific property.
+      ///    Occurs when command line argument was passed to the <see cref="T:ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.ICommandLineEngine"/>
+      ///    and it was processed and mapped to a specific property.
       /// </summary>
       public event EventHandler<CommandLineArgumentEventArgs> HandledCommandLineArgument;
 
@@ -252,8 +252,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       #region Properties
 
-      /// <summary>Gets the factory.</summary>
-      internal IServiceProvider ServiceProvider { get; set; }
+      /// <summary>Gets the service provider.</summary>
+      internal IServiceProvider ServiceProvider { get; }
 
       #endregion
 
@@ -336,7 +336,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          return new string[0];
       }
 
-      private static string GetArgumentName(PropertyInfo info, ArgumentAttribute argumentAttribute, OptionAttribute optionAttribute, CommandAttribute commandAttribute)
+      private static string GetArgumentName(PropertyInfo info, ArgumentAttribute argumentAttribute, OptionAttribute optionAttribute,
+         CommandAttribute commandAttribute)
       {
          string primaryName = info.Name;
          if (argumentAttribute?.Name != null)
@@ -383,8 +384,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          where T : class
       {
          var info = ArgumentClassInfo.FromType<T>();
-         return info.HasCommands 
-            ? ActivatorUtilities.GetServiceOrCreateInstance<CommandMapper<T>>(ServiceProvider) 
+         return info.HasCommands
+            ? ActivatorUtilities.GetServiceOrCreateInstance<CommandMapper<T>>(ServiceProvider)
             : ActivatorUtilities.GetServiceOrCreateInstance<ArgumentMapper<T>>(ServiceProvider);
       }
 
@@ -400,7 +401,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       private IHelpProvider GetHelpTextProvider(PropertyInfo propertyInfo, ResourceManager resourceManager)
       {
          var propertyDeclaringType = propertyInfo.DeclaringType?.GetCustomAttribute<HelpTextProviderAttribute>()?.Type;
-         if (propertyDeclaringType != null && ServiceProviderServiceExtensions.GetRequiredService(ServiceProvider, propertyDeclaringType) is IHelpProvider provider)
+         if (propertyDeclaringType != null
+             && ServiceProviderServiceExtensions.GetRequiredService(ServiceProvider, propertyDeclaringType) is IHelpProvider provider)
             return provider;
 
          return new PropertyHelpProvider(resourceManager);

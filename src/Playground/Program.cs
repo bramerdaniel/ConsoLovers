@@ -13,13 +13,6 @@ public static class Program
 {
    public static async Task Main()
    {
-      var container = new ServiceContainer();
-
-      var anotherApp = ConsoleApplicationManager
-         .For(typeof(PlaygroundApp))
-         .Run();
-
-
       var app = await ConsoleApplicationManager
          .For<PlaygroundApp>()
          .UseServiceProviderFactory(new DefaultServiceProviderFactory())

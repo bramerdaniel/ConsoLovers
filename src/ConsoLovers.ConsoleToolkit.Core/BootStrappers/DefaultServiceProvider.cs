@@ -22,6 +22,19 @@ internal class DefaultServiceProvider : IServiceProvider
 
    #region Constructors and Destructors
 
+   public static IServiceProvider ForType<T>()
+      where T : class
+   {
+      var serviceCollection = new ServiceCollection();
+      serviceCollection.AddApplicationTypes<T>();
+      return new DefaultServiceProvider(serviceCollection);
+   }
+
+   public DefaultServiceProvider()
+   : this(new ServiceCollection())
+   {
+   }
+
    public DefaultServiceProvider(IServiceCollection serviceCollection)
    {
       container = new Container();
@@ -51,19 +64,19 @@ internal class DefaultServiceProvider : IServiceProvider
          .WithLifetime(Lifetime.None);
    }
 
-   private void RegisterSingleton(ServiceDescriptor service)
+   private void RegisterSingleton(ServiceDescriptor serviceDescriptor)
    {
-      if (service.ImplementationType != null)
+      if (serviceDescriptor.ImplementationType != null)
       {
-         container.Register(service.ServiceType, service.ImplementationType).WithLifetime(Lifetime.Singleton);
+         container.Register(serviceDescriptor.ServiceType, serviceDescriptor.ImplementationType).WithLifetime(Lifetime.Singleton);
       }
-      else if(service.ImplementationInstance != null)
+      else if (serviceDescriptor.ImplementationInstance != null)
       {
-         container.Register(service.ServiceType, service.ImplementationInstance).WithLifetime(Lifetime.Singleton);
+         container.Register(serviceDescriptor.ServiceType, serviceDescriptor.ImplementationInstance).WithLifetime(Lifetime.Singleton);
       }
-      else
+      else if (serviceDescriptor.ImplementationFactory != null)
       {
-         
+         container.Register(serviceDescriptor.ServiceType, _ => serviceDescriptor.ImplementationFactory(this)).WithLifetime(Lifetime.Singleton);
       }
    }
 

@@ -18,16 +18,10 @@ namespace ConsoLovers.ConsoleToolkit.Core
    /// <summary>This class is the starting point for running an <see cref="IApplication"/> or <see cref="IApplication{T}"/></summary>
    public class ConsoleApplicationManager
    {
+      /// <summary>Gets the service provider.</summary>
       protected IServiceProvider ServiceProvider { get; }
 
       #region Constructors and Destructors
-
-      /// <summary>Initializes a new instance of the <see cref="ConsoleApplicationManager"/> class.</summary>
-      /// <param name="createApplication">The create application.</param>
-      //protected internal ConsoleApplicationManager(Func<Type, object> createApplication)
-      //{
-      //   CreateApplication = createApplication ?? Activator.CreateInstance;
-      //}
 
       /// <summary>Initializes a new instance of the <see cref="ConsoleApplicationManager"/> class.</summary>
       /// <param name="serviceProvider">The create application.</param>

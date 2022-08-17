@@ -41,6 +41,8 @@ namespace ConsoLovers.ConsoleToolkit.Core
       /// <returns>The current <see cref="IBootstrapper"/> for further configuration</returns>
       IBootstrapper SetWindowTitle(string windowTitle);
 
+      IBootstrapper ConfigureServices(Action<IServiceCollection> serviceSetup);
+
       IBootstrapper UseServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory);
 
       #endregion

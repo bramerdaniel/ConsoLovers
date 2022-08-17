@@ -14,8 +14,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
    using Microsoft.Extensions.DependencyInjection;
 
-   using ServiceProviderServiceExtensions = ConsoLovers.ConsoleToolkit.Core.ServiceProviderServiceExtensions;
-
    /// <summary><see cref="IArgumentMapper{T}"/> implementation that can also map commands</summary>
    /// <typeparam name="T">The type of the argument class</typeparam>
    /// <seealso cref="MapperBase"/>
@@ -32,11 +30,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       #region Constructors and Destructors
 
       /// <summary>Initializes a new instance of the <see cref="CommandMapper{T}"/> class.</summary>
-      /// <param name="factory">The serviceProvider the command mapper should use.</param>
+      /// <param name="serviceProvider">The serviceProvider the command mapper should use.</param>
       /// <exception cref="System.ArgumentNullException">serviceProvider</exception>
-      public CommandMapper([NotNull] IServiceProvider factory)
+      public CommandMapper([NotNull] IServiceProvider serviceProvider)
       {
-         this.serviceProvider = factory ?? throw new ArgumentNullException(nameof(factory));
+         this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
       }
 
       #endregion
