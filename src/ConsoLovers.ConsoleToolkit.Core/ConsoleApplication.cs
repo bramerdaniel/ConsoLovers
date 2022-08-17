@@ -22,7 +22,6 @@ namespace ConsoLovers.ConsoleToolkit.Core
    /// <seealso cref="IExceptionHandler"/>
    public abstract class ConsoleApplication<T> : IApplication<T>, IArgumentInitializer<T>, IExceptionHandler
       where T : class
-
    {
       #region Constructors and Destructors
 

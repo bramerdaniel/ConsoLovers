@@ -74,7 +74,6 @@ namespace ConsoLovers.ConsoleToolkit.Core
       }
 
       /// <summary>Runs the specified application type.</summary>
-      /// <param name="applicationType">Type of the application.</param>
       /// <param name="args">The arguments.</param>
       /// <returns>The executed application</returns>
       public IApplication Run(string args)
