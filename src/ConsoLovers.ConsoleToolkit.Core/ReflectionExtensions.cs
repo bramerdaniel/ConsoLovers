@@ -40,13 +40,11 @@ public static class ReflectionExtensions
 
    internal static IServiceCollection AddRequiredServices([JetBrains.Annotations.NotNull] this IServiceCollection serviceCollection)
    {
-      EnsureServiceAndImplementation<ICommandExecutor, CommandExecutor>(serviceCollection);
+      EnsureServiceAndImplementation<ICommandLineArgumentParser, CommandLineArgumentParser>(serviceCollection);
       EnsureServiceAndImplementation<ICommandLineEngine, CommandLineEngine>(serviceCollection);
+      EnsureServiceAndImplementation<ICommandExecutor, CommandExecutor>(serviceCollection);
       EnsureServiceAndImplementation<ILocalizationService, DefaultLocalizationService>(serviceCollection);
       EnsureServiceAndImplementation<IConsole, ConsoleProxy>(serviceCollection);
-
-      // TODO Add ICommandLineArgumentParser as service
-      // EnsureServiceAndImplementation<ICommandLineArgumentParser, CommandLineArgumentParser>(serviceCollection);
 
       return serviceCollection;
    }

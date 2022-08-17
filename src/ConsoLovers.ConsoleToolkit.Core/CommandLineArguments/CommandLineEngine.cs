@@ -10,10 +10,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
    using System.Collections.Generic;
    using System.Linq;
    using System.Reflection;
-   using System.Resources;
    using System.Text;
 
-   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing;
    using ConsoLovers.ConsoleToolkit.Core.DIContainer;
 
    using JetBrains.Annotations;
@@ -28,10 +26,12 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       #region Constructors and Destructors
 
       [InjectionConstructor]
-      public CommandLineEngine([NotNull] IServiceProvider serviceProvider, [NotNull] ICommandExecutor commandExecutor)
+      public CommandLineEngine([NotNull] IServiceProvider serviceProvider, [NotNull] ICommandExecutor commandExecutor,
+         [NotNull] ICommandLineArgumentParser argumentParser)
       {
          ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
          CommandExecutor = commandExecutor ?? throw new ArgumentNullException(nameof(commandExecutor));
+         ArgumentParser = argumentParser ?? throw new ArgumentNullException(nameof(argumentParser));
       }
 
       #endregion
@@ -244,13 +244,10 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       #endregion
 
-      #region Public Properties
-
-      public ICommandLineArgumentParser ArgumentParser { get; set; } = new CommandLineArgumentParser();
-
-      #endregion
-
       #region Properties
+
+      /// <summary>Gets the <see cref="ICommandLineArgumentParser"/> that will be used.</summary>
+      internal ICommandLineArgumentParser ArgumentParser { get; }
 
       /// <summary>Gets the service provider.</summary>
       internal IServiceProvider ServiceProvider { get; }
@@ -395,7 +392,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          if (providerType != null && ServiceProvider.GetService(providerType) is IHelpProvider provider)
             return provider;
 
-         return new TypeHelpProvider( ServiceProvider, resourceManager);
+         return new TypeHelpProvider(ServiceProvider, resourceManager);
       }
 
       private IHelpProvider GetHelpTextProvider(PropertyInfo propertyInfo, ILocalizationService localizationService)

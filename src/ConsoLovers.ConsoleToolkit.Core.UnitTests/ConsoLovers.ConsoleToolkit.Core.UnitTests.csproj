@@ -9,9 +9,6 @@
 		<LangVersion>latest</LangVersion>
 	</PropertyGroup>
 
-
-
-
 	<ItemGroup>
 		<PackageReference Include="FluentAssertions" Version="6.6.0" />
 		<PackageReference Include="MSTest.TestAdapter" Version="2.2.10" />
@@ -24,11 +21,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\ConsoLovers.ConsoleToolkit.Core\ConsoLovers.ConsoleToolkit.Core.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Folder Include="CommandLineArgumentsTests\" />
-		<Folder Include="Properties\" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -8,6 +8,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
 {
    using ConsoLovers.ConsoleToolkit.Core.BootStrappers;
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing;
    using ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups;
 
    using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +22,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
       protected override CommandLineEngine CreateInstance()
       {
          var objectFactory = new DefaultServiceProvider(serviceCollection);
-         return new CommandLineEngine(objectFactory, new CommandExecutor());
+         return new CommandLineEngine(objectFactory, new CommandExecutor(), new CommandLineArgumentParser());
       }
 
       #endregion
