@@ -13,6 +13,7 @@ using System.Linq;
 using System.Reflection;
 
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing;
 using ConsoLovers.ConsoleToolkit.Core.Localization;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -44,10 +45,14 @@ public static class ReflectionExtensions
       EnsureServiceAndImplementation<ILocalizationService, DefaultLocalizationService>(serviceCollection);
       EnsureServiceAndImplementation<IConsole, ConsoleProxy>(serviceCollection);
 
+      // TODO Add ICommandLineArgumentParser as service
+      // EnsureServiceAndImplementation<ICommandLineArgumentParser, CommandLineArgumentParser>(serviceCollection);
+
       return serviceCollection;
    }
 
    private static void EnsureServiceAndImplementation<TService, TImplementation>(IServiceCollection serviceCollection)
+   where TImplementation : TService
    {
       var serviceType = typeof(TService);
       var implementationType = typeof(TImplementation);
