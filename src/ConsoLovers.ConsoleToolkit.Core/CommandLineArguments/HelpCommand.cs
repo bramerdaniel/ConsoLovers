@@ -7,9 +7,7 @@
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
    using System;
-   using System.Diagnostics.CodeAnalysis;
    using System.Linq;
-   using System.Resources;
 
    using ConsoLovers.ConsoleToolkit.Core.DIContainer;
 
@@ -22,6 +20,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       private readonly ICommandLineEngine engine;
 
+      private readonly ILocalizationService localizationService;
 
       #endregion
 
@@ -30,12 +29,14 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       /// <summary>Initializes a new instance of the <see cref="HelpCommand"/> class.</summary>
       /// <param name="engine">The <see cref="ICommandLineEngine"/> that should be used.</param>
       /// <param name="console">The console that should be used by the command.</param>
-      /// <param name="resourceManager">The resource manager.</param>
+      /// <param name="localizationService">The <see cref="ILocalizationService"/> that is used for translating resources.</param>
       /// <exception cref="System.ArgumentNullException">engine</exception>
       [InjectionConstructor]
-      public HelpCommand([JetBrains.Annotations.NotNull] ICommandLineEngine engine, [CanBeNull] IConsole console)
-      { 
+      public HelpCommand([JetBrains.Annotations.NotNull] ICommandLineEngine engine,
+         [JetBrains.Annotations.NotNull] ILocalizationService localizationService, [CanBeNull] IConsole console)
+      {
          this.engine = engine ?? throw new ArgumentNullException(nameof(engine));
+         this.localizationService = localizationService ?? throw new ArgumentNullException(nameof(localizationService));
 
          Console = console ?? new ConsoleProxy();
       }

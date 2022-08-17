@@ -16,6 +16,7 @@
 		</Description>
 		<LangVersion>latest</LangVersion>
 		<PackageReleaseNotes>5.0.0
+ - Introduced ILocalizationService to be able to replace localization mechanism
  - Now using Microsoft.Extensions.DependencyInjection.Abstractions for dependency injection abstraction
    to support other dependency injection containers
 4.0.0

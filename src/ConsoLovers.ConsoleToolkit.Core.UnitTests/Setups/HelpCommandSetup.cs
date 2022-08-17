@@ -1,6 +1,6 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="HelpCommandSetup.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2017
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -18,6 +18,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups
 
       private IConsole console;
 
+      private ILocalizationService localizationService;
+
       #endregion
 
       #region Public Methods and Operators
@@ -30,7 +32,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups
          if (console == null)
             console = new Mock<IConsole>().Object;
 
-         return new HelpCommand(commandLineEngine, console);
+         return new HelpCommand(commandLineEngine, localizationService ?? new Mock<ILocalizationService>().Object, console);
       }
 
       public HelpCommandSetup WithEngineMock(out Mock<ICommandLineEngine> engineMock)
@@ -39,6 +41,12 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups
 
          engineMock = Mock.Get(commandLineEngine);
 
+         return this;
+      }
+
+      public HelpCommandSetup WithLocalizationService(ILocalizationService value)
+      {
+         localizationService = value;
          return this;
       }
 
