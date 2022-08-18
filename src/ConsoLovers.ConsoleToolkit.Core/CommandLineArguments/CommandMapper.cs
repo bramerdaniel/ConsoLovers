@@ -12,6 +12,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
    using JetBrains.Annotations;
 
+   using Microsoft.Extensions.DependencyInjection;
+
    /// <summary><see cref="IArgumentMapper{T}"/> implementation that can also map commands</summary>
    /// <typeparam name="T">The type of the argument class</typeparam>
    /// <seealso cref="MapperBase"/>
@@ -21,18 +23,20 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
    {
       #region Constants and Fields
 
-      private readonly IObjectFactory factory;
+      private readonly IServiceProvider serviceProvider;
 
       #endregion
 
       #region Constructors and Destructors
 
       /// <summary>Initializes a new instance of the <see cref="CommandMapper{T}"/> class.</summary>
-      /// <param name="factory">The factory the command mapper should use.</param>
-      /// <exception cref="System.ArgumentNullException">factory</exception>
-      public CommandMapper([NotNull] IObjectFactory factory)
+      /// <param name="serviceProvider">The serviceProvider the command mapper should use.</param>
+      /// <param name="argumentReflector"></param>
+      /// <exception cref="System.ArgumentNullException">serviceProvider</exception>
+      public CommandMapper([NotNull] IServiceProvider serviceProvider, [NotNull] IArgumentReflector argumentReflector)
       {
-         this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
+         this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+         ArgumentReflector = argumentReflector ?? throw new ArgumentNullException(nameof(argumentReflector));
       }
 
       #endregion
@@ -49,19 +53,18 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       #region IArgumentMapper<T> Members
 
-
       /// <summary>Maps the give argument dictionary to the given instance.</summary>
       /// <param name="arguments">The arguments to map.</param>
       /// <returns>The instance of the class, the command line argument were mapped to</returns>
       public T Map(CommandLineArgumentList arguments)
       {
-         var instance = factory.CreateInstance<T>();
+         var instance = serviceProvider.GetService<T>();
          return Map(arguments, instance);
       }
 
       public T Map(CommandLineArgumentList arguments, T instance)
       {
-         var argumentInfo = ArgumentClassInfo.FromType<T>();
+         var argumentInfo = ArgumentReflector.GetTypeInfo<T>();
          var helpRequest = GetHelpRequest(arguments, argumentInfo);
          if (helpRequest != null)
          {
@@ -78,6 +81,13 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          return instance;
       }
 
+      #endregion
+
+      #region Properties
+
+      /// <summary>Gets the argument reflector.</summary>
+      /// <value>The argument reflector.</value>
+      internal IArgumentReflector ArgumentReflector { get; }
 
       #endregion
 
@@ -160,7 +170,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
          if (TryGetArgumentType(commandType, out var argumentType))
          {
-            var argumentInstance = factory.CreateInstance(argumentType);
+            var argumentInstance = serviceProvider.GetRequiredService(argumentType);
 
             CreateMapper(argumentType, out var mapper, out var genericType);
 
@@ -186,7 +196,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
                eventInfo?.RemoveEventHandler(mapper, handler);
             }
 
-            var command = factory.CreateInstance(commandType);
+            var command = serviceProvider.GetService(commandType);
             var argumentsProperty = commandType.GetProperty(nameof(ICommand<T>.Arguments));
             if (argumentsProperty == null)
                throw new InvalidOperationException("The ICommand<T> implementation does not contain a Arguments property.");
@@ -195,12 +205,12 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
             return command;
          }
 
-         return factory.CreateInstance(commandType);
+         return serviceProvider.GetService(commandType);
       }
 
       private void CreateMapper(Type argumentType, out object mapper, out Type genericType)
       {
-         var argumentClassInfo = ArgumentClassInfo.FromType(argumentType);
+         var argumentClassInfo = ArgumentReflector.GetTypeInfo(argumentType);
          Type mapperType;
          if (argumentClassInfo.HasCommands)
          {
@@ -213,7 +223,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
          Type[] typeArgs = { argumentType };
          genericType = mapperType.MakeGenericType(typeArgs);
-         mapper = factory.CreateInstance(genericType);
+         mapper = ActivatorUtilities.GetServiceOrCreateInstance(serviceProvider, genericType);
       }
 
       private bool ImplementsICommand(Type commandType)
@@ -223,7 +233,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       private void MapApplicationArguments(T instance, CommandLineArgumentList arguments)
       {
-         var defaultMapper = new ArgumentMapper<T>(factory);
+         var defaultMapper = new ArgumentMapper<T>(serviceProvider);
          try
          {
             // Here we do not care about unmapped arguments, because they could get mapped to the command later
@@ -266,7 +276,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       private void MapHelpOnly(T instance, ArgumentClassInfo argumentInfo, CommandLineArgumentList arguments, CommandLineArgument helpRequest)
       {
-         var helpCommand = factory.CreateInstance<HelpCommand>();
+         var helpCommand = serviceProvider.GetRequiredService<HelpCommand>();
          helpCommand.Arguments = new HelpCommandArguments { ArgumentInfos = argumentInfo, ArgumentDictionary = arguments };
          argumentInfo.HelpCommand.PropertyInfo.SetValue(instance, helpCommand);
 

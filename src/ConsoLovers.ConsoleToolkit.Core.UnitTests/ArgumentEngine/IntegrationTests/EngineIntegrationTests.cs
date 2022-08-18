@@ -105,7 +105,11 @@ public partial class EngineIntegrationTests
       where T : class, new()
    {
       var args = new T();
-      var engine = Setup.CommandLineEngine().Done();
+      var engine = Setup.CommandLineEngine()
+         .WithDefaults()
+         .AddArgumentTypes<T>()
+         .Done();
+
       var notHandledArguments = new List<CommandLineArgument>();
 
       try

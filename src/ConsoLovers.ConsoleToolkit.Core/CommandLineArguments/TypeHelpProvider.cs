@@ -19,11 +19,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
    public class TypeHelpProvider : IHelpProvider
    {
-      public IObjectFactory ObjectFactory { get; }
+      public IServiceProvider ServiceProvider { get; }
 
       #region Constants and Fields
-
-      private readonly ResourceManager resourceManager;
+      
+      private readonly ILocalizationService localizationService;
 
       private IConsole console;
 
@@ -36,10 +36,10 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       }
 
       [InjectionConstructor]
-      public TypeHelpProvider([CanBeNull] ResourceManager resourceManager, [NotNull] IObjectFactory objectFactory)
+      public TypeHelpProvider([NotNull] IServiceProvider serviceProvider, [NotNull] ILocalizationService localizationService)
       {
-         ObjectFactory = objectFactory ?? throw new ArgumentNullException(nameof(objectFactory));
-         this.resourceManager = resourceManager;
+         ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+         this.localizationService = localizationService ?? throw new ArgumentNullException(nameof(localizationService));
       }
 
       #endregion
@@ -103,7 +103,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
                   PropertyName = GetArgumentName(propertyInfo, commandLineAttribute),
                   Aliases = GetAliases(commandLineAttribute),
                   UnlocalizedDescription = helpText.Description,
-                  LocalizedDescription = CommandLineEngine.GetLocalizedDescription(resourceManager, helpText.ResourceKey),
+                  LocalizedDescription = CommandLineEngine.GetLocalizedDescription(localizationService, helpText.ResourceKey),
                   Priority = helpText.Priority,
                   Required = IsRequired(commandLineAttribute)
                };
@@ -140,7 +140,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       /// <param name="helpRequest"></param>
       public virtual void WriteTypeFooter(TypeHelpRequest helpRequest)
       {
-         if (helpRequest.IsCustomFooter() && ObjectFactory.CreateInstance(helpRequest.Type) is ICustomizedFooter customizedFooter)
+         if (helpRequest.IsCustomFooter() && ServiceProvider.GetService(helpRequest.Type) is ICustomizedFooter customizedFooter)
          {
             customizedFooter.WriteFooter(Console);
          }
@@ -152,7 +152,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       public virtual void WriteTypeHeader(TypeHelpRequest helpRequest)
       {
-         if (helpRequest.IsCustomHeader() && ObjectFactory.CreateInstance(helpRequest.Type) is ICustomizedHeader customizedHeader)
+         if (helpRequest.IsCustomHeader() && ServiceProvider.GetService(helpRequest.Type) is ICustomizedHeader customizedHeader)
          {
             customizedHeader.WriteHeader(Console);
             return;
@@ -213,9 +213,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       protected virtual void WriteHelpText(string resourceKey, string description)
       {
-         if (resourceManager != null && !string.IsNullOrEmpty(resourceKey))
+         if (localizationService != null && !string.IsNullOrEmpty(resourceKey))
          {
-            var helpTextString = CommandLineEngine.GetLocalizedDescription(resourceManager, resourceKey);
+            var helpTextString = CommandLineEngine.GetLocalizedDescription(localizationService, resourceKey);
             Console.WriteLine($"- {helpTextString}");
          }
          else

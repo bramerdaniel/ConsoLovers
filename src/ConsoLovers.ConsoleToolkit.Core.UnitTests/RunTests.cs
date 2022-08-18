@@ -17,14 +17,13 @@
 
    [TestClass]
    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Reviewed. Suppression is OK here.")]
-   public class RunTests : ParserTestBase
+   public class RunTests 
    {
       #region Public Methods and Operators
 
       [TestMethod]
       public void EnsureRunIsCalledOnRunable()
       {
-
          var runned = new ConsoleApplicationManagerGeneric<Runable>()
             .RunAsync(new string[0], CancellationToken.None).GetAwaiter().GetResult();
 

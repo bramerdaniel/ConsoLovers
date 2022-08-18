@@ -21,7 +21,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       [TestMethod]
       public void MapTheCommandAndItsArguments()
       {
-         var arguments = GetTarget().Map<ApplicationCommands>(new[] { "execute", "-Path=C:\\Path\\File.txt", "-silent" });
+         var arguments = DoMap<ApplicationCommands>(new[] { "execute", "-Path=C:\\Path\\File.txt", "-silent" });
 
          arguments.Execute.Should().NotBeNull();
          arguments.Execute.Arguments.Should().NotBeNull();
@@ -30,10 +30,16 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
          arguments.Execute.Arguments.Silent.Should().BeTrue();
       }
 
+      private T DoMap<T>(string[] args)
+         where T : class, new()
+      {
+         return GetTarget<T>().Map<T>(args);
+      }
+
       [TestMethod]
       public void EnsureAliasesCanBeUsedForCommands()
       {
-         var arguments = GetTarget().Map<ApplicationCommands>(new[] { "e", "-Path=C:\\Path\\File.txt", "-silent" });
+         var arguments = DoMap<ApplicationCommands>(new[] { "e", "-Path=C:\\Path\\File.txt", "-silent" });
 
          arguments.Execute.Should().NotBeNull();
          arguments.Execute.Arguments.Should().NotBeNull();
@@ -45,7 +51,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       [TestMethod]
       public void EnsureOptionsAreSetInRootArgumentsClass()
       {
-         var arguments = GetTarget().Map<ApplicationCommands>(new[] { "Execute", "-Path=C:\\Path\\File.txt", "-silent", "-wait" });
+         var arguments = DoMap<ApplicationCommands>(new[] { "Execute", "-Path=C:\\Path\\File.txt", "-silent", "-wait" });
 
          arguments.Execute.Should().NotBeNull();
          arguments.Execute.Arguments.Should().NotBeNull();
@@ -58,7 +64,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       [TestMethod]
       public void EnsureSharedOptionsAreSetInRootArgumentsClassAndCommandClass()
       {
-         var arguments = GetTarget().Map<ApplicationCommands>(new[] {  "Execute", "-wait" });
+         var arguments = DoMap<ApplicationCommands>(new[] {  "Execute", "-wait" });
 
          arguments.Execute.Should().NotBeNull();
          arguments.Execute.Arguments.Should().NotBeNull();
@@ -70,7 +76,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       [TestMethod]
       public void EnsureSharedArgumentsAreSetInRootArgumentsClassAndCommandClass()
       {
-         var arguments = GetTarget().Map<ApplicationCommands>(new[] {  "Execute", "-priority=24" });
+         var arguments = DoMap<ApplicationCommands>(new[] {  "Execute", "-priority=24" });
 
          arguments.Execute.Should().NotBeNull();
          arguments.Execute.Arguments.Should().NotBeNull();
@@ -82,7 +88,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       [TestMethod]
       public void EnsureSharedArgumentsDontCauseErrorsInRootClass()
       {
-         var engine = GetTarget();
+         var engine = GetTarget<ApplicationCommands>();
          var monitor = engine.Monitor();
          var arguments = engine.Map<ApplicationCommands>(new[] {  "Execute", "-sharedButAlone=22.4" });
 
@@ -96,7 +102,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       [TestMethod]
       public void EnsureSharedOptionsDontCauseErrorsInRootClass()
       {
-         var engine = GetTarget();
+         var engine = GetTarget<ApplicationCommands>();
          var monitor = engine.Monitor();
          var arguments = engine.Map<ApplicationCommands>(new[] {  "Execute", "-sharedOptionAlone" });
 
@@ -110,7 +116,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       [TestMethod]
       public void EnsureNonGenericCommandClassWorks()
       {
-         var arguments = GetTarget().Map<NonGenericApplicationCommands>(new[] { "Execute", "-Path=C:\\Path\\File.txt", "-silent", "-wait" });
+         var arguments = DoMap<NonGenericApplicationCommands>(new[] { "Execute", "-Path=C:\\Path\\File.txt", "-silent", "-wait" });
 
          arguments.Execute.Should().NotBeNull();
          arguments.Execute.Arguments.Should().NotBeNull();
@@ -123,7 +129,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       [TestMethod]
       public void EnsureUnmappedOptionsRaiseUnhandledCommandLineArgumentEventCorrectly()
       {
-         var engine = GetTarget();
+         var engine = GetTarget<ApplicationCommands>();
          var monitor = engine.Monitor();
          engine.Map<ApplicationCommands>(new[] { "execute", "-Path=C:\\Path\\File.txt", "-unknown" });
 
@@ -134,7 +140,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       [TestMethod]
       public void EnsureUnmappedArgumentsRaiseUnhandledCommandLineArgumentEventCorrectly()
       {
-         var engine = GetTarget();
+         var engine = GetTarget<ApplicationCommands>();
          var monitor = engine.Monitor();
          engine.Map<ApplicationCommands>(new[] { "execute", "-Path=C:\\Path\\File.txt", "-unknown=666" });
 
@@ -145,7 +151,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       [TestMethod]
       public void EnsureUnmappedArgumentsForNonGenericCommandRaiseUnhandledCommandLineArgumentEventCorrectly()
       {
-         var engine = GetTarget();
+         var engine = GetTarget<NonGenericApplicationCommands>();
          var monitor = engine.Monitor();
          engine.Map<NonGenericApplicationCommands>(new[] { "execute", "-unknown=666" });
 
@@ -163,7 +169,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       [TestMethod]
       public void EnsureUnhandledCommandLineArgumentEventIsNotRaisedWhenDefaultCommandIsUsed()
       {
-         var engine = GetTarget();
+         var engine = GetTarget<ApplicationCommandsWithDefault>();
          var monitor = engine.Monitor();
          engine.Map<ApplicationCommandsWithDefault>(new[] { "path=SomeValue" });
 
@@ -173,7 +179,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       [TestMethod]
       public void EnsureBaseClassArgumentsAreSetAndDoNotRaisedUnhandledCommandLineArgument()
       {
-         var engine = GetTarget();
+         var engine = GetTarget<ApplicationCommandsWithBaseClass>();
          var monitor = engine.Monitor();
 
          var args = engine.Map<ApplicationCommandsWithBaseClass>(new[] { "execute", "-loglevel=Trace" });
@@ -185,7 +191,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       [TestMethod]
       public void EnsureMissingCommandLineArgumentsThrowMissingCommandLineArgumentException()
       {
-         var engine = GetTarget();
+         var engine = GetTarget<ApplicationCommandsWithDefaultAndIndexedArgs>();
 
          engine.Invoking(x => x.Map<ApplicationCommandsWithDefaultAndIndexedArgs>(new[] { "nam=hans" }))
             .Should().Throw<MissingCommandLineArgumentException>().Where(x => x.Argument == "Name");
@@ -194,7 +200,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       [TestMethod]
       public void EnsureOtherNamedParameterIsNotUsedName()
       {
-         var engine = GetTarget();
+         var engine = GetTarget<ApplicationCommandsWithDefaultAndIndexedArgs>();
 
          engine.Invoking(x => x.Map<ApplicationCommandsWithDefaultAndIndexedArgs>(new[] { "path=aPath" }))
             .Should().Throw<MissingCommandLineArgumentException>().Where(x => x.Argument == "Name");
@@ -203,7 +209,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       [TestMethod]
       public void EnsureValuesAreMappedCorrectlyByIndex()
       {
-         var engine = GetTarget();
+         var engine = GetTarget<ApplicationCommandsWithDefaultAndIndexedArgs>();
 
          var result = engine.Map<ApplicationCommandsWithDefaultAndIndexedArgs>(new[] { "execute", "hans", "ANormalValue" });
          result.Execute.Arguments.Name.Should().Be("hans");

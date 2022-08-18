@@ -8,7 +8,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
    using System;
    using System.Linq;
-   using System.Resources;
 
    using ConsoLovers.ConsoleToolkit.Core.DIContainer;
 
@@ -21,7 +20,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       private readonly ICommandLineEngine engine;
 
-      private readonly ResourceManager resourceManager;
+      private readonly ILocalizationService localizationService;
 
       #endregion
 
@@ -30,15 +29,17 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       /// <summary>Initializes a new instance of the <see cref="HelpCommand"/> class.</summary>
       /// <param name="engine">The <see cref="ICommandLineEngine"/> that should be used.</param>
       /// <param name="console">The console that should be used by the command.</param>
-      /// <param name="resourceManager">The resource manager.</param>
+      /// <param name="localizationService">The <see cref="ILocalizationService"/> that is used for translating resources.</param>
+      /// <param name="argumentReflector"></param>
       /// <exception cref="System.ArgumentNullException">engine</exception>
       [InjectionConstructor]
-      public HelpCommand([NotNull] ICommandLineEngine engine, [CanBeNull] IConsole console, [CanBeNull] ResourceManager resourceManager)
+      public HelpCommand([NotNull] ICommandLineEngine engine, [NotNull] ILocalizationService localizationService, 
+         [NotNull] IConsole console, [NotNull] IArgumentReflector argumentReflector)
       {
          this.engine = engine ?? throw new ArgumentNullException(nameof(engine));
-
-         Console = console ?? new ConsoleProxy();
-         this.resourceManager = resourceManager;
+         this.localizationService = localizationService ?? throw new ArgumentNullException(nameof(localizationService));
+         Console = console ?? throw new ArgumentNullException(nameof(console));
+         ArgumentReflector = argumentReflector ?? throw new ArgumentNullException(nameof(argumentReflector));
       }
 
       #endregion
@@ -60,6 +61,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       private IConsole Console { get; }
 
+      public IArgumentReflector ArgumentReflector { get; }
+
       #endregion
 
       #region Methods
@@ -68,11 +71,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       {
          if (parameterInfo.ParameterType.IsPrimitive)
          {
-            engine.PrintHelp(parameterInfo.PropertyInfo, resourceManager);
+            engine.PrintHelp(parameterInfo.PropertyInfo, localizationService);
          }
          else
          {
-            engine.PrintHelp(parameterInfo.ParameterType, resourceManager);
+            engine.PrintHelp(parameterInfo.ParameterType, localizationService);
          }
       }
 
@@ -88,7 +91,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
                return;
             }
 
-            var classInfo = ArgumentClassInfo.FromType(commandInfo.ArgumentType);
+            var classInfo = ArgumentReflector.GetTypeInfo(commandInfo.ArgumentType);
             var parameterInfo = classInfo.GetParameterInfo(argumentName);
 
             if (parameterInfo != null)
@@ -100,7 +103,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
                }
                else
                {
-                  engine.PrintHelp(parameterInfo.PropertyInfo, resourceManager);
+                  engine.PrintHelp(parameterInfo.PropertyInfo, localizationService);
                }
 
                return;
@@ -109,11 +112,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
          if (commandInfo.ArgumentType != null)
          {
-            engine.PrintHelp(commandInfo.ArgumentType, resourceManager);
+            engine.PrintHelp(commandInfo.ArgumentType, localizationService);
          }
          else
          {
-            engine.PrintHelp(commandInfo.PropertyInfo.PropertyType, resourceManager);
+            engine.PrintHelp(commandInfo.PropertyInfo.PropertyType, localizationService);
          }
       }
 
@@ -121,7 +124,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       {
          if (helpRequest == null || helpRequest.Length <= 0)
          {
-            engine.PrintHelp(Arguments.ArgumentInfos.ArgumentType, resourceManager);
+            engine.PrintHelp(Arguments.ArgumentInfos.ArgumentType, localizationService);
             return;
          }
 
