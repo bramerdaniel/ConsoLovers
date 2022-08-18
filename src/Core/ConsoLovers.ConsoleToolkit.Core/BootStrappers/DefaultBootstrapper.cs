@@ -53,7 +53,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
          if (serviceSetup == null)
             throw new ArgumentNullException(nameof(serviceSetup));
 
-         serviceSetup(serviceCollection);
+         serviceSetup(ServiceCollection);
          return this;
       }
 

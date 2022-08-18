@@ -31,7 +31,7 @@ public class DefaultServiceRegistrationTests
    [TestMethod]
    public void EnsureCommandExecutorServiceIsAddedCorrectly()
    {
-      EnsureServiceAndImplementationAvailable<ICommandExecutor, CommandExecutor>();
+      EnsureServiceAndImplementationAvailable<IExecutionEngine, ExecutionEngine>();
    }
 
    [TestMethod]
@@ -55,19 +55,19 @@ public class DefaultServiceRegistrationTests
    [TestMethod]
    public void EnsureCommandExecutorCanBeReplaced()
    {
-      var customExecutor = new Mock<ICommandExecutor>();
+      var customExecutor = new Mock<IExecutionEngine>();
 
       var application = ConsoleApplicationManager
          .For<Application>()
          .ConfigureServices(s => s.AddSingleton(customExecutor.Object))
          .BuildApplication();
 
-      application.ServiceProvider.GetService<ICommandExecutor>()
+      application.ServiceProvider.GetService<IExecutionEngine>()
          .Should().BeSameAs(customExecutor.Object);
 
       var engine = application.ServiceProvider.GetService<CommandLineEngine>();
       Assert.IsNotNull(engine);
-      engine.CommandExecutor.Should().BeSameAs(customExecutor.Object);
+      engine.ExecutionEngine.Should().BeSameAs(customExecutor.Object);
    }
 
 

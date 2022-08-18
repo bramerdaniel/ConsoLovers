@@ -11,9 +11,8 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
-
+using ConsoLovers.ConsoleToolkit.Core;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
-using ConsoLovers.ConsoleToolkit.Core.Localization;
 
 using FluentAssertions;
 

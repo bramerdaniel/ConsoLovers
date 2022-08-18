@@ -166,7 +166,6 @@ namespace ConsoLovers.ConsoleToolkit.Core
          return false;
       }
 
-
       private static async Task<IApplication> RunApplicationAsync(IApplication application, CancellationToken cancellationToken)
       {
          await application.RunAsync(cancellationToken);

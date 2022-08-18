@@ -10,17 +10,17 @@ using JetBrains.Annotations;
 
 public class CreateCommand : IAsyncCommand<CreateArgs>
 {
-   private readonly ICommandExecutor commandExecutor;
+   private readonly IExecutionEngine executionEngine;
 
-   public CreateCommand(ICommandExecutor commandExecutor)
+   public CreateCommand(IExecutionEngine executionEngine)
    {
-      this.commandExecutor = commandExecutor ?? throw new ArgumentNullException(nameof(commandExecutor));
+      this.executionEngine = executionEngine ?? throw new ArgumentNullException(nameof(executionEngine));
    }
 
    public CreateArgs Arguments { get; set; } = null!;
 
    public async Task ExecuteAsync(CancellationToken cancellationToken)
    {
-      await commandExecutor.ExecuteCommandAsync(Arguments, cancellationToken);
+      await executionEngine.ExecuteCommandAsync(Arguments, cancellationToken);
    }
 }

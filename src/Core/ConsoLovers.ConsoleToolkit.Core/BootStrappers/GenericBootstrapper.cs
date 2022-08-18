@@ -83,10 +83,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
       /// <summary>Runs the configured application with the given commandline arguments.</summary>
       /// <param name="args">The command line arguments as string.</param>
       /// <returns>The created <see cref="T:ConsoLovers.ConsoleToolkit.IApplication"/> of type <see cref="!:T"/></returns>
-      public T Run(string args) =>
-         CreateApplicationManager().RunAsync(args, CancellationToken.None)
-            .GetAwaiter()
-            .GetResult();
+      public T Run(string args) => (T)CreateApplicationManager().Run(args);
 
       /// <summary>Runs the configured application with the commandline arguments <see cref="Environment.CommandLine"/>.</summary>
       /// <returns>The created <see cref="T:ConsoLovers.ConsoleToolkit.IApplication"/> of type <see cref="!:T"/></returns>
@@ -98,7 +95,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
 
       public IBootstrapper<T> ConfigureServices(Action<IServiceCollection> serviceSetup)
       {
-         serviceSetup(serviceCollection);
+         serviceSetup(ServiceCollection);
          return this;
       }
 

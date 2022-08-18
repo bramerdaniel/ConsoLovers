@@ -13,6 +13,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
 
    using Microsoft.Extensions.DependencyInjection;
 
+   using Moq;
+
    public class CommandLineEngineSetup : SetupBase<CommandLineEngine>
    {
       private readonly ServiceCollection serviceCollection = new();
@@ -23,7 +25,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
       {
          var serviceProvider = new DefaultServiceProvider(serviceCollection);
          var argumentReflector = new ArgumentReflector();
-         var commandExecutor = new CommandExecutor(argumentReflector);
+         var commandExecutor = new ExecutionEngine(argumentReflector, serviceProvider);
          return new CommandLineEngine(serviceProvider, commandExecutor, new CommandLineArgumentParser(), argumentReflector);
       }
 

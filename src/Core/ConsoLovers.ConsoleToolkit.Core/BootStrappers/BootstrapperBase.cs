@@ -20,9 +20,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
 
       #region Constants and Fields
 
-      protected readonly IServiceCollection serviceCollection = new ServiceCollection();
+      protected IServiceCollection ServiceCollection { get; } = new ServiceCollection();
 
-      protected Func<IServiceCollection, IServiceProvider> createServiceProvider;
+      private Func<IServiceCollection, IServiceProvider> createServiceProvider;
 
       private readonly List<Action<IServiceProvider>> serviceConfigurationActions = new();
 
@@ -94,10 +94,10 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
          EnsureRequiredServices();
 
          if (createServiceProvider != null)
-            return createServiceProvider(serviceCollection);
+            return createServiceProvider(ServiceCollection);
 
          var factory = new BuildInServiceProviderFactory();
-         var collection = factory.CreateBuilder(serviceCollection);
+         var collection = factory.CreateBuilder(ServiceCollection);
          var serviceProvider = factory.CreateServiceProvider(collection);
 
          foreach (var configurationAction in serviceConfigurationActions)
@@ -108,8 +108,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
 
       protected void EnsureRequiredServices()
       {
-         serviceCollection.AddRequiredServices();
-         serviceCollection.AddApplicationTypes(ApplicationType);
+         ServiceCollection.AddRequiredServices();
+         ServiceCollection.AddApplicationTypes(ApplicationType);
       }
 
       protected void SetServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory)

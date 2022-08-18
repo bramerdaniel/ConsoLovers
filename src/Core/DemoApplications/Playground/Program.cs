@@ -13,12 +13,34 @@ public static class Program
 {
    public static async Task Main()
    {
+      ConsoleApplicationManager
+         .For<AppWithoutArgs>()
+         .Run();
+
+      Environment.Exit(0);
+
       var app = await ConsoleApplicationManager
          .For<PlaygroundApp>()
          .UseServiceProviderFactory(new DefaultServiceProviderFactory())
+         // .ShowHelpWithoutArguments()
          .RunAsync(CancellationToken.None);
 
-      if (app.Arguments?.Wait ?? true)
-         Console.ReadLine();
+      Console.ReadLine();
+   }
+}
+
+public class AppWithoutArgs : IApplication
+{
+   public void Run()
+   {
+      Console.WriteLine("Done");
+      Console.ReadLine();
+   }
+
+   public Task RunAsync(CancellationToken cancellationToken)
+   {
+      Console.WriteLine("Done Async");
+      Console.ReadLine();
+      return Task.CompletedTask;
    }
 }
