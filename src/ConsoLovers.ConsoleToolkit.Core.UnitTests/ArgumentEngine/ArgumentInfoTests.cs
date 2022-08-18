@@ -2,6 +2,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
 {
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine.TestData;
+   using ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups;
 
    using FluentAssertions;
 
@@ -15,40 +16,69 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
       [TestMethod]
       public void EnsureHasCommandsIsComputedCorrectly()
       {
-         var argumentInfo = ArgumentClassInfo.FromType(typeof(ApplicationArgs));
+         var argumentInfo = Setup.ArgumentClassInfo()
+            .FromType(typeof(ApplicationArgs))
+            .Done();
+         
          argumentInfo.HasCommands.Should().BeTrue();
 
-         argumentInfo = ArgumentClassInfo.FromType(typeof(ExecuteArgs));
+         argumentInfo = Setup.ArgumentClassInfo()
+            .FromType(typeof(ExecuteArgs))
+            .Done();
+
          argumentInfo.HasCommands.Should().BeFalse();
       }
 
       [TestMethod]
       public void EnsureHelpCommandIsSetCorrectly()
       {
-         var argumentInfo = ArgumentClassInfo.FromType(typeof(CommandClassWithHelp));
+         var argumentInfo = Setup.ArgumentClassInfo()
+            .FromType(typeof(CommandClassWithHelp))
+            .Done();
+         
          argumentInfo.HelpCommand.Should().NotBeNull();
       }
 
       [TestMethod]
       public void EnsurePropertiesAreSetCorrectly()
       {
-         var argumentInfo = ArgumentClassInfo.FromType(typeof(CommandClassWithHelp));
+         var argumentInfo = Setup.ArgumentClassInfo()
+            .FromType(typeof(CommandClassWithHelp))
+            .Done();
+         
          argumentInfo.Properties.Should().HaveCount(4);
       }
 
       [TestMethod]
       public void EnsureCommandsAreSetCorrectly()
       {
-         var argumentInfo = ArgumentClassInfo.FromType(typeof(CommandClassWithHelp));
+         var argumentInfo = Setup.ArgumentClassInfo()
+            .FromType(typeof(CommandClassWithHelp))
+            .Done();
+
          argumentInfo.CommandInfos.Should().HaveCount(2);
       }
 
       [TestMethod]
       public void EnsureDefaultCommandIsSetCorrectly()
       {
-         var argumentInfo = ArgumentClassInfo.FromType(typeof(CommandClassWithDefault));
+         var argumentInfo = Setup.ArgumentClassInfo()
+            .FromType(typeof(CommandClassWithDefault))
+            .Done();
+         
          argumentInfo.CommandInfos.Should().HaveCount(2);
          argumentInfo.DefaultCommand.Should().NotBeNull();
+      }
+
+      [TestMethod]
+      public void EnsureInternalCommandsAreComputedCorrectly()
+      {
+         var argumentInfo = Setup.ArgumentClassInfo()
+            .FromType(typeof(CommandClassWithInternalCommands))
+            .Done();
+
+         argumentInfo.CommandInfos.Should().HaveCount(3);
+         argumentInfo.Properties.Should().HaveCount(5);
       }
 
       private class CommandClassWithHelp
@@ -69,7 +99,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
       private class CommandClassWithDefault
       {
          [Command("Default", "d", IsDefaultCommand = true)]
-         public Command DfaultCommand { get; set; }
+         public Command DefaultCommand { get; set; }
 
          [Command("Execute", "e")]
          public Command Execute { get; set; }
@@ -79,6 +109,24 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
 
          [Option("Wait", "w")]
          public bool Wait{ get; set; }
+      }
+
+      private class CommandClassWithInternalCommands
+      {
+         [Command("Default", "d")]
+         public Command Run{ get; set; }
+
+         [Command("Execute", "e")]
+         internal Command Execute { get; set; }
+
+         [Command("Add", "a")]
+         protected internal Command Add { get; set; }
+
+         [Argument("Path", "p")]
+         internal string Path { get; set; }
+
+         [Option("Wait", "w")]
+         public bool Wait { get; set; }
       }
 
       #endregion

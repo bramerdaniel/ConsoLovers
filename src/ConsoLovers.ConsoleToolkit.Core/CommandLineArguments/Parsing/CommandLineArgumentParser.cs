@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="CommandLineArgumentParser.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2018
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -30,9 +30,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
       /// <param name="args">The command line arguments.</param>
       /// <param name="caseSensitive">if set to <c>true</c> the arguments should be treated case sensitive.</param>
       /// <returns>The created dictionary</returns>
-      public IDictionary<string, CommandLineArgument> ParseArguments(string[] args, bool caseSensitive)
+      public CommandLineArgumentList ParseArguments(string[] args, bool caseSensitive)
       {
-         var arguments = new Dictionary<string, CommandLineArgument>(caseSensitive ? StringComparer.InvariantCulture : StringComparer.CurrentCultureIgnoreCase);
+         var arguments = new CommandLineArgumentList(caseSensitive ? StringComparer.InvariantCulture : StringComparer.InvariantCultureIgnoreCase);
          int index = 0;
 
          foreach (string argument in NormalizeArguments(args).Where(x => !string.IsNullOrEmpty(x)))
@@ -48,26 +48,25 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
          return arguments;
       }
 
-      public IDictionary<string, CommandLineArgument> ParseArguments(string args, bool caseSensitive)
+      public CommandLineArgumentList ParseArguments(string args, bool caseSensitive)
       {
          int skippFirst = args.Equals(Environment.CommandLine) ? 1 : 0;
-
-         var arguments = new Dictionary<string, CommandLineArgument>(caseSensitive ? StringComparer.InvariantCulture : StringComparer.InvariantCultureIgnoreCase);
+         var argumentList = new CommandLineArgumentList(caseSensitive ? StringComparer.InvariantCulture : StringComparer.InvariantCultureIgnoreCase);
          int index = 0;
          foreach (var arg in SplitIntoArgs(args).Skip(skippFirst))
          {
             var commandLineArgument = ParseSingleArgument(arg, index);
-            arguments[commandLineArgument.Name] = commandLineArgument;
+            argumentList.Add(commandLineArgument);
             index++;
          }
 
-         return arguments;
+         return argumentList;
       }
 
-      public IDictionary<string, CommandLineArgument> ParseArguments(string args)
-      {
-         return ParseArguments(args, false);
-      }
+      /// <summary>Parses the given arguments into a dictionary.</summary>
+      /// <param name="args">The command line arguments as string.</param>
+      /// <returns>The created dictionary</returns>
+      public CommandLineArgumentList ParseArguments(string args) => ParseArguments(args, false);
 
       #endregion
 
@@ -142,7 +141,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
          return argumentString.StartsWith("\"");
       }
 
-      private static void ParseNamedParameter(string argumentString, IDictionary<string, CommandLineArgument> arguments, int index)
+      private static void ParseNamedParameter(string argumentString, CommandLineArgumentList arguments, int index)
       {
          if (string.IsNullOrEmpty(argumentString))
             return;
@@ -157,15 +156,15 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
 
          string valueString = tokens[1].Trim();
 
-         if (arguments.ContainsKey(name))
+         if (arguments.ContainsName(name))
          {
             throw new CommandLineArgumentException(string.Format(CultureInfo.InvariantCulture, "The argument \"{0}\" occurs more than once.", argumentString));
          }
 
-         arguments[name] = new CommandLineArgument { Name = name, Value = valueString, Index = index, OriginalString = argumentString };
+         arguments.Add(new CommandLineArgument { Name = name, Value = valueString, Index = index, OriginalString = argumentString });
       }
 
-      private static void ParseOption(string argumentString, IDictionary<string, CommandLineArgument> arguments, int index)
+      private static void ParseOption(string argumentString, CommandLineArgumentList arguments, int index)
       {
          if (string.IsNullOrEmpty(argumentString))
             return;
@@ -174,12 +173,13 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
          if (string.IsNullOrEmpty(option))
             return;
 
-         if (arguments.ContainsKey(option))
+         if (arguments.ContainsName(option))
          {
-            throw new CommandLineArgumentException(string.Format(CultureInfo.InvariantCulture, "The option \"{0}\" occurs more than once.", argumentString));
+            throw new CommandLineArgumentException(string.Format(CultureInfo.InvariantCulture, "The option \"{0}\" occurs more than once.",
+               argumentString));
          }
 
-         arguments.Add(option, new CommandLineArgument { Name = option, Value = null, Index = index, OriginalString = argumentString });
+         arguments.Add(new CommandLineArgument { Name = option, Value = null, Index = index, OriginalString = argumentString });
       }
 
       private static string[] Split(string argumentString)
@@ -226,13 +226,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
          }
 
          var name = nameBuilder.ToString();
-         return new CommandLineArgument
-         {
-            Index = index, 
-            Name = name, 
-            Value = valueBuilder?.ToString(), 
-            OriginalString = argument
-         };
+         return new CommandLineArgument { Index = index, Name = name, Value = valueBuilder?.ToString(), OriginalString = argument };
 
          void AppendCharacter(CharInfo charInfo)
          {

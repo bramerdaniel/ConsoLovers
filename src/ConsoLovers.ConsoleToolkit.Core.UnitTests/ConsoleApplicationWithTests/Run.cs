@@ -28,10 +28,10 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests
          {
             testContext.RunApplication("execute string=someValue int=30");
 
-            testContext.Application.Verify(a => a.Run(), Times.Once);
             testContext.Application.Verify(a => a.RunWithCommand(It.IsAny<GenericExecuteCommand>()), Times.Once);
 
             testContext.Application.Verify(a => a.RunWith(It.IsAny<ArgumentsWithGenericCommand>()), Times.Never);
+            testContext.Application.Verify(a => a.RunWithAsync(It.IsAny<ArgumentsWithGenericCommand>()), Times.Never);
             testContext.Application.Verify(a => a.RunWithoutArguments(), Times.Never);
 
             testContext.Commands.Verify(x => x.Execute("GenericExecute"), Times.Once);
@@ -47,10 +47,10 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests
          {
             testContext.RunApplication("string=someValue");
 
-            testContext.Application.Verify(a => a.Run(), Times.Once);
             testContext.Application.Verify(a => a.RunWithCommand(It.IsAny<GenericExecuteCommand>()), Times.Once);
 
             testContext.Application.Verify(a => a.RunWith(It.IsAny<ArgumentsWithGenericDefaultCommand>()), Times.Never);
+            testContext.Application.Verify(a => a.RunWithAsync(It.IsAny<ArgumentsWithGenericDefaultCommand>()), Times.Never);
             testContext.Application.Verify(a => a.RunWithoutArguments(), Times.Never);
 
             testContext.Commands.Verify(x => x.Execute("GenericExecute"), Times.Once);
@@ -75,10 +75,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests
          {
             testContext.RunApplication("string=forTheApplication");
 
-            testContext.Application.Verify(a => a.Run(), Times.Once);
             testContext.Application.Verify(a => a.RunWithCommand(It.IsAny<ICommand>()), Times.Never);
 
-            testContext.Application.Verify(a => a.RunWith(It.IsAny<ArgumentsWithoutDefaultCommands>()), Times.Once);
+            testContext.Application.Verify(a => a.RunWithAsync(It.IsAny<ArgumentsWithoutDefaultCommands>()), Times.Once);
             testContext.Application.Verify(a => a.RunWithoutArguments(), Times.Never);
             testContext.Application.Verify(a => a.Argument("string", "forTheApplication"), Times.Once);
 
@@ -94,10 +93,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests
          {
             testContext.RunApplication(string.Empty);
 
-            testContext.Application.Verify(a => a.Run(), Times.Once);
             testContext.Application.Verify(a => a.RunWithCommand(It.IsAny<ICommand>()), Times.Never);
 
-            testContext.Application.Verify(a => a.RunWith(It.IsAny<ArgumentsWithoutDefaultCommands>()), Times.Once);
+            testContext.Application.Verify(a => a.RunWithAsync(It.IsAny<ArgumentsWithoutDefaultCommands>()), Times.Once);
             testContext.Application.Verify(a => a.RunWithoutArguments(), Times.Once);
             testContext.Application.Verify(a => a.Argument("string", null), Times.Once);
 

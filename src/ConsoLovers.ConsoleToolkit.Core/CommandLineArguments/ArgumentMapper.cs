@@ -47,10 +47,15 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       #region IArgumentMapper<T> Members
 
-      public T Map(IDictionary<string, CommandLineArgument> arguments, T instance)
+      public T Map(CommandLineArgumentList arguments)
       {
-         HashSet<CommandLineArgument> sharedArguments = new HashSet<CommandLineArgument>();
+         var instance = engineFactory.CreateInstance<T>();
+         return Map(arguments, instance);
+      }
 
+      public T Map(CommandLineArgumentList arguments, T instance)
+      {
+         var sharedArguments = new HashSet<CommandLineArgument>();
          foreach (var mapping in MappingList.FromType<T>())
          {
             if (mapping.IsOption())
@@ -81,18 +86,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          return instance;
       }
 
-      /// <inheritdoc/>
-      /// <summary>Maps the give argument dictionary to a new created instance.</summary>
-      /// <param name="arguments">The arguments to map.</param>
-      /// <returns>The instance of the class, the command line argument were mapped to</returns>
-      /// <exception cref="T:System.IO.InvalidDataException">Option attribute can only be applied to boolean properties</exception>
-      /// <exception cref="T:System.IO.InvalidDataException">Option attribute can only be applied to boolean properties</exception>
-      public T Map(IDictionary<string, CommandLineArgument> arguments)
-      {
-         var instance = engineFactory.CreateInstance<T>();
-         return Map(arguments, instance);
-      }
-
       #endregion
 
       #region Methods
@@ -117,6 +110,16 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
             return;
 
          foreach (var argument in arguments.Values.Where(arg => !sharedArguments.Contains(arg)))
+            UnmappedCommandLineArgument?.Invoke(this, new MapperEventArgs(argument, null, instance));
+      }
+
+
+      private void CheckForUnmappedArguments(CommandLineArgumentList arguments, HashSet<CommandLineArgument> sharedArguments, T instance)
+      {
+         if (arguments.Count <= 0)
+            return;
+
+         foreach (var argument in arguments.Where(arg => !sharedArguments.Contains(arg)))
             UnmappedCommandLineArgument?.Invoke(this, new MapperEventArgs(argument, null, instance));
       }
 

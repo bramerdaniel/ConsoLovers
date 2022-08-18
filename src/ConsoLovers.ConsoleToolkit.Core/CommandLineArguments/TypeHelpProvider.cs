@@ -19,6 +19,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
    public class TypeHelpProvider : IHelpProvider
    {
+      public IObjectFactory ObjectFactory { get; }
+
       #region Constants and Fields
 
       private readonly ResourceManager resourceManager;
@@ -34,8 +36,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       }
 
       [InjectionConstructor]
-      public TypeHelpProvider([CanBeNull] ResourceManager resourceManager)
+      public TypeHelpProvider([CanBeNull] ResourceManager resourceManager, [NotNull] IObjectFactory objectFactory)
       {
+         ObjectFactory = objectFactory ?? throw new ArgumentNullException(nameof(objectFactory));
          this.resourceManager = resourceManager;
       }
 
@@ -87,16 +90,17 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          if (argumentType == null)
             throw new ArgumentNullException(nameof(argumentType));
 
-         PropertyInfo[] properties = argumentType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
-         foreach (PropertyInfo info in properties)
+         foreach (var propAndAttribute in argumentType.GetPropertiesWithAttributes())
          {
-            var commandLineAttribute = info.GetAttribute<CommandLineAttribute>();
-            var helpText = info.GetAttribute<HelpTextAttribute>();
+            var propertyInfo = propAndAttribute.Key;
+            var commandLineAttribute = propAndAttribute.Value;
+
+            var helpText = propertyInfo.GetAttribute<HelpTextAttribute>();
             if (helpText != null)
             {
                yield return new ArgumentHelp
                {
-                  PropertyName = GetArgumentName(info, commandLineAttribute),
+                  PropertyName = GetArgumentName(propertyInfo, commandLineAttribute),
                   Aliases = GetAliases(commandLineAttribute),
                   UnlocalizedDescription = helpText.Description,
                   LocalizedDescription = CommandLineEngine.GetLocalizedDescription(resourceManager, helpText.ResourceKey),
@@ -136,11 +140,24 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       /// <param name="helpRequest"></param>
       public virtual void WriteTypeFooter(TypeHelpRequest helpRequest)
       {
-         WriteSeparator();
+         if (helpRequest.IsCustomFooter() && ObjectFactory.CreateInstance(helpRequest.Type) is ICustomizedFooter customizedFooter)
+         {
+            customizedFooter.WriteFooter(Console);
+         }
+         else
+         {
+            WriteSeparator();
+         }
       }
 
       public virtual void WriteTypeHeader(TypeHelpRequest helpRequest)
       {
+         if (helpRequest.IsCustomHeader() && ObjectFactory.CreateInstance(helpRequest.Type) is ICustomizedHeader customizedHeader)
+         {
+            customizedHeader.WriteHeader(Console);
+            return;
+         }
+
          if (helpRequest.Type.IsCommandType())
          {
             Console.WriteLine($"Help for the '{GetCommandName(helpRequest.Type)}' command");
@@ -312,7 +329,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       private void WriteArgument(ArgumentHelp argumentHelp, int longestNameWidth, int longestAliasWidth, int descriptionWidth, int leftWidth)
       {
          var name = $"-{argumentHelp.PropertyName}".PadRight(longestNameWidth);
-         var aliasString = $"[{argumentHelp.AliasString}]".PadRight(longestAliasWidth);
+         var aliasString = ComputeAliasString(argumentHelp, longestAliasWidth);
+
 
          Console.Write(name, GetNameForeground(argumentHelp));
          Console.Write(aliasString);
@@ -322,6 +340,13 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          Console.WriteLine(descriptionLines[0]);
          foreach (var part in descriptionLines.Skip(1))
             Console.WriteLine(" ".PadLeft(leftWidth) + part);
+      }
+
+      private static string ComputeAliasString(ArgumentHelp argumentHelp, int width)
+      {
+         if (string.IsNullOrWhiteSpace(argumentHelp.AliasString))
+            return "".PadRight(width);
+         return $"[{argumentHelp.AliasString}]".PadRight(width);
       }
 
       private void WritePropertyContent(PropertyHelpRequest property)

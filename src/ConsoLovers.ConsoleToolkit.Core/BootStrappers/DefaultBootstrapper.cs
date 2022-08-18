@@ -28,10 +28,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
 
       public DefaultBootstrapper([NotNull] Type applicationType)
       {
-         if (applicationType == null)
-            throw new ArgumentNullException(nameof(applicationType));
-
-         this.applicationType = applicationType;
+         this.applicationType = applicationType ?? throw new ArgumentNullException(nameof(applicationType));
       }
 
       #endregion

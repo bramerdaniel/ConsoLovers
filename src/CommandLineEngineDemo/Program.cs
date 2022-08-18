@@ -9,6 +9,8 @@ namespace CommandLineEngineDemo
    using System;
    using System.Reflection;
    using System.Resources;
+   using System.Threading;
+   using System.Threading.Tasks;
 
    using ConsoLovers.ConsoleToolkit.Core;
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
@@ -20,13 +22,15 @@ namespace CommandLineEngineDemo
    {
       #region Public Methods and Operators
 
-      public override void RunWith(ApplicationArguments arguments)
+      public override Task RunWithAsync(ApplicationArguments arguments, CancellationToken cancellationToken)
       {
          if (arguments.Wait)
          {
             Console.WriteLine("Waiting for another key to be pressed");
             Console.ReadLine();
          }
+
+         return Task.CompletedTask;
       }
 
       #endregion

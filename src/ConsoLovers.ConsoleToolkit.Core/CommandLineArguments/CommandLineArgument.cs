@@ -26,5 +26,14 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       internal bool Mapped { get; set; }
 
       #endregion
+
+      /// <summary>Determines whether the argument has an argument sign like / or -.</summary>
+      public bool HasArgumentSign()
+      {
+         if (Name == null)
+            return false;
+
+         return OriginalString.Length > Name.Length;
+      }
    }
 }

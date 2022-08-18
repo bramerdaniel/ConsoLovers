@@ -1,15 +1,15 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="ConsoleApplicationManager.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2018
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace ConsoLovers.ConsoleToolkit.Core
 {
    using System;
-   using System.Diagnostics;
-   using System.Linq;
    using System.Reflection;
+   using System.Threading;
+   using System.Threading.Tasks;
 
    using ConsoLovers.ConsoleToolkit.Core.BootStrappers;
 
@@ -29,21 +29,21 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       #region Properties
 
-      /// <summary>Gets the function that creates the application object itself.</summary>
-      protected Func<Type, object> CreateApplication { get; }
-
-      #endregion
-
-      #region Public Methods and Operators
+      /// <summary>Gets or sets the height of the window.</summary>
+      protected internal int? WindowHeight { get; set; }
 
       /// <summary>Gets or sets the window title of the console window.</summary>
       protected internal string WindowTitle { get; set; }
 
-      /// <summary>Gets or sets the height of the window.</summary>
-      protected internal int? WindowHeight { get; set; }
-
       /// <summary>Gets or sets the width of the window.</summary>
       protected internal int? WindowWidth { get; set; }
+
+      /// <summary>Gets the function that creates the application object itself.</summary>
+      private Func<Type, object> CreateApplication { get; }
+
+      #endregion
+
+      #region Public Methods and Operators
 
       /// <summary>Creates a bootstrapper for the given type <see cref="T"/>.</summary>
       /// <typeparam name="T">The type of the application.</typeparam>
@@ -54,7 +54,10 @@ namespace ConsoLovers.ConsoleToolkit.Core
          return new GenericBootstrapper<T>();
       }
 
-      /// <summary>Creates a none generic <see cref="IBootstrapper"/> instance, that can be used to configure the <see cref="IApplication"/> of the given <see cref="applicationType"/>.</summary>
+      /// <summary>
+      ///    Creates a none generic <see cref="IBootstrapper"/> instance, that can be used to configure the <see cref="IApplication"/> of the given
+      ///    <see cref="applicationType"/>.
+      /// </summary>
       /// <param name="applicationType">Type of the application.</param>
       /// <returns>The created <see cref="IBootstrapper"/></returns>
       public static IBootstrapper For(Type applicationType)
@@ -62,26 +65,34 @@ namespace ConsoLovers.ConsoleToolkit.Core
          return new DefaultBootstrapper(applicationType);
       }
 
-      /// <summary>Runs the caller class. Caller must implement at least the <see cref="IApplication"/> interface</summary>
-      /// <param name="args">The arguments to run the caller with.</param>
-      /// <returns></returns>
-      /// <exception cref="InvalidOperationException">Application type could not be detected from stack trace.</exception>
-      /// <exception cref="System.InvalidOperationException">Application type could not be detected from stack trace.</exception>
-      public static object RunThis(string[] args)
+      /// <summary>Runs the specified application type.</summary>
+      /// <param name="applicationType">Type of the application.</param>
+      /// <param name="args">The arguments.</param>
+      /// <returns>The executed application</returns>
+      public IApplication Run(Type applicationType, string args)
       {
-         var callingMethod = new StackTrace().GetFrame(1).GetMethod();
-         var applicationType = callingMethod.DeclaringType;
-         if (applicationType == null)
-            throw new InvalidOperationException("Application type could not be detected from stack trace.");
+         return RunAsync(applicationType, args, CancellationToken.None)
+            .GetAwaiter()
+            .GetResult();
+      }
 
-         return For(applicationType).Run(args);
+      /// <summary>Runs the specified application type.</summary>
+      /// <param name="applicationType">Type of the application.</param>
+      /// <param name="args">The arguments.</param>
+      /// <returns>The executed application</returns>
+      public IApplication Run(Type applicationType, string[] args)
+      {
+         return RunAsync(applicationType, args, CancellationToken.None)
+            .GetAwaiter()
+            .GetResult();
       }
 
       /// <summary>Creates and runs an application of the given type with the given arguments.</summary>
       /// <param name="applicationType">Type of the application.</param>
       /// <param name="args">The arguments.</param>
-      /// <returns>The application </returns>
-      public IApplication Run(Type applicationType, string[] args)
+      /// <param name="cancellationToken">The cancellation token.</param>
+      /// <returns>The executed application</returns>
+      public async Task<IApplication> RunAsync(Type applicationType, string[] args, CancellationToken cancellationToken)
       {
          SetTitle(applicationType);
          ApplySize(applicationType);
@@ -91,7 +102,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
          try
          {
             InitializeApplication(applicationType, application, args);
-            return RunApplication(application);
+            return await RunApplicationAsync(application, cancellationToken);
          }
          catch (Exception exception)
          {
@@ -104,7 +115,12 @@ namespace ConsoLovers.ConsoleToolkit.Core
          }
       }
 
-      public IApplication Run(Type applicationType, string args)
+      /// <summary>Creates and runs an application of the given type with the given arguments.</summary>
+      /// <param name="applicationType">Type of the application.</param>
+      /// <param name="args">The arguments.</param>
+      /// <param name="cancellationToken">The cancellation token.</param>
+      /// <returns></returns>
+      public async Task<IApplication> RunAsync(Type applicationType, string args, CancellationToken cancellationToken)
       {
          SetTitle(applicationType);
          ApplySize(applicationType);
@@ -114,7 +130,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
          try
          {
             InitializeApplication(applicationType, application, args);
-            return RunApplication(application);
+            return await RunApplicationAsync(application, cancellationToken);
          }
          catch (Exception exception)
          {
@@ -125,63 +141,31 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
             return application;
          }
-      }
-
-      private void SetTitle(Type applicationType)
-      {
-         var title = WindowTitle ?? (applicationType.GetCustomAttribute(typeof(ConsoleWindowTitleAttribute)) as ConsoleWindowTitleAttribute)?.Title;
-         if (title != null)
-            Console.Title = title;
       }
 
       #endregion
 
       #region Methods
 
-      internal void InitializeApplication(Type applicationType, IApplication application, object args)
+      private static bool IsArgumentInitializer(Type applicationType, out Type argumentType)
       {
-         try
+         foreach (var interfaceType in applicationType.GetInterfaces())
          {
-            if (IsArgumentInitializer(applicationType, out _))
+            if (interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == typeof(IArgumentInitializer<>))
             {
-               // TODO Ensure functionality with unit tests
-               var methodInfo = applicationType.GetMethod(nameof(IArgumentInitializer<Type>.CreateArguments));
-               // ReSharper disable once PossibleNullReferenceException
-               var argumentsInstance = methodInfo.Invoke(application, null);
-
-
-               if (args is string stringArgs)
-               {
-                  var initialize = applicationType.GetMethod(nameof(IArgumentInitializer<Type>.InitializeFromString));
-                  if (initialize == null)
-                     throw new InvalidOperationException($"The InitializeArguments method of the {typeof(IArgumentInitializer<>).FullName} could not be found.");
-
-                  initialize.Invoke(application, new[] { argumentsInstance, stringArgs });
-               }
-               else
-               {
-                  var strings = (string[])args;
-
-                  var initialize = applicationType.GetMethod(nameof(IArgumentInitializer<Type>.InitializeFromArray));
-                  if (initialize == null)
-                     throw new InvalidOperationException($"The InitializeArguments method of the {typeof(IArgumentInitializer<>).FullName} could not be found.");
-
-                  initialize.Invoke(application, new[] { argumentsInstance,  strings });
-               }
+               argumentType = interfaceType.GetGenericArguments()[0];
+               return true;
             }
          }
-         catch (TargetInvocationException ex)
-         {
-            if (ex.InnerException != null)
-               throw ex.InnerException;
-            throw;
-         }
+
+         argumentType = null;
+         return false;
       }
 
-      private T GetAttribute<T>(Type applicationType)
-         where T : Attribute
+      private static async Task<IApplication> RunApplicationAsync(IApplication application, CancellationToken cancellationToken)
       {
-         return applicationType.GetCustomAttribute(typeof(T)) as T;
+         await application.RunAsync(cancellationToken);
+         return application;
       }
 
       private void ApplySize(Type applicationType)
@@ -233,27 +217,6 @@ namespace ConsoLovers.ConsoleToolkit.Core
          }
       }
 
-      private static bool IsArgumentInitializer(Type applicationType, out Type argumentType)
-      {
-         foreach (var interfaceType in applicationType.GetInterfaces())
-         {
-            if (interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == typeof(IArgumentInitializer<>))
-            {
-               argumentType = interfaceType.GetGenericArguments()[0];
-               return true;
-            }
-         }
-
-         argumentType = null;
-         return false;
-      }
-
-      private static IApplication RunApplication(IApplication application)
-      {
-         application.Run();
-         return application;
-      }
-
       /// <summary>Creates the instance of the application to run. Override this method to create the <see cref="IApplication"/> instance by your own.</summary>
       /// <param name="type">The type of the application to run.</param>
       /// <returns>The created uninitialized application</returns>
@@ -266,9 +229,63 @@ namespace ConsoLovers.ConsoleToolkit.Core
             throw new InvalidOperationException($"Could not create instance of type {type.FullName}");
 
          if (!(instance is IApplication application))
-            throw new InvalidOperationException($"The application type {type.Name} to run must inherit the {typeof(IApplication).Name} interface");
+            throw new InvalidOperationException($"The application type {type.Name} to run must inherit the {nameof(IApplication)} interface");
 
          return application;
+      }
+
+      private T GetAttribute<T>(Type applicationType)
+         where T : Attribute
+      {
+         return applicationType.GetCustomAttribute(typeof(T)) as T;
+      }
+
+      private void InitializeApplication(Type applicationType, IApplication application, object args)
+      {
+         try
+         {
+            if (IsArgumentInitializer(applicationType, out _))
+            {
+               // TODO Ensure functionality with unit tests
+               var methodInfo = applicationType.GetMethod(nameof(IArgumentInitializer<Type>.CreateArguments));
+               // ReSharper disable once PossibleNullReferenceException
+               var argumentsInstance = methodInfo.Invoke(application, null);
+
+               if (args is string stringArgs)
+               {
+                  var initialize = applicationType.GetMethod(nameof(IArgumentInitializer<Type>.InitializeFromString));
+                  if (initialize == null)
+                     throw new InvalidOperationException(
+                        $"The InitializeArguments method of the {typeof(IArgumentInitializer<>).FullName} could not be found.");
+
+                  initialize.Invoke(application, new[] { argumentsInstance, stringArgs });
+               }
+               else
+               {
+                  var strings = (string[])args;
+
+                  var initialize = applicationType.GetMethod(nameof(IArgumentInitializer<Type>.InitializeFromArray));
+                  if (initialize == null)
+                     throw new InvalidOperationException(
+                        $"The InitializeArguments method of the {typeof(IArgumentInitializer<>).FullName} could not be found.");
+
+                  initialize.Invoke(application, new[] { argumentsInstance, strings });
+               }
+            }
+         }
+         catch (TargetInvocationException ex)
+         {
+            if (ex.InnerException != null)
+               throw ex.InnerException;
+            throw;
+         }
+      }
+
+      private void SetTitle(Type applicationType)
+      {
+         var title = WindowTitle ?? (applicationType.GetCustomAttribute(typeof(ConsoleWindowTitleAttribute)) as ConsoleWindowTitleAttribute)?.Title;
+         if (title != null)
+            Console.Title = title;
       }
 
       #endregion

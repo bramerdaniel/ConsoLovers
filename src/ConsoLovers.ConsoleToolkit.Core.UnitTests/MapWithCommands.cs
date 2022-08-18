@@ -15,18 +15,20 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
 
    using FluentAssertions;
 
+   using JetBrains.Annotations;
+
    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
    [TestClass]
    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Reviewed. Suppression is OK here.")]
-   public class MapWithCommands : EngineTestBase
+   public partial class MapWithCommands : EngineTestBase
    {
       #region Public Methods and Operators
 
       [TestMethod]
       public void EnsureEvenPrivateCommandsCanBeSet()
       {
-         var arguments = GetTarget().Map<ImutableCommands>(new[] { "execute", "help" });
+         var arguments = GetTarget().Map<CommandWithPrivateSetter>(new[] { "execute", "help" });
          arguments.Execute.Should().NotBeNull();
       }
 
@@ -34,7 +36,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       public void EnsureExceptionForInvalidParameterClasses()
       {
          var target = GetTarget();
-         target.Invoking(t => t.Map<InvalidCommands>(new[] { "execute" })).Should().Throw<ArgumentException>();
+         target.Invoking(t => t.Map<InvalidCommands>(new[] { "execute" }))
+            .Should().Throw<ArgumentException>();
       }
 
       [TestMethod]
@@ -66,55 +69,5 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
 
       #endregion
 
-      internal class ApplicationCommands
-      {
-         #region Public Properties
-
-         [Command("Execute")]
-         public Command Execute { get; set; }
-
-         [Option("Help")]
-         public bool Help { get; set; }
-
-         #endregion
-      }
-
-      internal class ApplicationCommandsWithDefault
-      {
-         #region Public Properties
-
-         [Command("Execute", IsDefaultCommand = true)]
-         public Command Execute { get; set; }
-
-         [Command("ExecuteMany")]
-         public Command ExecuteMany { get; set; }
-
-         #endregion
-      }
-
-      internal class ImutableCommands
-      {
-         #region Public Properties
-
-         [Command("Execute", "e")]
-         // ReSharper disable once UnusedAutoPropertyAccessor.Local
-         public Command Execute { get; private set; }
-
-         #endregion
-      }
-
-      internal class InvalidCommands
-      {
-         #region Public Properties
-
-         [Command("Execute", "e")]
-         // ReSharper disable once UnusedAutoPropertyAccessor.Local
-         public Command Execute => null;
-
-         [Command("NoCommand", "nc")]
-         public FileInfo NoCommand { get; set; }
-
-         #endregion
-      }
    }
 }

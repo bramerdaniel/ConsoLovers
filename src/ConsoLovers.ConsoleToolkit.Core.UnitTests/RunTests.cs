@@ -1,6 +1,8 @@
 ﻿namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
 {
    using System.Diagnostics.CodeAnalysis;
+   using System.Threading;
+   using System.Threading.Tasks;
 
    using ConsoLovers.ConsoleToolkit.Core;
    using ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine;
@@ -23,21 +25,23 @@
       public void EnsureRunIsCalledOnRunable()
       {
 
-         var runned = new ConsoleApplicationManagerGeneric<Runable>().Run(new string[0]);
+         var runned = new ConsoleApplicationManagerGeneric<Runable>()
+            .RunAsync(new string[0], CancellationToken.None).GetAwaiter().GetResult();
 
-         runned.Mock.Verify(x => x.Run(), Times.Once);
+         runned.Mock.Verify(x => x.RunAsync(CancellationToken.None), Times.Once);
       }
 
       [TestMethod]
       public void EnsureRunInitializesWhenRequired()
       {
          var args = string.Empty;
-         var runned = new ConsoleApplicationManagerGeneric<ApplicationWithArguments>().Run(args);
+         var runned = new ConsoleApplicationManagerGeneric<ApplicationWithArguments>().RunAsync(args, CancellationToken.None)
+            .GetAwaiter().GetResult();
 
          runned.Args.Should().BeSameAs(args);
          runned.TestParameters.Should().NotBeNull();
 
-         runned.Mock.Verify(x => x.Run(), Times.Once);
+         runned.Mock.Verify(x => x.RunAsync(CancellationToken.None), Times.Once);
       }
 
       private class ApplicationWithArguments : IApplication, IArgumentInitializer<TestArguments>
@@ -59,6 +63,11 @@
          public void Run()
          {
             Mock.Object.Run();
+         }
+
+         public Task RunAsync(CancellationToken cancellationToken)
+         {
+            return Mock.Object.RunAsync(cancellationToken);
          }
 
          public TestArguments CreateArguments()
@@ -91,6 +100,11 @@
          public void Run()
          {
             Mock.Object.Run();
+         }
+
+         public Task RunAsync(CancellationToken cancellationToken)
+         {
+            return Mock.Object.RunAsync(cancellationToken);
          }
       }
 

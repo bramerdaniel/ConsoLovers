@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="IApplicationVerification.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2018
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -21,7 +21,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests.
       /// <param name="value">The value of the parameters.</param>
       void MappedCommandLineParameter(string propertyName, object value);
 
-      
       void MappedCommandLineParameter(PropertyInfo property);
 
       void MappedCommandLineParameter(PropertyInfo property, object value);
@@ -32,7 +31,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests.
 
       string RunWith(T arguments);
 
-      string RunWithCommand(ICommand command);
+      void RunWithAsync<T>(T arguments);
+
+      string RunWithCommand(ICommandBase command);
 
       string RunWithoutArguments();
 

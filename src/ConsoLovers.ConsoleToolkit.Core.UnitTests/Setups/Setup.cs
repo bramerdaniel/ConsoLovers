@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="Setup.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2017
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -12,9 +12,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups
    {
       #region Public Methods and Operators
 
-      public static ArgumentEngineSetup ArgumentEngine()
+      public static ArgumentClassInfoSetup ArgumentClassInfo()
       {
-         return new ArgumentEngineSetup();
+         return new ArgumentClassInfoSetup();
       }
 
       public static ArgumentMapperSetup ArgumentMapper()
@@ -27,9 +27,24 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups
          return new CommandLinerParserSetup();
       }
 
+      public static CommandLineArgumentsSetup CommandLineArguments()
+      {
+         return new CommandLineArgumentsSetup();
+      }
+
+      public static CommandLineEngineSetup CommandLineEngine()
+      {
+         return new CommandLineEngineSetup();
+      }
+
       public static EngineFactorySetup EngineFactory()
       {
          return new EngineFactorySetup();
+      }
+
+      public static HelpCommandSetup HelpCommand()
+      {
+         return new HelpCommandSetup();
       }
 
       public static MockSetup MockFor()
@@ -38,10 +53,5 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups
       }
 
       #endregion
-
-      public static HelpCommandSetup HelpCommand()
-      {
-         return new HelpCommandSetup();
-      }
    }
 }

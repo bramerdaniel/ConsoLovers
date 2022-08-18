@@ -1,0 +1,24 @@
+{
+  "profiles": {
+    "Playground": {
+      "commandName": "Project",
+      "commandLineArgs": "-async 123"
+    },
+    "help": {
+      "commandName": "Project",
+      "commandLineArgs": "?"
+    },
+    "delete user": {
+      "commandName": "Project",
+      "commandLineArgs": "delete user username=Hans -w"
+    },
+    "delete file": {
+      "commandName": "Project",
+      "commandLineArgs": "delete files first.cs foo.abc test.123 -w"
+    },
+    "test": {
+      "commandName": "Project",
+      "commandLineArgs": "delete role /name"
+    }
+  }
+}

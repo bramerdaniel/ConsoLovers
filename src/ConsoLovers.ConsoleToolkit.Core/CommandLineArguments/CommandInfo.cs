@@ -48,7 +48,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       /// <returns></returns>
       private Type ComputeArgumentType()
       {
-         var commandInterface = PropertyInfo.PropertyType.GetInterface(typeof(ICommand<>).FullName);
+         var commandInterface = PropertyInfo.PropertyType.GetInterface(typeof(ICommandArguments<>).FullName);
          if (commandInterface == null)
             return null;
 
