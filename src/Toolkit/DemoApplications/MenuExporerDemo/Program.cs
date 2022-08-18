@@ -207,7 +207,7 @@ namespace MenuDemo
          menu.Add(CreateMouseSelectionMenu());
          menu.Add(CreateIndexMenuItemsMenu(menu.IndexMenuItems));
          menu.Add(CreateClearOnExecutionMenu(menu.ClearOnExecution));
-         menu.Add(new ConsoleMenuSeperator());
+         menu.Add(new ConsoleMenuSeparator());
          menu.Add(CreateSelectorMenu(menu));
          menu.Add(CreateExecuteOnIndexSelectionMenu(menu));
          menu.Add(new ConsoleMenuItem("Disabled without command"));
@@ -226,7 +226,7 @@ namespace MenuDemo
          menu.Add(new ConsoleMenuItem("Simulate Crash", DoCrash));
          menu.Add(new ConsoleMenuItem("ColorSimulation", ColorSimulation));
          menu.Add(new ConsoleMenuItem("LazyLoadChildren", LazyLoadChildren, true));
-         menu.Add(new ConsoleMenuSeperator{ Label = "Close stuff" });
+         menu.Add(new ConsoleMenuSeparator{ Label = "Close stuff" });
          menu.Add(new ConsoleMenuItem("Close menu", x => menu.Close()));
          menu.Add(new ConsoleMenuItem("Exit", x => Environment.Exit(0)){ Foreground = ConsoleColor.Red });
          menu.Show();

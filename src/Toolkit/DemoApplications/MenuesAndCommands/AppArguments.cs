@@ -8,6 +8,7 @@ namespace MenusAndCommands;
 
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 using MenusAndCommands.Commands;
+using MenusAndCommands.Commands.Role;
 using MenusAndCommands.Commands.User;
 
 public class AppArguments
@@ -17,7 +18,7 @@ public class AppArguments
    [Command("User")]
    public CommandGroup<UserCommands> User { get; set; }
 
-   [Command("Permissions")]
+   [Command("Roles")]
    public CommandGroup<RoleCommands> Role { get; set; }
 
    [Command("Execute")]

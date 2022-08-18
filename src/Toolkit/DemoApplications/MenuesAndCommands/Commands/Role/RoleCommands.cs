@@ -4,8 +4,12 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace MenusAndCommands.Commands;
+namespace MenusAndCommands.Commands.Role;
+
+using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
 public class RoleCommands
 {
+   [Command("Add")]
+   public AddRoleCommand Add { get; set; }
 }

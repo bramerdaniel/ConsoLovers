@@ -408,11 +408,11 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          return "[Item is disabled]";
       }
 
-      private static string GetText(ConsoleMenuSeperator seperator)
+      private static string GetText(ConsoleMenuSeparator separator)
       {
-         if (seperator == null)
-            return ConsoleMenuSeperator.DefaultText;
-         return seperator.GetText();
+         if (separator == null)
+            return ConsoleMenuSeparator.DefaultText;
+         return separator.GetText();
       }
 
       private void AttachMouseEvents(bool attach)
@@ -470,13 +470,13 @@ namespace ConsoLovers.ConsoleToolkit.Menu
             var menuItem = menuItems[i] as ConsoleMenuItem;
             if (menuItem == null)
             {
-               var seperator = menuItems[i] as ConsoleMenuSeperator;
+               var separator = menuItems[i] as ConsoleMenuSeparator;
                var seperatorElement = new ElementInfo
                {
-                  Text = GetText(seperator),
-                  Foreground = seperator?.Foreground,
-                  Background = seperator?.Background,
-                  MenuItem = seperator,
+                  Text = GetText(separator),
+                  Foreground = separator?.Foreground,
+                  Background = separator?.Background,
+                  MenuItem = separator,
                   IsSelected = false,
                   Disabled = true,
                   Hint = null,
@@ -549,7 +549,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          }
       }
 
-      private void Expand(bool moveNextWhenExpanded, bool revursive)
+      private void Expand(bool moveNextWhenExpanded, bool recursive)
       {
          if (SelectedItem == null)
             return;
@@ -565,7 +565,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          {
             if (SelectedItem.CanExpand())
             {
-               SelectedItem.Expand(revursive);
+               SelectedItem.Expand(recursive);
             }
          }
       }
