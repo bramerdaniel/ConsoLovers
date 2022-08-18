@@ -42,4 +42,7 @@
     <Compile Remove="ArgumentMapperTests\MapCommandTests.cs" />
     <Compile Remove="ArgumentMapperTests\UnmapTests.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Setups\" />
+  </ItemGroup>
 </Project>

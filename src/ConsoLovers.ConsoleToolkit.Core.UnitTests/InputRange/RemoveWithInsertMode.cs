@@ -3,11 +3,11 @@
 //    Copyright (c) ConsoLovers  2015 - 2017
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-namespace ConsoLovers.UnitTests.InputRange
+namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.InputRange
 {
    using System.Diagnostics.CodeAnalysis;
 
-   using ConsoLovers.UnitTests.Setups;
+   using ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups;
 
    using FluentAssertions;
 

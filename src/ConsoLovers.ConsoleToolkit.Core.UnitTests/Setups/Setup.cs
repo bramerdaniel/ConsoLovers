@@ -8,7 +8,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups
 {
    using ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine;
 
-   public class Setup
+   internal class Setup
    {
       #region Public Methods and Operators
 
@@ -50,6 +50,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups
       public static MockSetup MockFor()
       {
          return new MockSetup();
+      }
+
+      public static InputRangeSetup InputRange()
+      {
+         return new InputRangeSetup();
       }
 
       #endregion

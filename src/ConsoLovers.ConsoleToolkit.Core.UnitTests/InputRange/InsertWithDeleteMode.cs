@@ -1,8 +1,8 @@
-﻿namespace ConsoLovers.UnitTests.InputRange
+﻿namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.InputRange
 {
    using System.Diagnostics.CodeAnalysis;
 
-   using ConsoLovers.ConsoleToolkit;
+   using ConsoLovers.ConsoleToolkit.Core.Input;
 
    using FluentAssertions;
 

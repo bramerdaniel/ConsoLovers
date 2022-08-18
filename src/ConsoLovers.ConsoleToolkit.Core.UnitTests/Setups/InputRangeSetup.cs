@@ -4,9 +4,9 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.UnitTests.Setups
+namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups
 {
-   using ConsoLovers.ConsoleToolkit;
+   using ConsoLovers.ConsoleToolkit.Core.Input;
 
    internal class InputRangeSetup
    {
