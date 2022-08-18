@@ -7,12 +7,14 @@ on:
     - 'src/Core/**'
     - 'src/_Solutions/ConsoLovers.ConsoleToolkit.Core.sln'
     - '.github/workflows/build-Toolkit.Core.yml'
+    - '.github/workflows/CleanWorkflows.yml'
   pull_request:
     paths-ignore:
     - 'README.md'    
     - 'src/Core/**'
     - 'src/_Solutions/ConsoLovers.ConsoleToolkit.Core.sln'
     - '.github/workflows/build-Toolkit.Core.yml'
+    - '.github/workflows/CleanWorkflows.yml'
   workflow_dispatch:
 
 

@@ -6,11 +6,13 @@ on:
     - 'README.md'
     - 'src/Toolkit/**'
     - '.github/workflows/build-Toolkit.yml'
+    - '.github/workflows/CleanWorkflows.yml'
   pull_request:
     paths-ignore:
     - 'README.md'    
     - 'src/Toolkit/**'
     - '.github/workflows/build-Toolkit.yml'
+    - '.github/workflows/CleanWorkflows.yml'
   workflow_dispatch:
   
 env:
