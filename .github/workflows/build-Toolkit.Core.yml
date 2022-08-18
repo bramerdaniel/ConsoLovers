@@ -15,6 +15,7 @@ on:
     - '.github/workflows/Toolkit.yml'
   workflow_dispatch:
 
+
 env:
   SOLUTION_DIRECTORY : src\_Solutions
   SOLUTION_PATH : src\_Solutions\ConsoLovers.ConsoleToolkit.Core.sln
