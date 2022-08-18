@@ -25,10 +25,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests.
 
       void MappedCommandLineParameter(PropertyInfo property, object value);
 
-      /// <summary>Gets called when the .</summary>
-      /// <returns></returns>
-      string Run();
-
       string RunWith(T arguments);
 
       void RunWithAsync<T>(T arguments);

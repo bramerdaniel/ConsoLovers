@@ -59,10 +59,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
             await RunWithoutArgumentsAsync(cancellationToken);
          }
       }
-
-      /// <summary>Runs the application logic by executing the specified command, or calling one of the RunWith or RunWithoutArguments methods.</summary>
-      public void Run() => RunAsync(CancellationToken.None).GetAwaiter().GetResult();
-
+      
       /// <summary>
       ///    This method is called when the application was started with command line arguments. NOTE: If there are
       ///    <see cref="T:ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.ICommand"/>s specified in the arguments and the application is called with one

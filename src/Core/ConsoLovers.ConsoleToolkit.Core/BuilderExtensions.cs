@@ -14,7 +14,6 @@ using System.Threading.Tasks;
 using ConsoLovers.ConsoleToolkit.Core.BootStrappers;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 using ConsoLovers.ConsoleToolkit.Core.DefaultImplementations;
-using ConsoLovers.ConsoleToolkit.Core.Localization;
 
 using JetBrains.Annotations;
 

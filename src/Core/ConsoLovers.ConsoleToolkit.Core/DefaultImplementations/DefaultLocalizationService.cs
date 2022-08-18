@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Core.Localization;
+namespace ConsoLovers.ConsoleToolkit.Core.DefaultImplementations;
 
 using System;
 using System.Collections.Generic;

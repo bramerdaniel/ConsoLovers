@@ -15,7 +15,6 @@ using System.Reflection;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing;
 using ConsoLovers.ConsoleToolkit.Core.DefaultImplementations;
-using ConsoLovers.ConsoleToolkit.Core.Localization;
 
 using Microsoft.Extensions.DependencyInjection;
 

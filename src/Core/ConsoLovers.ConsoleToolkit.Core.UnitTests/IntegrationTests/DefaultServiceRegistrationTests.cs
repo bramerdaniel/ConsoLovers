@@ -11,7 +11,7 @@ using System.Diagnostics.CodeAnalysis;
 
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing;
-using ConsoLovers.ConsoleToolkit.Core.Localization;
+using ConsoLovers.ConsoleToolkit.Core.DefaultImplementations;
 
 using FluentAssertions;
 
