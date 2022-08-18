@@ -1,4 +1,4 @@
-name: ConsoLovers.Toolkit.Core
+name: ConsoLovers.ConsoleToolkit.Core
 
 on:
   push:
