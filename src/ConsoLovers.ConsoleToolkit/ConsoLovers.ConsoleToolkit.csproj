@@ -42,6 +42,11 @@
     <OutputPath>Release\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Release\**" />
+    <EmbeddedResource Remove="Release\**" />
+    <None Remove="Release\**" />
+  </ItemGroup>
+  <ItemGroup>
     <Resource Include="Resources\Icon.ico" />
   </ItemGroup>
   <ItemGroup>

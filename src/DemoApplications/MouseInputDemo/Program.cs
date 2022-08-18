@@ -16,7 +16,7 @@ namespace MouseInputDemo
 
       public static void Run()
       {
-         var listener = new ConsoleInputHandler();
+         var listener = new WindowsConsoleInputHandler();
          listener.MouseMoved += OnMouseMoved;
          listener.MouseDoubleClicked += OnMouseDoubleClicked;
          listener.MouseWheelChanged += OnMouseWheelChanged;
@@ -84,7 +84,7 @@ namespace MouseInputDemo
 
          if ((e.ButtonState & ButtonStates.Second) == ButtonStates.Second)
          {
-            var listener = sender as ConsoleInputHandler;
+            var listener = sender as WindowsConsoleInputHandler;
             listener?.Stop();
          }
 
