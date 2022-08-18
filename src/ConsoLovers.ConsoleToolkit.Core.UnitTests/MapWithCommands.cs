@@ -28,14 +28,14 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       [TestMethod]
       public void EnsureEvenPrivateCommandsCanBeSet()
       {
-         var arguments = GetTarget().Map<CommandWithPrivateSetter>(new[] { "execute", "help" });
+         var arguments = GetTarget<CommandWithPrivateSetter>().Map<CommandWithPrivateSetter>(new[] { "execute", "help" });
          arguments.Execute.Should().NotBeNull();
       }
 
       [TestMethod]
       public void EnsureExceptionForInvalidParameterClasses()
       {
-         var target = GetTarget();
+         var target = GetTarget<InvalidCommands>();
          target.Invoking(t => t.Map<InvalidCommands>(new[] { "execute" }))
             .Should().Throw<ArgumentException>();
       }
@@ -48,14 +48,20 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       }
 
 
-      [TestMethod]
-      public void EnsureOtherParametesAreSet()
+      private T DoMap<T>(string[] args)
+         where T : class, new()
       {
-         var arguments = GetTarget().Map<ApplicationCommands>(new[] { "execute", "help" });
+         return GetTarget<T>().Map<T>(args);
+      }
+
+      [TestMethod]
+      public void EnsureOtherParametersAreSet()
+      {
+         var arguments = DoMap<ApplicationCommands>(new[] { "execute", "help" });
          arguments.Execute.Should().NotBeNull();
          arguments.Help.Should().BeTrue();
 
-         arguments = GetTarget().Map<ApplicationCommands>(new[] { "help" });
+         arguments = DoMap<ApplicationCommands>(new[] { "help" });
          arguments.Execute.Should().BeNull();
          arguments.Help.Should().BeTrue();
       }
@@ -63,7 +69,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       [TestMethod]
       public void MapTheCommandAndItsArguments()
       {
-         var arguments = GetTarget().Map<ApplicationCommands>(new[] { "execute", "-Path=C:\\Path\\File.txt", "-silent" });
+         var arguments = DoMap<ApplicationCommands>(new[] { "execute", "-Path=C:\\Path\\File.txt", "-silent" });
          arguments.Execute.Should().NotBeNull();
       }
 

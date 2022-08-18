@@ -32,7 +32,7 @@ public class ArgumentClassInfoSetup : SetupBase<ArgumentClassInfo>
 
    protected override ArgumentClassInfo CreateInstance()
    {
-      return ArgumentClassInfo.FromType(ArgumentType);
+      return new ArgumentClassInfo(ArgumentType);
    }
 
    #endregion

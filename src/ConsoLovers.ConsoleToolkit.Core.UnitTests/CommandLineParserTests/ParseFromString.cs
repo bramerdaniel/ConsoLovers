@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
+namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.CommandLineParserTests
 {
    using System;
    using System.Collections.Generic;
@@ -121,7 +121,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
          name.Value.Should().Be(" \"hans\" ");
          name.OriginalString.Should().Be(originalString);
       }
-      
+
       [TestMethod]
       public void ParseSpecialCaseWithWhitespaceAfterEquals()
       {
@@ -220,7 +220,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
          args[0].OriginalString.Should().Be(originalString);
       }
 
-      
+
       [TestMethod]
       public void ParseSpecialCaseNameSeparatorsInValue()
       {
@@ -234,8 +234,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
          args[0].Name.Should().Be("ex");
          args[0].Value.Should().Be("ex:ex");
          args[0].OriginalString.Should().Be(originalString);
-      } 
-      
+      }
+
       [TestMethod]
       public void EnsureNameContainingAnArgumentSignIsPossible()
       {
@@ -264,7 +264,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
          var target = Setup.CommandLineArgumentParser().Done();
 
          // expected 1 argument with name=argument and value=key:oder=value
-         var originalString = "argument:\"key:oder=value\""; 
+         var originalString = "argument:\"key:oder=value\"";
          var arg = target.GetSingleArgument(originalString);
 
          arg.Index.Should().Be(0);
@@ -273,7 +273,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
          arg.OriginalString.Should().Be(originalString);
 
          // expected 1 argument with name=execute and value=execute:execute
-         originalString = "execute:\"execute:execute\""; 
+         originalString = "execute:\"execute:execute\"";
          arg = target.GetSingleArgument(originalString);
 
          arg.Index.Should().Be(0);
@@ -281,7 +281,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
          arg.Value.Should().Be("execute:execute");
          arg.OriginalString.Should().Be(originalString);
       }
-      
+
       [TestMethod]
       public void ParseSomeUglySpecialCases()
       {
@@ -297,7 +297,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
          arg.OriginalString.Should().Be(originalString);
 
          // expected 1 argument with  name=execute and value= execute -execute=13 
-         originalString = "execute:\" execute -execute=13 \""; 
+         originalString = "execute:\" execute -execute=13 \"";
          arg = target.GetSingleArgument(originalString);
 
          arg.Index.Should().Be(0);
@@ -390,7 +390,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
          arguments.Value.Should().Be("Hans");
          arguments.OriginalString.Should().Be(originalString);
       }
-      
+
       [TestMethod]
       public void EnsureArgumentInicatorsArePossibleInValue()
       {
@@ -507,7 +507,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
          arguments[1].Name.Should().Be("Run");
          arguments[2].Name.Should().Be("Run");
       }
-      
+
       [TestMethod]
       public void ParseOption()
       {

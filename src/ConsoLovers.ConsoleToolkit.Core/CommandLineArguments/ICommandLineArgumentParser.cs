@@ -6,8 +6,6 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
-   using System.Collections.Generic;
-
    /// <summary>Interface that creates a command line dictionary from the given command line arguments</summary>
    public interface ICommandLineArgumentParser
    {
@@ -17,7 +15,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       /// <returns>The created dictionary</returns>
       CommandLineArgumentList ParseArguments(string[] args, bool caseSensitive);
 
-      
+
+      // TODO: remove caseSensitive or do it the right way
       CommandLineArgumentList ParseArguments(string args, bool caseSensitive);
 
       /// <summary>Parses the given arguments into a dictionary.</summary>

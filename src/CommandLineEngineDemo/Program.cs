@@ -16,6 +16,8 @@ namespace CommandLineEngineDemo
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Core.DIContainer;
 
+   using Microsoft.Extensions.DependencyInjection;
+
    [ConsoleWindowWidth(140)]
    [ConsoleWindowHeight(60)]
    class Program : ConsoleApplication<ApplicationArguments>
@@ -41,11 +43,10 @@ namespace CommandLineEngineDemo
 
       static void Main()
       {
-         var container = new Container();
-         container.Register<ResourceManager>(Properties.Resources.ResourceManager).WithLifetime(Lifetime.Singleton);
-         var objectFactory = new DefaultFactory(container);
+         var program = ConsoleApplicationManager.For<Program>()
+            .ConfigureServices(s => { s.AddSingleton(Properties.Resources.ResourceManager); })
+            .Run();
 
-         var program = ConsoleApplicationManager.For<Program>().UsingFactory(objectFactory).Run();
          PrintArgs(program.Arguments);
          if (program.Arguments != null && program.Arguments.Wait)
          {

@@ -6,6 +6,7 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
+   using System.Linq;
    using System.Reflection;
 
    using JetBrains.Annotations;
@@ -27,6 +28,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       /// <summary>Gets the attribute.</summary>
       public ArgumentAttribute Attribute => (ArgumentAttribute)CommandLineAttribute;
+      
+      public ArgumentValidatorAttribute ValidatorAttribute => PropertyInfo.GetCustomAttributes<ArgumentValidatorAttribute>(true).FirstOrDefault();
 
       #endregion
    }

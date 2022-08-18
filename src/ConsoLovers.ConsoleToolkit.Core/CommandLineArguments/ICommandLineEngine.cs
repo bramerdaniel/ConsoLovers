@@ -32,16 +32,16 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       /// <summary>Prints the help to the <see cref="Console"/>.</summary>
       /// <typeparam name="T">Type of the argument class to print the help for</typeparam>
-      /// <param name="resourceManager">The resource manager that will be used for localization.</param>
+      /// <param name="resourceManager">The <see cref="ILocalizationService"/> that will be used for localization.</param>
       /// <param name="consoleWidth">Width of the console.</param>
       /// <returns>A <see cref="StringBuilder"/> containing the formatted help text.</returns>
-      StringBuilder FormatHelp<T>(ResourceManager resourceManager, int consoleWidth);
+      StringBuilder FormatHelp<T>(ILocalizationService resourceManager, int consoleWidth);
 
       /// <summary>Gets the help information for the class of the given type.</summary>
       /// <typeparam name="T">The argument class for creating the help for</typeparam>
-      /// <param name="resourceManager">The resource manager that will be used for localization</param>
+      /// <param name="resourceManager">The <see cref="ILocalizationService"/> that will be used for localization</param>
       /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ArgumentHelp"/></returns>
-      IEnumerable<ArgumentHelp> GetHelp<T>(ResourceManager resourceManager);
+      IEnumerable<ArgumentHelp> GetHelp<T>(ILocalizationService resourceManager);
 
       /// <summary>Maps the specified arguments to a class of the given type.</summary>
       /// <typeparam name="T">The type of the class to map the argument to.</typeparam>
@@ -109,18 +109,18 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       /// <summary>Prints the help to the <see cref="Console"/>.</summary>
       /// <typeparam name="T">Type of the argument class to print the help for </typeparam>
-      /// <param name="resourceManager">The resource manager that will be used for localization.</param>
-      void PrintHelp<T>(ResourceManager resourceManager);
+      /// <param name="resourceManager">The <see cref="ILocalizationService"/> that will be used for localization.</param>
+      void PrintHelp<T>(ILocalizationService resourceManager);
 
       /// <summary>Prints the help to the <see cref="Console"/>.</summary>
       /// <param name="argumentType">Type of the argument class to print the help for</param>
-      /// <param name="resourceManager">The resource manager that will be used for localization.</param>
-      void PrintHelp(Type argumentType, ResourceManager resourceManager);
+      /// <param name="resourceManager">The <see cref="ILocalizationService"/> that will be used for localization.</param>
+      void PrintHelp(Type argumentType, ILocalizationService resourceManager);
 
       /// <summary>Prints the help for the given <see cref="propertyInfo"/> to the <see cref="Console"/>.</summary>
       /// <param name="propertyInfo">The <see cref="PropertyInfo"/> to print the help for</param>
-      /// <param name="resourceManager">The resource manager that will be used for localization.</param>
-      void PrintHelp(PropertyInfo propertyInfo, ResourceManager resourceManager);
+      /// <param name="resourceManager">The <see cref="ILocalizationService"/> that will be used for localization.</param>
+      void PrintHelp(PropertyInfo propertyInfo, ILocalizationService resourceManager);
 
       #endregion
    }

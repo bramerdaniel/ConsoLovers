@@ -10,6 +10,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+using ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups;
 
 using FluentAssertions;
 
@@ -24,7 +25,7 @@ public class TypeHelpProviderTests
    [TestMethod]
    public void EnsureHelpProviderFindsPublicAndInternalProperties()
    {
-      var provider = new TypeHelpProvider(null, new DefaultFactory());
+      var provider = Setup.TypeHelpProvider().AddArgumentTypes<ArgsClass>().Done();
       var helps = provider.GetHelpForProperties(typeof(ArgsClass)).ToArray();
 
       helps.Should().HaveCount(3);

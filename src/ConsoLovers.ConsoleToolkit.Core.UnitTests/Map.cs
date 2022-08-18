@@ -11,6 +11,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
 
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine;
+   using ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups;
 
    using FluentAssertions;
 
@@ -27,7 +28,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       [TestMethod]
       public void EnsureOnlyPropertiesWithAttributesGetMapped()
       {
-         var arguments = GetTarget().Map<UglyArgs>(new[] { " -AValue=45" });
+         var target = Setup.CommandLineEngine()
+            .AddTransient<UglyArgs>()
+            .Done();
+
+         var arguments = target.Map<UglyArgs>(new[] { " -AValue=45" });
          arguments.XValue.Should().Be(45);
          arguments.AValue.Should().Be(0);
       }
@@ -35,14 +40,14 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       [TestMethod]
       public void EnsureUnprocessedArgumentsRaisesEventCorrectly()
       {
-         var engine = GetTarget();
+         var engine = GetTarget<Arguments>();
          var monitor = engine.Monitor();
          engine.Map<Arguments>(new[] { " -Integer=1", "-SpellingError=5" });
 
          monitor.Should().Raise(nameof(CommandLineEngine.UnhandledCommandLineArgument))
             .WithArgs<CommandLineArgumentEventArgs>(e => e.Argument.Name == "SpellingError" && e.Argument.Value == "5" && e.Argument.Index == 1);
 
-         engine = GetTarget();
+         engine = GetTarget<Arguments>();
          monitor = engine.Monitor();
          engine.Map<Arguments>(new[] { "-SpellingError=5", " -Integer=1" });
 
@@ -55,7 +60,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       {
          var path = "\"C:\\Path\\File.txt\"";
          var name = "Nick Oteen";
-         var arguments = GetTarget().Map<IndexedArguments>(new[] { path, name });
+         var arguments = GetTarget<IndexedArguments>().Map<IndexedArguments>(new[] { path, name });
          arguments.Path.Should().Be(path);
          arguments.Name.Should().Be(name);
       }
@@ -65,7 +70,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       {
          var path = "\"C:\\Path\\File.txt\"";
          var name = "Nick Oteen";
-         var arguments = GetTarget().Map<IndexedAndNamesArguments>(new[] { path, name });
+         var arguments = GetTarget<IndexedAndNamesArguments>().Map<IndexedAndNamesArguments>(new[] { path, name });
          arguments.Path.Should().Be(path);
          arguments.Name.Should().Be(name);
       }
@@ -73,130 +78,136 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       [TestMethod]
       public void MapInvalidTypesShouldThrowException()
       {
-         this.Invoking(x => GetTarget().Map<Arguments>(new[] { "Enum:Null" })).Should().Throw<CommandLineArgumentException>().WithMessage(
+         this.Invoking(x => GetTarget<Arguments>().Map<Arguments>(new[] { "Enum:Null" })).Should().Throw<CommandLineArgumentException>().WithMessage(
             "The value Null of parameter Enum can not be converted into the expected type " + typeof(Boolenum).FullName + ". Possible values are True and False.");
 
-         this.Invoking(x => GetTarget().Map<Arguments>(new[] { "ali:TRUE" })).Should().Throw<CommandLineArgumentException>()
+         this.Invoking(x => GetTarget<Arguments>().Map<Arguments>(new[] { "ali:TRUE" })).Should().Throw<CommandLineArgumentException>()
             .WithMessage("The value TRUE of parameter ali can not be converted into the expected type System.Int32");
 
-         this.Invoking(x => GetTarget().Map<Arguments>(new[] { "Integer:TRUE" })).Should().Throw<CommandLineArgumentException>()
+         this.Invoking(x => GetTarget<Arguments>().Map<Arguments>(new[] { "Integer:TRUE" })).Should().Throw<CommandLineArgumentException>()
             .WithMessage("The value TRUE of parameter Integer can not be converted into the expected type System.Int32");
 
-         this.Invoking(x => GetTarget().Map<Arguments>(new[] { "ElBool:Tuere" })).Should().Throw<CommandLineArgumentException>()
+         this.Invoking(x => GetTarget<Arguments>().Map<Arguments>(new[] { "ElBool:Tuere" })).Should().Throw<CommandLineArgumentException>()
             .WithMessage("The value Tuere of parameter ElBool can not be converted into the expected type System.Boolean");
 
-         this.Invoking(x => GetTarget().Map<Arguments>(new[] { "Dooby:Twentyfive" })).Should().Throw<CommandLineArgumentException>()
+         this.Invoking(x => GetTarget<Arguments>().Map<Arguments>(new[] { "Dooby:Twentyfive" })).Should().Throw<CommandLineArgumentException>()
             .WithMessage("The value Twentyfive of parameter Dooby can not be converted into the expected type System.Double");
       }
 
       [TestMethod]
       public void MapNamedArgumentWithMultipleAliases()
       {
-         var arguments = GetTarget().Map<Arguments>(new[] { " -Alias=5" });
+         var arguments = DoMap<Arguments>(new[] { " -Alias=5" });
          arguments.Alias.Should().Be(5);
 
-         arguments = GetTarget().Map<Arguments>(new[] { " -a=6" });
+         arguments = DoMap<Arguments>(new[] { " -a=6" });
          arguments.Alias.Should().Be(6);
 
-         arguments = GetTarget().Map<Arguments>(new[] { " -al=7" });
+         arguments = DoMap<Arguments>(new[] { " -al=7" });
          arguments.Alias.Should().Be(7);
 
-         arguments = GetTarget().Map<Arguments>(new[] { " -ali=8" });
+         arguments = DoMap<Arguments>(new[] { " -ali=8" });
          arguments.Alias.Should().Be(8);
+      }
+
+      private T DoMap<T>(string[] args)
+         where T : class, new()
+      {
+         return GetTarget<T>().Map<T>(args);
       }
 
       [TestMethod]
       public void MapNamedBoolean()
       {
-         var arguments = GetTarget().Map<Arguments>(new[] { " -ElBool=True" });
+         var arguments =DoMap<Arguments>(new[] { " -ElBool=True" });
          arguments.Boolean.Should().Be(true);
 
-         arguments = GetTarget().Map<Arguments>(new[] { " -ElBool:TRUE " });
+         arguments =DoMap<Arguments>(new[] { " -ElBool:TRUE " });
          arguments.Boolean.Should().Be(true);
       }
 
       [TestMethod]
       public void MapNamedEnum()
       {
-         var arguments = GetTarget().Map<Arguments>(new[] { "-Enum=False " });
+         var arguments =DoMap<Arguments>(new[] { "-Enum=False " });
          arguments.Boolenum.Should().Be(Boolenum.False);
 
-         arguments = GetTarget().Map<Arguments>(new[] { "-Enum:TRUE" });
+         arguments =DoMap<Arguments>(new[] { "-Enum:TRUE" });
          arguments.Boolenum.Should().Be(Boolenum.True);
       }
 
       [TestMethod]
       public void MapNamedInteger()
       {
-         var arguments = GetTarget().Map<Arguments>(new[] { "-Integer=45 " });
+         var arguments = DoMap<Arguments>(new[] { "-Integer=45 " });
          arguments.Integer.Should().Be(45);
 
-         arguments = GetTarget().Map<Arguments>(new[] { "-Integer:45" });
+         arguments = DoMap<Arguments>(new[] { "-Integer:45" });
          arguments.Integer.Should().Be(45);
       }
 
       [TestMethod]
       public void MapNamedString()
       {
-         var arguments = GetTarget().Map<Arguments>(new[] { "-Name=Hans" });
+         var arguments = DoMap<Arguments>(new[] { "-Name=Hans" });
          arguments.String.Should().Be("Hans");
 
-         arguments = GetTarget().Map<Arguments>(new[] { "-Name:Hans " });
+         arguments = DoMap<Arguments>(new[] { "-Name:Hans " });
          arguments.String.Should().Be("Hans");
 
-         arguments = GetTarget().Map<Arguments>(new[] { "-Name:\"Hans\"" });
+         arguments = DoMap<Arguments>(new[] { "-Name:\"Hans\"" });
          arguments.String.Should().Be("\"Hans\"");
       }
 
       [TestMethod]
       public void MapNamedStringWithQuotations()
       {
-         var arguments = GetTarget().Map<Arguments>(new[] { "-Trimmed:\"TheValue\"" });
+         var arguments = DoMap<Arguments>(new[] { "-Trimmed:\"TheValue\"" });
          arguments.Trimmed.Should().Be("TheValue");
 
-         arguments = GetTarget().Map<Arguments>(new[] { "-Trimmed:\"\"" });
+         arguments = DoMap<Arguments>(new[] { "-Trimmed:\"\"" });
          arguments.Trimmed.Should().BeEmpty();
       }
 
       [TestMethod]
       public void MapNullableEnum()
       {
-         var arguments = GetTarget().Map<Arguments>(new[] { "-Nullinger=True" });
+         var arguments = DoMap<Arguments>(new[] { "-Nullinger=True" });
          arguments.Nullinger.Should().Be(Boolenum.True);
 
-         arguments = GetTarget().Map<Arguments>(new[] { "-Nullinger=False" });
+         arguments = DoMap<Arguments>(new[] { "-Nullinger=False" });
          arguments.Nullinger.Should().Be(Boolenum.False);
 
-         arguments = GetTarget().Map<Arguments>(new[] { "-Name:Hans" });
+         arguments = DoMap<Arguments>(new[] { "-Name:Hans" });
          arguments.Nullinger.Should().Be(null);
-         arguments = GetTarget().Map<Arguments>(new[] { "-Nullinger:Null" });
+         arguments = DoMap<Arguments>(new[] { "-Nullinger:Null" });
          arguments.Nullinger.Should().Be(null);
-         arguments = GetTarget().Map<Arguments>(new[] { "-Nullinger:null" });
+         arguments = DoMap<Arguments>(new[] { "-Nullinger:null" });
          arguments.Nullinger.Should().Be(null);
       }
 
       [TestMethod]
       public void MapNullableIntegers()
       {
-         var arguments = GetTarget().Map<Arguments>(new[] { "-NullInteg=25" });
+         var arguments = DoMap<Arguments>(new[] { "-NullInteg=25" });
          arguments.NullInteg.Should().Be(25);
 
-         arguments = GetTarget().Map<Arguments>(new[] { "-Name:Hans" });
+         arguments = DoMap<Arguments>(new[] { "-Name:Hans" });
          arguments.NullInteg.Should().Be(null);
-         arguments = GetTarget().Map<Arguments>(new[] { "-Nullinger:Null" });
+         arguments = DoMap<Arguments>(new[] { "-Nullinger:Null" });
          arguments.NullInteg.Should().Be(null);
-         arguments = GetTarget().Map<Arguments>(new[] { "-Nullinger:null" });
+         arguments = DoMap<Arguments>(new[] { "-Nullinger:null" });
          arguments.NullInteg.Should().Be(null);
       }
 
       [TestMethod]
       public void MapOption()
       {
-         var arguments = GetTarget().Map<Options>(new[] { " -Debug" });
+         var arguments = DoMap<Options>(new[] { " -Debug" });
          arguments.Debug.Should().BeTrue();
          arguments.Release.Should().BeFalse();
 
-         arguments = GetTarget().Map<Options>(new[] { " -Release" });
+         arguments = DoMap<Options>(new[] { " -Release" });
          arguments.Debug.Should().BeFalse();
          arguments.Release.Should().BeTrue();
       }
@@ -204,73 +215,73 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       [TestMethod]
       public void MapOptionWithMultipleAliases()
       {
-         var arguments = GetTarget().Map<Options>(new[] { " -blias=5" });
+         var arguments = DoMap<Options>(new[] { " -blias=5" });
          arguments.Blias.Should().Be(5);
 
-         arguments = GetTarget().Map<Options>(new[] { " /b=6" });
+         arguments = DoMap<Options>(new[] { " /b=6" });
          arguments.Blias.Should().Be(6);
 
-         arguments = GetTarget().Map<Options>(new[] { " -Bl=7" });
+         arguments = DoMap<Options>(new[] { " -Bl=7" });
          arguments.Blias.Should().Be(7);
 
-         arguments = GetTarget().Map<Options>(new[] { " -BLI=8" });
+         arguments = DoMap<Options>(new[] { " -BLI=8" });
          arguments.Blias.Should().Be(8);
       }
 
       [TestMethod]
       public void MappingACaseSensitiveValuesWorksCorrectly()
       {
-         GetTarget().Map<Arguments>(new[] { " -Enum=true" }).Boolenum.Should().Be(Boolenum.True);
-         GetTarget().Map<Arguments>(new[] { " -Enum=TRue" }).Boolenum.Should().Be(Boolenum.True);
-         GetTarget().Map<Arguments>(new[] { " -ElBool=TRUE" }).Boolean.Should().Be(true);
-         GetTarget().Map<Arguments>(new[] { " -ElBool=tRUE" }).Boolean.Should().Be(true);
+         DoMap<Arguments>(new[] { " -Enum=true" }).Boolenum.Should().Be(Boolenum.True);
+         DoMap<Arguments>(new[] { " -Enum=TRue" }).Boolenum.Should().Be(Boolenum.True);
+         DoMap<Arguments>(new[] { " -ElBool=TRUE" }).Boolean.Should().Be(true);
+         DoMap<Arguments>(new[] { " -ElBool=tRUE" }).Boolean.Should().Be(true);
       }
 
       [TestMethod]
       public void MappingAmbiguousOptionsShouldThrowException()
       {
-         var arguments = GetTarget().Map<Options>(new[] { "-A", "-Amb", "-am" });
+         var arguments = DoMap<Options>(new[] { "-A", "-Amb", "-am" });
          arguments.Ambiguous.Should().Be(true);
       }
 
       [TestMethod]
       public void MappingANamedBooleanArgumentWithoutValueMustThrowException()
       {
-         GetTarget().Invoking(t => t.Map<Arguments>(new[] { " -ElBool" })).Should().Throw<CommandLineArgumentException>().Where(e => e.Reason == ErrorReason.ArgumentWithoutValue);
+         GetTarget<Arguments>().Invoking(t => t.Map<Arguments>(new[] { " -ElBool" })).Should().Throw<CommandLineArgumentException>().Where(e => e.Reason == ErrorReason.ArgumentWithoutValue);
       }
 
       [TestMethod]
       public void MappingANamedBooleanArgumentWithoutValueMustThrowExceptionForAliasAlso()
       {
-         GetTarget().Invoking(t => t.Map<Arguments>(new[] { " -ali" })).Should().Throw<CommandLineArgumentException>().Where(e => e.Reason == ErrorReason.ArgumentWithoutValue);
+         GetTarget<Arguments>().Invoking(t => t.Map<Arguments>(new[] { " -ali" })).Should().Throw<CommandLineArgumentException>().Where(e => e.Reason == ErrorReason.ArgumentWithoutValue);
       }
 
       [TestMethod]
       public void MappingAnOptionWithValueMustThrowException()
       {
-         GetTarget().Invoking(t => t.Map<Options>(new[] { "-Debug=true" })).Should().Throw<CommandLineArgumentException>();
+         GetTarget<Arguments>().Invoking(t => t.Map<Options>(new[] { "-Debug=true" })).Should().Throw<CommandLineArgumentException>();
       }
 
       [TestMethod]
       public void MapStringWithQuotes()
       {
-         var arguments = GetTarget().Map<Arguments>(new[] { " -Name=C:\\Path\\File.txt" });
+         var arguments = DoMap<Arguments>(new[] { " -Name=C:\\Path\\File.txt" });
          arguments.String.Should().Be(@"C:\Path\File.txt");
 
-         arguments = GetTarget().Map<Arguments>(new[] { " -Name=C=\\Path\\File.txt" });
+         arguments = DoMap<Arguments>(new[] { " -Name=C=\\Path\\File.txt" });
          arguments.String.Should().Be(@"C=\Path\File.txt");
 
-         arguments = GetTarget().Map<Arguments>(new[] { " -Name:C=\\Path\\File.txt" });
+         arguments = DoMap<Arguments>(new[] { " -Name:C=\\Path\\File.txt" });
          arguments.String.Should().Be(@"C=\Path\File.txt");
 
-         arguments = GetTarget().Map<Arguments>(new[] { " -Name:C:\\Path\\File.txt" });
+         arguments = DoMap<Arguments>(new[] { " -Name:C:\\Path\\File.txt" });
          arguments.String.Should().Be(@"C:\Path\File.txt");
       }
 
       [TestMethod]
       public void ParseMissingRequiredArgumentsShouldThrowException()
       {
-         this.Invoking(t => GetTarget().Map<RequiredArguments>(new[] { string.Empty })).Should().Throw<MissingCommandLineArgumentException>().Where(e => e.Argument == "Name");
+         this.Invoking(t => GetTarget<RequiredArguments>().Map<RequiredArguments>(new[] { string.Empty })).Should().Throw<MissingCommandLineArgumentException>().Where(e => e.Argument == "Name");
       }
 
       #endregion
