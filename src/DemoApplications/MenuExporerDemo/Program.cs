@@ -12,10 +12,9 @@ namespace MenuDemo
    using System.Reflection;
    using System.Threading;
 
-   using ConsoLovers.ConsoleToolkit.Console;
    using ConsoLovers.ConsoleToolkit.Contracts;
+   using ConsoLovers.ConsoleToolkit.Core;
    using ConsoLovers.ConsoleToolkit.Menu;
-   using ConsoLovers.ConsoleToolkit.PInvoke;
 
    using ShellProgressBar;
 
@@ -24,6 +23,8 @@ namespace MenuDemo
       #region Constants and Fields
 
       private static string userName;
+
+      private static readonly IConsole console = new ConsoleProxy();
 
       #endregion
 
@@ -40,7 +41,8 @@ namespace MenuDemo
             if (property.PropertyType == typeof(Color))
             {
                var value = (Color)property.GetValue(null);
-               ColoredConsole.Instance.WriteLine(property.Name, value);
+               
+               console.WriteLine(property.Name, value);
                Thread.Sleep(1000);
             }
       }
@@ -84,40 +86,7 @@ namespace MenuDemo
                x.Text = $"ClearOnExecution = {x.Menu.ClearOnExecution}";
             });
       }
-
-      private static ConsoleMenuItem CreateColorMenu()
-      {
-         var crazyTheme = new MenuColorTheme();
-         crazyTheme.Selector.Foreground = Color.Yellow;
-         crazyTheme.MenuItem.Foreground = Color.DarkRed;
-         crazyTheme.MenuItem.DisabledForeground = Color.Magenta;
-         crazyTheme.MenuItem.SelectedForeground = Color.Green;
-         crazyTheme.MenuItem.SelectedBackground = Color.Blue;
-         crazyTheme.MenuItem.DisabledSelectedForeground = Color.Blue;
-         crazyTheme.MenuItem.DisabledSelectedBackground = Color.DarkGray;
-         crazyTheme.Expander.Foreground = Color.Magenta;
-         crazyTheme.Expander.Background = Color.Green;
-         crazyTheme.HeaderForeground = Color.Black;
-         crazyTheme.HeaderBackground = Color.Yellow;
-
-         var chooseDefaultTheme = new ConsoleMenuItem("Default", m => ((ColoredConsoleMenu)m.Menu).Theme = new MenuColorTheme());
-         var chooseBlueTheme = new ConsoleMenuItem("Blue", m => ((ColoredConsoleMenu)m.Menu).Theme = ConsoleMenuThemes.Blue);
-         var chooseRedTheme = new ConsoleMenuItem("Red", m => ((ColoredConsoleMenu)m.Menu).Theme = ConsoleMenuThemes.Red);
-         var choosePinkTheme = new ConsoleMenuItem("Pink", m => ((ColoredConsoleMenu)m.Menu).Theme = ConsoleMenuThemes.Pink);
-         var chooseCrazyTheme = new ConsoleMenuItem("Crazy", m => ((ColoredConsoleMenu)m.Menu).Theme = crazyTheme);
-         return new ConsoleMenuItem(
-            "Choose color theme",
-            chooseBlueTheme,
-            chooseRedTheme,
-            choosePinkTheme,
-            new ConsoleMenuSeperator(),
-            chooseCrazyTheme,
-            chooseDefaultTheme,
-            new ConsoleMenuItem("Bahama", m => ((ColoredConsoleMenu)m.Menu).Theme = ConsoleMenuThemes.Bahama),
-            new ConsoleMenuItem("CloseOptions", new ConsoleMenuItem("Exit application but use a long long name", x => Environment.Exit(0))),
-            new ConsoleMenuItem("A disabled menu item using a long name"));
-      }
-
+      
       private static ConsoleMenuItem CreateExecuteOnIndexSelectionMenu(ConsoleMenuBase menu)
       {
          return new ConsoleMenuItem(
@@ -209,15 +178,15 @@ namespace MenuDemo
       {
          Console.Title = "ConsoleMenuExplorer";
          // ConsoleWindow.HideMinimizeAndMaximizeButtons();
-         ConsoleWindow.DisableMinimize();
-         ConsoleWindow.DisableMaximize();
+         // ConsoleWindow.DisableMinimize();
+         // ConsoleWindow.DisableMaximize();
 
          ////ShowArgs(args);
          ////ShowArgs(new CommandLineArgumentParser().NormalizeArguments(args));
 
-         Console.CursorSize = 4;
-         Console.WindowHeight = 40;
-         Console.WindowWidth = 120;
+         //Console.CursorSize = 4;
+         //Console.WindowHeight = 40;
+         //Console.WindowWidth = 120;
          string header = @"    ___                     _        __ __                  ___           _                     
    |  _> ___ ._ _  ___ ___ | | ___  |  \  \ ___ ._ _  _ _  | __>__   ___ | | ___  _ _  ___  _ _ 
    | <__/ . \| ' |<_-</ . \| |/ ._> |     |/ ._>| ' || | | | _> \ \/| . \| |/ . \| '_>/ ._>| '_>
@@ -226,11 +195,16 @@ namespace MenuDemo
 
          var footer = Environment.NewLine + "THIS COULD BE YOUR FOOTER";
 
-         var menu = new ColoredConsoleMenu { Header = header, Footer = footer, CircularSelection = false, Selector = "» " };
+         var menu = new ConsoleMenu
+         {
+            Header = header,
+            Footer = footer,
+            CircularSelection = false,
+            Selector = "» ",
+            SelectionStrech = SelectionStrech.UnifiedLength
+         };
 
-         menu.SelectionStrech = SelectionStrech.UnifiedLength;
          // menu.Expander = new ExpanderDescription { Collapsed = "►", Expanded = "▼" };
-         menu.Add(CreateColorMenu());
          menu.Add(CreateSelectionStrechMenu());
          menu.Add(CreateCircularSelectionMenu(menu));
          menu.Add(CreateMouseSelectionMenu());
@@ -248,7 +222,7 @@ namespace MenuDemo
                   while (menu.Count >= 10)
                      menu.RemoveAt(menu.Count - 1);
                }));
-         menu.Add(new ConsoleMenuItem("Show Progress", ShowProgress));
+         menu.Add(new ConsoleMenuItem("Show Hello World!", ShowProgress));
          menu.Add(new ConsoleMenuItem("Set user name", InsertName));
          menu.Add(new ConsoleMenuItem("Connect to server", ConnectToServer, CanConnectToServer) { DisabledHint = "Set username first" });
          menu.Add(new ConsoleMenuItem("Register crash event handler", x => HandleCrash(menu)));

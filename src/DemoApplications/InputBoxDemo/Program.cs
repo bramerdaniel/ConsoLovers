@@ -8,7 +8,7 @@ namespace InputBoxDemo
 {
    using System;
 
-   using ConsoLovers.ConsoleToolkit;
+   using ConsoLovers.ConsoleToolkit.Core.Input;
 
    class Program
    {

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "MenuesAndCommands": {
+      "commandName": "Project",
+      "commandLineArgs": "user delete"
+    }
+  }
+}

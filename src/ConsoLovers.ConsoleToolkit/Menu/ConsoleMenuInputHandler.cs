@@ -8,6 +8,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 {
    using System;
    using System.Collections.Generic;
+   using System.Runtime.InteropServices;
    using System.Text;
    using System.Timers;
 
@@ -21,7 +22,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       private Timer timer;
 
-      private readonly ConsoleInputHandler handler;
+      private readonly IInputHandler handler;
 
       #endregion
 
@@ -29,7 +30,14 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       internal ConsoleMenuInputHandler()
       {
-         handler = new ConsoleInputHandler();
+         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+         {
+            handler = new WindowsConsoleInputHandler();
+         }
+         else
+         {
+            handler = new ConsoleInputHandler();
+         }
       }
 
       #endregion

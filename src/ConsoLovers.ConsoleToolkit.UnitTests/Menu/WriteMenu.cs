@@ -7,6 +7,7 @@
 namespace ConsoLovers.UnitTests.Menu
 {
    using ConsoLovers.ConsoleToolkit.Contracts;
+   using ConsoLovers.ConsoleToolkit.Core;
    using ConsoLovers.ConsoleToolkit.Menu;
 
    using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -23,7 +24,7 @@ namespace ConsoLovers.UnitTests.Menu
       {
          var header = "Some test header";
 
-         var consoleMock = new Mock<IColoredConsole>();
+         var consoleMock = new Mock<IConsole>();
          var target = new ConsoleMenu { Console = consoleMock.Object };
          target.Header = header;
 
@@ -38,7 +39,7 @@ namespace ConsoLovers.UnitTests.Menu
       {
          var footer = "Some test footer";
 
-         var consoleMock = new Mock<IColoredConsole>();
+         var consoleMock = new Mock<IConsole>();
          var target = new ConsoleMenu { Console = consoleMock.Object };
          target.Footer = footer;
 
@@ -51,7 +52,7 @@ namespace ConsoLovers.UnitTests.Menu
       [TestMethod]
       public void EnsureFlatItemIsDisplayed()
       {
-         var consoleMock = new Mock<IColoredConsole>();
+         var consoleMock = new Mock<IConsole>();
          var target = new ConsoleMenu { Console = consoleMock.Object };
          target.Add(new ConsoleMenuItem("Item 1"));
 

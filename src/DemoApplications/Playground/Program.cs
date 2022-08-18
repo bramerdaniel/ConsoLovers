@@ -10,11 +10,13 @@ namespace Playground
    using System.IO;
    using System.Linq;
    using System.Threading;
+   using System.Threading.Tasks;
 
    using ConsoLovers.ConsoleToolkit;
    using ConsoLovers.ConsoleToolkit.Console;
    using ConsoLovers.ConsoleToolkit.Core;
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+   using ConsoLovers.ConsoleToolkit.Core.Input;
 
    public class Program
    {
@@ -89,20 +91,6 @@ namespace Playground
 
    internal class MyProgramLogic : ConsoleApplication<MyArguments>
    {
-      #region Public Methods and Operators
-
-      /// <summary>Entry point for  non static logic.</summary>
-      /// <param name="arguments">The arguments.</param>
-      public override void RunWith(MyArguments arguments)
-      {
-         if (!File.Exists(arguments.Path))
-            Console.WriteLine("Path must point to an existing file");
-
-         // some cool logic...
-      }
-
-      #endregion
-
       public MyProgramLogic(ICommandLineEngine commandLineEngine)
          : base(commandLineEngine)
       {
@@ -130,6 +118,14 @@ namespace Playground
          Console.ReadLine();
       }
 
+      public Task RunAsync(CancellationToken cancellationToken)
+      {
+         Console.WriteLine("Application is running with path: " + Path);
+         Console.ReadLine();
+
+         return Task.CompletedTask;
+      }
+
       #endregion
 
       #region IArgumentInitializer<OnlyInterfacesUsed> Members
@@ -138,8 +134,13 @@ namespace Playground
       {
          return this;
       }
+      
+      public void InitializeFromString(OnlyInterfacesUsed instance, string args)
+      {
+         instance.Path = args;
+      }
 
-      public void InitializeArguments(OnlyInterfacesUsed instance, string[] args)
+      public void InitializeFromArray(OnlyInterfacesUsed instance, string[] args)
       {
          instance.Path = args.FirstOrDefault();
       }
@@ -165,10 +166,12 @@ namespace Playground
 
       #region Public Methods and Operators
 
-      public override void RunWith(AppAndParameters arguments)
+      public override Task RunWithAsync(AppAndParameters arguments, CancellationToken cancellationToken)
       {
          Console.WriteLine("Application is running with path: " + Path);
          Console.ReadLine();
+
+         return Task.CompletedTask;
       }
 
       #endregion
