@@ -1,0 +1,70 @@
+name: ConsoLovers.Toolkit.Core
+
+on:
+  push:
+    paths-ignore:
+    - 'README.md'
+    - 'src/Toolkit/**'
+    - '.github/workflows/build-Toolkit.yml'
+  pull_request:
+    paths-ignore:
+    - 'README.md'    
+    - 'src/Toolkit/**'
+    - '.github/workflows/build-Toolkit.yml'
+  workflow_dispatch:
+  
+env:
+  SOLUTION_DIRECTORY : src\_Solutions
+  SOLUTION_PATH : src\_Solutions\ConsoLovers.ConsoleToolkit.Core.sln
+  OUTPUT_DIRECTORY : src\_Solutions\Release
+  
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: checkout branch
+      uses: actions/checkout@v3
+    
+    - name: restore certificate
+      run: |
+        New-Item -ItemType directory -Path certificate
+        Set-Content -Path certificate\ConsoleToolkit.Core.txt -Value '${{ secrets.CONSOLOVERS_CERTIFICATE }}'
+        certutil -decode certificate\ConsoleToolkit.Core.txt certificate\ConsoleToolkit.Core.snk
+        dir certificate
+
+    - name: setup NuGet.exe
+      uses: NuGet/setup-nuget@v1.0.6
+      with:
+        nuget-version: latest
+        nuget-api-key: ${{secrets.NUGET_API_KEY}}
+    
+    - name: restore NuGet packages
+      run: nuget restore ${{ env.SOLUTION_PATH }}
+    
+    - name: setup MSBuild
+      uses: microsoft/setup-msbuild@v1.1
+
+    - name: build solution
+      run: msbuild ${{ env.SOLUTION_PATH }} -property:Configuration=Release
+
+    - name: show build results
+      run: tree ${{ env.OUTPUT_DIRECTORY }} /F
+ 
+    - name: setup VSTest.console.exe
+      uses: darenm/Setup-VSTest@v1
+
+    - name: run unit tests
+      run: vstest.console.exe ${{ env.OUTPUT_DIRECTORY }}\net6.0\ConsoLovers.ConsoleToolkit.Core.UnitTests.dll
+
+    - name: upload nuget package
+      uses: actions/upload-artifact@v3.0.0
+      with:
+        name: nugetPackage
+        path: ${{ env.OUTPUT_DIRECTORY }}\*.nupkg
+        retention-days: 8
+    
+    - name: push to nuget.org
+      if: ${{ github.ref == 'refs/heads/master' }}
+      #NOTE paths to nuget.exe only allow backslashes :-(
+      run: nuget push ${{ env.OUTPUT_DIRECTORY }}\*.nupkg -src https://api.nuget.org/v3/index.json -ApiKey ${{secrets.NUGET_API_KEY}} -SkipDuplicate

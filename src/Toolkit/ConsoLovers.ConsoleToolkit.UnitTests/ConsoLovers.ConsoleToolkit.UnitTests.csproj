@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputPath>$(SolutionDir)$(Configuration)</OutputPath>
+		<TargetFramework>net6.0</TargetFramework>
+	</PropertyGroup>
+	<Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets"
+		Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')"/>
+	<ItemGroup>
+		<Compile Remove="Backup\**"/>
+		<EmbeddedResource Remove="Backup\**"/>
+		<None Remove="Backup\**"/>
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Castle.Core" Version="4.2.1"/>
+		<PackageReference Include="ConsoLovers.ConsoleToolkit.Core" Version="5.0.0-alpha1"/>
+		<PackageReference Include="FluentAssertions" Version="5.2.0"/>
+		<PackageReference Include="Moq" Version="4.8.2"/>
+		<PackageReference Include="System.Threading.Tasks.Extensions" Version="4.4.0"/>
+		<PackageReference Include="System.ValueTuple" Version="4.4.0"/>
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1"/>
+		<PackageReference Include="MSTest.TestAdapter" Version="1.4.0"/>
+		<PackageReference Include="MSTest.TestFramework" Version="1.4.0"/>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\ConsoLovers.ConsoleToolkit\ConsoLovers.ConsoleToolkit.csproj"/>
+	</ItemGroup>
+</Project>
