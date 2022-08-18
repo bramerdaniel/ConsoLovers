@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <ProjectGuid>{A001404C-4752-48B0-B28A-2EA524E49ADB}</ProjectGuid>
-	<OutputPath>$(SolutionDir)$(Configuration)</OutputPath>
+	  <OutputPath>$(SolutionDir)$(Configuration)</OutputPath>
     <TargetFrameworks>net472;net6.0</TargetFrameworks>
     <AssemblyTitle>ConsoLovers.ConsoleToolkit</AssemblyTitle>
     <Company>ConsoLovers</Company>

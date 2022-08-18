@@ -1,39 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <ProjectGuid>{5BE607F0-6E28-4BB2-B2B1-44F55142C81F}</ProjectGuid>
-	<OutputPath>$(SolutionDir)$(Configuration)</OutputPath>
-    <RootNamespace>ConsoLovers.UnitTests</RootNamespace>
-    <AssemblyName>ConsoLovers.UnitTests</AssemblyName>
-    <TargetFramework>net6.0</TargetFramework>
-    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
-    <IsCodedUITest>False</IsCodedUITest>
-    <TestProjectType>UnitTest</TestProjectType>
-    <AssemblyTitle>ConsoLovers.UnitTests</AssemblyTitle>
-    <Product>ConsoLovers.UnitTests</Product>
-    <Copyright>Copyright ©  2016</Copyright>
+	<PropertyGroup>
+		<OutputPath>$(SolutionDir)$(Configuration)</OutputPath>
+		<TargetFramework>net6.0</TargetFramework>
+	</PropertyGroup>
+	<Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets"
+		Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')"/>
+	<ItemGroup>
+		<Compile Remove="Backup\**"/>
+		<EmbeddedResource Remove="Backup\**"/>
+		<None Remove="Backup\**"/>
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Castle.Core" Version="4.2.1"/>
+		<PackageReference Include="ConsoLovers.ConsoleToolkit.Core" Version="5.0.0-alpha1"/>
+		<PackageReference Include="FluentAssertions" Version="5.2.0"/>
+		<PackageReference Include="Moq" Version="4.8.2"/>
+		<PackageReference Include="System.Threading.Tasks.Extensions" Version="4.4.0"/>
+		<PackageReference Include="System.ValueTuple" Version="4.4.0"/>
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1"/>
+		<PackageReference Include="MSTest.TestAdapter" Version="1.4.0"/>
+		<PackageReference Include="MSTest.TestFramework" Version="1.4.0"/>
+	</ItemGroup>
 
-  </PropertyGroup>
-	<Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
-  <ItemGroup>
-    <Compile Remove="Backup\**" />
-    <EmbeddedResource Remove="Backup\**" />
-    <None Remove="Backup\**" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Castle.Core" Version="4.2.1" />
-    <PackageReference Include="ConsoLovers.ConsoleToolkit.Core" Version="5.0.0-alpha1" />
-    <PackageReference Include="FluentAssertions" Version="5.2.0" />
-    <PackageReference Include="Moq" Version="4.8.2" />
-    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.4.0" />
-    <PackageReference Include="System.ValueTuple" Version="4.4.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
-    <PackageReference Include="MSTest.TestAdapter" Version="1.4.0" />
-    <PackageReference Include="MSTest.TestFramework" Version="1.4.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\ConsoLovers.ConsoleToolkit\ConsoLovers.ConsoleToolkit.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\ConsoLovers.ConsoleToolkit\ConsoLovers.ConsoleToolkit.csproj"/>
+	</ItemGroup>
 </Project>
