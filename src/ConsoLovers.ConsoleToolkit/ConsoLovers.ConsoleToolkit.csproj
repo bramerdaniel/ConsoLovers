@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <ProjectGuid>{A001404C-4752-48B0-B28A-2EA524E49ADB}</ProjectGuid>
+	<OutputPath>$(SolutionDir)$(Configuration)</OutputPath>
     <TargetFrameworks>net472;net6.0</TargetFrameworks>
     <AssemblyTitle>ConsoLovers.ConsoleToolkit</AssemblyTitle>
     <Company>ConsoLovers</Company>
@@ -35,11 +36,9 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>
-    <OutputPath>Debug\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
-    <OutputPath>Release\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Release\**" />
