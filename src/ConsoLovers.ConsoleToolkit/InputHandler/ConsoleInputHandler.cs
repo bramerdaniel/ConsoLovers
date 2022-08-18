@@ -35,38 +35,38 @@ namespace ConsoLovers.ConsoleToolkit.InputHandler
 
       public void Start()
       {
-         ////thread = new Thread(
-         ////   () =>
-         ////   {
-         ////      while (true)
-         ////      {
-         ////         if (isRunning)
+         isRunning = true;
 
-         ////            var keyEvent = record[0].KeyEvent;
+         thread = new Thread(
+            () =>
+            {
+               while (true)
+               {
+                  if (isRunning)
+                  {
+                     var keyInfo = Console.ReadKey();
+                     KeyDown?.Invoke(this, new KeyEventArgs { Key = keyInfo.Key });
+                  }
+                  else
+                  {
+                     return;
+                  }
+               }
+            });
 
-         ////         if (keyEvent.bKeyDown)
-         ////            KeyDown?.Invoke(this, CreateEventArgs(keyEvent));
-         ////      }
-         ////         else
-         ////      {
-         ////         uint numWritten = 0;
-         ////         WriteConsoleInput(handleIn, record, 1, ref numWritten);
-         ////         return;
-         ////      }
-         ////   }
-         ////   });
-
-         ////thread.Start();
+         thread.Start();
       }
 
-   public void Stop()
-   {
-   }
+      public void Stop()
+      {
+         isRunning = false;
+      }
 
-   public void Wait()
-   {
-   }
+      public void Wait()
+      {
+         thread.Join();
+      }
 
-   #endregion
-}
+      #endregion
+   }
 }
