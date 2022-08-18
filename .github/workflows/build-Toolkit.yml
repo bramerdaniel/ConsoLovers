@@ -1,4 +1,4 @@
-name: build Consolovers.Toolkit
+name: Consolovers.Toolkit
 
 on:
   push:
