@@ -4,11 +4,13 @@ on:
   push:
     paths-ignore:
     - 'README.md'
-    - 'ConsoLovers.ConsoleToolkit.Core/**'
+    - 'src/Core/**'
+    - 'src/_Solutions/ConsoLovers.ConsoleToolkit.Core.sln'
   pull_request:
     paths-ignore:
     - 'README.md'    
-    - 'ConsoLovers.ConsoleToolkit.Core/**'
+    - 'src/Core/**'
+    - 'src/_Solutions/ConsoLovers.ConsoleToolkit.Core.sln'
   workflow_dispatch:
 
 env:
