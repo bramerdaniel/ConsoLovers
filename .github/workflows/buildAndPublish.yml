@@ -4,9 +4,11 @@ on:
   push:
     paths-ignore:
     - 'README.md'
+    - 'ConsoLovers.ConsoleToolkit/**'
   pull_request:
     paths-ignore:
     - 'README.md'    
+    - 'ConsoLovers.ConsoleToolkit/**'
   workflow_dispatch:
 
 env:
