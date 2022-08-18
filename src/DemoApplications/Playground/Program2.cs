@@ -7,6 +7,7 @@
 namespace Playground
 {
    using System;
+   using System.Threading;
    using System.Threading.Tasks;
 
    using ConsoLovers.ConsoleToolkit.Core;
@@ -44,14 +45,14 @@ namespace Playground
       #endregion
 
       #region Public Methods and Operators
-
-      public override void RunWith(TheArguments arguments)
+      
+      public override async Task RunWithAsync(TheArguments arguments, CancellationToken cancellationToken)
       {
          if (arguments.WaitForDebugger)
             Console.ReadLine();
 
          Console.WriteLine("Doing some hard stuff");
-         Task.Delay(3000).Wait();
+         await Task.Delay(3000, cancellationToken);
       }
 
       #endregion

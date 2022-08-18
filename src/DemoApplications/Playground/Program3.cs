@@ -6,6 +6,7 @@
 
 namespace Playground
 {
+   using System.Threading;
    using System.Threading.Tasks;
 
    using ConsoLovers.ConsoleToolkit.Core;
@@ -42,14 +43,14 @@ namespace Playground
       protected override void OnUnhandledCommandLineArgument(object sender, CommandLineArgumentEventArgs e)
       {
       }
-
-      public override void RunWith(DeleteMeArguments arguments)
+      
+      public override async Task RunWithAsync(DeleteMeArguments arguments, CancellationToken cancellationToken)
       {
          if (arguments.WaitForDebugger)
             Console.ReadLine();
 
          Console.WriteLine("Doing some hard stuff");
-         Task.Delay(3000).Wait();
+         await Task.Delay(3000, cancellationToken);
       }
 
       #endregion

@@ -31,6 +31,7 @@
     </PackageReleaseNotes>
     <PackageTags>Console Shell Menu ConsoleMenu ConsoleToolkit .Net Password InputBox</PackageTags>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <UserSecretsId>534a9709-5fde-4041-8ae2-4da7909b60da</UserSecretsId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -44,7 +45,7 @@
     <Resource Include="Resources\Icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ConsoLovers.ConsoleToolkit.Core" Version="3.0.0" />
+    <PackageReference Include="ConsoLovers.ConsoleToolkit.Core" Version="4.0.0" />
   </ItemGroup>
    <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
     <Reference Include="Microsoft.CSharp" />

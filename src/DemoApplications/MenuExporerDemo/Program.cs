@@ -209,15 +209,15 @@ namespace MenuDemo
       {
          Console.Title = "ConsoleMenuExplorer";
          // ConsoleWindow.HideMinimizeAndMaximizeButtons();
-         ConsoleWindow.DisableMinimize();
-         ConsoleWindow.DisableMaximize();
+         // ConsoleWindow.DisableMinimize();
+         // ConsoleWindow.DisableMaximize();
 
          ////ShowArgs(args);
          ////ShowArgs(new CommandLineArgumentParser().NormalizeArguments(args));
 
-         Console.CursorSize = 4;
-         Console.WindowHeight = 40;
-         Console.WindowWidth = 120;
+         //Console.CursorSize = 4;
+         //Console.WindowHeight = 40;
+         //Console.WindowWidth = 120;
          string header = @"    ___                     _        __ __                  ___           _                     
    |  _> ___ ._ _  ___ ___ | | ___  |  \  \ ___ ._ _  _ _  | __>__   ___ | | ___  _ _  ___  _ _ 
    | <__/ . \| ' |<_-</ . \| |/ ._> |     |/ ._>| ' || | | | _> \ \/| . \| |/ . \| '_>/ ._>| '_>
@@ -226,9 +226,15 @@ namespace MenuDemo
 
          var footer = Environment.NewLine + "THIS COULD BE YOUR FOOTER";
 
-         var menu = new ColoredConsoleMenu { Header = header, Footer = footer, CircularSelection = false, Selector = "» " };
+         var menu = new ConsoleMenu
+         {
+            Header = header,
+            Footer = footer,
+            CircularSelection = false,
+            Selector = "» ",
+            SelectionStrech = SelectionStrech.UnifiedLength
+         };
 
-         menu.SelectionStrech = SelectionStrech.UnifiedLength;
          // menu.Expander = new ExpanderDescription { Collapsed = "►", Expanded = "▼" };
          menu.Add(CreateColorMenu());
          menu.Add(CreateSelectionStrechMenu());
