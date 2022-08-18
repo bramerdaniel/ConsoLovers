@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DemoApplications", "DemoApp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{86446116-073B-400E-B218-EDF8A774051F}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\.github\workflows\buildAndPublish.yml = ..\..\.github\workflows\buildAndPublish.yml
+		..\..\.github\workflows\build-Toolkit.Core.yml = ..\..\.github\workflows\build-Toolkit.Core.yml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoLovers.ConsoleToolkit.Core", "..\Core\ConsoLovers.ConsoleToolkit.Core\ConsoLovers.ConsoleToolkit.Core.csproj", "{F8FDB2F9-0CA6-47A5-8264-6592DEDBCCF0}"

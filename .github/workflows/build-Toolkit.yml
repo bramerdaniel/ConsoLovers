@@ -1,19 +1,23 @@
-name: ConsoLovers.ConsoleToolkit.Core Workflow
+name: build Consolovers.Toolkit
 
 on:
   push:
     paths-ignore:
     - 'README.md'
-    - 'src/Toolkit/**'
+    - 'src/Core/**'
+    - 'src/_Solutions/ConsoLovers.ConsoleToolkit.Core.sln'
+    - '.github/workflows/build-Toolkit.Core.yml'
   pull_request:
     paths-ignore:
     - 'README.md'    
-    - 'src/Toolkit/**'
+    - 'src/Core/**'
+    - 'src/_Solutions/ConsoLovers.ConsoleToolkit.Core.sln'
+    - '.github/workflows/build-Toolkit.Core.yml'
   workflow_dispatch:
 
 env:
   SOLUTION_DIRECTORY : src\_Solutions
-  SOLUTION_PATH : src\_Solutions\ConsoLovers.ConsoleToolkit.Core.sln
+  SOLUTION_PATH : src\_Solutions\ConsoLovers.ConsoleToolkit.sln
   OUTPUT_DIRECTORY : src\_Solutions\Release
   
 jobs:
@@ -53,7 +57,7 @@ jobs:
       uses: darenm/Setup-VSTest@v1
 
     - name: run unit tests
-      run: vstest.console.exe ${{ env.OUTPUT_DIRECTORY }}\net6.0\ConsoLovers.ConsoleToolkit.Core.UnitTests.dll
+      run: vstest.console.exe ${{ env.OUTPUT_DIRECTORY }}\net6.0\ConsoLovers.ConsoleToolkit.UnitTests.dll
 
     - name: upload nuget package
       uses: actions/upload-artifact@v3.0.0
