@@ -177,7 +177,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       #region Public Properties
 
       /// <summary>Gets or sets the console that is used for printing the menu.</summary>
-      public IConsole Console { get; set; } = ColoredConsole.Instance;
+      public IConsole Console { get; set; } = new ConsoleProxy();
 
       public int Count => root.Items.Count;
 

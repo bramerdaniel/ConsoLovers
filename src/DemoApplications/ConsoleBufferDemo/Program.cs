@@ -11,6 +11,7 @@ namespace ConsoleBufferDemo
 
    using ConsoLovers.ConsoleToolkit;
    using ConsoLovers.ConsoleToolkit.Console;
+   using ConsoLovers.ConsoleToolkit.Core.Input;
 
    class Program 
    {
