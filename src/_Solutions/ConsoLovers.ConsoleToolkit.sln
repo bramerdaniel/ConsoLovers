@@ -14,11 +14,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoLovers.ConsoleToolkit"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoLovers.ConsoleToolkit.UnitTests", "..\Toolkit\ConsoLovers.ConsoleToolkit.UnitTests\ConsoLovers.ConsoleToolkit.UnitTests.csproj", "{7960A3A7-7463-4A81-8577-2BE078125A2F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MenusAndCommands", "..\Toolkit\DemoApplications\MenuesAndCommands\MenusAndCommands.csproj", "{AA2092A2-3869-40DF-92BB-155267EDDE3E}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MatrixDemo", "..\Toolkit\DemoApplications\MatrixDemo\MatrixDemo.csproj", "{3DDF2722-EBB3-40FD-B1C7-30C0A74F6D75}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleMenuExplorer", "..\Toolkit\DemoApplications\MenuExporerDemo\ConsoleMenuExplorer.csproj", "{E3B5C7F4-39BA-44DE-8124-43CECC4DA671}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MenusAndCommands", "..\Toolkit\DemoApplications\MenusAndCommands\MenusAndCommands.csproj", "{5A2FF1C7-9A4F-42E9-B299-79627BCD7347}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,10 +34,6 @@ Global
 		{7960A3A7-7463-4A81-8577-2BE078125A2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7960A3A7-7463-4A81-8577-2BE078125A2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7960A3A7-7463-4A81-8577-2BE078125A2F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AA2092A2-3869-40DF-92BB-155267EDDE3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AA2092A2-3869-40DF-92BB-155267EDDE3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AA2092A2-3869-40DF-92BB-155267EDDE3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AA2092A2-3869-40DF-92BB-155267EDDE3E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3DDF2722-EBB3-40FD-B1C7-30C0A74F6D75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3DDF2722-EBB3-40FD-B1C7-30C0A74F6D75}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3DDF2722-EBB3-40FD-B1C7-30C0A74F6D75}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -46,14 +42,18 @@ Global
 		{E3B5C7F4-39BA-44DE-8124-43CECC4DA671}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E3B5C7F4-39BA-44DE-8124-43CECC4DA671}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E3B5C7F4-39BA-44DE-8124-43CECC4DA671}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A2FF1C7-9A4F-42E9-B299-79627BCD7347}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A2FF1C7-9A4F-42E9-B299-79627BCD7347}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A2FF1C7-9A4F-42E9-B299-79627BCD7347}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A2FF1C7-9A4F-42E9-B299-79627BCD7347}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{AA2092A2-3869-40DF-92BB-155267EDDE3E} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
 		{3DDF2722-EBB3-40FD-B1C7-30C0A74F6D75} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
 		{E3B5C7F4-39BA-44DE-8124-43CECC4DA671} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
+		{5A2FF1C7-9A4F-42E9-B299-79627BCD7347} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {96E66A12-23DF-4590-A1FA-F6206E6C8F89}
