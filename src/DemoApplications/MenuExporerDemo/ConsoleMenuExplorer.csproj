@@ -18,7 +18,7 @@
     <DebugType>pdbonly</DebugType>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="ConsoLovers.ConsoleToolkit.Core" Version="4.0.0" />
+    <PackageReference Include="ConsoLovers.ConsoleToolkit.Core" Version="5.0.0-alpha1" />
     <PackageReference Include="ShellProgressBar" Version="3.0.0.0" />
   </ItemGroup>
 

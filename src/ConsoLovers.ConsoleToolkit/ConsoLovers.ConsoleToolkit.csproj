@@ -50,7 +50,7 @@
     <Resource Include="Resources\Icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ConsoLovers.ConsoleToolkit.Core" Version="4.0.0" />
+    <PackageReference Include="ConsoLovers.ConsoleToolkit.Core" Version="5.0.0-alpha1" />
   </ItemGroup>
    <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
     <Reference Include="Microsoft.CSharp" />
