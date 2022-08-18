@@ -5,12 +5,6 @@ VisualStudioVersion = 17.1.32414.318
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DemoApplications", "DemoApplications", "{33481418-C30A-4396-A3D8-70468C8EE8CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExceptionFormatterDemo", "DemoApplications\ExceptionFormatterDemo\ExceptionFormatterDemo.csproj", "{543F910E-1FD6-401C-A15A-070D8F17C380}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCopyApplication", "DemoApplications\XCopyApplication\XCopyApplication.csproj", "{9C3A99DB-0AE9-4F86-9810-FBEBD8FF8493}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProgressDemo", "DemoApplications\ProgressDemo\ProgressDemo.csproj", "{DC869073-3032-433A-9EBE-1E8C4429D2A8}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{86446116-073B-400E-B218-EDF8A774051F}"
 	ProjectSection(SolutionItems) = preProject
 		..\.github\workflows\buildAndPublish.yml = ..\.github\workflows\buildAndPublish.yml
@@ -24,21 +18,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Playground", "..\Core\DemoA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandLineEngineDemo", "..\Core\DemoApplications\CommandLineEngineDemo\CommandLineEngineDemo.csproj", "{88539BCD-2FFB-41ED-BF95-1C97D0073975}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExceptionFormatterDemo", "..\Core\DemoApplications\ExceptionFormatterDemo\ExceptionFormatterDemo.csproj", "{543F910E-1FD6-401C-A15A-070D8F17C380}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCopyApplication", "..\Core\DemoApplications\XCopyApplication\XCopyApplication.csproj", "{9C3A99DB-0AE9-4F86-9810-FBEBD8FF8493}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{543F910E-1FD6-401C-A15A-070D8F17C380}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{543F910E-1FD6-401C-A15A-070D8F17C380}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{543F910E-1FD6-401C-A15A-070D8F17C380}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9C3A99DB-0AE9-4F86-9810-FBEBD8FF8493}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9C3A99DB-0AE9-4F86-9810-FBEBD8FF8493}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9C3A99DB-0AE9-4F86-9810-FBEBD8FF8493}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DC869073-3032-433A-9EBE-1E8C4429D2A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DC869073-3032-433A-9EBE-1E8C4429D2A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DC869073-3032-433A-9EBE-1E8C4429D2A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F8FDB2F9-0CA6-47A5-8264-6592DEDBCCF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F8FDB2F9-0CA6-47A5-8264-6592DEDBCCF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F8FDB2F9-0CA6-47A5-8264-6592DEDBCCF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -55,16 +44,23 @@ Global
 		{88539BCD-2FFB-41ED-BF95-1C97D0073975}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{88539BCD-2FFB-41ED-BF95-1C97D0073975}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{88539BCD-2FFB-41ED-BF95-1C97D0073975}.Release|Any CPU.Build.0 = Release|Any CPU
+		{543F910E-1FD6-401C-A15A-070D8F17C380}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{543F910E-1FD6-401C-A15A-070D8F17C380}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{543F910E-1FD6-401C-A15A-070D8F17C380}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{543F910E-1FD6-401C-A15A-070D8F17C380}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C3A99DB-0AE9-4F86-9810-FBEBD8FF8493}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C3A99DB-0AE9-4F86-9810-FBEBD8FF8493}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C3A99DB-0AE9-4F86-9810-FBEBD8FF8493}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C3A99DB-0AE9-4F86-9810-FBEBD8FF8493}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{543F910E-1FD6-401C-A15A-070D8F17C380} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
-		{9C3A99DB-0AE9-4F86-9810-FBEBD8FF8493} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
-		{DC869073-3032-433A-9EBE-1E8C4429D2A8} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
 		{DBF33F23-2AD7-4B8D-9A00-A66440B99BF1} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
 		{88539BCD-2FFB-41ED-BF95-1C97D0073975} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
+		{543F910E-1FD6-401C-A15A-070D8F17C380} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
+		{9C3A99DB-0AE9-4F86-9810-FBEBD8FF8493} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {96E66A12-23DF-4590-A1FA-F6206E6C8F89}

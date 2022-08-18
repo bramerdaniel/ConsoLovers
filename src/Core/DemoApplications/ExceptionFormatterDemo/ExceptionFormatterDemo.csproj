@@ -51,7 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\ConsoLovers.ConsoleToolkit.Core\ConsoLovers.ConsoleToolkit.Core.csproj">
-      <Project>{5cd277eb-585c-4891-b8b9-4a6f53d94a2e}</Project>
+      <Project>{f8fdb2f9-0ca6-47a5-8264-6592dedbccf0}</Project>
       <Name>ConsoLovers.ConsoleToolkit.Core</Name>
     </ProjectReference>
   </ItemGroup>
