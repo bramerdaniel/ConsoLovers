@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Playground", "DemoApplicati
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleBufferDemo", "DemoApplications\ConsoleBufferDemo\ConsoleBufferDemo.csproj", "{9871FEC7-7A7C-4AA3-9444-8F9630414127}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MenusAndCommands", "MenuesAndCommands\MenusAndCommands.csproj", "{4674EE3D-18B5-4F99-8FEF-7D37BEFA169D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{9871FEC7-7A7C-4AA3-9444-8F9630414127}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9871FEC7-7A7C-4AA3-9444-8F9630414127}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9871FEC7-7A7C-4AA3-9444-8F9630414127}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4674EE3D-18B5-4F99-8FEF-7D37BEFA169D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4674EE3D-18B5-4F99-8FEF-7D37BEFA169D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4674EE3D-18B5-4F99-8FEF-7D37BEFA169D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4674EE3D-18B5-4F99-8FEF-7D37BEFA169D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -70,6 +76,7 @@ Global
 		{E7BE477E-90BD-4BE9-ADD0-0A09D98546CC} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
 		{E2456525-5CEB-437A-9A4E-CA07C79191AA} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
 		{9871FEC7-7A7C-4AA3-9444-8F9630414127} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
+		{4674EE3D-18B5-4F99-8FEF-7D37BEFA169D} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {96E66A12-23DF-4590-A1FA-F6206E6C8F89}
