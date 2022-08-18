@@ -22,6 +22,11 @@
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <ItemGroup>
+    <Compile Remove="Backup\**" />
+    <EmbeddedResource Remove="Backup\**" />
+    <None Remove="Backup\**" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Castle.Core" Version="4.2.1" />
     <PackageReference Include="ConsoLovers.ConsoleToolkit.Core" Version="4.0.0" />
     <PackageReference Include="FluentAssertions" Version="5.2.0" />
@@ -41,8 +46,5 @@
     <Compile Remove="ArgumentMapperTests\MapArgumentTests.cs" />
     <Compile Remove="ArgumentMapperTests\MapCommandTests.cs" />
     <Compile Remove="ArgumentMapperTests\UnmapTests.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Setups\" />
   </ItemGroup>
 </Project>

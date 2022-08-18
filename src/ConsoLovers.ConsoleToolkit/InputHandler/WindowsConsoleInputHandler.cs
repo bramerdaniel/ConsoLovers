@@ -1,38 +1,92 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="ConsoleInputHandler.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2022
+//    Copyright (c) ConsoLovers  2015 - 2016
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace ConsoLovers.ConsoleToolkit.InputHandler
 {
    using System;
+   using System.Runtime.InteropServices;
    using System.Threading;
 
-   public class ConsoleInputHandler : IInputHandler
+   public class WindowsConsoleInputHandler : IInputHandler
    {
+      #region Constants and Fields
+
+      public const uint STD_ERROR_HANDLE = unchecked((uint)-12);
+
+      public const uint STD_INPUT_HANDLE = unchecked((uint)-10);
+
+      public const uint STD_OUTPUT_HANDLE = unchecked((uint)-11);
+
+      private bool isRunning;
+
       private Thread thread;
+
+      #endregion
+
+      #region Delegates
+
+      public delegate void ConsoleKeyEvent(KEY_EVENT_RECORD r);
+      
+      public delegate void ConsoleWindowBufferSizeEvent(WINDOW_BUFFER_SIZE_RECORD r);
+
+      #endregion
 
       #region Public Events
 
-      public event EventHandler<KeyEventArgs> KeyDown;
-
-      public event EventHandler<MouseEventArgs> MouseClicked;
-
       public event EventHandler<MouseEventArgs> MouseDoubleClicked;
 
+      public event EventHandler<MouseEventArgs> MouseClicked;
+      
       public event EventHandler<MouseEventArgs> MouseMoved;
 
       public event EventHandler<MouseEventArgs> MouseWheelChanged;
 
-      public event WindowsConsoleInputHandler.ConsoleWindowBufferSizeEvent WindowBufferSizeEvent;
+      public event EventHandler<KeyEventArgs> KeyDown;
+
+      public event ConsoleWindowBufferSizeEvent WindowBufferSizeEvent;
 
       #endregion
 
-      #region IInputHandler Members
+      #region Public Methods and Operators
+
+      [DllImport("kernel32.dll")]
+      public static extern bool GetConsoleMode(IntPtr hConsoleInput, ref uint lpMode);
+
+      [DllImport("kernel32.dll")]
+      public static extern IntPtr GetStdHandle(uint nStdHandle);
+
+      [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+      public static extern bool ReadConsoleInput(IntPtr hConsoleInput, [Out] INPUT_RECORD[] lpBuffer, uint nLength, ref uint lpNumberOfEventsRead);
+
+      [DllImport("kernel32.dll")]
+      public static extern bool SetConsoleMode(IntPtr hConsoleInput, uint dwMode);
+
+      [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+      public static extern bool WriteConsoleInput(IntPtr hConsoleInput, INPUT_RECORD[] lpBuffer, uint nLength, ref uint lpNumberOfEventsWritten);
+
+      protected void Prepare()
+      {
+         IntPtr inHandle = GetStdHandle(STD_INPUT_HANDLE);
+         uint mode = 0;
+         GetConsoleMode(inHandle, ref mode);
+         mode &= ~ConsoleModes.ENABLE_QUICK_EDIT_MODE; //disable
+         mode |= ConsoleModes.ENABLE_WINDOW_INPUT; //enable (if you want)
+         mode |= ConsoleModes.ENABLE_MOUSE_INPUT; //enable
+         SetConsoleMode(inHandle, mode);
+      }
 
       public void Start()
       {
+         if (isRunning)
+            return;
+
+         Prepare();
+         isRunning = true;
+
+         IntPtr handleIn = GetStdHandle(STD_INPUT_HANDLE);
          thread = new Thread(
             () =>
             {
@@ -88,12 +142,28 @@ namespace ConsoLovers.ConsoleToolkit.InputHandler
          thread.Start();
       }
 
-      public void Stop()
+      private KeyEventArgs CreateEventArgs(KEY_EVENT_RECORD keyEvent)
       {
+         return new KeyEventArgs
+         {
+            Key = (ConsoleKey)keyEvent.wVirtualKeyCode,
+            KeyChar = keyEvent.UnicodeChar,
+            VirtualKeyCode = keyEvent.wVirtualKeyCode,
+            ControlKeys = (ControlKeyState)keyEvent.dwControlKeyState
+      };
       }
 
-      public void Wait()
+      public void Stop() => isRunning = false;
+
+      public void Wait() => thread.Join();
+
+      #endregion
+
+      #region Methods
+
+      private MouseEventArgs CreateEventArgs(MOUSE_EVENT_RECORD mouseEvent)
       {
+         return new MouseEventArgs { ButtonState = (ButtonStates)mouseEvent.dwButtonState, WindowLeft = mouseEvent.dwMousePosition.X, WindowTop = mouseEvent.dwMousePosition.Y };
       }
 
       #endregion
