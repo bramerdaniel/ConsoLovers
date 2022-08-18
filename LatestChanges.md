@@ -1,4 +1,4 @@
-# Version 4.0.0-rc2
+# Version 4.0.0
 ### 1. Support for async application and commands
 
 You can now start your application async, to be able to use async apis easier.

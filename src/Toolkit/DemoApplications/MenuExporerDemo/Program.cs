@@ -15,8 +15,7 @@ namespace MenuDemo
    using ConsoLovers.ConsoleToolkit.Contracts;
    using ConsoLovers.ConsoleToolkit.Core;
    using ConsoLovers.ConsoleToolkit.Menu;
-
-   using ShellProgressBar;
+   using ConsoLovers.ConsoleToolkit.Progress;
 
    class Program
    {
@@ -52,9 +51,7 @@ namespace MenuDemo
          if (userName == null)
             return;
 
-         var progressBar = new ProgressBar(
-            100,
-            "Connecting to server with username " + userName,
+         var progressBar = new ProgressBar(100, "Connecting to server with username " + userName,
             new ProgressBarOptions { BackgroundColor = ConsoleColor.Blue, ForeGroundColor = ConsoleColor.Cyan, ProgressBarOnBottom = false, ProgressCharacter = '*' });
          for (int i = 0; i < 100; i++)
          {
@@ -222,7 +219,7 @@ namespace MenuDemo
                   while (menu.Count >= 10)
                      menu.RemoveAt(menu.Count - 1);
                }));
-         menu.Add(new ConsoleMenuItem("Show Hello World!", ShowProgress));
+         menu.Add(new ConsoleMenuItem("Show Progress", ShowProgress));
          menu.Add(new ConsoleMenuItem("Set user name", InsertName));
          menu.Add(new ConsoleMenuItem("Connect to server", ConnectToServer, CanConnectToServer) { DisabledHint = "Set username first" });
          menu.Add(new ConsoleMenuItem("Register crash event handler", x => HandleCrash(menu)));
