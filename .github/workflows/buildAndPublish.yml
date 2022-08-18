@@ -12,9 +12,9 @@ on:
   workflow_dispatch:
 
 env:
-  SOLUTION_DIRECTORY : src
-  SOLUTION_PATH : src\ConsoLovers.ConsoleToolkit.Core.sln
-  OUTPUT_DIRECTORY : src\Release
+  SOLUTION_DIRECTORY : src\_Solutions
+  SOLUTION_PATH : src\_Solutions\ConsoLovers.ConsoleToolkit.Core.sln
+  OUTPUT_DIRECTORY : src\_Solutions\Release
   
 jobs:
   build:
