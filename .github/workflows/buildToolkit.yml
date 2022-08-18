@@ -6,11 +6,15 @@ on:
     - 'README.md'
     - 'src/Core/**'
     - 'src/_Solutions/ConsoLovers.ConsoleToolkit.Core.sln'
+    - '.github/workflows/buildAndPublish.yml'
+    - '.github/workflows/Toolkit.Core.yml'
   pull_request:
     paths-ignore:
     - 'README.md'    
     - 'src/Core/**'
     - 'src/_Solutions/ConsoLovers.ConsoleToolkit.Core.sln'
+    - '.github/workflows/buildAndPublish.yml'
+    - '.github/workflows/Toolkit.Core.yml'
   workflow_dispatch:
 
 env:
