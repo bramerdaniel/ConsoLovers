@@ -28,7 +28,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       #region Constructors and Destructors
 
-      private ArgumentClassInfo([NotNull] Type argumentType)
+      internal ArgumentClassInfo([NotNull] Type argumentType)
       {
          ArgumentType = argumentType ?? throw new ArgumentNullException(nameof(argumentType));
          Initialize();
@@ -54,16 +54,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       #endregion
 
       #region Public Methods and Operators
-
-      public static ArgumentClassInfo FromType(Type argumentClassType)
-      {
-         return new ArgumentClassInfo(argumentClassType);
-      }
-
-      public static ArgumentClassInfo FromType<T>()
-      {
-         return FromType(typeof(T));
-      }
 
       public ParameterInfo GetParameterInfo(string name)
       {

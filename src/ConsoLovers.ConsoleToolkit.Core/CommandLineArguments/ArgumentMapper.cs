@@ -21,15 +21,15 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
    {
       #region Constants and Fields
 
-      private readonly IObjectFactory engineFactory;
+      private readonly IServiceProvider serviceProvider;
 
       #endregion
 
       #region Constructors and Destructors
 
-      public ArgumentMapper([NotNull] IObjectFactory engineFactory)
+      public ArgumentMapper([NotNull] IServiceProvider serviceProvider)
       {
-         this.engineFactory = engineFactory ?? throw new ArgumentNullException(nameof(engineFactory));
+         this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
       }
 
       #endregion
@@ -37,7 +37,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       #region Public Events
 
       /// <summary>Occurs when command line argument could be mapped to a specific property of the specified class of type.</summary>
-      // TODO raise it
       public event EventHandler<MapperEventArgs> MappedCommandLineArgument;
 
       /// <summary>Occurs when a command line argument of the given arguments dictionary could not be mapped to a arguments member</summary>
@@ -49,7 +48,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       public T Map(CommandLineArgumentList arguments)
       {
-         var instance = engineFactory.CreateInstance<T>();
+         var instance = serviceProvider.GetService<T>();
          return Map(arguments, instance);
       }
 
@@ -104,16 +103,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          return null;
       }
 
-      private void CheckForUnmappedArguments(IDictionary<string, CommandLineArgument> arguments, HashSet<CommandLineArgument> sharedArguments, T instance)
-      {
-         if (arguments.Count <= 0)
-            return;
-
-         foreach (var argument in arguments.Values.Where(arg => !sharedArguments.Contains(arg)))
-            UnmappedCommandLineArgument?.Invoke(this, new MapperEventArgs(argument, null, instance));
-      }
-
-
       private void CheckForUnmappedArguments(CommandLineArgumentList arguments, HashSet<CommandLineArgument> sharedArguments, T instance)
       {
          if (arguments.Count <= 0)
@@ -127,7 +116,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       {
          foreach (var attribute in propertyInfo.GetCustomAttributes<ArgumentValidatorAttribute>(true))
          {
-            var instance = engineFactory.CreateInstance(attribute.Type);
+            var instance = serviceProvider.GetService(attribute.Type);
             if (instance != null)
             {
                var validatorName = typeof(IArgumentValidator<T>).Name;

@@ -14,29 +14,19 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests.
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Core.DIContainer;
 
+   using Microsoft.Extensions.DependencyInjection;
+
    using Moq;
 
    internal class ApplicationTestContext<T> : IDisposable
       where T : class
    {
-      #region Constants and Fields
-
-      private Container container;
-
-      #endregion
-
       #region Constructors and Destructors
 
       public ApplicationTestContext()
       {
-         container = new Container();
-
          Commands = new Mock<ICommandVerification>();
          Application = new Mock<IApplicationVerification<T>>();
-
-         container.Register<ICommandVerification>(Commands.Object);
-         container.Register<IApplicationVerification<T>>(Application.Object);
-         Factory = new DefaultFactory(container);
       }
 
       #endregion
@@ -45,7 +35,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests.
 
       public void Dispose()
       {
-         container = null;
       }
 
       #endregion
@@ -55,8 +44,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests.
       public Mock<IApplicationVerification<T>> Application { get; }
 
       public Mock<ICommandVerification> Commands { get; }
-
-      public DefaultFactory Factory { get; }
+      
 
       #endregion
 
@@ -64,15 +52,14 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests.
 
       public void RunApplication(string args)
       {
-         ConsoleApplicationManager.For<TestApplication<T>>().UsingFactory(Factory).Run(args);
-      }
-
-      public void RunApplicationAsync(string args)
-      {
          ConsoleApplicationManager.For<TestApplication<T>>()
-            .UsingFactory(Factory)
-            .RunAsync(args, CancellationToken.None)
-            .GetAwaiter().GetResult();
+            .ConfigureServices(services =>
+            {
+               services
+                  .AddSingleton(Commands.Object)
+                  .AddSingleton(Application.Object);
+            })
+            .Run(args);
       }
 
       public void RunApplication(params string[] args)

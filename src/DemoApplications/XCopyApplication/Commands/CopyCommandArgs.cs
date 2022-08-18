@@ -24,7 +24,7 @@ namespace XCopyApplication.Commands
       public string SourceFile { get; set; }
 
       [Option("OverwriteExisting" ,"o")]
-      [HelpText("If set to true an allready existing file will be overwritten.")]
+      [HelpText("If set to true an already existing file will be overwritten.")]
       public bool OverwriteExisting { get; set; }
    }
 

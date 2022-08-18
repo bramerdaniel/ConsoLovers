@@ -7,12 +7,24 @@
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
 using System;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
+using JetBrains.Annotations;
+
 public class CommandExecutor : ICommandExecutor
 {
-   #region Public Methods and Operators
+   #region Constructors and Destructors
+
+   public CommandExecutor([NotNull] IArgumentReflector argumentReflector)
+   {
+      ArgumentReflector = argumentReflector ?? throw new ArgumentNullException(nameof(argumentReflector));
+   }
+
+   #endregion
+
+   #region ICommandExecutor Members
 
    /// <summary>Executes the first mapped command of the <see cref="arguments"/>.</summary>
    /// <typeparam name="T">The type of the arguments to execute</typeparam>
@@ -30,17 +42,13 @@ public class CommandExecutor : ICommandExecutor
    /// <returns>The command that was executed</returns>
    public async Task<ICommandBase> ExecuteCommandAsync<T>(T arguments, CancellationToken cancellationToken)
    {
-      var applicationArguments = ArgumentClassInfo.FromType<T>();
+      var applicationArguments = ArgumentReflector.GetTypeInfo<T>();
       if (!applicationArguments.HasCommands)
          return null;
 
       var command = GetMappedCommand(arguments);
       return command != null ? await ExecuteCommandAsync(command, cancellationToken) : null;
    }
-
-   #endregion
-
-   #region Methods
 
    public async Task<ICommandBase> ExecuteCommandAsync(ICommandBase executable, CancellationToken cancellationToken)
    {
@@ -57,12 +65,22 @@ public class CommandExecutor : ICommandExecutor
       }
    }
 
+   #endregion
+
+   #region Properties
+
+   internal IArgumentReflector ArgumentReflector { get; }
+
+   #endregion
+
+   #region Methods
+
    private static ICommandBase GetMappedCommand<T>(T arguments)
    {
       if (arguments == null)
          return null;
 
-      foreach (var propertyInfo in typeof(T).GetProperties())
+      foreach (var propertyInfo in typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
       {
          if (propertyInfo.PropertyType.GetInterface(typeof(ICommandBase).FullName!) != null)
          {

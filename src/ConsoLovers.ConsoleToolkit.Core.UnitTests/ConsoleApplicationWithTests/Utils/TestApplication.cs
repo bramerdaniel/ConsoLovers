@@ -43,7 +43,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests.
             CommandLineEngine.UnhandledCommandLineArgument += OnUnmappedParameter;
             base.InitializeFromString(instance, args);
 
-            var info = ArgumentClassInfo.FromType<T>();
+            var info = new ArgumentClassInfo(typeof(T));
             foreach (var property in info.Properties)
                application.Argument(property.ParameterName, property.PropertyInfo.GetValue(instance));
          }

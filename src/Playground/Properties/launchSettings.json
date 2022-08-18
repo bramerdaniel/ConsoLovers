@@ -19,6 +19,10 @@
     "test": {
       "commandName": "Project",
       "commandLineArgs": "delete role /name"
+    },
+    "create user": {
+      "commandName": "Project",
+      "commandLineArgs": "create user Hans"
     }
   }
 }

@@ -34,7 +34,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine.HelpCommandTe
 
          target.Execute();
 
-         engine.Verify(x => x.PrintHelp(typeof(CommandArgumentClass), null), Times.Once);
+         engine.Verify(x => x.PrintHelp(typeof(CommandArgumentClass), It.IsAny<ILocalizationService>()), Times.Once);
       }
 
       [TestMethod]
@@ -46,7 +46,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine.HelpCommandTe
 
          target.Execute();
 
-         engine.Verify(x => x.PrintHelp(typeof(CommandArgumentClass).GetProperty("Path"), null), Times.Once);
+         engine.Verify(x => x.PrintHelp(typeof(CommandArgumentClass).GetProperty("Path"), It.IsAny<ILocalizationService>()), Times.Once);
       }
 
       [TestMethod]
@@ -58,7 +58,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine.HelpCommandTe
 
          target.Execute();
 
-         engine.Verify(x => x.PrintHelp(typeof(RootArgumentClass).GetProperty("Number"), null), Times.Once);
+         engine.Verify(x => x.PrintHelp(typeof(RootArgumentClass).GetProperty("Number"), It.IsAny<ILocalizationService>()), Times.Once);
       }
 
       [TestMethod]
@@ -70,7 +70,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine.HelpCommandTe
 
          target.Execute();
 
-         engine.Verify(x => x.PrintHelp(typeof(RootArgumentClass), null), Times.Once);
+         engine.Verify(x => x.PrintHelp(typeof(RootArgumentClass), It.IsAny<ILocalizationService>()), Times.Once);
       }
 
       #endregion
@@ -89,7 +89,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine.HelpCommandTe
 
          return new HelpCommandArguments
          {
-            ArgumentInfos = ArgumentClassInfo.FromType<T>(),
+            ArgumentInfos = new ArgumentClassInfo(typeof(T)),
             ArgumentDictionary = argumentDictionary
          };
       }

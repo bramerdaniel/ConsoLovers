@@ -50,10 +50,10 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
 
       public CommandLineArgumentList ParseArguments(string args, bool caseSensitive)
       {
-         int skippFirst = args.Equals(Environment.CommandLine) ? 1 : 0;
+         int skipFirst = args.Equals(Environment.CommandLine) ? 1 : 0;
          var argumentList = new CommandLineArgumentList(caseSensitive ? StringComparer.InvariantCulture : StringComparer.InvariantCultureIgnoreCase);
          int index = 0;
-         foreach (var arg in SplitIntoArgs(args).Skip(skippFirst))
+         foreach (var arg in SplitIntoArgs(args).Skip(skipFirst))
          {
             var commandLineArgument = ParseSingleArgument(arg, index);
             argumentList.Add(commandLineArgument);

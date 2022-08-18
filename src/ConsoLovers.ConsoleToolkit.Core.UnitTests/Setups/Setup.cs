@@ -37,11 +37,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups
          return new CommandLineEngineSetup();
       }
 
-      public static EngineFactorySetup EngineFactory()
-      {
-         return new EngineFactorySetup();
-      }
-
       public static HelpCommandSetup HelpCommand()
       {
          return new HelpCommandSetup();
@@ -58,5 +53,16 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups
       }
 
       #endregion
+
+      public static CommandMapperSetup<T> CommandMapper<T>()
+         where T : class
+      {
+         return new CommandMapperSetup<T>();
+      }
+
+      public static TypeHelpProviderSetup TypeHelpProvider()
+      {
+         return new TypeHelpProviderSetup();
+      }
    }
 }

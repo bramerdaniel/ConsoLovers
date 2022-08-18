@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
+namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.CommandLineParserTests
 {
    using System.Diagnostics.CodeAnalysis;
    using System.Linq;

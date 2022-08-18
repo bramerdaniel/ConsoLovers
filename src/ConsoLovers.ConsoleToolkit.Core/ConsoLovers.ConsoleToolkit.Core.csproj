@@ -5,7 +5,7 @@
 		<OutputPath>$(SolutionDir)$(Configuration)</OutputPath>
 		<Authors>Daniel Bramer</Authors>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>4.0.0</Version>
+		<Version>5.0.0-alpha1</Version>
 		<PackageTags>Console Shell ConsoleToolkit .Net CommandLineArgument CommandLineArguments CommandLineParser</PackageTags>
 		<PackageIconUrl>https://raw.githubusercontent.com/bramerdaniel/ConsoLovers/master/src/ConsoLovers.ConsoleToolkit/Resources/Icon.ico</PackageIconUrl>
 		<PackageProjectUrl>https://github.com/bramerdaniel/ConsoLovers</PackageProjectUrl>
@@ -15,7 +15,12 @@
 			This package contains the basic funtionality like application handling and command line argument parsing/mapping like the 4.* version of the ConsoLovers.ConsoleToolkit did, but usable for .NetStandard 2.0
 		</Description>
 		<LangVersion>latest</LangVersion>
-		<PackageReleaseNotes>4.0.0
+		<PackageReleaseNotes>5.0.0
+ - Introduced IArgumentReflector that caches all the type information used determined during the run 
+ - Introduced ILocalizationService to be able to replace localization mechanism
+ - Now using Microsoft.Extensions.DependencyInjection.Abstractions for dependency injection abstraction
+   to support other dependency injection containers
+4.0.0
  - Support for internal and private argument classes and properties
  - Support nested commands to support more complex applications
  - Support for async application and commands
@@ -53,6 +58,10 @@
 
 	<ItemGroup>
 		<Folder Include="CommandLineArguments\Mapping\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
 	</ItemGroup>
 
 </Project>

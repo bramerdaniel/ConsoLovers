@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="CommandLineEngine.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2018
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -10,13 +10,15 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
    using System.Collections.Generic;
    using System.Linq;
    using System.Reflection;
-   using System.Resources;
    using System.Text;
 
-   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing;
    using ConsoLovers.ConsoleToolkit.Core.DIContainer;
 
    using JetBrains.Annotations;
+
+   using Microsoft.Extensions.DependencyInjection;
+
+   using ServiceProviderServiceExtensions = ConsoLovers.ConsoleToolkit.Core.ServiceProviderServiceExtensions;
 
    /// <summary>Main class that us is used for processing command line arguments</summary>
    public class CommandLineEngine : ICommandLineEngine
@@ -24,10 +26,13 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       #region Constructors and Destructors
 
       [InjectionConstructor]
-      public CommandLineEngine([NotNull] IObjectFactory objectFactory, [NotNull] ICommandExecutor commandExecutor)
+      public CommandLineEngine([NotNull] IServiceProvider serviceProvider, [NotNull] ICommandExecutor commandExecutor,
+         [NotNull] ICommandLineArgumentParser argumentParser, [NotNull] IArgumentReflector argumentReflector)
       {
-         ObjectFactory = objectFactory ?? throw new ArgumentNullException(nameof(objectFactory));
+         ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
          CommandExecutor = commandExecutor ?? throw new ArgumentNullException(nameof(commandExecutor));
+         ArgumentParser = argumentParser ?? throw new ArgumentNullException(nameof(argumentParser));
+         ArgumentReflector = argumentReflector ?? throw new ArgumentNullException(nameof(argumentReflector));
       }
 
       #endregion
@@ -35,8 +40,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       #region Public Events
 
       /// <summary>
-      ///    Occurs when command line argument was passed to the <see cref="T:ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.ICommandLineEngine"/> and it was processed and
-      ///    mapped to a specific property.
+      ///    Occurs when command line argument was passed to the <see cref="T:ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.ICommandLineEngine"/>
+      ///    and it was processed and mapped to a specific property.
       /// </summary>
       public event EventHandler<CommandLineArgumentEventArgs> HandledCommandLineArgument;
 
@@ -51,13 +56,13 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       /// <summary>Prints the help to the <see cref="Console"/>.</summary>
       /// <typeparam name="T">Type of the argument class to print the help for</typeparam>
-      /// <param name="resourceManager">The resource manager that will be used for localization.</param>
+      /// <param name="localizationService">The <see cref="ILocalizationService"/> that will be used for localization.</param>
       /// <param name="consoleWidth">Width of the console.</param>
       /// <returns>A <see cref="StringBuilder"/> containing the formatted help text.</returns>
-      public StringBuilder FormatHelp<T>(ResourceManager resourceManager, int consoleWidth)
+      public StringBuilder FormatHelp<T>(ILocalizationService localizationService, int consoleWidth)
       {
          var stringBuilder = new StringBuilder();
-         var argumentHelps = GetHelp<T>(resourceManager).ToList();
+         var argumentHelps = GetHelp<T>(localizationService).ToList();
          int longestNameWidth = argumentHelps.Select(a => a.PropertyName.Length).Max() + 2;
          int longestAliasWidth = argumentHelps.Select(a => a.AliasString.Length).Max() + 4;
 
@@ -85,11 +90,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       /// <summary>Gets the help information for the class of the given type.</summary>
       /// <typeparam name="T">The argument class for creating the help for</typeparam>
-      /// <param name="resourceManager">The resource manager that will be used for localization</param>
+      /// <param name="localizationService">The <see cref="ILocalizationService"/> that will be used for localization</param>
       /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ArgumentHelp"/></returns>
-      public IEnumerable<ArgumentHelp> GetHelp<T>(ResourceManager resourceManager)
+      public IEnumerable<ArgumentHelp> GetHelp<T>(ILocalizationService localizationService)
       {
-         return GetHelpForProperties(typeof(T), resourceManager);
+         return GetHelpForProperties(typeof(T), localizationService);
       }
 
       /// <summary>Maps the specified arguments to a class of the given type.</summary>
@@ -214,48 +219,47 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       /// <summary>Prints the help to the <see cref="Console"/>.</summary>
       /// <typeparam name="T">Type of the argument class to print the help for </typeparam>
-      /// <param name="resourceManager">The resource manager that will be used for localization.</param>
-      public void PrintHelp<T>(ResourceManager resourceManager)
+      /// <param name="localizationService">The <see cref="ILocalizationService"/> that will be used for localization.</param>
+      public void PrintHelp<T>(ILocalizationService localizationService)
       {
-         PrintHelp(typeof(T), resourceManager);
+         PrintHelp(typeof(T), localizationService);
       }
 
       /// <summary>Prints the help to the <see cref="Console"/>.</summary>
       /// <param name="argumentType">Type of the argument class to print the help for</param>
-      /// <param name="resourceManager">The resource manager that will be used for localization.</param>
-      public void PrintHelp([NotNull] Type argumentType, ResourceManager resourceManager)
+      /// <param name="localizationService">The <see cref="ILocalizationService"/> that will be used for localization.</param>
+      public void PrintHelp([NotNull] Type argumentType, ILocalizationService localizationService)
       {
-         var helpTextProvider = GetHelpTextProvider(argumentType, resourceManager);
+         var helpTextProvider = GetHelpTextProvider(argumentType, localizationService);
          helpTextProvider.PrintTypeHelp(argumentType);
       }
 
       /// <summary>Prints the help for the given <see cref="!:propertyInfo"/> to the <see cref="T:System.Console"/>.</summary>
       /// <param name="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> to print the help for</param>
-      /// <param name="resourceManager">The resource manager that will be used for localization.</param>
-      public void PrintHelp(PropertyInfo propertyInfo, ResourceManager resourceManager)
+      /// <param name="localizationService">The <see cref="ILocalizationService"/> that will be used for localization.</param>
+      public void PrintHelp(PropertyInfo propertyInfo, ILocalizationService localizationService)
       {
-         var helpTextProvider = GetHelpTextProvider(propertyInfo, resourceManager);
+         var helpTextProvider = GetHelpTextProvider(propertyInfo, localizationService);
          helpTextProvider.PrintPropertyHelp(propertyInfo);
       }
 
       #endregion
 
-      #region Public Properties
-
-      public ICommandLineArgumentParser ArgumentParser { get; set; } = new CommandLineArgumentParser();
-
-      #endregion
-
       #region Properties
 
-      /// <summary>Gets the factory.</summary>
-      internal IObjectFactory ObjectFactory { get; set; }
+      /// <summary>Gets the <see cref="ICommandLineArgumentParser"/> that will be used.</summary>
+      internal ICommandLineArgumentParser ArgumentParser { get; }
+
+      public IArgumentReflector ArgumentReflector { get; }
+
+      /// <summary>Gets the service provider.</summary>
+      internal IServiceProvider ServiceProvider { get; }
 
       #endregion
 
       #region Public Methods and Operators
 
-      public string GetHelpForClass([NotNull] Type argumentType, ResourceManager resourceManager)
+      public string GetHelpForClass([NotNull] Type argumentType, ILocalizationService localizationService)
       {
          if (argumentType == null)
             throw new ArgumentNullException(nameof(argumentType));
@@ -263,7 +267,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          var helpText = argumentType.GetCustomAttribute<HelpTextAttribute>(true);
          if (helpText != null)
          {
-            if (resourceManager == null)
+            if (localizationService == null)
             {
                if (string.IsNullOrEmpty(helpText.Description))
                   return helpText.ResourceKey ?? "NoResourceKeyOrDescription";
@@ -271,7 +275,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
                return helpText.Description;
             }
 
-            GetLocalizedDescription(resourceManager, helpText.ResourceKey);
+            GetLocalizedDescription(localizationService, helpText.ResourceKey);
          }
 
          return null;
@@ -279,9 +283,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       /// <summary>Gets the help information for the class of the given type.</summary>
       /// <param name="argumentType">The argument class for creating the help for</param>
-      /// <param name="resourceManager">The resource manager that will be used for localization</param>
+      /// <param name="localizationService">The resource manager that will be used for localization</param>
       /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ArgumentHelp"/></returns>
-      public IEnumerable<ArgumentHelp> GetHelpForProperties([NotNull] Type argumentType, ResourceManager resourceManager)
+      public IEnumerable<ArgumentHelp> GetHelpForProperties([NotNull] Type argumentType, ILocalizationService localizationService)
       {
          if (argumentType == null)
             throw new ArgumentNullException(nameof(argumentType));
@@ -300,7 +304,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
                   PropertyName = GetArgumentName(info, argumentAttribute, optionAttribute, commandAttribute),
                   Aliases = GetAliases(argumentAttribute, optionAttribute, commandAttribute),
                   UnlocalizedDescription = helpText.Description,
-                  LocalizedDescription = GetLocalizedDescription(resourceManager, helpText.ResourceKey)
+                  LocalizedDescription = GetLocalizedDescription(localizationService, helpText.ResourceKey)
                };
             }
          }
@@ -310,12 +314,12 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       #region Methods
 
-      internal static string GetLocalizedDescription(ResourceManager resourceManager, string resourceKey)
+      internal static string GetLocalizedDescription(ILocalizationService resourceManager, string resourceKey)
       {
          if (resourceManager == null || resourceKey == null)
             return null;
 
-         return resourceManager.GetString(resourceKey);
+         return resourceManager.GetLocalizedSting(resourceKey);
       }
 
       private static string[] GetAliases(ArgumentAttribute argumentAttribute, OptionAttribute optionAttribute, CommandAttribute commandAttribute)
@@ -332,7 +336,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          return new string[0];
       }
 
-      private static string GetArgumentName(PropertyInfo info, ArgumentAttribute argumentAttribute, OptionAttribute optionAttribute, CommandAttribute commandAttribute)
+      private static string GetArgumentName(PropertyInfo info, ArgumentAttribute argumentAttribute, OptionAttribute optionAttribute,
+         CommandAttribute commandAttribute)
       {
          string primaryName = info.Name;
          if (argumentAttribute?.Name != null)
@@ -378,26 +383,29 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       private IArgumentMapper<T> CreateMapper<T>()
          where T : class
       {
-         var info = ArgumentClassInfo.FromType<T>();
-         return info.HasCommands ? (IArgumentMapper<T>)ObjectFactory.CreateInstance<CommandMapper<T>>() : ObjectFactory.CreateInstance<ArgumentMapper<T>>();
+         var info = ArgumentReflector.GetTypeInfo<T>();
+         return info.HasCommands
+            ? ActivatorUtilities.GetServiceOrCreateInstance<CommandMapper<T>>(ServiceProvider)
+            : ActivatorUtilities.GetServiceOrCreateInstance<ArgumentMapper<T>>(ServiceProvider);
       }
 
-      private IHelpProvider GetHelpTextProvider(Type argumentType, ResourceManager resourceManager)
+      private IHelpProvider GetHelpTextProvider(Type argumentType, ILocalizationService resourceManager)
       {
          var providerType = argumentType.GetCustomAttribute<HelpTextProviderAttribute>()?.Type;
-         if (providerType != null && ObjectFactory.CreateInstance(providerType) is IHelpProvider provider)
+         if (providerType != null && ServiceProvider.GetService(providerType) is IHelpProvider provider)
             return provider;
 
-         return new TypeHelpProvider(resourceManager, ObjectFactory);
+         return new TypeHelpProvider(ServiceProvider, resourceManager);
       }
 
-      private IHelpProvider GetHelpTextProvider(PropertyInfo propertyInfo, ResourceManager resourceManager)
+      private IHelpProvider GetHelpTextProvider(PropertyInfo propertyInfo, ILocalizationService localizationService)
       {
          var propertyDeclaringType = propertyInfo.DeclaringType?.GetCustomAttribute<HelpTextProviderAttribute>()?.Type;
-         if (propertyDeclaringType != null && ObjectFactory.CreateInstance(propertyDeclaringType) is IHelpProvider provider)
+         if (propertyDeclaringType != null
+             && ServiceProviderServiceExtensions.GetRequiredService(ServiceProvider, propertyDeclaringType) is IHelpProvider provider)
             return provider;
 
-         return new PropertyHelpProvider(resourceManager);
+         return new PropertyHelpProvider(localizationService);
       }
 
       private void OnMappedCommandLineArgument(object sender, MapperEventArgs e)

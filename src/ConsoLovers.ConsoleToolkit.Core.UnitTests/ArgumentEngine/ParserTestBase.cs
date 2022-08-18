@@ -26,11 +26,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
          return GetTarget().ParseArguments(parameters, false);
       }
 
-      protected CommandLineArgumentList Parse(string[] parameters, bool caseSensitive)
-      {
-         return GetTarget().ParseArguments(parameters, caseSensitive);
-      }
-
       #endregion
    }
 }
