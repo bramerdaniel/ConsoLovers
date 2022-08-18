@@ -1,4 +1,4 @@
-name: ConsoLovers.ConsoleToolkit.Core Workflow
+name: ConsoLovers.Toolkit.Core
 
 on:
   push:
