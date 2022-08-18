@@ -37,7 +37,7 @@
 		<RepositoryUrl>https://github.com/bramerdaniel/ConsoLovers</RepositoryUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<SignAssembly>True</SignAssembly>
-		<AssemblyOriginatorKeyFile>..\..\certificate\ConsoleToolkit.Core.snk</AssemblyOriginatorKeyFile>
+		<AssemblyOriginatorKeyFile>..\..\..\certificate\ConsoleToolkit.Core.snk</AssemblyOriginatorKeyFile>
 	</PropertyGroup>
 
 

@@ -5,7 +5,7 @@
 		<Authors>Daniel Bramer</Authors>
 		<OutputPath>$(SolutionDir)$(Configuration)</OutputPath>
 		<SignAssembly>True</SignAssembly>
-		<AssemblyOriginatorKeyFile>..\..\certificate\ConsoleToolkit.Core.snk</AssemblyOriginatorKeyFile>
+		<AssemblyOriginatorKeyFile>..\..\..\certificate\ConsoleToolkit.Core.snk</AssemblyOriginatorKeyFile>
 		<LangVersion>latest</LangVersion>
 	</PropertyGroup>
 
