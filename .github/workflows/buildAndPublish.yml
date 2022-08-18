@@ -1,14 +1,14 @@
-name: build workflow
+name: ConsoLovers.ConsoleToolkit.Core Workflow
 
 on:
   push:
     paths-ignore:
     - 'README.md'
-    - 'ConsoLovers.ConsoleToolkit/**'
+    - 'src/Toolkit/**'
   pull_request:
     paths-ignore:
     - 'README.md'    
-    - 'ConsoLovers.ConsoleToolkit/**'
+    - 'src/Toolkit/**'
   workflow_dispatch:
 
 env:
