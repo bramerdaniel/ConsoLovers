@@ -7,6 +7,8 @@
 namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
 {
    using System;
+   using System.Threading;
+   using System.Threading.Tasks;
 
    using JetBrains.Annotations;
 
@@ -30,10 +32,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
       #endregion
 
       #region IBootstrapper Members
-
-      public IApplication Run(string[] args) => CreateApplicationManager().Run(args);
-
-      public IApplication Run() => CreateApplicationManager().Run(Environment.CommandLine);
 
       public IBootstrapper SetWindowSize(int width, int height)
       {
@@ -61,6 +59,16 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
       {
          SetServiceProviderFactory(factory);
          return this;
+      }
+
+      public Task<IApplication> RunAsync(string[] args, CancellationToken cancellationToken)
+      {
+         return CreateApplicationManager().RunAsync(args, cancellationToken);
+      }
+
+      public Task<IApplication> RunAsync(string args, CancellationToken cancellationToken)
+      {
+         return CreateApplicationManager().RunAsync(args, cancellationToken);
       }
 
       #endregion

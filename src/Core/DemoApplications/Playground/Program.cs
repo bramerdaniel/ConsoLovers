@@ -11,32 +11,26 @@ using Microsoft.Extensions.DependencyInjection;
 
 public static class Program
 {
-   public static async Task Main()
+   public static void Main()
    {
       ConsoleApplicationManager
-         .For<AppWithoutArgs>()
+         .For(typeof(AppWithoutArgs))
          .Run();
 
       Environment.Exit(0);
 
-      var app = await ConsoleApplicationManager
+      var app = ConsoleApplicationManager
          .For<PlaygroundApp>()
          .UseServiceProviderFactory(new DefaultServiceProviderFactory())
-         // .ShowHelpWithoutArguments()
-         .RunAsync(CancellationToken.None);
+         .Run();
 
       Console.ReadLine();
+
    }
 }
 
 public class AppWithoutArgs : IApplication
 {
-   public void Run()
-   {
-      Console.WriteLine("Done");
-      Console.ReadLine();
-   }
-
    public Task RunAsync(CancellationToken cancellationToken)
    {
       Console.WriteLine("Done Async");

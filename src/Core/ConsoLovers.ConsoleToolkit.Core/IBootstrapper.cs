@@ -16,14 +16,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
    public interface IBootstrapper
    {
       #region Public Methods and Operators
-
-      /// <summary>Runs the configured application with the given commandline arguments.</summary>
-      /// <param name="args">The command line arguments.</param>
-      /// <returns>The created <see cref="IApplication"/></returns>
-      IApplication Run(string[] args);
       
-      IApplication Run();
-
       /// <summary>
       ///    Specifies the window size of the console window. that should be used. NOTE: this overwrites the values specified by the
       ///    <see cref="ConsoleWindowWidthAttribute"/> and <see cref="ConsoleWindowHeightAttribute"/>
@@ -45,6 +38,19 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       IBootstrapper UseServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory);
 
+      
+      /// <summary>Runs the configured application with the commandline arguments from <see cref="Environment.CommandLine"/>.</summary>
+      /// <param name="args">The command line arguments.</param>
+      /// <param name="cancellationToken">The cancellation token.</param>
+      /// <returns>The created <see cref="IApplication"/></returns>
+      Task<IApplication> RunAsync(string[] args, CancellationToken cancellationToken);
+
+      /// <summary>Runs the configured application with the commandline arguments from <see cref="Environment.CommandLine"/>.</summary>
+      /// <param name="args">The command line arguments.</param>
+      /// <param name="cancellationToken">The cancellation token.</param>
+      /// <returns>The created <see cref="IApplication"/></returns>
+      Task<IApplication> RunAsync(string args, CancellationToken cancellationToken);
+
       #endregion
    }
 
@@ -56,20 +62,6 @@ namespace ConsoLovers.ConsoleToolkit.Core
       #region Public Methods and Operators
 
       IBootstrapper<T> ConfigureServices(Action<IServiceCollection> serviceSetup);
-
-      /// <summary>Runs the configured application with the given commandline arguments.</summary>
-      /// <param name="args">The command line arguments.</param>
-      /// <returns>The created <see cref="IApplication"/> of type <see cref="T"/></returns>
-      T Run(string[] args);
-
-      /// <summary>Runs the configured application with the given commandline arguments.</summary>
-      /// <param name="args">The command line arguments as string. Use <see cref="Environment.CommandLine"/></param>
-      /// <returns>The created <see cref="IApplication"/> of type <see cref="T"/></returns>
-      T Run(string args);
-
-      /// <summary>Runs the configured application with the commandline arguments from <see cref="Environment.CommandLine"/>.</summary>
-      /// <returns>The created <see cref="IApplication"/> of type <see cref="T"/></returns>
-      T Run();
 
       /// <summary>Runs the configured application with the given commandline arguments.</summary>
       /// <param name="args">The command line arguments.</param>

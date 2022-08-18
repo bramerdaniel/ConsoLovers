@@ -58,12 +58,6 @@
             Initializer.Setup(x => x.CreateArguments()).Returns(TestParameters);
          }
 
-
-         public void Run()
-         {
-            Mock.Object.Run();
-         }
-
          public Task RunAsync(CancellationToken cancellationToken)
          {
             return Mock.Object.RunAsync(cancellationToken);
@@ -95,11 +89,6 @@
       private class Runable : IApplication
       {
          public Mock<IApplication> Mock { get; } = new Mock<IApplication>();
-
-         public void Run()
-         {
-            Mock.Object.Run();
-         }
 
          public Task RunAsync(CancellationToken cancellationToken)
          {

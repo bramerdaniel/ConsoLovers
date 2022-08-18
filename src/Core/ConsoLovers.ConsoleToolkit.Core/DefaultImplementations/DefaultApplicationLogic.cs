@@ -25,8 +25,16 @@ public class DefaultApplicationLogic : IApplicationLogic
 
    public Task ExecuteAsync<T>(T arguments, CancellationToken cancellationToken)
    {
-      console.WriteLine("What now ?", ConsoleColor.Cyan);
-      console.WriteLine("There is not logic provided for this application");
+      console.WriteLine();
+      console.WriteLine("And now what ?", ConsoleColor.Cyan);
+      console.WriteLine();
+      console.WriteLine("There is not logic provided for this application when it is called without parameters !");
+      console.WriteLine();
+      console.WriteLine("If you are a developer of this app you should provide a logic");
+      console.WriteLine("if none of the commands are executed");
+      console.WriteLine();
+      console.WriteLine("An easy way is to call the builder method ShowHelpWithoutArguments()");
+      console.WriteLine();
       return Task.CompletedTask;
    }
 }

@@ -73,25 +73,6 @@ namespace ConsoLovers.ConsoleToolkit.Core
          return new DefaultBootstrapper(applicationType);
       }
 
-      /// <summary>Runs the specified application type.</summary>
-      /// <param name="args">The arguments.</param>
-      /// <returns>The executed application</returns>
-      public IApplication Run(string args)
-      {
-         return RunAsync(args, CancellationToken.None)
-            .GetAwaiter()
-            .GetResult();
-      }
-
-      /// <summary>Runs the specified application type.</summary>
-      /// <param name="args">The arguments.</param>
-      /// <returns>The executed application</returns>
-      public IApplication Run(string[] args)
-      {
-         return RunAsync(args, CancellationToken.None)
-            .GetAwaiter()
-            .GetResult();
-      }
 
       /// <summary>Creates and runs an application of the given type with the given arguments.</summary>
       /// <param name="args">The arguments.</param>
