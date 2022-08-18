@@ -11,7 +11,7 @@ using System.Resources;
 using System.Threading;
 using System.Threading.Tasks;
 
-using ConsoLovers.ConsoleToolkit.Core.BootStrappers;
+using ConsoLovers.ConsoleToolkit.Core.Builders;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 using ConsoLovers.ConsoleToolkit.Core.DefaultImplementations;
 
@@ -23,114 +23,114 @@ public static class BuilderExtensions
 {
    #region Public Methods and Operators
 
-   public static IBootstrapper<T> AddResourceManager<T>(this IBootstrapper<T> bootstrapper, ResourceManager resourceManager)
+   public static IApplicationBuilder<T> AddResourceManager<T>(this IApplicationBuilder<T> applicationBuilder, ResourceManager resourceManager)
       where T : class, IApplication
    {
-      var configurationHandler = bootstrapper as IServiceConfigurationHandler;
+      var configurationHandler = applicationBuilder as IServiceConfigurationHandler;
       if (configurationHandler == null)
-         throw new InvalidOperationException("The bootstrapper does not support service configuration");
+         throw new InvalidOperationException("The applicationBuilder does not support service configuration");
 
       configurationHandler.ConfigureRequiredService<DefaultLocalizationService>(service => service.AddResourceManager(resourceManager));
-      return bootstrapper;
+      return applicationBuilder;
    }
 
-   public static T Run<T>([NotNull] this IBootstrapper<T> bootstrapper)
+   public static T Run<T>([NotNull] this IApplicationBuilder<T> applicationBuilder)
       where T : class, IApplication
    {
-      if (bootstrapper == null)
-         throw new ArgumentNullException(nameof(bootstrapper));
+      if (applicationBuilder == null)
+         throw new ArgumentNullException(nameof(applicationBuilder));
 
-      return bootstrapper.RunAsync(CancellationToken.None)
+      return applicationBuilder.RunAsync(CancellationToken.None)
          .GetAwaiter()
          .GetResult();
    }
 
-   public static T Run<T>([NotNull] this IBootstrapper<T> bootstrapper, string[] args)
+   public static T Run<T>([NotNull] this IApplicationBuilder<T> applicationBuilder, string[] args)
       where T : class, IApplication
    {
-      if (bootstrapper == null)
-         throw new ArgumentNullException(nameof(bootstrapper));
+      if (applicationBuilder == null)
+         throw new ArgumentNullException(nameof(applicationBuilder));
 
-      return bootstrapper.RunAsync(args, CancellationToken.None)
+      return applicationBuilder.RunAsync(args, CancellationToken.None)
          .GetAwaiter()
          .GetResult();
    }
 
-   public static IApplication Run([NotNull] this IBootstrapper bootstrapper)
+   public static IApplication Run([NotNull] this IApplicationBuilder applicationBuilder)
    {
-      if (bootstrapper == null)
-         throw new ArgumentNullException(nameof(bootstrapper));
+      if (applicationBuilder == null)
+         throw new ArgumentNullException(nameof(applicationBuilder));
 
-      return bootstrapper.RunAsync(CancellationToken.None)
+      return applicationBuilder.RunAsync(CancellationToken.None)
          .GetAwaiter()
          .GetResult();
    }
 
-   public static IApplication Run([NotNull] this IBootstrapper bootstrapper, string args)
+   public static IApplication Run([NotNull] this IApplicationBuilder applicationBuilder, string args)
    {
-      if (bootstrapper == null)
-         throw new ArgumentNullException(nameof(bootstrapper));
+      if (applicationBuilder == null)
+         throw new ArgumentNullException(nameof(applicationBuilder));
 
-      return bootstrapper.RunAsync(args, CancellationToken.None)
+      return applicationBuilder.RunAsync(args, CancellationToken.None)
          .GetAwaiter()
          .GetResult();
    }
 
-   public static IApplication Run([NotNull] this IBootstrapper bootstrapper, string[] args)
+   public static IApplication Run([NotNull] this IApplicationBuilder applicationBuilder, string[] args)
    {
-      if (bootstrapper == null)
-         throw new ArgumentNullException(nameof(bootstrapper));
+      if (applicationBuilder == null)
+         throw new ArgumentNullException(nameof(applicationBuilder));
 
-      return bootstrapper.RunAsync(args, CancellationToken.None)
+      return applicationBuilder.RunAsync(args, CancellationToken.None)
          .GetAwaiter()
          .GetResult();
    }
 
-   public static Task<IApplication> RunAsync([NotNull] this IBootstrapper bootstrapper)
+   public static Task<IApplication> RunAsync([NotNull] this IApplicationBuilder applicationBuilder)
    {
-      if (bootstrapper == null)
-         throw new ArgumentNullException(nameof(bootstrapper));
+      if (applicationBuilder == null)
+         throw new ArgumentNullException(nameof(applicationBuilder));
 
-      return bootstrapper.RunAsync(Environment.CommandLine, CancellationToken.None);
+      return applicationBuilder.RunAsync(Environment.CommandLine, CancellationToken.None);
    }
 
-   public static Task<IApplication> RunAsync([NotNull] this IBootstrapper bootstrapper, CancellationToken cancellationToken)
+   public static Task<IApplication> RunAsync([NotNull] this IApplicationBuilder applicationBuilder, CancellationToken cancellationToken)
    {
-      if (bootstrapper == null)
-         throw new ArgumentNullException(nameof(bootstrapper));
+      if (applicationBuilder == null)
+         throw new ArgumentNullException(nameof(applicationBuilder));
 
-      return bootstrapper.RunAsync(Environment.CommandLine, cancellationToken);
+      return applicationBuilder.RunAsync(Environment.CommandLine, cancellationToken);
    }
 
-   public static IBootstrapper<T> ShowHelpWithoutArguments<T>([NotNull] this IBootstrapper<T> bootstrapper)
+   public static IApplicationBuilder<T> ShowHelpWithoutArguments<T>([NotNull] this IApplicationBuilder<T> applicationBuilder)
       where T : class, IApplication
    {
-      if (bootstrapper == null)
-         throw new ArgumentNullException(nameof(bootstrapper));
+      if (applicationBuilder == null)
+         throw new ArgumentNullException(nameof(applicationBuilder));
 
-      return bootstrapper.ConfigureServices(x => x.AddTransient<IApplicationLogic, ShowHelpLogic>());
+      return applicationBuilder.ConfigureServices(x => x.AddTransient<IApplicationLogic, ShowHelpLogic>());
    }
 
-   public static IBootstrapper<T> UseApplicationLogic<T>([NotNull] this IBootstrapper<T> bootstrapper, [NotNull] IApplicationLogic applicationLogic)
+   public static IApplicationBuilder<T> UseApplicationLogic<T>([NotNull] this IApplicationBuilder<T> applicationBuilder, [NotNull] IApplicationLogic applicationLogic)
       where T : class, IApplication
    {
-      if (bootstrapper == null)
-         throw new ArgumentNullException(nameof(bootstrapper));
+      if (applicationBuilder == null)
+         throw new ArgumentNullException(nameof(applicationBuilder));
       if (applicationLogic == null)
          throw new ArgumentNullException(nameof(applicationLogic));
 
-      return bootstrapper.ConfigureServices(x => x.AddSingleton(applicationLogic));
+      return applicationBuilder.ConfigureServices(x => x.AddSingleton(applicationLogic));
    }
 
-   public static IBootstrapper<T> UseApplicationLogic<T, TLogic>([NotNull] this IBootstrapper<T> bootstrapper)
+   public static IApplicationBuilder<T> UseApplicationLogic<T, TLogic>([NotNull] this IApplicationBuilder<T> applicationBuilder)
       where T : class, IApplication
       where TLogic : class, IApplicationLogic
 
    {
-      if (bootstrapper == null)
-         throw new ArgumentNullException(nameof(bootstrapper));
+      if (applicationBuilder == null)
+         throw new ArgumentNullException(nameof(applicationBuilder));
 
-      return bootstrapper.ConfigureServices(x => x.AddTransient<IApplicationLogic, TLogic>());
+      return applicationBuilder.ConfigureServices(x => x.AddTransient<IApplicationLogic, TLogic>());
    }
 
    #endregion

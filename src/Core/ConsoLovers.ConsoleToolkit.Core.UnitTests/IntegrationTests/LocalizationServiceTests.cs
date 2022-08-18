@@ -34,12 +34,12 @@ public class LocalizationServiceTests
    {
       var customService = new Mock<ILocalizationService>().Object;
 
-      var bootstrapper = ConsoleApplicationManager
+      var builder = ConsoleApplicationManager
          .For<Application>()
          .ConfigureServices(s => s.AddSingleton(customService))
          .AddResourceManager(FirstResource.ResourceManager);
 
-      bootstrapper.Invoking(x => x.CreateServiceProvider())
+      builder.Invoking(x => x.CreateServiceProvider())
          .Should().Throw<InvalidOperationException>();
    }
 

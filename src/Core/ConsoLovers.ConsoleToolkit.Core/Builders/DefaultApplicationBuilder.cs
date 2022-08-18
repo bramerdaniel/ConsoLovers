@@ -1,10 +1,10 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="DefaultBootstrapper.cs" company="ConsoLovers">
+// <copyright file="DefaultApplicationBuilder.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
+namespace ConsoLovers.ConsoleToolkit.Core.Builders
 {
    using System;
    using System.Threading;
@@ -14,39 +14,39 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
 
    using Microsoft.Extensions.DependencyInjection;
 
-   /// <summary>The default <see cref="IBootstrapper"/> for non generic applications</summary>
-   /// <seealso cref="IBootstrapper"/>
-   internal class DefaultBootstrapper : BootstrapperBase, IBootstrapper
+   /// <summary>The default <see cref="IApplicationBuilder"/> for non generic applications</summary>
+   /// <seealso cref="IApplicationBuilder"/>
+   internal class DefaultApplicationBuilder : ApplicationBuilderBase, IApplicationBuilder
    {
       
       #region Constructors and Destructors
 
-      /// <summary>Initializes a new instance of the <see cref="DefaultBootstrapper"/> class.</summary>
+      /// <summary>Initializes a new instance of the <see cref="DefaultApplicationBuilder"/> class.</summary>
       /// <param name="applicationType">Type of the application.</param>
       /// <exception cref="System.ArgumentNullException">applicationType</exception>
-      public DefaultBootstrapper([NotNull] Type applicationType)
+      public DefaultApplicationBuilder([NotNull] Type applicationType)
          : base(applicationType)
       {
       }
 
       #endregion
 
-      #region IBootstrapper Members
+      #region IApplicationBuilder Members
 
-      public IBootstrapper SetWindowSize(int width, int height)
+      public IApplicationBuilder SetWindowSize(int width, int height)
       {
          WindowWidth = width;
          WindowHeight = height;
          return this;
       }
 
-      public IBootstrapper SetWindowTitle(string windowTitle)
+      public IApplicationBuilder SetWindowTitle(string windowTitle)
       {
          WindowTitle = windowTitle;
          return this;
       }
 
-      public IBootstrapper ConfigureServices([NotNull] Action<IServiceCollection> serviceSetup)
+      public IApplicationBuilder ConfigureServices([NotNull] Action<IServiceCollection> serviceSetup)
       {
          if (serviceSetup == null)
             throw new ArgumentNullException(nameof(serviceSetup));
@@ -55,7 +55,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
          return this;
       }
 
-      public IBootstrapper UseServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory)
+      public IApplicationBuilder UseServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory)
       {
          SetServiceProviderFactory(factory);
          return this;
