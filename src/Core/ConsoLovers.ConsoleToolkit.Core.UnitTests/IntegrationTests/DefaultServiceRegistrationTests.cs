@@ -108,8 +108,7 @@ public class DefaultServiceRegistrationTests
    private static void EnsureServiceAndImplementationAvailable<TService, TImplementation>()
       where TImplementation : TService
    {
-      var serviceProvider = ConsoleApplicationManager
-         .For<Application>()
+      var serviceProvider = ConsoleApplication.WithArguments<ApplicationArgs>()
          .CreateServiceProvider();
 
       serviceProvider.GetService<TService>().Should().NotBeNull($"{typeof(TService).Name} is a required service");

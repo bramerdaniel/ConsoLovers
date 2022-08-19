@@ -8,6 +8,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests;
 
 using System;
 using ConsoLovers.ConsoleToolkit.Core.Bootstrappers;
+using ConsoLovers.ConsoleToolkit.Core.Builders;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 public static class HelperExtensions
@@ -21,15 +23,15 @@ public static class HelperExtensions
          return applicationManager.CreateApplication();
       }
 
-      throw new AssertFailedException($"The bootstrapper was not a {nameof(GenericBootstrapper<T>)}");
+      throw new AssertFailedException($"The builder was not a {nameof(GenericBootstrapper<T>)}");
    }
 
-   internal static IServiceProvider CreateServiceProvider<T>(this IBootstrapper<T> bootstrapper)
-      where T : class, IApplication
+   internal static IServiceProvider CreateServiceProvider<T>(this IApplicationBuilder<T> builder)
+      where T : class
    {
-      if (bootstrapper is GenericBootstrapper<T> genericBuilder)
-         return genericBuilder.CreateServiceProvider();
+      if (builder is ApplicationBuilder<T> applicationBuilder)
+         return applicationBuilder.CreateServiceProvider();
 
-      throw new AssertFailedException($"The bootstrapper was not a {nameof(GenericBootstrapper<T>)}");
+      throw new AssertFailedException($"The builder was not a {nameof(ApplicationBuilder<T>)}");
    }
 }
