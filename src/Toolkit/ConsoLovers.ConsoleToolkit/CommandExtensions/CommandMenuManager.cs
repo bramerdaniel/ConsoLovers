@@ -23,6 +23,8 @@ namespace ConsoLovers.ConsoleToolkit.CommandExtensions
 
       private readonly IArgumentReflector reflector;
 
+      private IConsoleMenuOptions options;
+
       public CommandMenuManager([NotNull] IServiceProvider serviceProvider, [NotNull] IArgumentReflector reflector)
       {
          this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
@@ -32,10 +34,17 @@ namespace ConsoLovers.ConsoleToolkit.CommandExtensions
       {
          var menu = new ConsoleMenu
          {
-            Header = "From commands",
-            CircularSelection = true,
-            Selector = "» ",
-            SelectionStrech = SelectionStrech.UnifiedLength
+            Header = options.Header,
+            Footer = options.Footer,
+            SelectionMode = options.SelectionMode,
+            CircularSelection = options.CircularSelection,
+            Selector = options.Selector,
+            ClearOnExecution = options.ClearOnExecution,
+            ExecuteOnIndexSelection= options.ExecuteOnIndexSelection,
+            Expander = options.Expander,
+            IndentSize = options.IndentSize,
+            IndexMenuItems = options.IndexMenuItems,
+            CloseKeys = options.CloseKeys
          };
 
          var classInfo = reflector.GetTypeInfo<T>();
@@ -43,6 +52,11 @@ namespace ConsoLovers.ConsoleToolkit.CommandExtensions
             menu.Add(CreateMenuItem(info));
 
          menu.Show();
+      }
+
+      public void UseOptions(IConsoleMenuOptions options)
+      {
+         this.options = options;
       }
 
       public Task ShowAsync<T>()
@@ -54,7 +68,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandExtensions
       private ConsoleMenuItem CreateMenuItem(CommandInfo info)
       {
          if (info.ArgumentType == null)
-            return new ConsoleMenuItem(info.ParameterName, x => Execute(info));
+            return new ConsoleMenuItem(info.ParameterName, x => Execute(x, info));
 
          var argumentInfo = reflector.GetTypeInfo(info.ArgumentType);
          if (argumentInfo.HasCommands)
@@ -70,17 +84,19 @@ namespace ConsoLovers.ConsoleToolkit.CommandExtensions
          }
          else
          {
-            return new ConsoleMenuItem(info.ParameterName, x => Execute(info));
+            return new ConsoleMenuItem(info.ParameterName, x => Execute(x, info));
          }
 
 
       }
 
-      private void Execute(CommandInfo commandInfo)
+      private void Execute(ConsoleMenuItem menuItem, CommandInfo commandInfo)
       {
          var command = serviceProvider.GetService(commandInfo.ParameterType);
          if (command is IMenuCommand menuCommand)
+         {
             menuCommand.ExecuteFromMenu();
+         }
       }
    }
 }

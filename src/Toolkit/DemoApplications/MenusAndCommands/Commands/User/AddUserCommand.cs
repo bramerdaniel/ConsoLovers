@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AddUserCommand.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2022
+// <copyright file="AddUserCommand.cs" company="KUKA Deutschland GmbH">
+//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -14,14 +14,22 @@ using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
 public class AddUserCommand : ICommand<AddUserCommand.AddUserArgs>, IMenuCommand
 {
+   #region Constants and Fields
+
    private readonly IConsole console;
 
-   #region ICommand<AddUserArgs> Members
+   #endregion
+
+   #region Constructors and Destructors
 
    public AddUserCommand(IConsole console)
    {
       this.console = console ?? throw new ArgumentNullException(nameof(console));
    }
+
+   #endregion
+
+   #region ICommand<AddUserArgs> Members
 
    public AddUserArgs Arguments { get; set; }
 
@@ -31,17 +39,23 @@ public class AddUserCommand : ICommand<AddUserCommand.AddUserArgs>, IMenuCommand
 
    #endregion
 
-   public class AddUserArgs
-   {
-      #region Public Properties
-
-      [Argument("name")] public string Name { get; set; }
-
-      #endregion
-   }
+   #region IMenuCommand Members
 
    public void ExecuteFromMenu()
    {
       console.WriteLine("User added");
+      console.ReadLine();
+   }
+
+   #endregion
+
+   public class AddUserArgs : SharedArgs
+   {
+      #region Public Properties
+
+      [Argument("name")]
+      public string Name { get; set; }
+
+      #endregion
    }
 }

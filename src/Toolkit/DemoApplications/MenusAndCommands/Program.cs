@@ -6,6 +6,7 @@
 
 namespace MenusAndCommands
 {
+   using System;
    using System.Threading;
    using System.Threading.Tasks;
 
@@ -19,7 +20,11 @@ namespace MenusAndCommands
       private static async Task Main()
       {
          var application = await ConsoleApplicationManager.For<Application>()
-            .UseMenuWithoutArguments()
+            .UseMenuWithoutArguments(menu =>
+            {
+               menu.Header = "Hello Menu";
+               menu.CloseKeys = new[] { ConsoleKey.Escape };
+            })
             .RunAsync(CancellationToken.None);
       }
 

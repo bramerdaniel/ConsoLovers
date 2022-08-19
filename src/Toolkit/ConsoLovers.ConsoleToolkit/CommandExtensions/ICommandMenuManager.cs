@@ -6,8 +6,13 @@
 
 namespace ConsoLovers.ConsoleToolkit.CommandExtensions
 {
+   using ConsoLovers.ConsoleToolkit.Menu;
+
+   /// <summary>Service that can show a consolovers menu from the defined command structure </summary>
    public interface ICommandMenuManager
    {
       void Show<T>();
+
+      void UseOptions(IConsoleMenuOptions options);
    }
 }

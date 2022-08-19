@@ -44,11 +44,12 @@ public class AddRoleCommand : ICommand<AddRoleCommand.AddRoleArgs>, IMenuCommand
    public void ExecuteFromMenu()
    {
       console.WriteLine("Role added");
+      console.ReadLine();
    }
 
    #endregion
 
-   public class AddRoleArgs
+   public class AddRoleArgs : SharedArgs
    {
       #region Public Properties
 

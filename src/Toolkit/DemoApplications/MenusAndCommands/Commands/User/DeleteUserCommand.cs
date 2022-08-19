@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="DeleteUserCommand.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2022
+// <copyright file="DeleteUserCommand.cs" company="KUKA Deutschland GmbH">
+//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -44,11 +44,12 @@ public class DeleteUserCommand : ICommand<DeleteUserCommand.DeleteUserArgs>, IMe
    public void ExecuteFromMenu()
    {
       console.WriteLine("User deleted");
+      console.ReadLine();
    }
 
    #endregion
 
-   public class DeleteUserArgs
+   public class DeleteUserArgs : SharedArgs
    {
       #region Public Properties
 
