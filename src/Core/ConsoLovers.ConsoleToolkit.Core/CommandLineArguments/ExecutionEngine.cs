@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="CommandExecutor.cs" company="ConsoLovers">
+// <copyright file="ExecutionEngine.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -13,18 +13,22 @@ using System.Threading.Tasks;
 
 using JetBrains.Annotations;
 
-public class CommandExecutor : ICommandExecutor
+public class ExecutionEngine : IExecutionEngine
 {
+   [NotNull]
+   private readonly IServiceProvider serviceProvider;
+
    #region Constructors and Destructors
 
-   public CommandExecutor([NotNull] IArgumentReflector argumentReflector)
+   public ExecutionEngine([NotNull] IArgumentReflector argumentReflector, [NotNull] IServiceProvider serviceProvider)
    {
+      this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
       ArgumentReflector = argumentReflector ?? throw new ArgumentNullException(nameof(argumentReflector));
    }
 
    #endregion
 
-   #region ICommandExecutor Members
+   #region IExecutionEngine Members
 
    /// <summary>Executes the first mapped command of the <see cref="arguments"/>.</summary>
    /// <typeparam name="T">The type of the arguments to execute</typeparam>
@@ -63,6 +67,12 @@ public class CommandExecutor : ICommandExecutor
          default:
             throw new InvalidOperationException("Command type not supported");
       }
+   }
+
+   public async Task ExecuteAsync<T>(T arguments, CancellationToken cancellationToken)
+   {
+      var applicationLogic = serviceProvider.GetRequiredService<IApplicationLogic>();
+      await applicationLogic.ExecuteAsync(arguments, cancellationToken);
    }
 
    #endregion

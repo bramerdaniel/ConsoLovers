@@ -6,12 +6,14 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
 {
-   using ConsoLovers.ConsoleToolkit.Core.BootStrappers;
+   using ConsoLovers.ConsoleToolkit.Core.Builders;
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing;
    using ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups;
 
    using Microsoft.Extensions.DependencyInjection;
+
+   using Moq;
 
    public class CommandLineEngineSetup : SetupBase<CommandLineEngine>
    {
@@ -23,7 +25,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
       {
          var serviceProvider = new DefaultServiceProvider(serviceCollection);
          var argumentReflector = new ArgumentReflector();
-         var commandExecutor = new CommandExecutor(argumentReflector);
+         var commandExecutor = new ExecutionEngine(argumentReflector, serviceProvider);
          return new CommandLineEngine(serviceProvider, commandExecutor, new CommandLineArgumentParser(), argumentReflector);
       }
 

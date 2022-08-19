@@ -14,7 +14,7 @@ using System.Reflection;
 
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing;
-using ConsoLovers.ConsoleToolkit.Core.Localization;
+using ConsoLovers.ConsoleToolkit.Core.DefaultImplementations;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -46,7 +46,8 @@ public static class ReflectionExtensions
 
       EnsureServiceAndImplementation<ICommandLineArgumentParser, CommandLineArgumentParser>(serviceCollection);
       EnsureServiceAndImplementation<ICommandLineEngine, CommandLineEngine>(serviceCollection);
-      EnsureServiceAndImplementation<ICommandExecutor, CommandExecutor>(serviceCollection);
+      EnsureServiceAndImplementation<IExecutionEngine, ExecutionEngine>(serviceCollection);
+      EnsureServiceAndImplementation<IApplicationLogic, DefaultApplicationLogic>(serviceCollection);
       EnsureServiceAndImplementation<ILocalizationService, DefaultLocalizationService>(serviceCollection);
       EnsureServiceAndImplementation<IConsole, ConsoleProxy>(serviceCollection);
 
@@ -91,7 +92,7 @@ public static class ReflectionExtensions
    /// <summary>Adds the application type and the required commands and argument classes.</summary>
    /// <typeparam name="TApplication">The type of the application.</typeparam>
    /// <param name="serviceCollection">The service collection.</param>
-   /// <exception cref="System.ArgumentNullException">serviceCollection</exception>
+   /// <exception cref="System.ArgumentNullException">ServiceCollection</exception>
    internal static void AddApplicationTypes<TApplication>([JetBrains.Annotations.NotNull] this IServiceCollection serviceCollection)
    where TApplication : class
    {

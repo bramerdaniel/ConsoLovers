@@ -20,11 +20,11 @@ using JetBrains.Annotations;
 /// <seealso cref="ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.IAsyncCommand&lt;T&gt;"/>
 public class CommandGroup<T> : IAsyncCommand<T>
 {
-   private readonly ICommandExecutor commandExecutor;
+   private readonly IExecutionEngine executionEngine;
 
-   public CommandGroup([NotNull] ICommandExecutor commandExecutor)
+   public CommandGroup([NotNull] IExecutionEngine executionEngine)
    {
-      this.commandExecutor = commandExecutor ?? throw new ArgumentNullException(nameof(commandExecutor));
+      this.executionEngine = executionEngine ?? throw new ArgumentNullException(nameof(executionEngine));
    }
 
    #region IAsyncCommand<T> Members
@@ -37,7 +37,7 @@ public class CommandGroup<T> : IAsyncCommand<T>
    public virtual async Task ExecuteAsync(CancellationToken cancellationToken)
    {
       await BeforeChildExecutionAsync();
-      await commandExecutor.ExecuteCommandAsync(Arguments, cancellationToken);
+      await executionEngine.ExecuteCommandAsync(Arguments, cancellationToken);
       await AfterChildExecutionAsync();
    }
 

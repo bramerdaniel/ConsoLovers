@@ -44,7 +44,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests.
       public Mock<IApplicationVerification<T>> Application { get; }
 
       public Mock<ICommandVerification> Commands { get; }
-      
+
 
       #endregion
 
@@ -55,11 +55,12 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests.
          ConsoleApplicationManager.For<TestApplication<T>>()
             .ConfigureServices(services =>
             {
-               services
-                  .AddSingleton(Commands.Object)
-                  .AddSingleton(Application.Object);
+               services.AddSingleton(Commands.Object);
+               services.AddSingleton(Application.Object);
             })
-            .Run(args);
+            .RunAsync(args, CancellationToken.None)
+            .GetAwaiter()
+            .GetResult();
       }
 
       public void RunApplication(params string[] args)

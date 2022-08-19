@@ -1,10 +1,10 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="BootstrapperBase.cs" company="ConsoLovers">
+// <copyright file="ApplicationBuilderBase.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
+namespace ConsoLovers.ConsoleToolkit.Core.Builders
 {
    using System;
    using System.Collections.Generic;
@@ -13,20 +13,20 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
 
    using Microsoft.Extensions.DependencyInjection;
 
-   internal class BootstrapperBase : IServiceConfigurationHandler
+   internal class ApplicationBuilderBase : IServiceConfigurationHandler
    {
       /// <summary>Gets the type of the application.</summary>
       protected Type ApplicationType { get; }
 
       #region Constants and Fields
 
-      protected readonly IServiceCollection serviceCollection = new ServiceCollection();
+      protected IServiceCollection ServiceCollection { get; } = new ServiceCollection();
 
-      protected Func<IServiceCollection, IServiceProvider> createServiceProvider;
+      private Func<IServiceCollection, IServiceProvider> createServiceProvider;
 
       private readonly List<Action<IServiceProvider>> serviceConfigurationActions = new();
 
-      protected BootstrapperBase([NotNull] Type applicationType)
+      protected ApplicationBuilderBase([NotNull] Type applicationType)
       {
          ApplicationType = applicationType ?? throw new ArgumentNullException(nameof(applicationType));
       }
@@ -94,10 +94,10 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
          EnsureRequiredServices();
 
          if (createServiceProvider != null)
-            return createServiceProvider(serviceCollection);
+            return createServiceProvider(ServiceCollection);
 
          var factory = new BuildInServiceProviderFactory();
-         var collection = factory.CreateBuilder(serviceCollection);
+         var collection = factory.CreateBuilder(ServiceCollection);
          var serviceProvider = factory.CreateServiceProvider(collection);
 
          foreach (var configurationAction in serviceConfigurationActions)
@@ -108,8 +108,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers
 
       protected void EnsureRequiredServices()
       {
-         serviceCollection.AddRequiredServices();
-         serviceCollection.AddApplicationTypes(ApplicationType);
+         ServiceCollection.AddRequiredServices();
+         ServiceCollection.AddApplicationTypes(ApplicationType);
       }
 
       protected void SetServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory)

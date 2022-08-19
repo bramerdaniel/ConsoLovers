@@ -24,7 +24,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       event EventHandler<CommandLineArgumentEventArgs> UnhandledCommandLineArgument;
 
       /// <summary>Gets the command executor service.</summary>
-      ICommandExecutor CommandExecutor { get; }
+      IExecutionEngine ExecutionEngine { get; }
 
       #endregion
 
@@ -109,18 +109,18 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       /// <summary>Prints the help to the <see cref="Console"/>.</summary>
       /// <typeparam name="T">Type of the argument class to print the help for </typeparam>
-      /// <param name="resourceManager">The <see cref="ILocalizationService"/> that will be used for localization.</param>
-      void PrintHelp<T>(ILocalizationService resourceManager);
+      /// <param name="localizationService">The <see cref="ILocalizationService"/> that will be used for localization.</param>
+      void PrintHelp<T>(ILocalizationService localizationService);
 
       /// <summary>Prints the help to the <see cref="Console"/>.</summary>
       /// <param name="argumentType">Type of the argument class to print the help for</param>
-      /// <param name="resourceManager">The <see cref="ILocalizationService"/> that will be used for localization.</param>
-      void PrintHelp(Type argumentType, ILocalizationService resourceManager);
+      /// <param name="localizationService">The <see cref="ILocalizationService"/> that will be used for localization.</param>
+      void PrintHelp(Type argumentType, ILocalizationService localizationService);
 
       /// <summary>Prints the help for the given <see cref="propertyInfo"/> to the <see cref="Console"/>.</summary>
       /// <param name="propertyInfo">The <see cref="PropertyInfo"/> to print the help for</param>
-      /// <param name="resourceManager">The <see cref="ILocalizationService"/> that will be used for localization.</param>
-      void PrintHelp(PropertyInfo propertyInfo, ILocalizationService resourceManager);
+      /// <param name="localizationService">The <see cref="ILocalizationService"/> that will be used for localization.</param>
+      void PrintHelp(PropertyInfo propertyInfo, ILocalizationService localizationService);
 
       #endregion
    }

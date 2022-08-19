@@ -32,7 +32,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       protected ConsoleApplication([NotNull] ICommandLineEngine commandLineEngine)
       {
          CommandLineEngine = commandLineEngine ?? throw new ArgumentNullException(nameof(commandLineEngine));
-         CommandExecutor = CommandLineEngine.CommandExecutor;
+         ExecutionEngine = CommandLineEngine.ExecutionEngine;
          CommandLineEngine.UnhandledCommandLineArgument += OnUnhandledCommandLineArgument;
       }
 
@@ -43,7 +43,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       /// <summary>Runs the application asynchronous.</summary>
       public async Task RunAsync(CancellationToken cancellationToken)
       {
-         var executedCommand = await CommandExecutor.ExecuteCommandAsync(Arguments, cancellationToken);
+         var executedCommand = await ExecutionEngine.ExecuteCommandAsync(Arguments, cancellationToken);
          if (executedCommand != null)
          {
             await OnCommandExecutedAsync(executedCommand);
@@ -59,10 +59,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
             await RunWithoutArgumentsAsync(cancellationToken);
          }
       }
-
-      /// <summary>Runs the application logic by executing the specified command, or calling one of the RunWith or RunWithoutArguments methods.</summary>
-      public void Run() => RunAsync(CancellationToken.None).GetAwaiter().GetResult();
-
+      
       /// <summary>
       ///    This method is called when the application was started with command line arguments. NOTE: If there are
       ///    <see cref="T:ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.ICommand"/>s specified in the arguments and the application is called with one
@@ -79,9 +76,9 @@ namespace ConsoLovers.ConsoleToolkit.Core
       /// <param name="arguments">The initialized arguments for the application.</param>
       /// <param name="cancellationToken">The cancellation token.</param>
       /// <returns></returns>
-      public virtual Task RunWithAsync(T arguments, CancellationToken cancellationToken)
+      public virtual async Task RunWithAsync(T arguments, CancellationToken cancellationToken)
       {
-         return Task.CompletedTask;
+         await ExecutionEngine.ExecuteAsync(arguments, cancellationToken);
       }
 
       #endregion
@@ -143,7 +140,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       public T Arguments { get; private set; }
 
-      [NotNull] public ICommandExecutor CommandExecutor { get; }
+      [NotNull] public IExecutionEngine ExecutionEngine { get; }
 
       public IConsole Console { get; protected set; } = new ConsoleProxy();
 

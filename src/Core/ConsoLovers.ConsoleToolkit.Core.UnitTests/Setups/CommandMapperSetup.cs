@@ -6,7 +6,7 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups;
 
-using ConsoLovers.ConsoleToolkit.Core.BootStrappers;
+using ConsoLovers.ConsoleToolkit.Core.Builders;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
 using Microsoft.Extensions.DependencyInjection;

@@ -26,11 +26,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       #region Constructors and Destructors
 
       [InjectionConstructor]
-      public CommandLineEngine([NotNull] IServiceProvider serviceProvider, [NotNull] ICommandExecutor commandExecutor,
+      public CommandLineEngine([NotNull] IServiceProvider serviceProvider, [NotNull] IExecutionEngine executionEngine,
          [NotNull] ICommandLineArgumentParser argumentParser, [NotNull] IArgumentReflector argumentReflector)
       {
          ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
-         CommandExecutor = commandExecutor ?? throw new ArgumentNullException(nameof(commandExecutor));
+         ExecutionEngine = executionEngine ?? throw new ArgumentNullException(nameof(executionEngine));
          ArgumentParser = argumentParser ?? throw new ArgumentNullException(nameof(argumentParser));
          ArgumentReflector = argumentReflector ?? throw new ArgumentNullException(nameof(argumentReflector));
       }
@@ -52,7 +52,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       #region ICommandLineEngine Members
 
-      public ICommandExecutor CommandExecutor { get; }
+      public IExecutionEngine ExecutionEngine { get; }
 
       /// <summary>Prints the help to the <see cref="Console"/>.</summary>
       /// <typeparam name="T">Type of the argument class to print the help for</typeparam>

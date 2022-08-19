@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Core.BootStrappers;
+namespace ConsoLovers.ConsoleToolkit.Core.Builders;
 
 using System;
 

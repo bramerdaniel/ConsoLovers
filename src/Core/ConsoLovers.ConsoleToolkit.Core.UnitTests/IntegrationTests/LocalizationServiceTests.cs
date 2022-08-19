@@ -11,9 +11,8 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
-
+using ConsoLovers.ConsoleToolkit.Core;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
-using ConsoLovers.ConsoleToolkit.Core.Localization;
 
 using FluentAssertions;
 
@@ -35,12 +34,12 @@ public class LocalizationServiceTests
    {
       var customService = new Mock<ILocalizationService>().Object;
 
-      var bootstrapper = ConsoleApplicationManager
+      var builder = ConsoleApplicationManager
          .For<Application>()
          .ConfigureServices(s => s.AddSingleton(customService))
          .AddResourceManager(FirstResource.ResourceManager);
 
-      bootstrapper.Invoking(x => x.CreateServiceProvider())
+      builder.Invoking(x => x.CreateServiceProvider())
          .Should().Throw<InvalidOperationException>();
    }
 

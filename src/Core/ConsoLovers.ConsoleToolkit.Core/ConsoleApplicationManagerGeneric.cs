@@ -10,7 +10,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
    using System.Threading;
    using System.Threading.Tasks;
 
-   using ConsoLovers.ConsoleToolkit.Core.BootStrappers;
+   using ConsoLovers.ConsoleToolkit.Core.Builders;
 
    using Microsoft.Extensions.DependencyInjection;
 
