@@ -5,7 +5,7 @@
 		<TargetFramework>net6.0</TargetFramework>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="ConsoLovers.ConsoleToolkit.Core" Version="5.0.0-alpha1" />
+		<PackageReference Include="ConsoLovers.ConsoleToolkit.Core"  />
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\..\ConsoLovers.ConsoleToolkit\ConsoLovers.ConsoleToolkit.csproj" />

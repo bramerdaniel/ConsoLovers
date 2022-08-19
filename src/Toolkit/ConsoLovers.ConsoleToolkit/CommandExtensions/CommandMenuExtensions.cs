@@ -9,16 +9,18 @@ namespace ConsoLovers.ConsoleToolkit.CommandExtensions
    using System;
 
    using ConsoLovers.ConsoleToolkit.Core;
-   using ConsoLovers.ConsoleToolkit.Core.BootStrappers;
+   using ConsoLovers.ConsoleToolkit.Core.Builders;
+   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
    using Microsoft.Extensions.DependencyInjection;
 
    public static class CommandMenuExtensions
    {
-      public static IBootstrapper<T> UseMenuFor<T>(this IBootstrapper<T> bootstrapper, Type argumentType)
+      public static IApplicationBuilder<T> UseMenuWithoutArguments<T>(this IApplicationBuilder<T> bootstrapper)
          where T : class, IApplication
       {
-         bootstrapper.ConfigureServices(s => s.AddSingleton<CommandMenuManager>());
+         bootstrapper.ConfigureServices(s => s.AddSingleton<ICommandMenuManager, CommandMenuManager>());
+         bootstrapper.ConfigureServices(s => s.AddSingleton<IApplicationLogic, ShowMenuApplicationLogic>());
 
          if (bootstrapper is IServiceConfigurationHandler handler)
          {

@@ -27,10 +27,5 @@ internal class Application : ConsoleApplication<AppArguments>
       this.menuManager = menuManager;
    }
 
-   public override async Task RunWithAsync(AppArguments arguments, CancellationToken cancellationToken)
-   {
-      await menuManager.ShowAsync<AppArguments>();
-   }
-   
    #endregion
 }

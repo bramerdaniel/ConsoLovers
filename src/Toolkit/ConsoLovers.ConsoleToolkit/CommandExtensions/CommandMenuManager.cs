@@ -83,9 +83,4 @@ namespace ConsoLovers.ConsoleToolkit.CommandExtensions
             menuCommand.ExecuteFromMenu();
       }
    }
-
-   public interface ICommandMenuManager
-   {
-      void Show<T>();
-   }
 }

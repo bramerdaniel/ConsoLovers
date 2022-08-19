@@ -1,0 +1,21 @@
+<!-- the .targets are all imported at the end of each project file-->
+<Project >
+	<ItemGroup>
+		<!--<PackageReference Include="FluentAssertions" Version="6.6.0" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
+		<PackageReference Include="MSTest.TestAdapter" Version="2.2.7" />
+		<PackageReference Include="MSTest.TestFramework" Version="2.2.7" />
+		<PackageReference Include="coverlet.collector" Version="3.1.0" />-->
+		<PackageReference Update="ConsoLovers.ConsoleToolkit.Core" Version="5.0.0-alpha2"  />
+		<PackageReference Update="Castle.Core" Version="4.2.1" />
+		<PackageReference Update="ConsoLovers.ConsoleToolkit.Core" Version="5.0.0-alpha2" />
+		<PackageReference Update="FluentAssertions" Version="5.2.0" />
+		<PackageReference Update="Moq" Version="4.8.2" />
+		<PackageReference Update="System.Threading.Tasks.Extensions" Version="4.4.0" />
+		<PackageReference Update="System.ValueTuple" Version="4.4.0" />
+		<PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.0.1" />
+		<PackageReference Update="MSTest.TestAdapter" Version="1.4.0" />
+		<PackageReference Update="MSTest.TestFramework" Version="1.4.0" />
+
+	</ItemGroup>
+</Project>

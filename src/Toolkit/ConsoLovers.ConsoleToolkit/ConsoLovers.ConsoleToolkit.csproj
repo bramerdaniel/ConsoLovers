@@ -1,60 +1,39 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-	  <OutputPath>$(SolutionDir)$(Configuration)</OutputPath>
-    <TargetFrameworks>net472;net6.0</TargetFrameworks>
-    <AssemblyTitle>ConsoLovers.ConsoleToolkit</AssemblyTitle>
-    <Company>ConsoLovers</Company>
-    <Product>ConsoLovers.ConsoleToolkit</Product>
-    <Description>Toolbox for advanced console applications. The toolbox contains a console menu, a command line argument engine and some other useful console helpers.</Description>
-    <Copyright>Copyright 2017</Copyright>
-    <Version>6.0.0-rc2</Version>
-    <AssemblyVersion>3.0.0.0</AssemblyVersion>
-    <FileVersion>3.0.0.0</FileVersion>
-    <Authors>danielbramer</Authors>
-    <PackageIconUrl>https://raw.githubusercontent.com/bramerdaniel/ConsoLovers/master/src/ConsoLovers.ConsoleToolkit/Resources/Icon.ico</PackageIconUrl>
-    <PackageId>ConsoLovers.ConsoleToolkit</PackageId>
-    <PackageProjectUrl>https://github.com/bramerdaniel/ConsoLovers</PackageProjectUrl>
-    <PackageReleaseNotes>
-		6.0.0-rc1
-		- Updated to ConsoloversToolkit.Core 5
-		- Updated to .NET 6.0
-		- Multi-Target for .NET Framework 4.7.2 and .NET 6.0
-		5.0.0-rc1
-		- Added nuget reference to ConsoLovers.ConsoleToolkit.Core package
-		5.0.0-alpha3
-		- Moved most classes to ConsoLovers.ConsoleToolkit.Core (that supports .NetStandard2.0)
+	<PropertyGroup>
+		<TargetFrameworks>net472;net6.0</TargetFrameworks>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<AssemblyTitle>ConsoLovers.ConsoleToolkit</AssemblyTitle>
 
-		Most important classes are:
-		- ConsoleMenu
-		- ColoredConsoleMenu
-		- InputBox
-		- ConsoleBuffer
-	</PackageReleaseNotes>
-    <PackageTags>Console Shell Menu ConsoleMenu ConsoleToolkit .Net Password InputBox</PackageTags>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <UserSecretsId>534a9709-5fde-4041-8ae2-4da7909b60da</UserSecretsId>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugType>full</DebugType>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-  </PropertyGroup>
-  <ItemGroup>
-    <Compile Remove="Release\**" />
-    <EmbeddedResource Remove="Release\**" />
-    <None Remove="Release\**" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Icon.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="ConsoLovers.ConsoleToolkit.Core" Version="5.0.0-alpha1" />
-  </ItemGroup>
-   <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
-   <ItemGroup>
-     <Folder Include="CommandExtensions\" />
-   </ItemGroup>
+		<Version>6.0.0-rc2</Version>
+		<AssemblyVersion>3.0.0.0</AssemblyVersion>
+		<FileVersion>3.0.0.0</FileVersion>
+		<PackageReleaseNotes>
+			6.0.0-rc1
+			- Updated to ConsoloversToolkit.Core 5
+			- Updated to .NET 6.0
+			- Multi-Target for .NET Framework 4.7.2 and .NET 6.0
+			5.0.0-rc1
+			- Added nuget reference to ConsoLovers.ConsoleToolkit.Core package
+			5.0.0-alpha3
+			- Moved most classes to ConsoLovers.ConsoleToolkit.Core (that supports .NetStandard2.0)
+
+			Most important classes are:
+			- ConsoleMenu
+			- ColoredConsoleMenu
+			- InputBox
+			- ConsoleBuffer
+		</PackageReleaseNotes>
+		<PackageTags>Console Shell Menu ConsoleMenu ConsoleToolkit .Net Password InputBox</PackageTags>
+		<UserSecretsId>534a9709-5fde-4041-8ae2-4da7909b60da</UserSecretsId>
+	</PropertyGroup>
+	<ItemGroup>
+		<Resource Include="Resources\Icon.ico"/>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="ConsoLovers.ConsoleToolkit.Core"/>
+	</ItemGroup>
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
+		<Reference Include="Microsoft.CSharp"/>
+	</ItemGroup>
 </Project>
