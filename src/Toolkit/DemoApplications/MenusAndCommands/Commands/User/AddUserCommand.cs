@@ -41,7 +41,7 @@ public class AddUserCommand : ICommand<AddUserCommand.AddUserArgs>, IMenuCommand
 
    #region IMenuCommand Members
 
-   public void ExecuteFromMenu()
+   public void ExecuteFromMenu(IMenuExecutionContext context)
    {
       console.WriteLine("User added");
       console.ReadLine();

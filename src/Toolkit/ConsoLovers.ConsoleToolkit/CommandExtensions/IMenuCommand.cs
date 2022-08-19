@@ -8,6 +8,6 @@ namespace ConsoLovers.ConsoleToolkit.CommandExtensions
 {
    public interface IMenuCommand
    {
-      void ExecuteFromMenu();
+      void ExecuteFromMenu(IMenuExecutionContext context);
    }
 }

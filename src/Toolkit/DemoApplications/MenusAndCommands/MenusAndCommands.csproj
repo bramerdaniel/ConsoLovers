@@ -5,10 +5,13 @@
 		<TargetFramework>net6.0</TargetFramework>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="ConsoLovers.ConsoleToolkit.Core"  />
+		<PackageReference Include="ConsoLovers.ConsoleToolkit.Core" />
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\..\ConsoLovers.ConsoleToolkit\ConsoLovers.ConsoleToolkit.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Commands\Permission\" />
 	</ItemGroup>
 
 </Project>

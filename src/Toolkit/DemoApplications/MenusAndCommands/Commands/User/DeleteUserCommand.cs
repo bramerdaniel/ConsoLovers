@@ -41,10 +41,11 @@ public class DeleteUserCommand : ICommand<DeleteUserCommand.DeleteUserArgs>, IMe
 
    #region IMenuCommand Members
 
-   public void ExecuteFromMenu()
+   public void ExecuteFromMenu(IMenuExecutionContext context)
    {
       console.WriteLine("User deleted");
       console.ReadLine();
+      context.MenuItem.Remove();
    }
 
    #endregion

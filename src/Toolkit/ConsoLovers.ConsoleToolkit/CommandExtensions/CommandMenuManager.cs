@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="CommandMenuManager.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2022
+// <copyright file="CommandMenuManager.cs" company="KUKA Deutschland GmbH">
+//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -10,7 +10,6 @@ namespace ConsoLovers.ConsoleToolkit.CommandExtensions
    using System.Collections.Generic;
    using System.Threading.Tasks;
 
-   using ConsoLovers.ConsoleToolkit.Contracts;
    using ConsoLovers.ConsoleToolkit.Core;
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Menu;
@@ -19,17 +18,28 @@ namespace ConsoLovers.ConsoleToolkit.CommandExtensions
 
    public class CommandMenuManager : ICommandMenuManager
    {
-      private readonly IServiceProvider serviceProvider;
+      #region Constants and Fields
 
       private readonly IArgumentReflector reflector;
 
+      private readonly IServiceProvider serviceProvider;
+
       private IConsoleMenuOptions options;
+
+      #endregion
+
+      #region Constructors and Destructors
 
       public CommandMenuManager([NotNull] IServiceProvider serviceProvider, [NotNull] IArgumentReflector reflector)
       {
          this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
          this.reflector = reflector ?? throw new ArgumentNullException(nameof(reflector));
       }
+
+      #endregion
+
+      #region ICommandMenuManager Members
+
       public void Show<T>()
       {
          var menu = new ConsoleMenu
@@ -40,7 +50,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandExtensions
             CircularSelection = options.CircularSelection,
             Selector = options.Selector,
             ClearOnExecution = options.ClearOnExecution,
-            ExecuteOnIndexSelection= options.ExecuteOnIndexSelection,
+            ExecuteOnIndexSelection = options.ExecuteOnIndexSelection,
             Expander = options.Expander,
             IndentSize = options.IndentSize,
             IndexMenuItems = options.IndexMenuItems,
@@ -49,7 +59,11 @@ namespace ConsoLovers.ConsoleToolkit.CommandExtensions
 
          var classInfo = reflector.GetTypeInfo<T>();
          foreach (var info in classInfo.CommandInfos)
-            menu.Add(CreateMenuItem(info));
+         {
+            var menuItem = CreateMenuItem(info);
+            if (menuItem != null)
+               menu.Add(menuItem);
+         }
 
          menu.Show();
       }
@@ -59,16 +73,35 @@ namespace ConsoLovers.ConsoleToolkit.CommandExtensions
          this.options = options;
       }
 
+      #endregion
+
+      #region Public Methods and Operators
+
       public Task ShowAsync<T>()
       {
          Show<T>();
          return Task.CompletedTask;
       }
 
+      #endregion
+
+      #region Methods
+
       private ConsoleMenuItem CreateMenuItem(CommandInfo info)
       {
+         // TODO sort by menu attribute
+         // TODO support for ignoring groups
+         // TODO support for additional menu items
+         // TODO support for additional description
+         // TODO support for additional localization
+         // TODO support for Arguments and options
+
+         var menuAttribute = GetOrCreateMenuAttribute(info);
+         if (menuAttribute.Hide)
+            return null;
+
          if (info.ArgumentType == null)
-            return new ConsoleMenuItem(info.ParameterName, x => Execute(x, info));
+            return new ConsoleMenuItem(menuAttribute.DisplayName, x => Execute(x, info));
 
          var argumentInfo = reflector.GetTypeInfo(info.ArgumentType);
          if (argumentInfo.HasCommands)
@@ -76,18 +109,26 @@ namespace ConsoLovers.ConsoleToolkit.CommandExtensions
             var items = new List<PrintableItem>();
             foreach (var childCommand in argumentInfo.CommandInfos)
             {
-               var item = CreateMenuItem(childCommand);
-               items.Add(item);
+               var childMenuItem = CreateMenuItem(childCommand);
+               if (childMenuItem != null)
+                  items.Add(childMenuItem);
             }
 
-            return new ConsoleMenuItem(info.ParameterName, items.ToArray());
+            return new ConsoleMenuItem(menuAttribute.DisplayName, items.ToArray());
          }
-         else
+
+         return new ConsoleMenuItem(menuAttribute.DisplayName, x => Execute(x, info));
+      }
+
+      private static ConsoleMenuAttribute GetOrCreateMenuAttribute(CommandInfo info)
+      {
+         var menuAttribute = info.PropertyInfo.GetAttribute<ConsoleMenuAttribute>();
+         if (menuAttribute == null)
          {
-            return new ConsoleMenuItem(info.ParameterName, x => Execute(x, info));
+            menuAttribute = new ConsoleMenuAttribute(info.ParameterName);
          }
 
-
+         return menuAttribute;
       }
 
       private void Execute(ConsoleMenuItem menuItem, CommandInfo commandInfo)
@@ -95,8 +136,11 @@ namespace ConsoLovers.ConsoleToolkit.CommandExtensions
          var command = serviceProvider.GetService(commandInfo.ParameterType);
          if (command is IMenuCommand menuCommand)
          {
-            menuCommand.ExecuteFromMenu();
+            var executionContext = new MenuExecutionContext{ MenuItem = menuItem};
+            menuCommand.ExecuteFromMenu(executionContext);
          }
       }
+
+      #endregion
    }
 }
