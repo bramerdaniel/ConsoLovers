@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ICommandMenuManager.cs" company="KUKA Deutschland GmbH">
+// <copyright file="IMenuExecutionContext.cs" company="KUKA Deutschland GmbH">
 //   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -8,11 +8,13 @@ namespace ConsoLovers.ConsoleToolkit.CommandExtensions
 {
    using ConsoLovers.ConsoleToolkit.Menu;
 
-   /// <summary>Service that can show a consolovers menu from the defined command structure </summary>
-   public interface ICommandMenuManager
+   public interface IMenuExecutionContext
    {
-      void Show<T>();
+      ConsoleMenuItem MenuItem { get; }
+   }
 
-      void UseOptions(ICommandMenuOptions options);
+   internal struct MenuExecutionContext : IMenuExecutionContext
+   {
+      public ConsoleMenuItem MenuItem { get; set; }
    }
 }

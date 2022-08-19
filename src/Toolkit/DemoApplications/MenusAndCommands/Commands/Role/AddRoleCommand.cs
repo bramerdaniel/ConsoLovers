@@ -41,14 +41,15 @@ public class AddRoleCommand : ICommand<AddRoleCommand.AddRoleArgs>, IMenuCommand
 
    #region IMenuCommand Members
 
-   public void ExecuteFromMenu()
+   public void ExecuteFromMenu(IMenuExecutionContext context)
    {
       console.WriteLine("Role added");
+      console.ReadLine();
    }
 
    #endregion
 
-   public class AddRoleArgs
+   public class AddRoleArgs : SharedArgs
    {
       #region Public Properties
 
@@ -56,4 +57,5 @@ public class AddRoleCommand : ICommand<AddRoleCommand.AddRoleArgs>, IMenuCommand
 
       #endregion
    }
+
 }

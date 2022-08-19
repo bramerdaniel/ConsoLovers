@@ -1,10 +1,10 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ExecuteCommand.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2022
+// <copyright file="AddPermissionCommand.cs" company="KUKA Deutschland GmbH">
+//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace MenusAndCommands.Commands;
+namespace MenusAndCommands.Commands.Permission;
 
 using System;
 using System.Threading;
@@ -13,31 +13,19 @@ using System.Threading.Tasks;
 using ConsoLovers.ConsoleToolkit.Core;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
-public class ExecuteCommand : IAsyncCommand
+public class AddPermissionCommand : IAsyncCommand
 {
-   #region Constants and Fields
-
    private readonly IConsole console;
 
-   #endregion
-
-   #region Constructors and Destructors
-
-   public ExecuteCommand(IConsole console)
+   public AddPermissionCommand(IConsole console)
    {
       this.console = console ?? throw new ArgumentNullException(nameof(console));
    }
 
-   #endregion
-
-   #region IAsyncCommand Members
-
    public Task ExecuteAsync(CancellationToken cancellationToken)
    {
-      console.WriteLine("Executed");
+      console.WriteLine("Permission was added !", ConsoleColor.DarkYellow);
       console.ReadLine();
       return Task.CompletedTask;
    }
-
-   #endregion
 }

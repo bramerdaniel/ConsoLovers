@@ -1,13 +1,15 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IMenuCommand.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2022
+// <copyright file="MenuBuilderBehaviour.cs" company="KUKA Deutschland GmbH">
+//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace ConsoLovers.ConsoleToolkit.CommandExtensions
 {
-   public interface IMenuCommand
+
+   public enum MenuBuilderBehaviour
    {
-      void ExecuteFromMenu(IMenuExecutionContext context);
+      ShowAllCommand,
+      WithAttributesOnly
    }
 }

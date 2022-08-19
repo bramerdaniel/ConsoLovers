@@ -119,9 +119,9 @@ namespace MenuDemo
       {
          return new ConsoleMenuItem(
             "Change selection strech",
-            new ConsoleMenuItem("Disabled", x => x.Menu.SelectionStrech = SelectionStrech.None),
-            new ConsoleMenuItem("UnifiedLength", x => x.Menu.SelectionStrech = SelectionStrech.UnifiedLength),
-            new ConsoleMenuItem("FullLine", x => x.Menu.SelectionStrech = SelectionStrech.FullLine));
+            new ConsoleMenuItem("Disabled", x => x.Menu.SelectionMode = SelectionMode.None),
+            new ConsoleMenuItem("UnifiedLength", x => x.Menu.SelectionMode = SelectionMode.UnifiedLength),
+            new ConsoleMenuItem("FullLine", x => x.Menu.SelectionMode = SelectionMode.FullLine));
       }
 
       private static ConsoleMenuItem CreateSelectorMenu(ConsoleMenuBase menu)
@@ -198,7 +198,7 @@ namespace MenuDemo
             Footer = footer,
             CircularSelection = false,
             Selector = "» ",
-            SelectionStrech = SelectionStrech.UnifiedLength
+            SelectionMode = SelectionMode.UnifiedLength
          };
 
          // menu.Expander = new ExpanderDescription { Collapsed = "►", Expanded = "▼" };

@@ -13,11 +13,9 @@ namespace ConsoLovers.ConsoleToolkit.Core
    using Microsoft.Extensions.DependencyInjection;
 
    /// <summary>Interface that provides a fluent configuration api for configuring the <see cref="IApplication"/> that should be started</summary>
-   public interface IApplicationBuilder
+   public interface IApplicationBuilder : IDependencyInjectionAbstraction<IApplicationBuilder>
    {
       #region Public Methods and Operators
-
-      IApplicationBuilder ConfigureServices(Action<IServiceCollection> serviceSetup);
 
       /// <summary>Runs the configured application with the commandline arguments from <see cref="Environment.CommandLine"/>.</summary>
       /// <param name="args">The command line arguments.</param>
@@ -48,20 +46,16 @@ namespace ConsoLovers.ConsoleToolkit.Core
       /// <returns>The current <see cref="IApplicationBuilder"/> for further configuration</returns>
       IApplicationBuilder SetWindowTitle(string windowTitle);
 
-      IApplicationBuilder UseServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory);
-
       #endregion
    }
 
    /// <summary>Generic variant of the <see cref="IApplicationBuilder"/> interface</summary>
    /// <typeparam name="T">The typ of the <see cref="IApplication"/> or <see cref="IApplication{T}"/> to create</typeparam>
-   public interface IApplicationBuilder<T>
+   public interface IApplicationBuilder<T> : IDependencyInjectionAbstraction<IApplicationBuilder<T>>
       where T : class, IApplication
    {
       #region Public Methods and Operators
-
-      IApplicationBuilder<T> ConfigureServices(Action<IServiceCollection> serviceSetup);
-
+      
       /// <summary>Runs the configured application with the given commandline arguments.</summary>
       /// <param name="args">The command line arguments.</param>
       /// <param name="cancellationToken">The cancellation token.</param>
@@ -102,10 +96,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       /// <returns>The current <see cref="IApplicationBuilder"/> for further configuration</returns>
       IApplicationBuilder<T> SetWindowWidth(int width);
 
-      /// <summary>Specifies the <see cref="IServiceProviderFactory{TContainerBuilder}"/> that should be used</summary>
-      /// <typeparam name="TContainerBuilder">The type of the container builder.</typeparam>
-      /// <param name="factory">The factory to use.</param>
-      /// <returns>The current <see cref="IApplicationBuilder"/> for further configuration</returns>
+
       IApplicationBuilder<T> UseServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory);
 
       #endregion

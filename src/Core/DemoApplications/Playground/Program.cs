@@ -13,19 +13,28 @@ public static class Program
 {
    public static void Main()
    {
+
+      var app = ConsoleApplicationManager
+         .For<PlaygroundApp>()
+         .UseServiceProviderFactory(new DefaultServiceProviderFactory())
+         .UseApplicationLogic<PlaygroundApp, ApplicationArgs>(Execute)
+         .Run();
+
+      Console.ReadLine();
+
       ConsoleApplicationManager
          .For(typeof(AppWithoutArgs))
          .Run();
 
       Environment.Exit(0);
 
-      var app = ConsoleApplicationManager
-         .For<PlaygroundApp>()
-         .UseServiceProviderFactory(new DefaultServiceProviderFactory())
-         .Run();
 
-      Console.ReadLine();
+   }
 
+   private static Task Execute(ApplicationArgs args, CancellationToken cancellationToken)
+   {
+      Console.WriteLine("Executed with func");
+      return Task.CompletedTask;
    }
 }
 

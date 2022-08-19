@@ -8,12 +8,16 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 {
    using System;
    using System.Collections.Generic;
+   using System.ComponentModel;
    using System.Linq;
+   using System.Runtime.CompilerServices;
 
    using ConsoLovers.ConsoleToolkit.Console;
    using ConsoLovers.ConsoleToolkit.Contracts;
    using ConsoLovers.ConsoleToolkit.Core;
    using ConsoLovers.ConsoleToolkit.InputHandler;
+
+   using JetBrains.Annotations;
 
    public abstract class ConsoleMenuBase : IConsoleMenuOptions
    {
@@ -49,7 +53,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       private ConsoleMenuItem selectedItem;
 
-      private SelectionStrech selectionStrech;
+      private SelectionMode selectionMode;
 
       private string selector = ">> ";
 
@@ -145,15 +149,15 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       }
 
       /// <summary>Gets or sets the selection strech mode that is used for displaying the selection.</summary>
-      public SelectionStrech SelectionStrech
+      public SelectionMode SelectionMode
       {
-         get => selectionStrech;
+         get => selectionMode;
          set
          {
-            if (selectionStrech == value)
+            if (selectionMode == value)
                return;
 
-            selectionStrech = value;
+            selectionMode = value;
             Invalidate();
          }
       }
@@ -380,10 +384,6 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       protected abstract ConsoleColor GetMenuItemForeground(bool isSelected, bool disabled, bool mouseOver, ConsoleColor? elementForeground);
 
-      //{
-      //   return Theme.MenuItem.GetForeground(element.IsSelected, element.Disabled);
-      //}
-
       protected abstract ConsoleColor GetMouseOverBackground();
 
       //{
@@ -576,10 +576,10 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          {
             if (element.Line == e.WindowTop)
             {
-               if (selectionStrech == SelectionStrech.FullLine)
+               if (selectionMode == SelectionMode.FullLine)
                   return element;
 
-               if (selectionStrech == SelectionStrech.UnifiedLength)
+               if (selectionMode == SelectionMode.UnifiedLength)
                {
                   if (unifiedLength > e.WindowLeft)
                      return element;
@@ -676,14 +676,14 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
          Write(element.Text, foreground, background);
 
-         if (SelectionStrech == SelectionStrech.UnifiedLength)
+         if (SelectionMode == SelectionMode.UnifiedLength)
          {
             var padding = unifiedLength - Console.CursorLeft;
             if (padding > 0)
                Write(string.Empty.PadRight(padding), foreground, background);
          }
 
-         if (SelectionStrech == SelectionStrech.FullLine)
+         if (SelectionMode == SelectionMode.FullLine)
          {
             var padding = Console.WindowWidth - Console.CursorLeft - 1;
             Write(string.Empty.PadRight(padding), foreground, background);
@@ -758,7 +758,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
             var foreground = GetHintForeground(menuItem.IsSelected, menuItem.Disabled);
             var background = GetHintBackground(menuItem.IsSelected, menuItem.Disabled);
 
-            if (SelectionStrech == SelectionStrech.FullLine)
+            if (SelectionMode == SelectionMode.FullLine)
             {
                Console.SetCursorPosition(Console.CursorLeft - disabledHint.Length, Console.CursorTop);
                Write(disabledHint, foreground, background);
@@ -953,5 +953,13 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       }
 
       #endregion
+
+      public event PropertyChangedEventHandler PropertyChanged;
+
+      [NotifyPropertyChangedInvocator]
+      protected virtual void RaisePropertyChanged([CallerMemberName] string propertyName = null)
+      {
+         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+      }
    }
 }
