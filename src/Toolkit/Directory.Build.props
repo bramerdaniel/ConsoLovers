@@ -1,13 +1,11 @@
 <Project>
 	<PropertyGroup>
 		<OutputPath>$(SolutionDir)$(Configuration)</OutputPath>
-
 		<Company>ConsoLovers</Company>
 		<Product>ConsoLovers.ConsoleToolkit</Product>
 		<Copyright>Copyright 2017 - 2022</Copyright>
 		<Authors>danielbramer</Authors>
 		<PackageIconUrl>https://raw.githubusercontent.com/bramerdaniel/ConsoLovers/master/src/ConsoLovers.ConsoleToolkit/Resources/Icon.ico</PackageIconUrl>
-		<PackageId>ConsoLovers.ConsoleToolkit</PackageId>
 		<PackageProjectUrl>https://github.com/bramerdaniel/ConsoLovers</PackageProjectUrl>
 		<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
 		<Description>Toolbox for advanced console applications. The toolbox contains a console menu, a command line argument engine and some other useful console helpers.</Description>
