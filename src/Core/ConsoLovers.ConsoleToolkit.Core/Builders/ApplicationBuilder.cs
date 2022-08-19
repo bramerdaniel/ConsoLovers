@@ -4,18 +4,16 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Core;
+namespace ConsoLovers.ConsoleToolkit.Core.Builders;
 
 using System;
 using System.Collections.Generic;
-
-using ConsoLovers.ConsoleToolkit.Core.Builders;
 
 using JetBrains.Annotations;
 
 using Microsoft.Extensions.DependencyInjection;
 
-public class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigurationHandler
+internal class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigurationHandler
    where T : class
 {
    #region Constants and Fields
@@ -38,6 +36,13 @@ public class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigurati
    {
       serviceSetup(ServiceCollection);
       return this;
+   }
+
+   public IExecutable<T> Build()
+   {
+      var serviceProvider = CreateServiceProvider();
+      var executable = serviceProvider.GetRequiredService<IExecutable<T>>();
+      return executable;
    }
 
    #endregion
@@ -81,20 +86,6 @@ public class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigurati
 
    #endregion
 
-   #region Public Methods and Operators
-
-   public void ConfigureRequiredService<TService>(Action<TService> configurationAction)
-   {
-      throw new NotImplementedException();
-   }
-
-   public void ConfigureService<TService>(Action<TService> configurationAction)
-   {
-      throw new NotImplementedException();
-   }
-
-   #endregion
-
    #region Methods
 
    internal IServiceProvider CreateServiceProvider()
@@ -126,6 +117,7 @@ public class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigurati
    {
       ServiceCollection.AddRequiredServices();
       ServiceCollection.AddArgumentTypes<T>();
+      ServiceCollection.AddSingleton<IExecutable<T>, Executable<T>>();
    }
 
    protected void SetServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory)
@@ -144,9 +136,4 @@ public class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigurati
    }
 
    #endregion
-
-   public IExecutable Build()
-   {
-      return new Executable();
-   }
 }

@@ -6,31 +6,11 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.Builders
 {
-   using System.Threading;
-   using System.Threading.Tasks;
+   using Microsoft.Extensions.DependencyInjection;
 
    public interface IApplicationBuilder<T> : IDependencyInjectionAbstraction<IApplicationBuilder<T>>
       where T : class
    {
-      IExecutable Build();
-   }
-
-   public interface IExecutable
-   {
-      Task RunAsync(string args, CancellationToken cancellation);
-      Task RunAsync(string[] args, CancellationToken cancellation);
-   }
-
-   internal class Executable : IExecutable
-   {
-      public Task RunAsync(string args, CancellationToken cancellation)
-      {
-         throw new System.NotImplementedException();
-      }
-
-      public Task RunAsync(string[] args, CancellationToken cancellation)
-      {
-         throw new System.NotImplementedException();
-      }
+      IExecutable<T> Build();
    }
 }

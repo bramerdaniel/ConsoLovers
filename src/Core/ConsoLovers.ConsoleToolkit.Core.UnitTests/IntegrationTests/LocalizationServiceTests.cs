@@ -1,18 +1,15 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="LocalizationReplacementTests.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2022
+// <copyright file="LocalizationServiceTests.cs" company="KUKA Deutschland GmbH">
+//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.IntegrationTests;
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
-using ConsoLovers.ConsoleToolkit.Core;
-using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
 using FluentAssertions;
 
@@ -34,47 +31,44 @@ public class LocalizationServiceTests
    {
       var customService = new Mock<ILocalizationService>().Object;
 
-      var builder = ConsoleApplicationManager
-         .For<Application>()
+      var builder = ConsoleApplication.WithArguments<ApplicationArgs>()
          .ConfigureServices(s => s.AddSingleton(customService))
          .AddResourceManager(FirstResource.ResourceManager);
 
-      builder.Invoking(x => x.CreateServiceProvider())
+      builder.Invoking(x => x.Build())
          .Should().Throw<InvalidOperationException>();
    }
 
    [TestMethod]
-   public async Task EnsureDefaultServiceReturnsResourceKey()
+   public void EnsureDefaultServiceReturnsResourceKey()
    {
-      var application = await ConsoleApplicationManager
-         .For<Application>()
+      var application = ConsoleApplication.WithArguments<ApplicationArgs>()
          .AddResourceManager(FirstResource.ResourceManager)
-         .RunAsync("key=DoesNotExist", CancellationToken.None);
+         .Build();
 
-      application.LocalizedValues[0].Should().Be("DoesNotExist");
+      application.Arguments.Localize("DoesNotExist").Should().Be("DoesNotExist");
    }
 
    [TestMethod]
-   public async Task EnsureDefaultServiceWorksCorrectlyWithMultipleResourceManagers()
+   public void EnsureDefaultServiceWorksCorrectlyWithMultipleResourceManagers()
    {
-      var application = await ConsoleApplicationManager.For<Application>()
+      var application = ConsoleApplication.WithArguments<ApplicationArgs>()
          .AddResourceManager(FirstResource.ResourceManager)
          .AddResourceManager(SecondResource.ResourceManager)
-         .RunAsync("keys=\"FirstKey,SecondKey\"", CancellationToken.None);
+         .Build();
 
-      application.LocalizedValues.Should().HaveCount(2);
-      application.LocalizedValues[0].Should().Be("FirstValue");
-      application.LocalizedValues[1].Should().Be("SecondValue");
+      application.Arguments.Localize("FirstKey").Should().Be("FirstValue");
+      application.Arguments.Localize("SecondKey").Should().Be("SecondValue");
    }
 
    [TestMethod]
-   public async Task EnsureDefaultServiceWorksCorrectlyWithSingleResourceManager()
+   public void EnsureDefaultServiceWorksCorrectlyWithSingleResourceManager()
    {
-      var application = await ConsoleApplicationManager.For<Application>()
+      var application = ConsoleApplication.WithArguments<ApplicationArgs>()
          .AddResourceManager(FirstResource.ResourceManager)
-         .RunAsync("key=FirstKey", CancellationToken.None);
+         .Build();
 
-      application.LocalizedValues[0].Should().Be("FirstValue");
+      application.Arguments.Localize("FirstKey").Should().Be("FirstValue");
    }
 
    [TestMethod]
@@ -83,12 +77,11 @@ public class LocalizationServiceTests
       var customLocalizationService = new Mock<ILocalizationService>();
       customLocalizationService.Setup(x => x.GetLocalizedSting("Value")).Returns<string>(_ => "ValueLocalized");
 
-      var application = await ConsoleApplicationManager
-         .For<Application>()
+      var application = await ConsoleApplication.WithArguments<ApplicationArgs>()
          .ConfigureServices(s => s.AddSingleton(customLocalizationService.Object))
          .RunAsync("key=Value", CancellationToken.None);
 
-      application.LocalizedValues[0].Should().Be("ValueLocalized");
+      application.Arguments.Localize("Value").Should().Be("ValueLocalized");
    }
 
    #endregion
@@ -96,50 +89,27 @@ public class LocalizationServiceTests
    [UsedImplicitly]
    internal class ApplicationArgs
    {
-      #region Public Properties
-
-      [Argument("key", "keys")] public string ResourceKeys { get; [UsedImplicitly] set; }
-
-      #endregion
-   }
-
-   [UsedImplicitly]
-   private class Application : ConsoleApplication<ApplicationArgs>
-   {
       #region Constants and Fields
 
+      [JetBrains.Annotations.NotNull]
       private readonly ILocalizationService localizationService;
 
       #endregion
 
       #region Constructors and Destructors
 
-      [UsedImplicitly]
-      public Application(ICommandLineEngine commandLineEngine, [JetBrains.Annotations.NotNull] ILocalizationService localizationService)
-         : base(commandLineEngine)
+      public ApplicationArgs([JetBrains.Annotations.NotNull] ILocalizationService localizationService)
       {
          this.localizationService = localizationService ?? throw new ArgumentNullException(nameof(localizationService));
       }
 
       #endregion
 
-      #region Public Properties
-
-      public IList<string> LocalizedValues { get; } = new List<string>();
-
-      #endregion
-
       #region Public Methods and Operators
 
-      public override Task RunWithAsync(ApplicationArgs arguments, CancellationToken cancellationToken)
+      public string Localize(string key)
       {
-         foreach (var key in arguments.ResourceKeys.Split(",", StringSplitOptions.RemoveEmptyEntries))
-         {
-            var localizedSting = localizationService.GetLocalizedSting(key.Trim());
-            LocalizedValues.Add(localizedSting);
-         }
-
-         return Task.CompletedTask;
+         return localizationService.GetLocalizedSting(key);
       }
 
       #endregion

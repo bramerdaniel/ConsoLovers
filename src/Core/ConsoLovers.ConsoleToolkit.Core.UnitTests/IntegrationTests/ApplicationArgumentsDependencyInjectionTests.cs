@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ApplicationArgumentsDependencyInjectionTests.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2022
+// <copyright file="ApplicationArgumentsDependencyInjectionTests.cs" company="KUKA Deutschland GmbH">
+//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -8,59 +8,55 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.IntegrationTests;
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Threading;
-using System.Threading.Tasks;
 
-using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 using ConsoLovers.ConsoleToolkit.Core.DIContainer;
 
 using FluentAssertions;
 
 using JetBrains.Annotations;
 
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [TestClass]
 [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Reviewed. Suppression is OK here.")]
 public class ApplicationArgumentsDependencyInjectionTests
 {
+   #region Public Methods and Operators
 
    [TestMethod]
-   public async Task EnsureServicesAreInjectedIntoApplicationArgsCorrectly()
+   public void EnsureServicesAreInjectedIntoApplicationArgsCorrectly()
    {
-      var application = await ConsoleApplicationManager
-         .For<Application>()
-         .ConfigureServices(s => s.AddTransient<Service>())
-         .RunAsync(string.Empty, CancellationToken.None);
+      var application = ConsoleApplication.WithArguments<ApplicationArgs>()
+         .AddSingleton(typeof(Service))
+         .Build();
 
+      application.Should().NotBeNull();
       application.Arguments.Service.Should().NotBeNull();
    }
 
-   [UsedImplicitly]
-   private class Application : ConsoleApplication<ApplicationArgs>
-   {
-      public Application(ICommandLineEngine commandLineEngine)
-         : base(commandLineEngine)
-      {
-      }
-   }
-
-   internal class Service
-   {
-      public string Text { get; } = "Service";
-   }
+   #endregion
 
    [UsedImplicitly]
    internal class ApplicationArgs
    {
-      internal Service Service { get; }
+      #region Constructors and Destructors
 
       [InjectionConstructor]
-      public ApplicationArgs(Service service)
+      public ApplicationArgs([JetBrains.Annotations.NotNull] Service service)
       {
-         Service = service;
+         Service = service ?? throw new ArgumentNullException(nameof(service));
       }
+
+      #endregion
+
+      #region Properties
+
+      internal Service Service { get; }
+
+      #endregion
    }
 
+   internal class Service
+   {
+   }
 }

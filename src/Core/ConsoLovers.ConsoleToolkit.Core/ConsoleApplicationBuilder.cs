@@ -8,9 +8,9 @@ namespace ConsoLovers.ConsoleToolkit.Core;
 
 using ConsoLovers.ConsoleToolkit.Core.Builders;
 
-public class ConsoleApplicationBuilder
+public class ConsoleApplication
 {
-   public static IApplicationBuilder<TArguments> ForArguments<TArguments>()
+   public static IApplicationBuilder<TArguments> WithArguments<TArguments>()
       where TArguments : class
    {
       return new ApplicationBuilder<TArguments>();
