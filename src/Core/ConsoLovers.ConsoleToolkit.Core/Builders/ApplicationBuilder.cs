@@ -9,6 +9,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.Builders;
 using System;
 using System.Collections.Generic;
 
+using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+
 using JetBrains.Annotations;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -115,6 +117,9 @@ internal class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigura
 
    protected void EnsureRequiredServices()
    {
+      if (typeof(IApplicationLogic).IsAssignableFrom(typeof(T)))
+         ServiceCollection.AddSingleton(typeof(IApplicationLogic), s => s.GetService<T>());
+
       ServiceCollection.AddRequiredServices();
       ServiceCollection.AddArgumentTypes<T>();
       ServiceCollection.AddSingleton<IExecutable<T>, Executable<T>>();

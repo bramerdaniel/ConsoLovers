@@ -67,6 +67,12 @@ public static class ApplicationBuilderExtensions
       return builder.ConfigureServices(s => s.AddSingleton(serviceType, implementationType));
    }
 
+   public static IApplicationBuilder<T> AddSingleton<T>(this IApplicationBuilder<T> builder, Type serviceType, object implementation)
+      where T : class
+   {
+      return builder.ConfigureServices(s => s.AddSingleton(serviceType, implementation));
+   }
+
    public static IExecutable<T> Run<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder)
       where T : class
    {

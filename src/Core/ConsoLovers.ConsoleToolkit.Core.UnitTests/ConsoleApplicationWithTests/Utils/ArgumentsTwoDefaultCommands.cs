@@ -14,7 +14,25 @@
       public DefaultExecuteCommand DeaultCommand { get; set; }
    }
 
-   public class ArgumentsWithoutDefaultCommands : IApplicationLogic
+   public class SomeApplicationLogic : IApplicationLogic
+   {
+      public SomeApplicationLogic()
+      {
+         Executed = false;
+         Instances++;
+      }
+
+      public Task ExecuteAsync<T>(T arguments, CancellationToken cancellationToken)
+      {
+         Executed = true;
+         return Task.CompletedTask;
+      }
+
+      public static bool Executed { get; private set; }
+      public static int Instances { get; private set; }
+   }
+
+   public class ArgumentsWithoutDefaultCommands
    {
       [Command("Generic", "g")]
       public GenericExecuteCommand Execute { get; set; }
@@ -24,13 +42,5 @@
 
       [Argument("string", "s")]
       public string String { get; set; }
-
-      public Task ExecuteAsync<T>(T arguments, CancellationToken cancellationToken)
-      {
-         Executed = true;
-         return Task.CompletedTask;
-      }
-
-      public static bool Executed { get; private set; }
    }
 }
