@@ -1,18 +1,15 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ICommandMenuManager.cs" company="KUKA Deutschland GmbH">
+// <copyright file="MenuBuilderBehaviour.cs" company="KUKA Deutschland GmbH">
 //   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace ConsoLovers.ConsoleToolkit.CommandExtensions
 {
-   using ConsoLovers.ConsoleToolkit.Menu;
 
-   /// <summary>Service that can show a consolovers menu from the defined command structure </summary>
-   public interface ICommandMenuManager
+   public enum MenuBuilderBehaviour
    {
-      void Show<T>();
-
-      void UseOptions(ICommandMenuOptions options);
+      ShowAllCommand,
+      WithAttributesOnly
    }
 }

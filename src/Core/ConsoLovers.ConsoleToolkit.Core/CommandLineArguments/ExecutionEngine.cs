@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ExecutionEngine.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2022
+// <copyright file="ExecutionEngine.cs" company="KUKA Deutschland GmbH">
+//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -15,8 +15,12 @@ using JetBrains.Annotations;
 
 public class ExecutionEngine : IExecutionEngine
 {
+   #region Constants and Fields
+
    [NotNull]
    private readonly IServiceProvider serviceProvider;
+
+   #endregion
 
    #region Constructors and Destructors
 
@@ -52,6 +56,16 @@ public class ExecutionEngine : IExecutionEngine
 
       var command = GetMappedCommand(arguments);
       return command != null ? await ExecuteCommandAsync(command, cancellationToken) : null;
+   }
+
+   public void ExecuteCommand(ICommandBase executable, CancellationToken cancellationToken)
+   {
+      ExecuteCommandAsync(executable, cancellationToken).GetAwaiter().GetResult();
+   }
+
+   public void ExecuteCommand(ICommandBase executable)
+   {
+      ExecuteCommand(executable, CancellationToken.None);
    }
 
    public async Task<ICommandBase> ExecuteCommandAsync(ICommandBase executable, CancellationToken cancellationToken)

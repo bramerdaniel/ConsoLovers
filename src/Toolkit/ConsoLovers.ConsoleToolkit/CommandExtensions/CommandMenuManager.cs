@@ -8,6 +8,8 @@ namespace ConsoLovers.ConsoleToolkit.CommandExtensions
 {
    using System;
    using System.Collections.Generic;
+   using System.Linq;
+   using System.Threading;
    using System.Threading.Tasks;
 
    using ConsoLovers.ConsoleToolkit.Core;
@@ -15,6 +17,8 @@ namespace ConsoLovers.ConsoleToolkit.CommandExtensions
    using ConsoLovers.ConsoleToolkit.Menu;
 
    using JetBrains.Annotations;
+
+   using Microsoft.Extensions.DependencyInjection;
 
    public class CommandMenuManager : ICommandMenuManager
    {
@@ -24,7 +28,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandExtensions
 
       private readonly IServiceProvider serviceProvider;
 
-      private IConsoleMenuOptions options;
+      private ICommandMenuOptions commandMenuOptions = new CommandMenuOptions();
 
       #endregion
 
@@ -44,34 +48,46 @@ namespace ConsoLovers.ConsoleToolkit.CommandExtensions
       {
          var menu = new ConsoleMenu
          {
-            Header = options.Header,
-            Footer = options.Footer,
-            SelectionMode = options.SelectionMode,
-            CircularSelection = options.CircularSelection,
-            Selector = options.Selector,
-            ClearOnExecution = options.ClearOnExecution,
-            ExecuteOnIndexSelection = options.ExecuteOnIndexSelection,
-            Expander = options.Expander,
-            IndentSize = options.IndentSize,
-            IndexMenuItems = options.IndexMenuItems,
-            CloseKeys = options.CloseKeys
+            Header = ConsoleMenuOptions.Header,
+            Footer = ConsoleMenuOptions.Footer,
+            SelectionMode = ConsoleMenuOptions.SelectionMode,
+            CircularSelection = ConsoleMenuOptions.CircularSelection,
+            Selector = ConsoleMenuOptions.Selector,
+            ClearOnExecution = ConsoleMenuOptions.ClearOnExecution,
+            ExecuteOnIndexSelection = ConsoleMenuOptions.ExecuteOnIndexSelection,
+            Expander = ConsoleMenuOptions.Expander,
+            IndentSize = ConsoleMenuOptions.IndentSize,
+            IndexMenuItems = ConsoleMenuOptions.IndexMenuItems,
+            CloseKeys = ConsoleMenuOptions.CloseKeys
          };
 
+         foreach (var item in CreateMenuItems<T>())
+            menu.Add(item);
+
+         menu.Show();
+      }
+
+      private IEnumerable<PrintableItem> CreateMenuItems<T>()
+      {
          var classInfo = reflector.GetTypeInfo<T>();
          foreach (var info in classInfo.CommandInfos)
          {
             var menuItem = CreateMenuItem(info);
             if (menuItem != null)
-               menu.Add(menuItem);
+               yield return menuItem;
          }
-
-         menu.Show();
       }
 
-      public void UseOptions(IConsoleMenuOptions options)
+      public void UseOptions([NotNull] ICommandMenuOptions options)
       {
-         this.options = options;
+         commandMenuOptions = options ?? throw new ArgumentNullException(nameof(options));
       }
+
+      #endregion
+
+      #region Properties
+
+      private IConsoleMenuOptions ConsoleMenuOptions => commandMenuOptions.Menu;
 
       #endregion
 
@@ -87,6 +103,20 @@ namespace ConsoLovers.ConsoleToolkit.CommandExtensions
 
       #region Methods
 
+      private  MenuSettingsAttribute GetOrCreateMenuAttribute(CommandInfo info)
+      {
+         var menuAttribute = info.PropertyInfo.GetAttribute<MenuSettingsAttribute>();
+         if (menuAttribute == null)
+         {
+            if (commandMenuOptions.MenuBehaviour == MenuBuilderBehaviour.WithAttributesOnly)
+               return null;
+
+            menuAttribute = new MenuSettingsAttribute(info.ParameterName);
+         }
+
+         return menuAttribute;
+      }
+
       private ConsoleMenuItem CreateMenuItem(CommandInfo info)
       {
          // TODO sort by menu attribute
@@ -94,14 +124,20 @@ namespace ConsoLovers.ConsoleToolkit.CommandExtensions
          // TODO support for additional menu items
          // TODO support for additional description
          // TODO support for additional localization
-         // TODO support for Arguments and options
+         // TODO support for Arguments and ConsoleMenuOptions
 
          var menuAttribute = GetOrCreateMenuAttribute(info);
-         if (menuAttribute.Hide)
+         if (menuAttribute == null || !menuAttribute.Visible)
             return null;
 
          if (info.ArgumentType == null)
             return new ConsoleMenuItem(menuAttribute.DisplayName, x => Execute(x, info));
+
+         var settingsAttribute = (MenuSettingsAttribute)info.ArgumentType
+            .GetCustomAttributes(typeof(MenuSettingsAttribute),true).FirstOrDefault();
+
+         if (settingsAttribute != null && !settingsAttribute.Visible)
+            return null;
 
          var argumentInfo = reflector.GetTypeInfo(info.ArgumentType);
          if (argumentInfo.HasCommands)
@@ -120,24 +156,19 @@ namespace ConsoLovers.ConsoleToolkit.CommandExtensions
          return new ConsoleMenuItem(menuAttribute.DisplayName, x => Execute(x, info));
       }
 
-      private static ConsoleMenuAttribute GetOrCreateMenuAttribute(CommandInfo info)
-      {
-         var menuAttribute = info.PropertyInfo.GetAttribute<ConsoleMenuAttribute>();
-         if (menuAttribute == null)
-         {
-            menuAttribute = new ConsoleMenuAttribute(info.ParameterName);
-         }
-
-         return menuAttribute;
-      }
-
       private void Execute(ConsoleMenuItem menuItem, CommandInfo commandInfo)
       {
          var command = serviceProvider.GetService(commandInfo.ParameterType);
          if (command is IMenuCommand menuCommand)
          {
-            var executionContext = new MenuExecutionContext{ MenuItem = menuItem};
+            var executionContext = new MenuExecutionContext { MenuItem = menuItem };
             menuCommand.ExecuteFromMenu(executionContext);
+         }
+         else if(command is ICommandBase commandBase)
+         {
+            var executionEngine = serviceProvider.GetRequiredService<IExecutionEngine>();
+            executionEngine.ExecuteCommandAsync(commandBase, CancellationToken.None)
+               .GetAwaiter().GetResult();
          }
       }
 

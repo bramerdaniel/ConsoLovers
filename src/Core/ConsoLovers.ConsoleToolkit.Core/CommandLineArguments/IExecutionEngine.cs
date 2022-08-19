@@ -31,6 +31,20 @@ public interface IExecutionEngine
    /// <returns>The command that was executed</returns>
    Task<ICommandBase> ExecuteCommandAsync(ICommandBase executable, CancellationToken cancellationToken);
 
+   /// <summary>Executes the specified <see cref="executable"/>.</summary>
+   /// <param name="executable">The executable <see cref="ICommandBase"/>.</param>
+   /// <param name="cancellationToken">The cancellation token in case the command is an <see cref="IAsyncCommand"/>.</param>
+   void ExecuteCommand(ICommandBase executable, CancellationToken cancellationToken);
+
+   /// <summary>Executes the specified <see cref="executable"/>.</summary>
+   /// <param name="executable">The executable <see cref="ICommandBase"/>.</param>
+   void ExecuteCommand(ICommandBase executable);
+
+   /// <summary>Executes the <see cref="IApplicationLogic"/>.</summary>
+   /// <typeparam name="T"></typeparam>
+   /// <param name="arguments">The arguments.</param>
+   /// <param name="cancellationToken">The cancellation token.</param>
+   /// <returns></returns>
    Task ExecuteAsync<T>(T arguments, CancellationToken cancellationToken);
 
 }

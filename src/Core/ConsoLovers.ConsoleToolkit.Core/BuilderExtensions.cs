@@ -122,6 +122,17 @@ public static class BuilderExtensions
       return applicationBuilder.ConfigureServices(x => x.AddSingleton(applicationLogic));
    }
 
+   public static IApplicationBuilder<T> UseApplicationLogic<T, TArguments>([NotNull] this IApplicationBuilder<T> applicationBuilder, [NotNull] Func<TArguments, CancellationToken, Task> applicationLogic)
+      where T : class, IApplication where TArguments : class
+   {
+      if (applicationBuilder == null)
+         throw new ArgumentNullException(nameof(applicationBuilder));
+      if (applicationLogic == null)
+         throw new ArgumentNullException(nameof(applicationLogic));
+
+      return applicationBuilder.ConfigureServices(x => x.AddSingleton<IApplicationLogic>(new DelegateLogic<TArguments>(applicationLogic)));
+   }
+
    public static IApplicationBuilder<T> UseApplicationLogic<T, TLogic>([NotNull] this IApplicationBuilder<T> applicationBuilder)
       where T : class, IApplication
       where TLogic : class, IApplicationLogic

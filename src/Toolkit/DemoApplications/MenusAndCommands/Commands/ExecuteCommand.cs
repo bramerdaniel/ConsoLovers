@@ -35,6 +35,7 @@ public class ExecuteCommand : IAsyncCommand
    public Task ExecuteAsync(CancellationToken cancellationToken)
    {
       console.WriteLine("Executed");
+      console.ReadLine();
       return Task.CompletedTask;
    }
 

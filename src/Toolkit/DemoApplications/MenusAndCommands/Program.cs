@@ -20,10 +20,11 @@ namespace MenusAndCommands
       private static async Task Main()
       {
          var application = await ConsoleApplicationManager.For<Application>()
-            .UseMenuWithoutArguments(menu =>
+            .UseMenuWithoutArguments(options =>
             {
-               menu.Header = "Hello Menu";
-               menu.CloseKeys = new[] { ConsoleKey.Escape };
+               options.Menu.Header = "Hello Menu";
+               options.Menu.CloseKeys = new[] { ConsoleKey.Escape };
+               options.MenuBehaviour = MenuBuilderBehaviour.ShowAllCommand;
             })
             .RunAsync(CancellationToken.None);
       }
