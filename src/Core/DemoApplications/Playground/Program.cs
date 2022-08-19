@@ -13,6 +13,8 @@ public static class Program
 {
    public static void Main()
    {
+      ConsoleApplicationBuilder.ForArguments<ApplicationArgs>()
+         .Build().RunAsync(Environment.CommandLine, CancellationToken.None);
 
       var app = ConsoleApplicationManager
          .For<PlaygroundApp>()

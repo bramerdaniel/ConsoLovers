@@ -1,42 +1,41 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="GenericApplicationBuilder.cs" company="ConsoLovers">
+// <copyright file="GenericBootstrapper.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Core.Builders
+namespace ConsoLovers.ConsoleToolkit.Core.Bootstrappers
 {
    using System;
    using System.Threading;
    using System.Threading.Tasks;
-
    using Microsoft.Extensions.DependencyInjection;
 
-   /// <summary><see cref="IApplicationBuilder{T}"/> for generic <see cref="IApplication{T}"/>s/// </summary>
+   /// <summary><see cref="IBootstrapper{T}"/> for generic <see cref="IApplication{T}"/>s/// </summary>
    /// <typeparam name="T">The type pf the application</typeparam>
-   /// <seealso cref="ApplicationBuilderBase"/>
-   /// <seealso cref="IApplicationBuilder"/>
-   internal class GenericApplicationBuilder<T> : ApplicationBuilderBase, IApplicationBuilder<T>
+   /// <seealso cref="BootstrapperBase"/>
+   /// <seealso cref="IBootstrapper"/>
+   internal class GenericBootstrapper<T> : BootstrapperBase, IBootstrapper<T>
       where T : class, IApplication
    {
       #region Constructors and Destructors
 
-      public GenericApplicationBuilder()
+      public GenericBootstrapper()
          : base(typeof(T))
       {
       }
 
       #endregion
 
-      #region IApplicationBuilder<T> Members
+      #region IBootstrapper<T> Members
 
       /// <summary>
       ///    Specifies the window height of the console window that should be used. NOTE: this overwrites the values specified by the
       ///    <see cref="T:ConsoLovers.ConsoleToolkit.Core.ConsoleWindowHeightAttribute"/>
       /// </summary>
       /// <param name="height">The expected window height.</param>
-      /// <returns>The current <see cref="T:ConsoLovers.ConsoleToolkit.Core.IApplicationBuilder`1"/> for further configuration</returns>
-      public IApplicationBuilder<T> SetWindowHeight(int height)
+      /// <returns>The current <see cref="T:ConsoLovers.ConsoleToolkit.Core.IBootstrapper`1"/> for further configuration</returns>
+      public IBootstrapper<T> SetWindowHeight(int height)
       {
          WindowHeight = height;
          return this;
@@ -47,14 +46,14 @@ namespace ConsoLovers.ConsoleToolkit.Core.Builders
       ///    <see cref="T:ConsoLovers.ConsoleToolkit.Core.ConsoleWindowWidthAttribute"/>
       /// </summary>
       /// <param name="width">The expected window width.</param>
-      /// <returns>The current <see cref="T:ConsoLovers.ConsoleToolkit.Core.IApplicationBuilder`1"/> for further configuration</returns>
-      public IApplicationBuilder<T> SetWindowWidth(int width)
+      /// <returns>The current <see cref="T:ConsoLovers.ConsoleToolkit.Core.IBootstrapper`1"/> for further configuration</returns>
+      public IBootstrapper<T> SetWindowWidth(int width)
       {
          WindowWidth = width;
          return this;
       }
 
-      public IApplicationBuilder<T> UseServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory)
+      public IBootstrapper<T> UseServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory)
       {
          SetServiceProviderFactory(factory);
          return this;
@@ -65,8 +64,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.Builders
       ///    <see cref="T:ConsoLovers.ConsoleToolkit.Core.ConsoleWindowTitleAttribute"/>
       /// </summary>
       /// <param name="windowTitle">The window title to set.</param>
-      /// <returns>The current <see cref="T:ConsoLovers.ConsoleToolkit.Core.IApplicationBuilder`1"/> for further configuration</returns>
-      public IApplicationBuilder<T> SetWindowTitle(string windowTitle)
+      /// <returns>The current <see cref="T:ConsoLovers.ConsoleToolkit.Core.IBootstrapper`1"/> for further configuration</returns>
+      public IBootstrapper<T> SetWindowTitle(string windowTitle)
       {
          WindowTitle = windowTitle;
          return this;
@@ -76,7 +75,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.Builders
       /// <returns>The created <see cref="T:ConsoLovers.ConsoleToolkit.Core.IApplication"/> of type <see cref="!:T"/></returns>
       public Task<T> RunAsync(CancellationToken cancellationToken) => RunAsync(Environment.CommandLine, cancellationToken);
 
-      public IApplicationBuilder<T> ConfigureServices(Action<IServiceCollection> serviceSetup)
+      public IBootstrapper<T> ConfigureServices(Action<IServiceCollection> serviceSetup)
       {
          serviceSetup(ServiceCollection);
          return this;
@@ -102,7 +101,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.Builders
       {
          var applicationManager = new ConsoleApplicationManagerGeneric<T>(CreateServiceProvider())
          {
-            WindowTitle = WindowTitle, WindowHeight = WindowHeight, WindowWidth = WindowWidth
+            WindowTitle = WindowTitle,
+            WindowHeight = WindowHeight,
+            WindowWidth = WindowWidth
          };
 
          return applicationManager;

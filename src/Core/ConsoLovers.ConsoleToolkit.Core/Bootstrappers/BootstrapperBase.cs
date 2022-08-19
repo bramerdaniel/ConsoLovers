@@ -1,10 +1,12 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ApplicationBuilderBase.cs" company="ConsoLovers">
+// <copyright file="BootstrapperBase.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Core.Builders
+using ConsoLovers.ConsoleToolkit.Core.Builders;
+
+namespace ConsoLovers.ConsoleToolkit.Core.Bootstrappers
 {
    using System;
    using System.Collections.Generic;
@@ -13,7 +15,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.Builders
 
    using Microsoft.Extensions.DependencyInjection;
 
-   internal class ApplicationBuilderBase : IServiceConfigurationHandler
+   internal class BootstrapperBase : IServiceConfigurationHandler
    {
       /// <summary>Gets the type of the application.</summary>
       protected Type ApplicationType { get; }
@@ -26,7 +28,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.Builders
 
       private readonly List<Action<IServiceProvider>> serviceConfigurationActions = new();
 
-      protected ApplicationBuilderBase([NotNull] Type applicationType)
+      protected BootstrapperBase([NotNull] Type applicationType)
       {
          ApplicationType = applicationType ?? throw new ArgumentNullException(nameof(applicationType));
       }

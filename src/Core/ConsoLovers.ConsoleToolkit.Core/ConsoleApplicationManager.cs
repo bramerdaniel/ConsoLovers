@@ -11,6 +11,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
    using System.Threading;
    using System.Threading.Tasks;
 
+   using ConsoLovers.ConsoleToolkit.Core.Bootstrappers;
    using ConsoLovers.ConsoleToolkit.Core.Builders;
 
    using JetBrains.Annotations;
@@ -53,24 +54,24 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       #region Public Methods and Operators
 
-      /// <summary>Creates a applicationBuilder for the given type <see cref="T"/>.</summary>
+      /// <summary>Creates a bootstrapper for the given type <see cref="T"/>.</summary>
       /// <typeparam name="T">The type of the application.</typeparam>
       /// <returns></returns>
-      public static IApplicationBuilder<T> For<T>()
+      public static IBootstrapper<T> For<T>()
          where T : class, IApplication
       {
-         return new GenericApplicationBuilder<T>();
+         return new GenericBootstrapper<T>();
       }
 
       /// <summary>
-      ///    Creates a none generic <see cref="IApplicationBuilder"/> instance, that can be used to configure the <see cref="IApplication"/> of the given
+      ///    Creates a none generic <see cref="IBootstrapper"/> instance, that can be used to configure the <see cref="IApplication"/> of the given
       ///    <see cref="applicationType"/>.
       /// </summary>
       /// <param name="applicationType">Type of the application.</param>
-      /// <returns>The created <see cref="IApplicationBuilder"/></returns>
-      public static IApplicationBuilder For(Type applicationType)
+      /// <returns>The created <see cref="IBootstrapper"/></returns>
+      public static IBootstrapper For(Type applicationType)
       {
-         return new DefaultApplicationBuilder(applicationType);
+         return new DefaultBootstrapper(applicationType);
       }
 
 
