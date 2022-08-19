@@ -33,17 +33,29 @@ internal class Executable<T> : IExecutable<T>
    /// <summary>Gets the arguments.</summary>
    public T Arguments { get; private set; }
 
-   public async Task<IExecutable<T>> RunAsync(string args, CancellationToken cancellation)
+   public async Task<IExecutable<T>> RunAsync(string args, CancellationToken cancellationToken)
    {
-      Arguments = CommandLineEngine.Map<T>(args, Arguments);
-      await ExecutionEngine.ExecuteAsync(Arguments, cancellation);
+      // TODO handle unmapped command line arguments
+      // TODO support exception handling
+
+      Arguments = CommandLineEngine.Map(args, Arguments);
+      var executedCommand = await ExecutionEngine.ExecuteCommandAsync(Arguments, cancellationToken);
+      if (executedCommand == null)
+         await ExecutionEngine.ExecuteAsync(Arguments, cancellationToken);
+
       return this;
    }
 
-   public async Task<IExecutable<T>> RunAsync(string[] args, CancellationToken cancellation)
+   public async Task<IExecutable<T>> RunAsync(string[] args, CancellationToken cancellationToken)
    {
+      // TODO handle unmapped command line arguments
+      // TODO support exception handling
+
       Arguments = CommandLineEngine.Map(args, Arguments);
-      await ExecutionEngine.ExecuteAsync(Arguments, cancellation);
+      var executedCommand = await ExecutionEngine.ExecuteCommandAsync(Arguments, cancellationToken);
+      if (executedCommand == null)
+         await ExecutionEngine.ExecuteAsync(Arguments, cancellationToken);
+
       return this;
    }
 

@@ -8,42 +8,21 @@ namespace CommandLineEngineDemo
 {
    using System;
    using System.Reflection;
-   using System.Resources;
-   using System.Threading;
-   using System.Threading.Tasks;
 
    using ConsoLovers.ConsoleToolkit.Core;
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
-   using ConsoLovers.ConsoleToolkit.Core.DIContainer;
 
    using Microsoft.Extensions.DependencyInjection;
 
-   [ConsoleWindowWidth(140)]
-   [ConsoleWindowHeight(60)]
-   class Program : ConsoleApplication<ApplicationArguments>
+   class Program
    {
-      #region Public Methods and Operators
-
-      public override Task RunWithAsync(ApplicationArguments arguments, CancellationToken cancellationToken)
-      {
-         if (arguments.Wait)
-         {
-            Console.WriteLine("Waiting for another key to be pressed");
-            Console.ReadLine();
-         }
-
-         return Task.CompletedTask;
-      }
-
-      #endregion
-
       #region Methods
 
-      private new static readonly IConsole Console = new ConsoleProxy();
+      private static readonly IConsole Console = new ConsoleProxy();
 
       static void Main()
       {
-         var program = ConsoleApplicationManager.For<Program>()
+         var program = ConsoleApplication.WithArguments<ApplicationArguments>()
             .ConfigureServices(s => { s.AddSingleton(Properties.Resources.ResourceManager); })
             .Run();
 
@@ -51,7 +30,8 @@ namespace CommandLineEngineDemo
          if (program.Arguments != null && program.Arguments.Wait)
          {
             Console.WriteLine();
-            program.WaitForEnter();
+            Console.WriteLine("Press ENTER to continue.");
+            Console.ReadLine();
          }
       }
 
@@ -78,17 +58,8 @@ namespace CommandLineEngineDemo
          }
       }
 
-      protected override void OnUnhandledCommandLineArgument(object sender, CommandLineArgumentEventArgs e)
-      {
-         Console.WriteLine($"Unknown command line argument '{e.Argument.Name}' at index {e.Argument.Index}.", ConsoleColor.Yellow);
-         base.OnUnhandledCommandLineArgument(sender, e);
-      }
-
+      
       #endregion
 
-      public Program(ICommandLineEngine commandLineEngine)
-         : base(commandLineEngine)
-      {
-      }
    }
 }

@@ -1,12 +1,11 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="DefaultServiceRegistrationTests.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2022
+// <copyright file="DefaultServiceRegistrationTests.cs" company="KUKA Deutschland GmbH">
+//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.IntegrationTests;
 
-using System;
 using System.Diagnostics.CodeAnalysis;
 
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
@@ -29,6 +28,29 @@ public class DefaultServiceRegistrationTests
    #region Public Methods and Operators
 
    [TestMethod]
+   public void EnsureArgumentReflectorServiceIsAddedCorrectly()
+   {
+      EnsureServiceAndImplementationAvailable<IArgumentReflector, ArgumentReflector>();
+   }
+
+   [TestMethod]
+   public void EnsureCommandExecutorCanBeReplaced()
+   {
+      var customExecutor = new Mock<IExecutionEngine>();
+
+      var serviceProvider = ConsoleApplication.WithArguments<ApplicationArgs>()
+         .ConfigureServices(s => s.AddSingleton(customExecutor.Object))
+         .CreateServiceProvider();
+
+      serviceProvider.GetService<IExecutionEngine>()
+         .Should().BeSameAs(customExecutor.Object);
+
+      var engine = serviceProvider.GetService<CommandLineEngine>();
+      Assert.IsNotNull(engine);
+      engine.ExecutionEngine.Should().BeSameAs(customExecutor.Object);
+   }
+
+   [TestMethod]
    public void EnsureCommandExecutorServiceIsAddedCorrectly()
    {
       EnsureServiceAndImplementationAvailable<IExecutionEngine, ExecutionEngine>();
@@ -39,37 +61,17 @@ public class DefaultServiceRegistrationTests
    {
       var customParser = new Mock<ICommandLineArgumentParser>();
 
-      var application = ConsoleApplicationManager
-         .For<Application>()
+      var serviceProvider = ConsoleApplication.WithArguments<ApplicationArgs>()
          .ConfigureServices(s => s.AddSingleton(customParser.Object))
-         .BuildApplication();
+         .CreateServiceProvider();
 
-      application.ServiceProvider.GetService<ICommandLineArgumentParser>()
+      serviceProvider.GetService<ICommandLineArgumentParser>()
          .Should().BeSameAs(customParser.Object);
 
-      var engine = application.ServiceProvider.GetService<CommandLineEngine>();
+      var engine = serviceProvider.GetService<CommandLineEngine>();
       Assert.IsNotNull(engine);
       engine.ArgumentParser.Should().BeSameAs(customParser.Object);
    }
-
-   [TestMethod]
-   public void EnsureCommandExecutorCanBeReplaced()
-   {
-      var customExecutor = new Mock<IExecutionEngine>();
-
-      var application = ConsoleApplicationManager
-         .For<Application>()
-         .ConfigureServices(s => s.AddSingleton(customExecutor.Object))
-         .BuildApplication();
-
-      application.ServiceProvider.GetService<IExecutionEngine>()
-         .Should().BeSameAs(customExecutor.Object);
-
-      var engine = application.ServiceProvider.GetService<CommandLineEngine>();
-      Assert.IsNotNull(engine);
-      engine.ExecutionEngine.Should().BeSameAs(customExecutor.Object);
-   }
-
 
    [TestMethod]
    public void EnsureCommandLineArgumentParserServiceIsAddedCorrectly()
@@ -95,12 +97,6 @@ public class DefaultServiceRegistrationTests
       EnsureServiceAndImplementationAvailable<ILocalizationService, DefaultLocalizationService>();
    }
 
-   [TestMethod]
-   public void EnsureArgumentReflectorServiceIsAddedCorrectly()
-   {
-      EnsureServiceAndImplementationAvailable<IArgumentReflector, ArgumentReflector>();
-   }
-
    #endregion
 
    #region Methods
@@ -120,32 +116,5 @@ public class DefaultServiceRegistrationTests
    [UsedImplicitly]
    internal class ApplicationArgs
    {
-      #region Public Properties
-
-      [Argument("key", "keys")] public string ResourceKeys { get; [UsedImplicitly] set; }
-
-      #endregion
-   }
-
-   [UsedImplicitly]
-   private class Application : ConsoleApplication<ApplicationArgs>
-   {
-      #region Constructors and Destructors
-
-      [UsedImplicitly]
-      public Application(ICommandLineEngine commandLineEngine, [JetBrains.Annotations.NotNull] IServiceProvider serviceProvider)
-         : base(commandLineEngine)
-      {
-         ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
-      }
-
-      #endregion
-
-      #region Properties
-
-      [UsedImplicitly]
-      internal IServiceProvider ServiceProvider { get; }
-
-      #endregion
    }
 }

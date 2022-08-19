@@ -54,7 +54,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="XCopyApplication.cs" />
     <Compile Include="XCopyArguments.cs" />
   </ItemGroup>
   <ItemGroup>

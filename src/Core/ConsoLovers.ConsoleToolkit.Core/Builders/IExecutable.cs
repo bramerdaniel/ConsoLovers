@@ -15,6 +15,6 @@ where T : class
    /// <summary>Gets the arguments.</summary>
    T Arguments { get; }
 
-   Task<IExecutable<T>> RunAsync(string args, CancellationToken cancellation);
-   Task<IExecutable<T>> RunAsync(string[] args, CancellationToken cancellation);
+   Task<IExecutable<T>> RunAsync(string args, CancellationToken cancellationToken);
+   Task<IExecutable<T>> RunAsync(string[] args, CancellationToken cancellationToken);
 }

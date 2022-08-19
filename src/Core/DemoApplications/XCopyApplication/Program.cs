@@ -14,9 +14,7 @@ namespace XCopyApplication
    {
       static void Main(string[] args)
       {
-         ConsoleApplicationManager.For<XCopyApplication>()
-            .SetWindowTitle("XCopyApplication")
-            .SetWindowWidth(100)
+         ConsoleApplication.WithArguments<XCopyArguments>()
             .Run(args);
 
          Console.ReadLine();

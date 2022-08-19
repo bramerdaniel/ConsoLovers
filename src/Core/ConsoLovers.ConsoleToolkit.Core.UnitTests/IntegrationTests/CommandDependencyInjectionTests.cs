@@ -27,8 +27,7 @@ public class CommandDependencyInjectionTests
    [TestMethod]
    public async Task EnsureCommandIsExecutedCorrectly()
    {
-      var application = await ConsoleApplicationManager
-         .For<Application>()
+      var application = await ConsoleApplication.WithArguments<ApplicationArgs>()
          .RunAsync("run parameter=ok", CancellationToken.None);
 
       application.Arguments.Command.Executed.Should().BeTrue();
@@ -39,22 +38,12 @@ public class CommandDependencyInjectionTests
    [TestMethod]
    public async Task EnsureServicesAreInjectedIntoCommandsCorrectly()
    {
-      var application = await ConsoleApplicationManager
-         .For<Application>()
+      var application = await ConsoleApplication.WithArguments<ApplicationArgs>()
          .ConfigureServices(s => s.AddSingleton(new Service("Bam")))
          .RunAsync("run", CancellationToken.None);
 
       application.Arguments.Command.Service.Should().NotBeNull();
       application.Arguments.Command.Service.Text.Should().Be("Bam");
-   }
-
-   [UsedImplicitly]
-   private class Application : ConsoleApplication<ApplicationArgs>
-   {
-      public Application(ICommandLineEngine commandLineEngine)
-         : base(commandLineEngine)
-      {
-      }
    }
 
    internal class Service

@@ -30,8 +30,7 @@ public class ApplicationLogicExecutionTests
    {
       var logicMock = new Mock<IApplicationLogic>();
 
-      await ConsoleApplicationManager
-         .For<Application>()
+      await ConsoleApplication.WithArguments<ApplicationArgs>()
          .UseApplicationLogic(logicMock.Object)
          .RunAsync(CancellationToken.None);
 
@@ -43,8 +42,7 @@ public class ApplicationLogicExecutionTests
    {
       var logicMock = new Mock<IApplicationLogic>();
 
-      await ConsoleApplicationManager
-         .For<Application>()
+      await ConsoleApplication.WithArguments<ApplicationArgs>()
          .ConfigureServices(s => s.AddSingleton(logicMock.Object))
          .RunAsync(CancellationToken.None);
 
@@ -56,8 +54,7 @@ public class ApplicationLogicExecutionTests
    {
       var logicMock = new Mock<IApplicationLogic>();
 
-      var application = await ConsoleApplicationManager
-         .For<Application>()
+      var application = await ConsoleApplication.WithArguments<ApplicationArgs>()
          .UseApplicationLogic(logicMock.Object)
          .RunAsync("run", CancellationToken.None);
 
@@ -70,8 +67,7 @@ public class ApplicationLogicExecutionTests
    {
       var logicMock = new Mock<IApplicationLogic>();
 
-      var application = await ConsoleApplicationManager
-         .For<Application>()
+      var application = await ConsoleApplication.WithArguments<ApplicationArgs>()
          .UseApplicationLogic(logicMock.Object)
          .RunAsync("NoCommand=5", CancellationToken.None);
 
@@ -83,22 +79,11 @@ public class ApplicationLogicExecutionTests
    [TestMethod]
    public async Task EnsureExecutingWithoutCustomLogicDoesNotCauseErrors()
    {
-      var application = await ConsoleApplicationManager
-         .For<Application>()
+      var application = await ConsoleApplication.WithArguments<ApplicationArgs>()
          .RunAsync(CancellationToken.None);
 
       application.Should().NotBeNull();
    }
-
-   [UsedImplicitly]
-   private class Application : ConsoleApplication<ApplicationArgs>
-   {
-      public Application(ICommandLineEngine commandLineEngine)
-         : base(commandLineEngine)
-      {
-      }
-   }
-
 
    [UsedImplicitly]
    internal class ApplicationArgs
