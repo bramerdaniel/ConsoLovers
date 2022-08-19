@@ -24,66 +24,43 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests
       [TestMethod]
       public void EnsureSpecifiedCommandIsCalled()
       {
-         using (var testContext = new ApplicationTestContext<ArgumentsWithGenericCommand>())
-         {
-            testContext.RunApplication("execute string=someValue int=30");
+         var executable = ConsoleApplication.WithArguments<ArgumentsWithGenericCommand>()
+            .Run("execute string=someValue int=30");
 
-            testContext.Application.Verify(a => a.RunWithCommand(It.IsAny<GenericExecuteCommand>()), Times.Once);
-
-            testContext.Application.Verify(a => a.RunWith(It.IsAny<ArgumentsWithGenericCommand>()), Times.Never);
-            testContext.Application.Verify(a => a.RunWithAsync(It.IsAny<ArgumentsWithGenericCommand>()), Times.Never);
-            testContext.Application.Verify(a => a.RunWithoutArguments(), Times.Never);
-
-            testContext.Commands.Verify(x => x.Execute("GenericExecute"), Times.Once);
-            testContext.Commands.Verify(x => x.Argument("string", "someValue"), Times.Once);
-            testContext.Commands.Verify(x => x.Argument("int", 30), Times.Once);
-         }
+         executable.Arguments.Execute.EnsureExecuted();
+         executable.Arguments.Execute.Arguments.String.Should().Be("someValue");
+         executable.Arguments.Execute.Arguments.Int.Should().Be(30);
       }
 
       [TestMethod]
       public void EnsureDefaultCommandIsCalledWhenThereAreArgumentsButNoCommand()
       {
-         using (var testContext = new ApplicationTestContext<ArgumentsWithGenericDefaultCommand>())
-         {
-            testContext.RunApplication("string=someValue");
+         var executable = ConsoleApplication.WithArguments<ArgumentsWithGenericDefaultCommand>()
+            .Run("string=someValue");
 
-            testContext.Application.Verify(a => a.RunWithCommand(It.IsAny<GenericExecuteCommand>()), Times.Once);
-
-            testContext.Application.Verify(a => a.RunWith(It.IsAny<ArgumentsWithGenericDefaultCommand>()), Times.Never);
-            testContext.Application.Verify(a => a.RunWithAsync(It.IsAny<ArgumentsWithGenericDefaultCommand>()), Times.Never);
-            testContext.Application.Verify(a => a.RunWithoutArguments(), Times.Never);
-
-            testContext.Commands.Verify(x => x.Execute("GenericExecute"), Times.Once);
-            testContext.Commands.Verify(x => x.Argument("string","someValue"), Times.Once);
-            testContext.Commands.Verify(x => x.Argument("int", It.IsAny<object>()), Times.Never);
-         }
+         executable.Arguments.Execute.EnsureExecuted();
+         executable.Arguments.Execute.Arguments.String.Should().Be("someValue");
       }
 
       [TestMethod]
       public void EnsureExceptionIsThrownWhenTwoDefaultCommandAreSpecified()
       {
-         using (var testContext = new ApplicationTestContext<ArgumentsTwoDefaultCommands>())
-         {
-            testContext.Invoking(x => x.RunApplication()).Should().Throw<InvalidOperationException>();
-         }
+         var executable = ConsoleApplication.WithArguments<ArgumentsTwoDefaultCommands>();
+         executable.Invoking(x => x.Run()).Should().Throw<InvalidOperationException>();
       }
 
       [TestMethod]
       public void EnsureApplicationRunsWithArgumentsWhenNoDefaultCommandIsSpecified()
       {
-         using (var testContext = new ApplicationTestContext<ArgumentsWithoutDefaultCommands>())
-         {
-            testContext.RunApplication("string=forTheApplication");
+         var executable = ConsoleApplication.WithArguments<ArgumentsWithoutDefaultCommands>()
+            .AddSingleton(typeof(IApplicationLogic), typeof(ArgumentsWithoutDefaultCommands))
+            .Run("string=forTheApplication");
 
-            testContext.Application.Verify(a => a.RunWithCommand(It.IsAny<ICommand>()), Times.Never);
+         executable.Arguments.Execute.Should().BeNull();
+         executable.Arguments.DefaultCommand.Should().BeNull();
+         executable.Arguments.String.Should().Be("forTheApplication");
 
-            testContext.Application.Verify(a => a.RunWithAsync(It.IsAny<ArgumentsWithoutDefaultCommands>()), Times.Once);
-            testContext.Application.Verify(a => a.RunWithoutArguments(), Times.Never);
-            testContext.Application.Verify(a => a.Argument("string", "forTheApplication"), Times.Once);
-
-            testContext.Commands.Verify(x => x.Execute("DefaultExecute"), Times.Never);
-            testContext.Commands.Verify(x => x.Execute("GenericExecute"), Times.Never);
-         }
+         ArgumentsWithoutDefaultCommands.Executed.Should().BeTrue();
       }
 
       [TestMethod]

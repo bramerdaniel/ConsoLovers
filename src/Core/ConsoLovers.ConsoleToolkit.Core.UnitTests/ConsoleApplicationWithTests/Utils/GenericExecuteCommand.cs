@@ -1,46 +1,41 @@
-﻿namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests.Utils
-{
-   using System;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="GenericExecuteCommand.cs" company="KUKA Deutschland GmbH">
+//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 
+namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests.Utils
+{
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
-   using JetBrains.Annotations;
+   using Microsoft.VisualStudio.TestTools.UnitTesting;
 
    public class GenericExecuteCommand : ICommand<TestCommandArguments>
    {
-      private readonly ICommandVerification verification;
-
-      private TestCommandArguments arguments;
-
-      public GenericExecuteCommand([NotNull] ICommandVerification verification)
-      {
-         if (verification == null)
-            throw new ArgumentNullException(nameof(verification));
-
-         this.verification = verification;
-      }
+      #region ICommand<TestCommandArguments> Members
 
       public void Execute()
       {
-         verification.Execute("GenericExecute");
+         Executed = true;
       }
 
-      public TestCommandArguments Arguments
+      public TestCommandArguments Arguments { get; set; }
+
+      #endregion
+
+      #region Public Properties
+
+      public bool Executed { get; private set; }
+
+      #endregion
+
+      #region Public Methods and Operators
+
+      public void EnsureExecuted()
       {
-         get
-         {
-            return arguments;
-         }
-         set
-         {
-            if (value.String != null)
-               verification.Argument("string", value.String);
-
-            if (value.Int > 0)
-               verification.Argument("int", value.Int);
-
-            arguments = value;
-         }
+         Assert.IsTrue(Executed, "Command was not executed as expected");
       }
+
+      #endregion
    }
 }

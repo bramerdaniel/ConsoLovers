@@ -12,6 +12,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.IntegrationTests.WithCommand
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests.Utils;
 
+   using FluentAssertions;
+
    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
    using Moq;
@@ -38,30 +40,24 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.IntegrationTests.WithCommand
       [TestMethod]
       public void EnsureCommandParametersWithNameWorksCorrectly()
       {
-         using (var testContext = new ApplicationTestContext<AppArgs>())
-         {
             var path = "C:\\SomeDirectory\\SomeFile.txt";
-            testContext.RunApplication($"-e firstName=\"{path}\" -code");
-            testContext.VerifyCommandExecuted<GenericCommand<CommandArgs>>();
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(AppArgs.ExecuteProperty), Times.Once);
+            var executable = ConsoleApplication.WithArguments<AppArgs>()
+               .Run($"-e firstName=\"{path}\" -code");
 
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(CommandArgs.FirstNameProperty, path), Times.Once);
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(CommandArgs.CodeProperty, true), Times.Once);
-         }
+            executable.Arguments.Execute.Should().NotBeNull();
+            executable.Arguments.Execute.Arguments.FirstName.Should().Be(path);
+            executable.Arguments.Execute.Arguments.Code.Should().BeTrue();
       }
 
       [TestMethod]
       public void EnsureMissingIndexedParametersWorksCorrectly()
       {
-         using (var testContext = new ApplicationTestContext<AppArgs>())
-         {
-            testContext.RunApplication("-e -code");
-            testContext.VerifyCommandExecuted<GenericCommand<CommandArgs>>();
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(AppArgs.ExecuteProperty), Times.Once);
+         var executable = ConsoleApplication.WithArguments<AppArgs>()
+            .Run("-e -code");
 
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(CommandArgs.FirstNameProperty, "code"), Times.Never);
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(CommandArgs.CodeProperty, true), Times.Once);
-         }
+         executable.Arguments.Execute.Should().NotBeNull();
+         executable.Arguments.Execute.Arguments.FirstName.Should().BeNull();
+         executable.Arguments.Execute.Arguments.Code.Should().BeTrue();
       }
 
       [TestMethod]
