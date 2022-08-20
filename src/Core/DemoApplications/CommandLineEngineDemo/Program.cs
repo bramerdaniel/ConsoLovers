@@ -17,16 +17,15 @@ namespace CommandLineEngineDemo
    class Program
    {
       #region Methods
-
-      private static readonly IConsole Console = new ConsoleProxy();
-
+      
       static void Main()
       {
          var program = ConsoleApplication.WithArguments<ApplicationArguments>()
-            .ConfigureServices(s => { s.AddSingleton(Properties.Resources.ResourceManager); })
+            .AddResourceManager(Properties.Resources.ResourceManager)
             .Run();
 
          PrintArgs(program.Arguments);
+
          if (program.Arguments != null && program.Arguments.Wait)
          {
             Console.WriteLine();

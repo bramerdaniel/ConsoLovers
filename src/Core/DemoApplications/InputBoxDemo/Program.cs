@@ -18,10 +18,10 @@ namespace InputBoxDemo
       {
          var colorNames = Enum.GetNames(typeof(ConsoleColor));
          var random = new Random(DateTime.Now.Millisecond);
-         var backgound = random.Next(0, colorNames.Length - 1);
+         var background = random.Next(0, colorNames.Length - 1);
          var foreground = random.Next(0, colorNames.Length - 1);
 
-         return colorNames[backgound] + " " + colorNames[foreground];
+         return colorNames[background] + " " + colorNames[foreground];
       }
 
       static void Main()
@@ -33,14 +33,14 @@ namespace InputBoxDemo
          password = new InputBox<string>("Enter password : ", "Password") { IsPassword = true, PasswordChar = '$', PlaceholderChar = '.' }.ReadLine(10);
          Console.WriteLine(password);
 
-         int inty = new InputBox<int>("Enter an integer: ").ReadLine();
-         Console.WriteLine(inty);
+         int intValue = new InputBox<int>("Enter an integer: ").ReadLine();
+         Console.WriteLine(intValue);
 
-         double douby = new InputBox<double>("Enter an double: ").ReadLine();
-         Console.WriteLine(douby);
+         double doubleValue = new InputBox<double>("Enter an double: ").ReadLine();
+         Console.WriteLine(doubleValue);
 
-         bool booly = new InputBox<bool>("Enter an bool : ").ReadLine();
-         Console.WriteLine(booly);
+         bool boolValue = new InputBox<bool>("Enter an bool : ").ReadLine();
+         Console.WriteLine(boolValue);
 
          var text = new InputBox<string>("Enter some long text: ").ReadLine();
          Console.WriteLine(text);

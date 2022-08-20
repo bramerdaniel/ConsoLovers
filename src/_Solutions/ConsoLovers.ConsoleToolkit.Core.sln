@@ -22,6 +22,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExceptionFormatterDemo", ".
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCopyApplication", "..\Core\DemoApplications\XCopyApplication\XCopyApplication.csproj", "{9C3A99DB-0AE9-4F86-9810-FBEBD8FF8493}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InputBoxDemo", "..\Core\DemoApplications\InputBoxDemo\InputBoxDemo.csproj", "{58701FB8-1CFA-408B-9673-7C459EE1CED3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,6 +54,10 @@ Global
 		{9C3A99DB-0AE9-4F86-9810-FBEBD8FF8493}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9C3A99DB-0AE9-4F86-9810-FBEBD8FF8493}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9C3A99DB-0AE9-4F86-9810-FBEBD8FF8493}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58701FB8-1CFA-408B-9673-7C459EE1CED3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58701FB8-1CFA-408B-9673-7C459EE1CED3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58701FB8-1CFA-408B-9673-7C459EE1CED3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58701FB8-1CFA-408B-9673-7C459EE1CED3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -61,6 +67,7 @@ Global
 		{88539BCD-2FFB-41ED-BF95-1C97D0073975} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
 		{543F910E-1FD6-401C-A15A-070D8F17C380} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
 		{9C3A99DB-0AE9-4F86-9810-FBEBD8FF8493} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
+		{58701FB8-1CFA-408B-9673-7C459EE1CED3} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {96E66A12-23DF-4590-A1FA-F6206E6C8F89}
