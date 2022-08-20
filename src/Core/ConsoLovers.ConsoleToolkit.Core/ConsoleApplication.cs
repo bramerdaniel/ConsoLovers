@@ -20,6 +20,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
    /// <seealso cref="IApplication{T}"/>
    /// <seealso cref="IArgumentInitializer{T}"/>
    /// <seealso cref="IExceptionHandler"/>
+   [Obsolete("Will not be supported any longer. User ConsoleApplication.ForArguments<T> instead.")]
    public abstract class ConsoleApplication<T> : IApplication<T>, IArgumentInitializer<T>, IExceptionHandler
       where T : class
    {

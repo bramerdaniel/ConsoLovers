@@ -12,11 +12,11 @@ namespace ConsoLovers.ConsoleToolkit.Core
    using System.Threading.Tasks;
 
    using ConsoLovers.ConsoleToolkit.Core.Bootstrappers;
-   using ConsoLovers.ConsoleToolkit.Core.Builders;
 
    using JetBrains.Annotations;
 
    /// <summary>This class is the starting point for running an <see cref="IApplication"/> or <see cref="IApplication{T}"/></summary>
+   [Obsolete("Will not be supported any longer. User ConsoleApplication.ForArguments<T> instead.")]
    public class ConsoleApplicationManager
    {
       /// <summary>Gets the type of the application the <see cref="ConsoleApplicationManager"/> was created for.</summary>
@@ -62,18 +62,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       {
          return new GenericBootstrapper<T>();
       }
-
-      /// <summary>
-      ///    Creates a none generic <see cref="IBootstrapper"/> instance, that can be used to configure the <see cref="IApplication"/> of the given
-      ///    <see cref="applicationType"/>.
-      /// </summary>
-      /// <param name="applicationType">Type of the application.</param>
-      /// <returns>The created <see cref="IBootstrapper"/></returns>
-      public static IBootstrapper For(Type applicationType)
-      {
-         return new DefaultBootstrapper(applicationType);
-      }
-
+      
 
       /// <summary>Creates and runs an application of the given type with the given arguments.</summary>
       /// <param name="args">The arguments.</param>

@@ -163,6 +163,18 @@ public static class ApplicationBuilderExtensions
    }
 
    public static IApplicationBuilder<T> UseApplicationLogic<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder,
+      [JetBrains.Annotations.NotNull] IApplicationLogic<T> applicationLogic)
+      where T : class
+   {
+      if (builder == null)
+         throw new ArgumentNullException(nameof(builder));
+      if (applicationLogic == null)
+         throw new ArgumentNullException(nameof(applicationLogic));
+
+      return builder.ConfigureServices(x => x.AddSingleton(applicationLogic));
+   }
+
+   public static IApplicationBuilder<T> UseApplicationLogic<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder,
       [JetBrains.Annotations.NotNull] Func<T, CancellationToken, Task> applicationLogic)
       where T : class
    {

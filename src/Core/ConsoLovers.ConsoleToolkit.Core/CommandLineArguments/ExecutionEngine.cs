@@ -85,8 +85,16 @@ public class ExecutionEngine : IExecutionEngine
 
    public async Task ExecuteAsync<T>(T arguments, CancellationToken cancellationToken)
    {
-      var applicationLogic = serviceProvider.GetRequiredService<IApplicationLogic>();
-      await applicationLogic.ExecuteAsync(arguments, cancellationToken);
+      var typedLogic = serviceProvider.GetService<IApplicationLogic<T>>();
+      if (typedLogic != null)
+      {
+         await typedLogic.ExecuteAsync(arguments, cancellationToken);
+      }
+      else
+      {
+         var applicationLogic = serviceProvider.GetRequiredService<IApplicationLogic>();
+         await applicationLogic.ExecuteAsync(arguments, cancellationToken);
+      }
    }
 
    #endregion

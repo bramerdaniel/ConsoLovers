@@ -77,6 +77,34 @@ public class ApplicationLogicExecutionTests
    }
 
    [TestMethod]
+   public void EnsureTypedApplicationLogicIsExecutedCorrectly()
+   {
+      var applicationLogic = new Logic();
+
+      var application = ConsoleApplication.WithArguments<ApplicationArgs>()
+         .UseApplicationLogic(applicationLogic)
+         .Run();
+
+      applicationLogic.Executed.Should().BeTrue();
+      applicationLogic.Arguments.Should().BeSameAs(application.Arguments);
+   }
+
+   class Logic : IApplicationLogic<ApplicationArgs>
+   {
+      public Task ExecuteAsync(ApplicationArgs arguments, CancellationToken cancellationToken)
+      {
+         Executed = true;
+         Arguments = arguments;
+         return Task.CompletedTask;
+      }
+
+      public ApplicationArgs Arguments { get; private set; }
+
+      public bool Executed { get; private set; }
+   }
+
+
+   [TestMethod]
    public async Task EnsureExecutingWithoutCustomLogicDoesNotCauseErrors()
    {
       var application = await ConsoleApplication.WithArguments<ApplicationArgs>()
