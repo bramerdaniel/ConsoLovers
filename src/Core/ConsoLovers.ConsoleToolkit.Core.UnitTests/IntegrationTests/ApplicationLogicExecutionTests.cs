@@ -30,8 +30,7 @@ public class ApplicationLogicExecutionTests
    {
       var logicMock = new Mock<IApplicationLogic>();
 
-      await ConsoleApplicationManager
-         .For<Application>()
+      await ConsoleApplication.WithArguments<ApplicationArgs>()
          .UseApplicationLogic(logicMock.Object)
          .RunAsync(CancellationToken.None);
 
@@ -43,8 +42,7 @@ public class ApplicationLogicExecutionTests
    {
       var logicMock = new Mock<IApplicationLogic>();
 
-      await ConsoleApplicationManager
-         .For<Application>()
+      await ConsoleApplication.WithArguments<ApplicationArgs>()
          .ConfigureServices(s => s.AddSingleton(logicMock.Object))
          .RunAsync(CancellationToken.None);
 
@@ -56,8 +54,7 @@ public class ApplicationLogicExecutionTests
    {
       var logicMock = new Mock<IApplicationLogic>();
 
-      var application = await ConsoleApplicationManager
-         .For<Application>()
+      var application = await ConsoleApplication.WithArguments<ApplicationArgs>()
          .UseApplicationLogic(logicMock.Object)
          .RunAsync("run", CancellationToken.None);
 
@@ -70,8 +67,7 @@ public class ApplicationLogicExecutionTests
    {
       var logicMock = new Mock<IApplicationLogic>();
 
-      var application = await ConsoleApplicationManager
-         .For<Application>()
+      var application = await ConsoleApplication.WithArguments<ApplicationArgs>()
          .UseApplicationLogic(logicMock.Object)
          .RunAsync("NoCommand=5", CancellationToken.None);
 
@@ -81,24 +77,41 @@ public class ApplicationLogicExecutionTests
    }
 
    [TestMethod]
+   public void EnsureTypedApplicationLogicIsExecutedCorrectly()
+   {
+      var applicationLogic = new Logic();
+
+      var application = ConsoleApplication.WithArguments<ApplicationArgs>()
+         .UseApplicationLogic(applicationLogic)
+         .Run();
+
+      applicationLogic.Executed.Should().BeTrue();
+      applicationLogic.Arguments.Should().BeSameAs(application.Arguments);
+   }
+
+   class Logic : IApplicationLogic<ApplicationArgs>
+   {
+      public Task ExecuteAsync(ApplicationArgs arguments, CancellationToken cancellationToken)
+      {
+         Executed = true;
+         Arguments = arguments;
+         return Task.CompletedTask;
+      }
+
+      public ApplicationArgs Arguments { get; private set; }
+
+      public bool Executed { get; private set; }
+   }
+
+
+   [TestMethod]
    public async Task EnsureExecutingWithoutCustomLogicDoesNotCauseErrors()
    {
-      var application = await ConsoleApplicationManager
-         .For<Application>()
+      var application = await ConsoleApplication.WithArguments<ApplicationArgs>()
          .RunAsync(CancellationToken.None);
 
       application.Should().NotBeNull();
    }
-
-   [UsedImplicitly]
-   private class Application : ConsoleApplication<ApplicationArgs>
-   {
-      public Application(ICommandLineEngine commandLineEngine)
-         : base(commandLineEngine)
-      {
-      }
-   }
-
 
    [UsedImplicitly]
    internal class ApplicationArgs

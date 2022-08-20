@@ -10,7 +10,7 @@ using System;
 
 using ConsoLovers.ConsoleToolkit.Core.Builders;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
-using ConsoLovers.ConsoleToolkit.Core.DefaultImplementations;
+using ConsoLovers.ConsoleToolkit.Core.Services;
 
 public class TypeHelpProviderSetup : SetupBase<TypeHelpProvider>
 {

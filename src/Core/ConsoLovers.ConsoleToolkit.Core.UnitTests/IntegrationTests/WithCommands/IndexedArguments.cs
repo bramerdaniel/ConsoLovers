@@ -12,6 +12,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.IntegrationTests.WithCommand
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests.Utils;
 
+   using FluentAssertions;
+
    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
    using Moq;
@@ -23,133 +25,97 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.IntegrationTests.WithCommand
       [TestMethod]
       public void EnsureCommandParametersWithIndexWorksCorrectly()
       {
-         using (var testContext = new ApplicationTestContext<AppArgs>())
-         {
-            var path = "C:\\SomeDirectory\\SomeFile.txt";
-            testContext.RunApplication($"-e \"{path}\" -code");
-            testContext.VerifyCommandExecuted<GenericCommand<CommandArgs>>();
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(AppArgs.ExecuteProperty), Times.Once);
+         var path = "C:\\SomeDirectory\\SomeFile.txt";
 
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(CommandArgs.FirstNameProperty, path), Times.Once);
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(CommandArgs.CodeProperty, true), Times.Once);
-         }
+         var application = ConsoleApplication.WithArguments<AppArgs>()
+            .Run($"-e \"{path}\" -code");
+
+         application.Arguments.Execute.Should().NotBeNull();
+         application.Arguments.Execute.Arguments.FirstName.Should().Be(path);
+         application.Arguments.Execute.Arguments.Code.Should().BeTrue();
       }
 
       [TestMethod]
       public void EnsureCommandParametersWithNameWorksCorrectly()
       {
-         using (var testContext = new ApplicationTestContext<AppArgs>())
-         {
             var path = "C:\\SomeDirectory\\SomeFile.txt";
-            testContext.RunApplication($"-e firstName=\"{path}\" -code");
-            testContext.VerifyCommandExecuted<GenericCommand<CommandArgs>>();
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(AppArgs.ExecuteProperty), Times.Once);
+            var executable = ConsoleApplication.WithArguments<AppArgs>()
+               .Run($"-e firstName=\"{path}\" -code");
 
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(CommandArgs.FirstNameProperty, path), Times.Once);
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(CommandArgs.CodeProperty, true), Times.Once);
-         }
+            executable.Arguments.Execute.Should().NotBeNull();
+            executable.Arguments.Execute.Arguments.FirstName.Should().Be(path);
+            executable.Arguments.Execute.Arguments.Code.Should().BeTrue();
       }
 
       [TestMethod]
       public void EnsureMissingIndexedParametersWorksCorrectly()
       {
-         using (var testContext = new ApplicationTestContext<AppArgs>())
-         {
-            testContext.RunApplication("-e -code");
-            testContext.VerifyCommandExecuted<GenericCommand<CommandArgs>>();
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(AppArgs.ExecuteProperty), Times.Once);
+         var executable = ConsoleApplication.WithArguments<AppArgs>()
+            .Run("-e -code");
 
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(CommandArgs.FirstNameProperty, "code"), Times.Never);
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(CommandArgs.CodeProperty, true), Times.Once);
-         }
+         executable.Arguments.Execute.Should().NotBeNull();
+         executable.Arguments.Execute.Arguments.FirstName.Should().BeNull();
+         executable.Arguments.Execute.Arguments.Code.Should().BeTrue();
       }
 
       [TestMethod]
       public void EnsureApplicationParameterWorksCorrectly()
       {
-         using (var testContext = new ApplicationTestContext<AppArgs>())
-         {
-            testContext.RunApplication("-e path -code");
-            testContext.VerifyCommandExecuted<GenericCommand<CommandArgs>>();
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(AppArgs.ExecuteProperty), Times.Once);
+         var executable = ConsoleApplication.WithArguments<AppArgs>()
+            .Run("-e path -code");
 
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(CommandArgs.FirstNameProperty, "path"), Times.Once);
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(CommandArgs.LastNameProperty), Times.Never);
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(CommandArgs.CodeProperty, true), Times.Once);
-         }
+         executable.Arguments.Execute.Should().NotBeNull();
+         executable.Arguments.Execute.Arguments.FirstName.Should().Be("path");
+         executable.Arguments.Execute.Arguments.LastName.Should().BeNull();
+         executable.Arguments.Execute.Arguments.Code.Should().BeTrue();
       }
 
       [TestMethod]
       public void EnsureApplicationParameterWorksCorrectlyEvenWhenIndexedArgumentsAreUsedAndOneIsMissing()
       {
-         // new TestApplication<AppArgs>();
+         var application = ConsoleApplication.WithArguments<AppArgs>()
+            .Run("-e rudolf -wait");
 
-         using (var testContext = new ApplicationTestContext<AppArgs>())
-         {
-            testContext.RunApplication("-e rudolf -wait");
-            testContext.VerifyCommandExecuted<GenericCommand<CommandArgs>>();
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(AppArgs.ExecuteProperty), Times.Once);
-           
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(CommandArgs.FirstNameProperty, "rudolf"), Times.Once);
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(CommandArgs.LastNameProperty), Times.Never);
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(AppArgs.WaitProperty, true), Times.Once);
-         }
+         application.Arguments.Execute.Should().NotBeNull();
+         application.Arguments.Execute.Arguments.FirstName.Should().Be("rudolf");
+         application.Arguments.Execute.Arguments.LastName.Should().BeNull();
+         application.Arguments.Wait.Should().BeTrue();
       }
 
       [TestMethod]
       public void EnsureTwoNamedParametersWorkInAnyOrder()
       {
-         using (var testContext = new ApplicationTestContext<AppArgs>())
-         {
-            testContext.RunApplication("-e lastname=engelbert firstname=peter -code");
-            testContext.VerifyCommandExecuted<GenericCommand<CommandArgs>>();
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(AppArgs.ExecuteProperty), Times.Once);
-            
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(CommandArgs.FirstNameProperty, "peter"), Times.Once);
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(CommandArgs.LastNameProperty, "engelbert"), Times.Once);
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(CommandArgs.CodeProperty, true), Times.Once);
-         }
+         var executable = ConsoleApplication.WithArguments<AppArgs>()
+            .Run("-e lastname=engelbert firstname=peter -code");
 
-         using (var testContext = new ApplicationTestContext<AppArgs>())
-         {
-            testContext.RunApplication("-e firstname=peter -code lastname=engelbert");
-            testContext.VerifyCommandExecuted<GenericCommand<CommandArgs>>();
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(AppArgs.ExecuteProperty), Times.Once);
-            
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(CommandArgs.FirstNameProperty, "peter"), Times.Once);
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(CommandArgs.LastNameProperty, "engelbert"), Times.Once);
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(CommandArgs.CodeProperty, true), Times.Once);
-         }
+         executable.Arguments.Execute.Should().NotBeNull();
+         executable.Arguments.Execute.Arguments.FirstName.Should().Be("peter");
+         executable.Arguments.Execute.Arguments.LastName.Should().Be("engelbert");
+         executable.Arguments.Execute.Arguments.Code.Should().BeTrue();
       }
 
       [TestMethod]
       public void EnsureSingleNamedParametersWorkOnWrongIndex()
       {
-         using (var testContext = new ApplicationTestContext<AppArgs>())
-         {
-            testContext.RunApplication("-e lastName=huber -wait");
-            testContext.VerifyCommandExecuted<GenericCommand<CommandArgs>>();
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(AppArgs.ExecuteProperty), Times.Once);
-            
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(CommandArgs.FirstNameProperty), Times.Never);
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(CommandArgs.LastNameProperty, "huber"), Times.Once);
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(AppArgs.WaitProperty, true), Times.Once);
-         }
+         var executable = ConsoleApplication.WithArguments<AppArgs>()
+            .Run("-e lastName=huber -wait");
+
+         executable.Arguments.Execute.Should().NotBeNull();
+         executable.Arguments.Execute.Arguments.FirstName.Should().BeNull();
+         executable.Arguments.Execute.Arguments.LastName.Should().Be("huber");
+         executable.Arguments.Wait.Should().BeTrue();
       }
 
       [TestMethod]
       public void EnsureTwoIndexedParametersWorkInCorrectOrder()
       {
-         using (var testContext = new ApplicationTestContext<AppArgs>())
-         {
-            testContext.RunApplication("-e hans müller -wait");
-            testContext.VerifyCommandExecuted<GenericCommand<CommandArgs>>();
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(AppArgs.ExecuteProperty), Times.Once);
+         var executable = ConsoleApplication.WithArguments<AppArgs>()
+            .Run("-e hans müller -wait");
 
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(CommandArgs.FirstNameProperty, "hans"), Times.Once);
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(CommandArgs.LastNameProperty, "müller"), Times.Once);
-            testContext.Application.Verify(a => a.MappedCommandLineParameter(AppArgs.WaitProperty, true), Times.Once);
-         }
+         executable.Arguments.Execute.Should().NotBeNull();
+         executable.Arguments.Execute.Arguments.FirstName.Should().Be("hans");
+         executable.Arguments.Execute.Arguments.LastName.Should().Be("müller");
+         executable.Arguments.Wait.Should().BeTrue();
       }
 
       public class AppArgs

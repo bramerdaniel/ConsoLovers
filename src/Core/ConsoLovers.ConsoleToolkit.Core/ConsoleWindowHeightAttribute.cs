@@ -10,6 +10,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
    /// <summary>Attribute that is used to set the window height of the console window</summary>
    /// <seealso cref="System.Attribute"/>
+   [Obsolete]
    public class ConsoleWindowHeightAttribute : Attribute
    {
       #region Constructors and Destructors

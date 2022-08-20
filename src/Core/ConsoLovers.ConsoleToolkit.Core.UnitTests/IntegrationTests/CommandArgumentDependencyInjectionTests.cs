@@ -1,12 +1,11 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="CommandArgumentDependencyInjectionTests.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2022
+// <copyright file="CommandArgumentDependencyInjectionTests.cs" company="KUKA Deutschland GmbH">
+//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.IntegrationTests;
 
-using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,11 +23,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Reviewed. Suppression is OK here.")]
 public class CommandArgumentDependencyInjectionTests
 {
+   #region Public Methods and Operators
+
    [TestMethod]
    public async Task EnsureServicesAreInjectedIntoCommandsCorrectly()
    {
-      var application = await ConsoleApplicationManager
-         .For<Application>()
+      var application = await ConsoleApplication.WithArguments<ApplicationArgs>()
          .ConfigureServices(s => s.AddTransient<Service>())
          .RunAsync("run Hello", CancellationToken.None);
 
@@ -36,32 +36,46 @@ public class CommandArgumentDependencyInjectionTests
       application.Arguments.Command.Result.Should().Be("HelloFromCommand");
    }
 
-   [UsedImplicitly]
-   private class Application : ConsoleApplication<ApplicationArgs>
-   {
-      public Application(ICommandLineEngine commandLineEngine)
-         : base(commandLineEngine)
-      {
-      }
-   }
-
-   internal class Service
-   {
-
-      public string Text => "FromCommand";
-   }
+   #endregion
 
    [UsedImplicitly]
    internal class ApplicationArgs
    {
-      [Command("run")]
-      internal RunCommand Command { get; [UsedImplicitly] set; }
+      #region Properties
+
+      [Command("run")] internal RunCommand Command { get; [UsedImplicitly] set; }
+
+      #endregion
+
+      [UsedImplicitly]
+      internal class CommandArgs
+      {
+         #region Constructors and Destructors
+
+         public CommandArgs(Service service)
+         {
+            Service = service;
+         }
+
+         #endregion
+
+         #region Public Properties
+
+         [Argument("parameter", Index = 0)] public string Parameter { get; set; }
+
+         #endregion
+
+         #region Properties
+
+         internal Service Service { get; }
+
+         #endregion
+      }
 
       [UsedImplicitly]
       internal class RunCommand : IAsyncCommand<CommandArgs>
       {
-         public string Result { get; private set; }
-
+         #region IAsyncCommand<CommandArgs> Members
 
          public Task ExecuteAsync(CancellationToken cancellationToken)
          {
@@ -70,21 +84,23 @@ public class CommandArgumentDependencyInjectionTests
          }
 
          public CommandArgs Arguments { get; set; }
-      }
 
-      [UsedImplicitly]
-      internal class CommandArgs
-      {
-         internal Service Service { get; }
+         #endregion
 
-         public CommandArgs(Service service)
-         {
-            Service = service;
-         }
+         #region Public Properties
 
-         [Argument("parameter", Index = 0)]
-         public string Parameter { get; set; }
+         public string Result { get; private set; }
+
+         #endregion
       }
    }
 
+   internal class Service
+   {
+      #region Public Properties
+
+      public string Text => "FromCommand";
+
+      #endregion
+   }
 }

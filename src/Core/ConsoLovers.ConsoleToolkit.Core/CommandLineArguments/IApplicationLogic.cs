@@ -13,3 +13,8 @@ public interface IApplicationLogic
 {
    Task ExecuteAsync<T>(T arguments, CancellationToken cancellationToken);
 }
+
+public interface IApplicationLogic<in T>
+{
+   Task ExecuteAsync(T arguments, CancellationToken cancellationToken);
+}

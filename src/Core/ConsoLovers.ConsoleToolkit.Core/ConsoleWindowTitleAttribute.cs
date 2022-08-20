@@ -12,6 +12,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
    /// <summary>Attribute that is used to set the title of the console window</summary>
    /// <seealso cref="System.Attribute"/>
+   [Obsolete]
    public class ConsoleWindowTitleAttribute : Attribute
    {
       #region Constructors and Destructors

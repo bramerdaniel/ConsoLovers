@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ReflectionExtensions.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2022
+// <copyright file="ReflectionExtensions.cs" company="KUKA Deutschland GmbH">
+//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -14,7 +14,7 @@ using System.Reflection;
 
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing;
-using ConsoLovers.ConsoleToolkit.Core.DefaultImplementations;
+using ConsoLovers.ConsoleToolkit.Core.Services;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -22,57 +22,26 @@ using ParameterInfo = ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Param
 
 public static class ReflectionExtensions
 {
-   [SuppressMessage("sonar", "S3011:Reflection should not be used to increase accessibility of classes, methods, or fields")]
-   internal static IEnumerable<KeyValuePair<PropertyInfo, CommandLineAttribute>> GetPropertiesWithAttributes(this Type type)
-   {
-      foreach (var property in type.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
-      {
-         var commandLineAttribute = property.GetAttribute<CommandLineAttribute>();
-         if (commandLineAttribute != null)
-            yield return new KeyValuePair<PropertyInfo, CommandLineAttribute>(property, commandLineAttribute);
-      }
-   }
+   #region Public Methods and Operators
 
-   public static T GetAttribute<T>(this PropertyInfo propertyInfo) where T : Attribute
+   public static T GetAttribute<T>(this PropertyInfo propertyInfo)
+      where T : Attribute
    {
       return propertyInfo.GetCustomAttributes<T>(true).FirstOrDefault();
    }
 
-   internal static IServiceCollection AddRequiredServices([JetBrains.Annotations.NotNull] this IServiceCollection serviceCollection)
+   public static T GetAttribute<T>(this Type type)
+      where T : Attribute
    {
-      var argumentReflector = new ArgumentReflector();
-      serviceCollection.AddSingleton<IArgumentReflector>(argumentReflector);
-      serviceCollection.AddSingleton(argumentReflector);
-
-      EnsureServiceAndImplementation<ICommandLineArgumentParser, CommandLineArgumentParser>(serviceCollection);
-      EnsureServiceAndImplementation<ICommandLineEngine, CommandLineEngine>(serviceCollection);
-      EnsureServiceAndImplementation<IExecutionEngine, ExecutionEngine>(serviceCollection);
-      EnsureServiceAndImplementation<IApplicationLogic, DefaultApplicationLogic>(serviceCollection);
-      EnsureServiceAndImplementation<ILocalizationService, DefaultLocalizationService>(serviceCollection);
-      EnsureServiceAndImplementation<IConsole, ConsoleProxy>(serviceCollection);
-
-      return serviceCollection;
+      return type.GetCustomAttributes<T>(true).FirstOrDefault();
    }
 
-   private static void EnsureServiceAndImplementation<TService, TImplementation>(IServiceCollection serviceCollection)
-   where TImplementation : TService
-   {
-      var serviceType = typeof(TService);
-      var implementationType = typeof(TImplementation);
-      if (TryAddSingleton(serviceCollection, serviceType, implementationType))
-         serviceCollection.AddSingleton(implementationType, x => x.GetService(serviceType));
-   }
+   #endregion
 
-   private static bool TryAddSingleton(IServiceCollection serviceCollection, Type serviceType, Type implementationType)
-   {
-      if (serviceCollection.Any(x => x.ServiceType == serviceType))
-         return false;
+   #region Methods
 
-      serviceCollection.AddSingleton(serviceType, implementationType);
-      return true;
-   }
-
-   internal static void AddApplicationTypes([JetBrains.Annotations.NotNull] this IServiceCollection serviceCollection, [JetBrains.Annotations.NotNull] Type applicationType)
+   internal static void AddApplicationTypes([JetBrains.Annotations.NotNull] this IServiceCollection serviceCollection,
+      [JetBrains.Annotations.NotNull] Type applicationType)
    {
       if (serviceCollection == null)
          throw new ArgumentNullException(nameof(serviceCollection));
@@ -94,7 +63,7 @@ public static class ReflectionExtensions
    /// <param name="serviceCollection">The service collection.</param>
    /// <exception cref="System.ArgumentNullException">ServiceCollection</exception>
    internal static void AddApplicationTypes<TApplication>([JetBrains.Annotations.NotNull] this IServiceCollection serviceCollection)
-   where TApplication : class
+      where TApplication : class
    {
       serviceCollection.AddApplicationTypes(typeof(TApplication));
    }
@@ -111,13 +80,59 @@ public static class ReflectionExtensions
 
       if (argumentType != null)
       {
-         return serviceCollection.AddArgumentTypesInternal(argumentType, new HashSet<Type>());
+         var addedTypes = new HashSet<Type>();
+         if (typeof(IApplicationLogic).IsAssignableFrom(argumentType))
+         {
+            serviceCollection.AddSingleton(argumentType);
+            serviceCollection.AddSingleton(typeof(IApplicationLogic), s => s.GetService(argumentType));
+            addedTypes.Add(argumentType);
+         }
+
+         return serviceCollection.AddArgumentTypesInternal(argumentType, addedTypes);
       }
 
       return serviceCollection;
    }
 
-   private static IServiceCollection AddArgumentTypesInternal([JetBrains.Annotations.NotNull] this IServiceCollection serviceCollection, Type argumentType, HashSet<Type> addedTypes)
+   internal static IServiceCollection AddRequiredServices([JetBrains.Annotations.NotNull] this IServiceCollection serviceCollection)
+   {
+      var argumentReflector = new ArgumentReflector();
+      serviceCollection.AddSingleton<IArgumentReflector>(argumentReflector);
+      serviceCollection.AddSingleton(argumentReflector);
+
+      EnsureServiceAndImplementation<ICommandLineArgumentParser, CommandLineArgumentParser>(serviceCollection);
+      EnsureServiceAndImplementation<ICommandLineEngine, CommandLineEngine>(serviceCollection);
+      EnsureServiceAndImplementation<IExecutionEngine, ExecutionEngine>(serviceCollection);
+      EnsureServiceAndImplementation<ILocalizationService, DefaultLocalizationService>(serviceCollection);
+      EnsureServiceAndImplementation<IConsole, ConsoleProxy>(serviceCollection);
+
+      return serviceCollection;
+   }
+
+   internal static IServiceCollection EnsureServiceAndImplementation<TService, TImplementation>(this IServiceCollection serviceCollection)
+      where TImplementation : TService
+   {
+      var serviceType = typeof(TService);
+      var implementationType = typeof(TImplementation);
+      if (TryAddSingleton(serviceCollection, serviceType, implementationType))
+         serviceCollection.AddSingleton(implementationType, x => x.GetService(serviceType));
+
+      return serviceCollection;
+   }
+
+   [SuppressMessage("sonar", "S3011:Reflection should not be used to increase accessibility of classes, methods, or fields")]
+   internal static IEnumerable<KeyValuePair<PropertyInfo, CommandLineAttribute>> GetPropertiesWithAttributes(this Type type)
+   {
+      foreach (var property in type.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
+      {
+         var commandLineAttribute = property.GetAttribute<CommandLineAttribute>();
+         if (commandLineAttribute != null)
+            yield return new KeyValuePair<PropertyInfo, CommandLineAttribute>(property, commandLineAttribute);
+      }
+   }
+
+   private static IServiceCollection AddArgumentTypesInternal([JetBrains.Annotations.NotNull] this IServiceCollection serviceCollection,
+      Type argumentType, HashSet<Type> addedTypes)
    {
       if (addedTypes.Contains(argumentType))
          return serviceCollection;
@@ -167,4 +182,15 @@ public static class ReflectionExtensions
          }
       }
    }
+
+   private static bool TryAddSingleton(IServiceCollection serviceCollection, Type serviceType, Type implementationType)
+   {
+      if (serviceCollection.Any(x => x.ServiceType == serviceType))
+         return false;
+
+      serviceCollection.AddSingleton(serviceType, implementationType);
+      return true;
+   }
+
+   #endregion
 }
