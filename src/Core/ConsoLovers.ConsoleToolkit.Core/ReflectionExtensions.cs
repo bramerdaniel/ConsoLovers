@@ -38,6 +38,7 @@ public static class ReflectionExtensions
       return propertyInfo.GetCustomAttributes<T>(true).FirstOrDefault();
    }
 
+
    internal static IServiceCollection AddRequiredServices([JetBrains.Annotations.NotNull] this IServiceCollection serviceCollection)
    {
       var argumentReflector = new ArgumentReflector();
@@ -47,20 +48,21 @@ public static class ReflectionExtensions
       EnsureServiceAndImplementation<ICommandLineArgumentParser, CommandLineArgumentParser>(serviceCollection);
       EnsureServiceAndImplementation<ICommandLineEngine, CommandLineEngine>(serviceCollection);
       EnsureServiceAndImplementation<IExecutionEngine, ExecutionEngine>(serviceCollection);
-      EnsureServiceAndImplementation<IApplicationLogic, DefaultApplicationLogic>(serviceCollection);
       EnsureServiceAndImplementation<ILocalizationService, DefaultLocalizationService>(serviceCollection);
       EnsureServiceAndImplementation<IConsole, ConsoleProxy>(serviceCollection);
 
       return serviceCollection;
    }
 
-   private static void EnsureServiceAndImplementation<TService, TImplementation>(IServiceCollection serviceCollection)
+   internal static IServiceCollection EnsureServiceAndImplementation<TService, TImplementation>(this IServiceCollection serviceCollection)
    where TImplementation : TService
    {
       var serviceType = typeof(TService);
       var implementationType = typeof(TImplementation);
       if (TryAddSingleton(serviceCollection, serviceType, implementationType))
          serviceCollection.AddSingleton(implementationType, x => x.GetService(serviceType));
+      
+      return serviceCollection;
    }
 
    private static bool TryAddSingleton(IServiceCollection serviceCollection, Type serviceType, Type implementationType)
@@ -111,7 +113,15 @@ public static class ReflectionExtensions
 
       if (argumentType != null)
       {
-         return serviceCollection.AddArgumentTypesInternal(argumentType, new HashSet<Type>());
+         var addedTypes = new HashSet<Type>();
+         if (typeof(IApplicationLogic).IsAssignableFrom(argumentType))
+         {
+            serviceCollection.AddSingleton(argumentType);
+            serviceCollection.AddSingleton(typeof(IApplicationLogic), s => s.GetService(argumentType));
+            addedTypes.Add(argumentType);
+         }
+
+         return serviceCollection.AddArgumentTypesInternal(argumentType, addedTypes);
       }
 
       return serviceCollection;

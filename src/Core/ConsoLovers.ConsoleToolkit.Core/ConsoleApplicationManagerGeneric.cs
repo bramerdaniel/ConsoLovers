@@ -11,6 +11,8 @@ namespace ConsoLovers.ConsoleToolkit.Core
    using System.Threading.Tasks;
 
    using ConsoLovers.ConsoleToolkit.Core.Builders;
+   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+   using ConsoLovers.ConsoleToolkit.Core.DefaultImplementations;
 
    using Microsoft.Extensions.DependencyInjection;
 
@@ -33,7 +35,8 @@ namespace ConsoLovers.ConsoleToolkit.Core
       {
          var serviceCollection = new ServiceCollection()
             .AddRequiredServices()
-            .AddArgumentTypes<T>();
+            .AddArgumentTypes<T>()
+            .EnsureServiceAndImplementation<IApplicationLogic, DefaultApplicationLogic>();
 
          return new DefaultServiceProvider(serviceCollection);
       }

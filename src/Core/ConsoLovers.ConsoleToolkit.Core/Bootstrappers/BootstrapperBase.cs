@@ -11,6 +11,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.Bootstrappers
    using System;
    using System.Collections.Generic;
 
+   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+   using ConsoLovers.ConsoleToolkit.Core.DefaultImplementations;
+
    using JetBrains.Annotations;
 
    using Microsoft.Extensions.DependencyInjection;
@@ -112,6 +115,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.Bootstrappers
       {
          ServiceCollection.AddRequiredServices();
          ServiceCollection.AddApplicationTypes(ApplicationType);
+         ServiceCollection.EnsureServiceAndImplementation<IApplicationLogic, DefaultApplicationLogic>();
       }
 
       protected void SetServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory)

@@ -28,8 +28,13 @@
          return Task.CompletedTask;
       }
 
-      public static bool Executed { get; private set; }
+      public bool Executed { get; private set; }
       public static int Instances { get; private set; }
+
+      public static void ResetInstances()
+      {
+         Instances = 0;
+      }
    }
 
    public class ArgumentsWithoutDefaultCommands

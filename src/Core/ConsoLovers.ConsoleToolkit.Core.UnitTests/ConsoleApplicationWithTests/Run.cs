@@ -35,7 +35,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests
          executable.Arguments.DefaultCommand.Should().BeNull();
          executable.Arguments.String.Should().Be("forTheApplication");
 
-         SomeApplicationLogic.Executed.Should().BeTrue();
+         applicationLogic.Executed.Should().BeTrue();
       }
 
       [TestMethod]
@@ -49,7 +49,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests
          executable.Arguments.Execute.Should().BeNull();
          executable.Arguments.DefaultCommand.Should().BeNull();
          executable.Arguments.String.Should().BeNull();
-         SomeApplicationLogic.Executed.Should().BeTrue();
+         applicationLogic.Executed.Should().BeTrue();
       }
 
       [TestMethod]
@@ -83,12 +83,12 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests
       [TestMethod]
       public void EnsureArgumentImplementingIApplicationLogicAreRegisteredAutomatically()
       {
+         SomeApplicationLogic.ResetInstances();
          var executable = ConsoleApplication.WithArguments<SomeApplicationLogic>()
-            .UseServiceProviderFactory(new DefaultServiceProviderFactory())
             .Run();
 
-         SomeApplicationLogic.Executed.Should().BeTrue();
-         //SomeApplicationLogic.Instances.Should().Be(1);
+         executable.Arguments.Executed.Should().BeTrue();
+         SomeApplicationLogic.Instances.Should().Be(1);
       }
 
       #endregion

@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+using ConsoLovers.ConsoleToolkit.Core.DefaultImplementations;
 
 using JetBrains.Annotations;
 
@@ -117,11 +118,10 @@ internal class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigura
 
    protected void EnsureRequiredServices()
    {
-      if (typeof(IApplicationLogic).IsAssignableFrom(typeof(T)))
-         ServiceCollection.AddSingleton(typeof(IApplicationLogic), s => s.GetService<T>());
-
       ServiceCollection.AddRequiredServices();
       ServiceCollection.AddArgumentTypes<T>();
+
+      ServiceCollection.EnsureServiceAndImplementation<IApplicationLogic, DefaultApplicationLogic>();
       ServiceCollection.AddSingleton<IExecutable<T>, Executable<T>>();
    }
 
