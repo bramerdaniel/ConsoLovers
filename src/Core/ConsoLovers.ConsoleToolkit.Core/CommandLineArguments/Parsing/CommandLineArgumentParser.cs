@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="CommandLineArgumentParser.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2022
+// <copyright file="CommandLineArgumentParser.cs" company="KUKA Deutschland GmbH">
+//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -67,6 +67,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
       /// <param name="args">The command line arguments as string.</param>
       /// <returns>The created dictionary</returns>
       public CommandLineArgumentList ParseArguments(string args) => ParseArguments(args, false);
+
+      public CommandLineArgumentList ParseArguments(string[] args) => ParseArguments(args, false);
 
       #endregion
 
@@ -158,7 +160,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
 
          if (arguments.ContainsName(name))
          {
-            throw new CommandLineArgumentException(string.Format(CultureInfo.InvariantCulture, "The argument \"{0}\" occurs more than once.", argumentString));
+            throw new CommandLineArgumentException(string.Format(CultureInfo.InvariantCulture, "The argument \"{0}\" occurs more than once.",
+               argumentString));
          }
 
          arguments.Add(new CommandLineArgument { Name = name, Value = valueString, Index = index, OriginalString = argumentString });

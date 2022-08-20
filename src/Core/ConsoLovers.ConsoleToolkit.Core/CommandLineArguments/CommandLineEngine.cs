@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="CommandLineEngine.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2022
+// <copyright file="CommandLineEngine.cs" company="KUKA Deutschland GmbH">
+//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -30,7 +30,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          [NotNull] ICommandLineArgumentParser argumentParser, [NotNull] IArgumentReflector argumentReflector)
       {
          ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
-         ExecutionEngine = executionEngine ?? throw new ArgumentNullException(nameof(executionEngine));
          ArgumentParser = argumentParser ?? throw new ArgumentNullException(nameof(argumentParser));
          ArgumentReflector = argumentReflector ?? throw new ArgumentNullException(nameof(argumentReflector));
       }
@@ -51,8 +50,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       #endregion
 
       #region ICommandLineEngine Members
-
-      public IExecutionEngine ExecutionEngine { get; }
 
       /// <summary>Prints the help to the <see cref="Console"/>.</summary>
       /// <typeparam name="T">Type of the argument class to print the help for</typeparam>
@@ -245,12 +242,16 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       #endregion
 
+      #region Public Properties
+
+      public IArgumentReflector ArgumentReflector { get; }
+
+      #endregion
+
       #region Properties
 
       /// <summary>Gets the <see cref="ICommandLineArgumentParser"/> that will be used.</summary>
       internal ICommandLineArgumentParser ArgumentParser { get; }
-
-      public IArgumentReflector ArgumentReflector { get; }
 
       /// <summary>Gets the service provider.</summary>
       internal IServiceProvider ServiceProvider { get; }

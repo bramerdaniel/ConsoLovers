@@ -21,7 +21,12 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       /// <summary>Parses the given arguments into a dictionary.</summary>
       /// <param name="args">The command line arguments as string.</param>
-      /// <returns>The created dictionary</returns>
+      /// <returns>The <see cref="CommandLineArgumentList"/></returns>
       CommandLineArgumentList ParseArguments(string args);
+
+      /// <summary>Parses the given arguments into a dictionary.</summary>
+      /// <param name="args">The command line arguments.</param>
+      /// <returns>The <see cref="CommandLineArgumentList"/></returns>
+      CommandLineArgumentList ParseArguments(string[] args);
    }
 }

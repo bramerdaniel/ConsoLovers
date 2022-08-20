@@ -47,10 +47,6 @@ public class DefaultServiceRegistrationTests
 
       serviceProvider.GetService<IExecutionEngine>()
          .Should().BeSameAs(customExecutor.Object);
-
-      var engine = serviceProvider.GetService<CommandLineEngine>();
-      Assert.IsNotNull(engine);
-      engine.ExecutionEngine.Should().BeSameAs(customExecutor.Object);
    }
 
    [TestMethod]

@@ -100,6 +100,7 @@ public static class ReflectionExtensions
       serviceCollection.AddSingleton<IArgumentReflector>(argumentReflector);
       serviceCollection.AddSingleton(argumentReflector);
 
+      EnsureServiceAndImplementation<IInitializationPipeline, InitializationPipeline>(serviceCollection);
       EnsureServiceAndImplementation<ICommandLineArgumentParser, CommandLineArgumentParser>(serviceCollection);
       EnsureServiceAndImplementation<ICommandLineEngine, CommandLineEngine>(serviceCollection);
       EnsureServiceAndImplementation<IExecutionEngine, ExecutionEngine>(serviceCollection);

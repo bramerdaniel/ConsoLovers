@@ -149,6 +149,14 @@ public static class ApplicationBuilderExtensions
 
       return builder.ConfigureServices(x => x.AddTransient<IApplicationLogic, ShowHelpLogic>());
    }
+   public static IApplicationBuilder<T> UseExceptionHandler<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder, IExceptionHandler exceptionHandler)
+      where T : class
+   {
+      if (builder == null)
+         throw new ArgumentNullException(nameof(builder));
+
+      return builder.ConfigureServices(x => x.AddSingleton(exceptionHandler));
+   }
 
    public static IApplicationBuilder<T> UseApplicationLogic<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder,
       [JetBrains.Annotations.NotNull] IApplicationLogic applicationLogic)
