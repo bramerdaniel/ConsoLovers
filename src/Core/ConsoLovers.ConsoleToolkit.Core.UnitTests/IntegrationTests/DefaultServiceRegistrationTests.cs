@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using ConsoLovers.ConsoleToolkit.Core.Builders;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing;
-using ConsoLovers.ConsoleToolkit.Core.DefaultImplementations;
+using ConsoLovers.ConsoleToolkit.Core.Services;
 
 using FluentAssertions;
 

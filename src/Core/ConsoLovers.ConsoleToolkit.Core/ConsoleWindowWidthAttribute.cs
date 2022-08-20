@@ -10,6 +10,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
    /// <summary>Attribute that is used to set the window width of the console window</summary>
    /// <seealso cref="System.Attribute"/>
+   [Obsolete]
    public class ConsoleWindowWidthAttribute : Attribute
    {
       #region Constructors and Destructors

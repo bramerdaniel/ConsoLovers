@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Core.DefaultImplementations;
+namespace ConsoLovers.ConsoleToolkit.Core.Services;
 
 using System;
 using System.Collections.Generic;

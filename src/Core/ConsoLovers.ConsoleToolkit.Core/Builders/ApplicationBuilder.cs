@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
-using ConsoLovers.ConsoleToolkit.Core.DefaultImplementations;
+using ConsoLovers.ConsoleToolkit.Core.Services;
 
 using JetBrains.Annotations;
 
