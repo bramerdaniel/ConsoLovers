@@ -37,25 +37,27 @@ internal class Executable<T> : IExecutable<T>
    {
       // TODO handle unmapped command line arguments
       // TODO support exception handling
+      // TODO support IArgumentInitializer<> again ?
 
       Arguments = CommandLineEngine.Map(args, Arguments);
-      var executedCommand = await ExecutionEngine.ExecuteCommandAsync(Arguments, cancellationToken);
-      if (executedCommand == null)
-         await ExecutionEngine.ExecuteAsync(Arguments, cancellationToken);
-
-      return this;
+      return await RunInternalAsync(cancellationToken);
    }
 
    public async Task<IExecutable<T>> RunAsync(string[] args, CancellationToken cancellationToken)
    {
       // TODO handle unmapped command line arguments
       // TODO support exception handling
+      // TODO support IArgumentInitializer<> again ?
 
       Arguments = CommandLineEngine.Map(args, Arguments);
+      return await RunInternalAsync(cancellationToken);
+   }
+
+   private async Task<IExecutable<T>> RunInternalAsync(CancellationToken cancellationToken)
+   {
       var executedCommand = await ExecutionEngine.ExecuteCommandAsync(Arguments, cancellationToken);
       if (executedCommand == null)
          await ExecutionEngine.ExecuteAsync(Arguments, cancellationToken);
-
       return this;
    }
 
@@ -63,9 +65,9 @@ internal class Executable<T> : IExecutable<T>
 
    #region Public Properties
 
-   [NotNull] public ICommandLineEngine CommandLineEngine { get; }
+   [NotNull] private ICommandLineEngine CommandLineEngine { get; }
 
-   [NotNull] public IExecutionEngine ExecutionEngine { get; }
+   [NotNull] private IExecutionEngine ExecutionEngine { get; }
 
    #endregion
 }

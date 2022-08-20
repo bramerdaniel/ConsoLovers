@@ -15,6 +15,7 @@ using ConsoLovers.ConsoleToolkit.Core.DefaultImplementations;
 using JetBrains.Annotations;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 internal class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigurationHandler
    where T : class
@@ -122,7 +123,7 @@ internal class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigura
       ServiceCollection.AddArgumentTypes<T>();
 
       ServiceCollection.EnsureServiceAndImplementation<IApplicationLogic, DefaultApplicationLogic>();
-      ServiceCollection.AddSingleton<IExecutable<T>, Executable<T>>();
+      ServiceCollection.TryAddSingleton<IExecutable<T>, Executable<T>>();
    }
 
    protected void SetServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory)

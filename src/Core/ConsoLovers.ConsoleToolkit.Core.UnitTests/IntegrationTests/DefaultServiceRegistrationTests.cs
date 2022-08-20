@@ -7,7 +7,10 @@
 namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.IntegrationTests;
 
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
+using System.Threading.Tasks;
 
+using ConsoLovers.ConsoleToolkit.Core.Builders;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing;
 using ConsoLovers.ConsoleToolkit.Core.DefaultImplementations;
@@ -97,6 +100,21 @@ public class DefaultServiceRegistrationTests
       EnsureServiceAndImplementationAvailable<ILocalizationService, DefaultLocalizationService>();
    }
 
+   [TestMethod]
+   public void EnsureApplicationCanBeReplaced()
+   {
+      var mock = new Mock<IExecutable<SomeArgs>>();
+      mock.Setup(x => x.RunAsync(It.IsAny<string>(), CancellationToken.None))
+         .Returns(() => Task.FromResult(mock.Object));
+
+      var application = ConsoleApplication.WithArguments<SomeArgs>()
+         .ConfigureServices(s => s.AddSingleton(mock.Object))
+         .Run();
+
+      mock.Verify(x => x.RunAsync(It.IsAny<string>(), CancellationToken.None), Times.Once);
+      application.Should().BeSameAs(mock.Object);
+   }
+
    #endregion
 
    #region Methods
@@ -115,6 +133,11 @@ public class DefaultServiceRegistrationTests
 
    [UsedImplicitly]
    internal class ApplicationArgs
+   {
+   }
+
+   [UsedImplicitly]
+   public class SomeArgs
    {
    }
 }
