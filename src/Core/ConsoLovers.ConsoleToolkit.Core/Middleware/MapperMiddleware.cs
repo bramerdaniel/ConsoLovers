@@ -7,6 +7,8 @@
 namespace ConsoLovers.ConsoleToolkit.Core.Middleware;
 
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 using ConsoLovers.ConsoleToolkit.Core.Services;
@@ -15,33 +17,36 @@ using JetBrains.Annotations;
 
 using Microsoft.Extensions.DependencyInjection;
 
-internal class MapperMiddleware<T> : Middleware<IInitializationContext<T>>
+internal class MapperMiddleware<T> : Middleware<IExecutionContext<T>>
    where T : class
 {
+   #region Constants and Fields
+
+   private readonly IArgumentReflector argumentReflector;
+
+   private readonly IServiceProvider serviceProvider;
+
+   #endregion
+
    #region Constructors and Destructors
 
    public MapperMiddleware([NotNull] IServiceProvider serviceProvider, [NotNull] IArgumentReflector argumentReflector)
    {
-      ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
-      ArgumentReflector = argumentReflector ?? throw new ArgumentNullException(nameof(argumentReflector));
+      this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+      this.argumentReflector = argumentReflector ?? throw new ArgumentNullException(nameof(argumentReflector));
    }
-
-   #endregion
-
-   #region Public Properties
-
-   public IArgumentReflector ArgumentReflector { get; }
-
-   public IServiceProvider ServiceProvider { get; }
 
    #endregion
 
    #region Public Methods and Operators
 
-   public override void Execute(IInitializationContext<T> context)
+   public override Task Execute(IExecutionContext<T> context, CancellationToken cancellationToken)
    {
+      if (cancellationToken.IsCancellationRequested)
+         return Task.FromCanceled(cancellationToken);
+
       Map(context.ParsedArguments, context.ApplicationArguments);
-      Next(context);
+      return Next(context, cancellationToken);
    }
 
    #endregion
@@ -50,10 +55,10 @@ internal class MapperMiddleware<T> : Middleware<IInitializationContext<T>>
 
    private IArgumentMapper<T> CreateMapper()
    {
-      var info = ArgumentReflector.GetTypeInfo<T>();
+      var info = argumentReflector.GetTypeInfo<T>();
       return info.HasCommands
-         ? ActivatorUtilities.GetServiceOrCreateInstance<CommandMapper<T>>(ServiceProvider)
-         : ActivatorUtilities.GetServiceOrCreateInstance<ArgumentMapper<T>>(ServiceProvider);
+         ? ActivatorUtilities.GetServiceOrCreateInstance<CommandMapper<T>>(serviceProvider)
+         : ActivatorUtilities.GetServiceOrCreateInstance<ArgumentMapper<T>>(serviceProvider);
    }
 
    private T Map(CommandLineArgumentList args, T instance)

@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 
 using ConsoLovers.ConsoleToolkit.Core.Builders;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+using ConsoLovers.ConsoleToolkit.Core.Middleware;
 using ConsoLovers.ConsoleToolkit.Core.Services;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -192,6 +193,29 @@ public static class ApplicationBuilderExtensions
          throw new ArgumentNullException(nameof(applicationLogic));
 
       return builder.ConfigureServices(x => x.AddSingleton<IApplicationLogic>(new DelegateLogic<T>(applicationLogic)));
+   }
+
+   public static IApplicationBuilder<T> AddMiddleware<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder,
+      [JetBrains.Annotations.NotNull] IMiddleware<IExecutionContext<T>> middleware)
+      where T : class
+   {
+      if (builder == null)
+         throw new ArgumentNullException(nameof(builder));
+      if (middleware == null)
+         throw new ArgumentNullException(nameof(middleware));
+
+      return builder.ConfigureServices(x => x.AddSingleton(middleware));
+   }
+   public static IApplicationBuilder<T> AddMiddleware<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder,
+      [JetBrains.Annotations.NotNull] Type middlewareType)
+      where T : class
+   {
+      if (builder == null)
+         throw new ArgumentNullException(nameof(builder));
+      if (middlewareType == null)
+         throw new ArgumentNullException(nameof(middlewareType));
+
+      return builder.ConfigureServices(x => x.AddTransient(middlewareType));
    }
 
    public static IApplicationBuilder<T> UseApplicationLogic<T, TLogic>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder)

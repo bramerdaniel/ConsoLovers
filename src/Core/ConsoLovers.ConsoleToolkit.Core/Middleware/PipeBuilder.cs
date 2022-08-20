@@ -5,32 +5,50 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace ConsoLovers.ConsoleToolkit.Core.Middleware;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 using Microsoft.Extensions.DependencyInjection;
 
 public class PipeBuilder<T>
 {
-   readonly Action<T> mainAction;
+   #region Constants and Fields
+
+   readonly Func<T, CancellationToken, Task> finalStep;
 
    private readonly IServiceProvider serviceProvider;
 
-   readonly IList<Type> middlewareTypes;
+   private readonly IList<IMiddleware<T>> middlewares;
 
-   public PipeBuilder(Action<T> mainAction, IServiceProvider serviceProvider)
+   #endregion
+
+   #region Constructors and Destructors
+
+   public PipeBuilder(IServiceProvider serviceProvider, Func<T, CancellationToken, Task> finalStep)
    {
-      this.mainAction = mainAction;
+      this.finalStep = finalStep;
       this.serviceProvider = serviceProvider;
 
-      middlewareTypes = new List<Type>();
+      middlewares= new List<IMiddleware<T>>();
    }
 
-   public PipeBuilder<T> AddMiddleware(Type pipeType)
+   public PipeBuilder(IServiceProvider serviceProvider)
+      : this(serviceProvider, FinalStep)
    {
-      middlewareTypes.Add(pipeType);
-      return this;
+   }
+
+   #endregion
+
+   #region Public Methods and Operators
+
+   public PipeBuilder<T> AddMiddleware(Type middlewareType)
+   {
+      var middleware = (IMiddleware<T>)ActivatorUtilities.CreateInstance(serviceProvider, middlewareType);
+      return AddMiddleware(middleware);
    }
 
    public PipeBuilder<T> AddMiddleware<TMiddleware>()
@@ -38,38 +56,44 @@ public class PipeBuilder<T>
       return AddMiddleware(typeof(TMiddleware));
    }
 
-   private Action<T> CreatePipeOld(int index)
+   public PipeBuilder<T> AddMiddleware(IMiddleware<T> middleware)
    {
-      if (index < middlewareTypes.Count - 1)
-      {
-         var childPipeHandle = CreatePipe(index + 1);
-         var pipe = (Middleware<T>)ActivatorUtilities.CreateInstance(serviceProvider, middlewareTypes[index], childPipeHandle);
-         return pipe.Execute;
-      }
-      else
-      {
-         var finalPipe = (Middleware<T>)ActivatorUtilities.CreateInstance(serviceProvider, middlewareTypes[index], mainAction);
-         return finalPipe.Execute;
-      }
+      middlewares.Add(middleware);
+      return this;
    }
-   private Action<T> CreatePipe(int index)
-   {
-      var reversed = middlewareTypes.Reverse().ToArray();
-      var lastMiddleware = (Middleware<T>)ActivatorUtilities.CreateInstance(serviceProvider, reversed[0]);
-      lastMiddleware.Next = mainAction;
-      Middleware<T> current = null;
 
-      foreach (Type middlewareType in reversed.Skip(1))
+   public Func<T, CancellationToken, Task> Build()
+   {
+      return CreatePipe();
+   }
+
+   #endregion
+
+   #region Methods
+
+   /// <summary>The finals the step of the middleware pipeline.</summary>
+   /// <param name="context">The context that was passed.</param>
+   /// <param name="cancellationToken">The cancellation token.</param>
+   /// <returns></returns>
+   private static Task FinalStep(T context, CancellationToken cancellationToken)
+   {
+      return cancellationToken.IsCancellationRequested ? Task.FromCanceled(cancellationToken) : Task.CompletedTask;
+   }
+
+   private Func<T, CancellationToken, Task> CreatePipe()
+   {
+      var reversed = middlewares.Reverse().ToArray();
+      var current = reversed[0];
+      current.Next = finalStep;
+
+      foreach (var middleware in reversed.Skip(1))
       {
-         current = (Middleware<T>)ActivatorUtilities.CreateInstance(serviceProvider, middlewareType);
-         current.Next = lastMiddleware.Execute;
+         middleware.Next = current.Execute;
+         current = middleware;
       }
 
       return current.Execute;
    }
 
-   public Action<T> Build()
-   {
-      return CreatePipe(0);
-   }
+   #endregion
 }

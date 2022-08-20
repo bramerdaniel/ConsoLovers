@@ -7,6 +7,8 @@
 namespace ConsoLovers.ConsoleToolkit.Core.Builders;
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 using ConsoLovers.ConsoleToolkit.Core.DIContainer;
 
@@ -86,6 +88,13 @@ internal class DefaultServiceProvider : IServiceProvider
 
    public object GetService(Type serviceType)
    {
+      var @interface = serviceType.GetInterface(nameof(IEnumerable));
+      if (@interface != null)
+      {
+         return container.ResolveAll(serviceType);
+      }
+      // TODO Resolve all must be possible
+      
       return container.Resolve(serviceType);
    }
 

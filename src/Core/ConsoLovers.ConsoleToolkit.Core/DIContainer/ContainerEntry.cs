@@ -74,13 +74,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.DIContainer
 
       #region Public Methods and Operators
 
-      /// <summary>Clones this instance./// </summary>
-      /// <returns>The cloned entry</returns>
-      public ContainerEntry Clone()
-      {
-         return new ContainerEntry(Container) { ServiceType = ServiceType, Name = Name, Lifetime = Lifetime, };
-      }
-
       #endregion
    }
 }

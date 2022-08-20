@@ -7,11 +7,13 @@
 namespace ConsoLovers.ConsoleToolkit.Core.Middleware;
 
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 using ConsoLovers.ConsoleToolkit.Core.Services;
 
-internal class ParserMiddleware<T> : Middleware<IInitializationContext<T>>
+internal class ParserMiddleware<T> : Middleware<IExecutionContext<T>>
    where T : class
 {
    private readonly ICommandLineArgumentParser parser;
@@ -22,13 +24,16 @@ internal class ParserMiddleware<T> : Middleware<IInitializationContext<T>>
       this.parser = parser;
    }
 
-   public override void Execute(IInitializationContext<T> context)
+   public override Task Execute(IExecutionContext<T> context, CancellationToken cancellationToken)
    {
+      if (cancellationToken.IsCancellationRequested)
+         return Task.FromCanceled(cancellationToken);
+
       ParseArguments(context);
-      Next(context);
+      return Next(context, cancellationToken);
    }
 
-   private void ParseArguments(IInitializationContext<T> context)
+   private void ParseArguments(IExecutionContext<T> context)
    {
       if (context.Commandline is string stringArgs)
       {

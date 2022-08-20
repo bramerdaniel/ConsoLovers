@@ -1,13 +1,16 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IInitializationPipeline.cs" company="KUKA Deutschland GmbH">
+// <copyright file="IExecutionPipeline.cs" company="KUKA Deutschland GmbH">
 //   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace ConsoLovers.ConsoleToolkit.Core.Services;
 
-internal interface IInitializationPipeline
+using System.Threading;
+using System.Threading.Tasks;
+
+internal interface IExecutionPipeline
 {
-   void Execute<T>(IInitializationContext<T> context)
+   Task Execute<T>(IExecutionContext<T> context, CancellationToken cancellationToken)
       where T : class;
 }
