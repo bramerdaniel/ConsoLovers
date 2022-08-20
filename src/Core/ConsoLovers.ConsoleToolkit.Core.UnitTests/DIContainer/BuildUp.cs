@@ -76,43 +76,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.DIContainer
          injectionTarget.Attribute.GetId().Should().Be(666);
       }
 
-      [TestMethod]
-      public void BuildUpAnObjectWithTheServiceProviderDependencies()
-      {
-         IServiceProvider provider = new TestServiceProvider();
-         IContainer container = new Container(provider);
-
-         var toBuild = new ObjectToBuild();
-         container.BuildUp(toBuild);
-         toBuild.Demo.Should().NotBeNull();
-
-         toBuild.Container.Should().BeSameAs(container);
-         toBuild.ServiceProvider.Should().BeSameAs(provider);
-
-         toBuild.PrivateDemo.Should().BeNull();
-         toBuild.ProtectedDemo.Should().BeNull();
-
-         container.BuildUp(toBuild, new AttributePropertySelectionStrategy(true));
-         toBuild.NoSetterDemo.Should().BeNull();
-         toBuild.PrivateDemo.Should().NotBeNull();
-         toBuild.ProtectedDemo.Should().NotBeNull();
-      }
-
-      [TestMethod]
-      public void BuildUpAnObjectWithNamedDependenciesShouldWork()
-      {
-         IContainer container = CreateTarget();
-         container.Register<IDemo, Demo>();
-
-         var toBuild = new ObjectWithNamedDependencies();
-         container.BuildUp(toBuild);
-         toBuild.Demo.Should().BeNull();
-
-         container.RegisterNamed<IDemo, Demo>("Name");
-         container.BuildUp(toBuild);
-         toBuild.Demo.Should().NotBeNull();
-      }
-
+      
       private static Container CreateTarget()
       {
          return new Container();
