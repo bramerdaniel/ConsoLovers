@@ -13,23 +13,12 @@ public static class Program
          .UseApplicationLogic(Execute)
          .RunAsync();
       
-
       Console.ReadLine();
    }
 
    private static Task Execute(ApplicationArgs args, CancellationToken cancellationToken)
    {
       Console.WriteLine("Executed with func");
-      return Task.CompletedTask;
-   }
-}
-
-public class AppWithoutArgs : IApplication
-{
-   public Task RunAsync(CancellationToken cancellationToken)
-   {
-      Console.WriteLine("Done Async");
-      Console.ReadLine();
       return Task.CompletedTask;
    }
 }

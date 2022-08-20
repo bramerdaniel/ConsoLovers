@@ -17,11 +17,8 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
    /// <summary>Base class for console applications with command line parameters or commands</summary>
    /// <typeparam name="T">The type of the parameter class</typeparam>
-   /// <seealso cref="IApplication{T}"/>
-   /// <seealso cref="IArgumentInitializer{T}"/>
    /// <seealso cref="IExceptionHandler"/>
-   [Obsolete("Will not be supported any longer. User ConsoleApplication.ForArguments<T> instead.")]
-   public abstract class ConsoleApplication<T> : IApplication<T>, IArgumentInitializer<T>, IExceptionHandler
+   internal abstract class ConsoleApplication<T> : IExceptionHandler
       where T : class
    {
       #region Constructors and Destructors
