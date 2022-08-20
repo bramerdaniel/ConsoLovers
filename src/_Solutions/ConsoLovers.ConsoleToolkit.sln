@@ -22,6 +22,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleMenuExplorer", "..\T
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MenusAndCommands", "..\Toolkit\DemoApplications\MenusAndCommands\MenusAndCommands.csproj", "{5A2FF1C7-9A4F-42E9-B299-79627BCD7347}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProgressDemo", "..\Toolkit\DemoApplications\ProgressDemo\ProgressDemo.csproj", "{DC869073-3032-433A-9EBE-1E8C4429D2A8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MouseInputDemo", "..\Toolkit\DemoApplications\MouseInputDemo\MouseInputDemo.csproj", "{E7BE477E-90BD-4BE9-ADD0-0A09D98546CC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleBufferDemo", "..\Toolkit\DemoApplications\ConsoleBufferDemo\ConsoleBufferDemo.csproj", "{9871FEC7-7A7C-4AA3-9444-8F9630414127}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,6 +54,18 @@ Global
 		{5A2FF1C7-9A4F-42E9-B299-79627BCD7347}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A2FF1C7-9A4F-42E9-B299-79627BCD7347}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A2FF1C7-9A4F-42E9-B299-79627BCD7347}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC869073-3032-433A-9EBE-1E8C4429D2A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC869073-3032-433A-9EBE-1E8C4429D2A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC869073-3032-433A-9EBE-1E8C4429D2A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC869073-3032-433A-9EBE-1E8C4429D2A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7BE477E-90BD-4BE9-ADD0-0A09D98546CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7BE477E-90BD-4BE9-ADD0-0A09D98546CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7BE477E-90BD-4BE9-ADD0-0A09D98546CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7BE477E-90BD-4BE9-ADD0-0A09D98546CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9871FEC7-7A7C-4AA3-9444-8F9630414127}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9871FEC7-7A7C-4AA3-9444-8F9630414127}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9871FEC7-7A7C-4AA3-9444-8F9630414127}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9871FEC7-7A7C-4AA3-9444-8F9630414127}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -56,6 +74,9 @@ Global
 		{3DDF2722-EBB3-40FD-B1C7-30C0A74F6D75} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
 		{E3B5C7F4-39BA-44DE-8124-43CECC4DA671} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
 		{5A2FF1C7-9A4F-42E9-B299-79627BCD7347} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
+		{DC869073-3032-433A-9EBE-1E8C4429D2A8} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
+		{E7BE477E-90BD-4BE9-ADD0-0A09D98546CC} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
+		{9871FEC7-7A7C-4AA3-9444-8F9630414127} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {96E66A12-23DF-4590-A1FA-F6206E6C8F89}
