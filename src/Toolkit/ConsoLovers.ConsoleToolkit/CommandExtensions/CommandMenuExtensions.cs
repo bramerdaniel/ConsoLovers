@@ -20,7 +20,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandExtensions
       #region Public Methods and Operators
 
       public static IApplicationBuilder<T> UseMenuWithoutArguments<T>(this IApplicationBuilder<T> bootstrapper, Action<ICommandMenuOptions> configureOptions)
-         where T : class, IApplication
+         where T : class
       {
          bootstrapper.ConfigureServices(s => s.AddSingleton<ICommandMenuManager, CommandMenuManager>());
          bootstrapper.ConfigureServices(s => s.AddSingleton<IApplicationLogic, ShowMenuApplicationLogic>());
@@ -32,7 +32,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandExtensions
       }
 
       public static IApplicationBuilder<T> UseMenuWithoutArguments<T>(this IApplicationBuilder<T> bootstrapper)
-         where T : class, IApplication
+         where T : class
       {
          return bootstrapper.UseMenuWithoutArguments(null);
       }
@@ -42,7 +42,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandExtensions
       #region Methods
 
       private static void ConfigureMenu<T>(IApplicationBuilder<T> bootstrapper, Action<ICommandMenuOptions> configureOptions)
-         where T : class, IApplication
+         where T : class
       {
          if (bootstrapper is IServiceConfigurationHandler handler)
          {

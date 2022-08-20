@@ -19,7 +19,7 @@ namespace MenusAndCommands
 
       private static async Task Main()
       {
-         var application = await ConsoleApplicationManager.For<Application>()
+         await ConsoleApplication.WithArguments<AppArguments>()
             .UseMenuWithoutArguments(options =>
             {
                options.Menu.Header = "Hello Menu";
