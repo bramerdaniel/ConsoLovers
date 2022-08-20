@@ -12,6 +12,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.IntegrationTests.WithoutComa
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests.Utils;
 
+   using FluentAssertions;
+
    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
    using Moq;
@@ -23,49 +25,36 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.IntegrationTests.WithoutComa
       [TestMethod]
       public void EnsureQuotePathWorkCorrectly()
       {
-         using (var testContext = new ApplicationTestContext<SimpleArgs>())
-         {
-            var path = "C:\\SomeDirectory\\SomeFile.txt";
-            testContext.RunApplication($"\"{path}\"");
+         var path = "C:\\SomeDirectory\\SomeFile.txt";
+         var application = ConsoleApplication.WithArguments<SimpleArgs>()
+            .Run($"\"{path}\"");
 
-            testContext.Application.Verify(a => a.RunWithAsync(It.Is<SimpleArgs>(x => x.Path == path)), Times.Once);
-            testContext.Application.Verify(a => a.RunWithCommand(It.IsAny<ICommand>()), Times.Never);
-            
-            testContext.Application.Verify(a => a.MappedCommandLineParameter("Path", path), Times.Once);
-         }
+         application.Arguments.Path.Should().Be(path);
       }
 
       [TestMethod]
       public void EnsureTwoQuotePathsWorkCorrectly()
       {
-         using (var testContext = new ApplicationTestContext<SimpleArgs>())
-         {
-            var path = "C:\\SomeDirectory\\SomeFile.txt";
-            var secondPath = "C:\\SomeOther\\SomeOther.txt";
-            testContext.RunApplication($"\"{path}\" \"{secondPath}\"");
+         var path = "C:\\SomeDirectory\\SomeFile.txt";
+         var secondPath = "C:\\SomeOther\\SomeOther.txt";
 
-            testContext.Application.Verify(a => a.RunWithAsync(It.Is<SimpleArgs>(x => x.Path == path && x.SecondPath == secondPath)), Times.Once);
-            testContext.Application.Verify(a => a.RunWithCommand(It.IsAny<ICommand>()), Times.Never);
-            
-            testContext.Application.Verify(a => a.MappedCommandLineParameter("Path", path), Times.Once);
-            testContext.Application.Verify(a => a.MappedCommandLineParameter("SecondPath", secondPath), Times.Once);
-         }
+         var application = ConsoleApplication.WithArguments<SimpleArgs>()
+            .Run($"\"{path}\" \"{secondPath}\"");
+
+         application.Arguments.Path.Should().Be(path);
+         application.Arguments.SecondPath.Should().Be(secondPath);
+
+
       }
 
       [TestMethod]
       public void EnsureNotQuotePathIsTreatedAsNamedParameter()
       {
-         using (var testContext = new ApplicationTestContext<SimpleArgs>())
-         {
-            var path = "C:\\SomeDirectory\\SomeFile.txt";
-            testContext.RunApplication(path);
+         var path = "C:\\SomeDirectory\\SomeFile.txt";
+         var application = ConsoleApplication.WithArguments<SimpleArgs>()
+            .Run(path);
 
-            testContext.Application.Verify(a => a.RunWithAsync(It.Is<SimpleArgs>(x => x.Path == null)), Times.Once);
-            testContext.Application.Verify(a => a.RunWithCommand(It.IsAny<ICommand>()), Times.Never);
-
-            testContext.Application.Verify(a => a.Argument("Path", null), Times.Once);
-            testContext.Application.Verify(a => a.UnmappedCommandLineParameter("C", "\\SomeDirectory\\SomeFile.txt"), Times.Once);
-         }
+         application.Arguments.Path.Should().Be(null);
       }
    }
 
