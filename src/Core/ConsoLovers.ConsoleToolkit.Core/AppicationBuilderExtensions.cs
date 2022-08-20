@@ -73,13 +73,13 @@ public static class ApplicationBuilderExtensions
       return builder.ConfigureServices(s => s.AddSingleton(serviceType, implementation));
    }
 
-   public static IExecutable<T> Run<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder)
+   public static IConsoleApplication<T> Run<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder)
       where T : class
    {
       return builder.Run(Environment.CommandLine);
    }
 
-   public static IExecutable<T> Run<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder,
+   public static IConsoleApplication<T> Run<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder,
       [JetBrains.Annotations.NotNull] string[] args)
       where T : class
    {
@@ -94,7 +94,7 @@ public static class ApplicationBuilderExtensions
          .GetResult();
    }
 
-   public static IExecutable<T> Run<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder, string args)
+   public static IConsoleApplication<T> Run<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder, string args)
       where T : class
    {
       if (builder == null)
@@ -105,7 +105,7 @@ public static class ApplicationBuilderExtensions
          .GetResult();
    }
 
-   public static Task<IExecutable<T>> RunAsync<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder,
+   public static Task<IConsoleApplication<T>> RunAsync<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder,
       CancellationToken cancellationToken)
       where T : class
    {
@@ -115,7 +115,7 @@ public static class ApplicationBuilderExtensions
       return builder.RunAsync(Environment.CommandLine, cancellationToken);
    }
 
-   public static Task<IExecutable<T>> RunAsync<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder, string args,
+   public static Task<IConsoleApplication<T>> RunAsync<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder, string args,
       CancellationToken cancellationToken)
       where T : class
    {
@@ -125,7 +125,7 @@ public static class ApplicationBuilderExtensions
       return builder.Build().RunAsync(args, cancellationToken);
    }
 
-   public static Task<IExecutable<T>> RunAsync<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder, string[] args,
+   public static Task<IConsoleApplication<T>> RunAsync<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder, string[] args,
       CancellationToken cancellationToken)
       where T : class
    {
@@ -135,7 +135,7 @@ public static class ApplicationBuilderExtensions
       return builder.Build().RunAsync(args, cancellationToken);
    }
 
-   public static Task<IExecutable<T>> RunAsync<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder)
+   public static Task<IConsoleApplication<T>> RunAsync<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder)
       where T : class
    {
       return builder.RunAsync(CancellationToken.None);

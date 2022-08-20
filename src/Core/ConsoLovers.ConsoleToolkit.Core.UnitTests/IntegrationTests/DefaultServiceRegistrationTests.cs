@@ -103,7 +103,7 @@ public class DefaultServiceRegistrationTests
    [TestMethod]
    public void EnsureApplicationCanBeReplaced()
    {
-      var mock = new Mock<IExecutable<SomeArgs>>();
+      var mock = new Mock<IConsoleApplication<SomeArgs>>();
       mock.Setup(x => x.RunAsync(It.IsAny<string>(), CancellationToken.None))
          .Returns(() => Task.FromResult(mock.Object));
 

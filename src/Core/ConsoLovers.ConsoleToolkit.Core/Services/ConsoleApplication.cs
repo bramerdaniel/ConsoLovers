@@ -1,10 +1,12 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Executable.cs" company="KUKA Deutschland GmbH">
+// <copyright file="ConsoleApplication.cs" company="KUKA Deutschland GmbH">
 //   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Core.Builders;
+using ConsoLovers.ConsoleToolkit.Core.Builders;
+
+namespace ConsoLovers.ConsoleToolkit.Core.Services;
 
 using System;
 using System.Threading;
@@ -14,12 +16,12 @@ using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
 using JetBrains.Annotations;
 
-internal class Executable<T> : IExecutable<T>
+internal class ConsoleApplication<T> : IConsoleApplication<T>
    where T : class
 {
    #region Constructors and Destructors
 
-   public Executable(T arguments, [NotNull] ICommandLineEngine commandLineEngine)
+   public ConsoleApplication(T arguments, [NotNull] ICommandLineEngine commandLineEngine)
    {
       Arguments = arguments;
       CommandLineEngine = commandLineEngine ?? throw new ArgumentNullException(nameof(commandLineEngine));
@@ -28,12 +30,12 @@ internal class Executable<T> : IExecutable<T>
 
    #endregion
 
-   #region IExecutable<T> Members
+   #region IConsoleApplication<T> Members
 
    /// <summary>Gets the arguments.</summary>
    public T Arguments { get; private set; }
 
-   public async Task<IExecutable<T>> RunAsync(string args, CancellationToken cancellationToken)
+   public async Task<IConsoleApplication<T>> RunAsync(string args, CancellationToken cancellationToken)
    {
       // TODO handle unmapped command line arguments
       // TODO support exception handling
@@ -43,7 +45,7 @@ internal class Executable<T> : IExecutable<T>
       return await RunInternalAsync(cancellationToken);
    }
 
-   public async Task<IExecutable<T>> RunAsync(string[] args, CancellationToken cancellationToken)
+   public async Task<IConsoleApplication<T>> RunAsync(string[] args, CancellationToken cancellationToken)
    {
       // TODO handle unmapped command line arguments
       // TODO support exception handling
@@ -53,7 +55,7 @@ internal class Executable<T> : IExecutable<T>
       return await RunInternalAsync(cancellationToken);
    }
 
-   private async Task<IExecutable<T>> RunInternalAsync(CancellationToken cancellationToken)
+   private async Task<IConsoleApplication<T>> RunInternalAsync(CancellationToken cancellationToken)
    {
       var executedCommand = await ExecutionEngine.ExecuteCommandAsync(Arguments, cancellationToken);
       if (executedCommand == null)

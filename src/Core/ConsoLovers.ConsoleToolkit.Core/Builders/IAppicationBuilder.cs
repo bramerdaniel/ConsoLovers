@@ -11,6 +11,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.Builders
    public interface IApplicationBuilder<T> : IDependencyInjectionAbstraction<IApplicationBuilder<T>>
       where T : class
    {
-      IExecutable<T> Build();
+      IConsoleApplication<T> Build();
    }
 }

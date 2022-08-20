@@ -42,10 +42,10 @@ internal class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigura
       return this;
    }
 
-   public IExecutable<T> Build()
+   public IConsoleApplication<T> Build()
    {
       var serviceProvider = CreateServiceProvider();
-      var executable = serviceProvider.GetRequiredService<IExecutable<T>>();
+      var executable = serviceProvider.GetRequiredService<IConsoleApplication<T>>();
       return executable;
    }
 
@@ -123,7 +123,7 @@ internal class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigura
       ServiceCollection.AddArgumentTypes<T>();
 
       ServiceCollection.EnsureServiceAndImplementation<IApplicationLogic, DefaultApplicationLogic>();
-      ServiceCollection.TryAddSingleton<IExecutable<T>, Executable<T>>();
+      ServiceCollection.TryAddSingleton<IConsoleApplication<T>, ConsoleApplication<T>>();
    }
 
    protected void SetServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory)
