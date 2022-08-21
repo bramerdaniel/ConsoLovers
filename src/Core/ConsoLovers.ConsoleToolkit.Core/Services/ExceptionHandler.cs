@@ -21,6 +21,7 @@ public class ExceptionHandler : IExceptionHandler
 
    public bool Handle(Exception exception)
    {
+      // TODO: make this configurable
       console.WriteLine("AN UNHANDLED EXCEPTION OCCURRED", ConsoleColor.Red);
       console.WriteLine();
       console.WriteLine(exception.Message, ConsoleColor.White);
