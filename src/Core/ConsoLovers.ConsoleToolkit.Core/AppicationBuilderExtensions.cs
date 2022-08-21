@@ -114,6 +114,18 @@ public static class ApplicationBuilderExtensions
       return builder.Run(Environment.CommandLine);
    }
 
+   public static IConsoleApplication<T> Run<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder, Action<T> applicationLogic)
+      where T : class
+   {
+      builder.UseApplicationLogic((t, _) =>
+      {
+         applicationLogic(t);
+         return Task.CompletedTask;
+      });
+
+      return builder.Run(Environment.CommandLine);
+   }
+
    public static IConsoleApplication<T> Run<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder,
       [JetBrains.Annotations.NotNull] string[] args)
       where T : class

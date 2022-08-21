@@ -6,7 +6,9 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core;
 
+using System;
+
 public interface IExceptionHandler
 {
-   
+   bool Handle(Exception exception);
 }

@@ -8,14 +8,14 @@ using Microsoft.Extensions.DependencyInjection;
 
 public static class Program
 {
-   public static async Task Main()
+   public static void Main()
    {
-      var executable = await ConsoleApplication.WithArguments<ApplicationArgs>()
+      var executable = ConsoleApplication.WithArguments<ApplicationArgs>()
          //.UseServiceProviderFactory(new DefaultServiceProviderFactory())
-         .UseApplicationLogic(Execute)
-         .AddMiddleware(typeof(TryCatchMiddleware))
-         .AddMiddleware<ApplicationArgs, RepeatMiddleware>()
-         .RunAsync();
+         // .UseApplicationLogic(Execute)
+         //.AddMiddleware(typeof(TryCatchMiddleware))
+         //.AddMiddleware<ApplicationArgs, RepeatMiddleware>()
+         .Run(t => throw new InvalidOperationException($"That went wrong {t}"));
 
       Console.ReadLine();
    }

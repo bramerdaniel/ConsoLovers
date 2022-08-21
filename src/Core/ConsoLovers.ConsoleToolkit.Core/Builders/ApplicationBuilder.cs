@@ -123,10 +123,16 @@ internal class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigura
       ServiceCollection.AddRequiredServices();
       ServiceCollection.AddArgumentTypes<T>();
 
-      ServiceCollection.EnsureServiceAndImplementation<IApplicationLogic, DefaultApplicationLogic>();
+      ServiceCollection.EnsureSingleton<IApplicationLogic, DefaultApplicationLogic>();
       ServiceCollection.TryAddSingleton<IConsoleApplication<T>, ConsoleApplication<T>>();
 
-      ServiceCollection.EnsureServiceAndImplementation<IExecutionPipeline<T>, ExecutionPipeline<T>>();
+      AddDefaultMiddleware();
+   }
+
+   private void AddDefaultMiddleware()
+   {
+      ServiceCollection.EnsureSingleton<IExecutionPipeline<T>, ExecutionPipeline<T>>();
+      ServiceCollection.AddTransient<IMiddleware<IExecutionContext<T>>, ExceptionHandlingMiddleware<T>>();
       ServiceCollection.AddTransient<IMiddleware<IExecutionContext<T>>, ParserMiddleware<T>>();
       ServiceCollection.AddTransient<IMiddleware<IExecutionContext<T>>, MapperMiddleware<T>>();
       ServiceCollection.AddTransient<IMiddleware<IExecutionContext<T>>, ExecutionMiddleware<T>>();

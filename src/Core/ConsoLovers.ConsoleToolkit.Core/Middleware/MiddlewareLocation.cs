@@ -29,11 +29,13 @@ static class KnownLocations
 {
    #region Constants and Fields
 
-   internal const int ExecutionMiddleware = 3000;
+   internal const int ExecutionMiddleware = 4000;
 
-   internal const int MapperMiddleware = 2000;
+   internal const int MapperMiddleware = 3000;
 
-   internal const int ParserMiddleware = 1000;
+   internal const int ParserMiddleware = 2000;
+
+   internal const int ExceptionHandlingMiddleware = 1000;
 
    #endregion
 }
