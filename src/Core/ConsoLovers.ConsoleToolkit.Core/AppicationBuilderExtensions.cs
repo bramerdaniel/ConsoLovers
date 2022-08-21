@@ -22,6 +22,40 @@ public static class ApplicationBuilderExtensions
 {
    #region Public Methods and Operators
 
+   public static IApplicationBuilder<T> AddMiddleware<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder,
+      [JetBrains.Annotations.NotNull] IMiddleware<IExecutionContext<T>> middleware)
+      where T : class
+   {
+      if (builder == null)
+         throw new ArgumentNullException(nameof(builder));
+      if (middleware == null)
+         throw new ArgumentNullException(nameof(middleware));
+
+      return builder.ConfigureServices(x => x.AddSingleton(middleware));
+   }
+
+   public static IApplicationBuilder<T> AddMiddleware<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder,
+      [JetBrains.Annotations.NotNull] Type middlewareType)
+      where T : class
+   {
+      if (builder == null)
+         throw new ArgumentNullException(nameof(builder));
+      if (middlewareType == null)
+         throw new ArgumentNullException(nameof(middlewareType));
+
+      return builder.ConfigureServices(x => x.AddTransient(typeof(IMiddleware<IExecutionContext<T>>), middlewareType));
+   }
+
+   public static IApplicationBuilder<T> AddMiddleware<T, TMiddleware>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder)
+      where T : class
+      where TMiddleware : IMiddleware<IExecutionContext<T>>
+   {
+      if (builder == null)
+         throw new ArgumentNullException(nameof(builder));
+
+      return builder.AddMiddleware(typeof(TMiddleware));
+   }
+
    public static IApplicationBuilder<T> AddResourceManager<T>(this IApplicationBuilder<T> builder, ResourceManager resourceManager)
       where T : class
    {
@@ -150,14 +184,6 @@ public static class ApplicationBuilderExtensions
 
       return builder.ConfigureServices(x => x.AddTransient<IApplicationLogic, ShowHelpLogic>());
    }
-   public static IApplicationBuilder<T> UseExceptionHandler<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder, IExceptionHandler exceptionHandler)
-      where T : class
-   {
-      if (builder == null)
-         throw new ArgumentNullException(nameof(builder));
-
-      return builder.ConfigureServices(x => x.AddSingleton(exceptionHandler));
-   }
 
    public static IApplicationBuilder<T> UseApplicationLogic<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder,
       [JetBrains.Annotations.NotNull] IApplicationLogic applicationLogic)
@@ -195,29 +221,6 @@ public static class ApplicationBuilderExtensions
       return builder.ConfigureServices(x => x.AddSingleton<IApplicationLogic>(new DelegateLogic<T>(applicationLogic)));
    }
 
-   public static IApplicationBuilder<T> AddMiddleware<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder,
-      [JetBrains.Annotations.NotNull] IMiddleware<IExecutionContext<T>> middleware)
-      where T : class
-   {
-      if (builder == null)
-         throw new ArgumentNullException(nameof(builder));
-      if (middleware == null)
-         throw new ArgumentNullException(nameof(middleware));
-
-      return builder.ConfigureServices(x => x.AddSingleton(middleware));
-   }
-   public static IApplicationBuilder<T> AddMiddleware<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder,
-      [JetBrains.Annotations.NotNull] Type middlewareType)
-      where T : class
-   {
-      if (builder == null)
-         throw new ArgumentNullException(nameof(builder));
-      if (middlewareType == null)
-         throw new ArgumentNullException(nameof(middlewareType));
-
-      return builder.ConfigureServices(x => x.AddTransient(middlewareType));
-   }
-
    public static IApplicationBuilder<T> UseApplicationLogic<T, TLogic>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder)
       where T : class
       where TLogic : class, IApplicationLogic
@@ -227,6 +230,16 @@ public static class ApplicationBuilderExtensions
          throw new ArgumentNullException(nameof(builder));
 
       return builder.ConfigureServices(x => x.AddTransient<IApplicationLogic, TLogic>());
+   }
+
+   public static IApplicationBuilder<T> UseExceptionHandler<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder,
+      IExceptionHandler exceptionHandler)
+      where T : class
+   {
+      if (builder == null)
+         throw new ArgumentNullException(nameof(builder));
+
+      return builder.ConfigureServices(x => x.AddSingleton(exceptionHandler));
    }
 
    #endregion

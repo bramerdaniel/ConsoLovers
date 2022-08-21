@@ -20,8 +20,6 @@ internal class ExecutionContext<T> : IExecutionContext<T>
 
    public T ApplicationArguments { get; set; }
 
-   public CancellationToken CancellationToken { get; }
-
    public object Commandline { get; set; }
    
 

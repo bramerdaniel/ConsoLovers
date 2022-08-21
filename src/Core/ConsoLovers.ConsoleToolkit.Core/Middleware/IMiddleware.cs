@@ -16,6 +16,8 @@ public interface IMiddleware<TContext>
 {
    #region Public Properties
 
+   int ExecutionOrder { get; }
+
    /// <summary>Gets the next <see cref="Middleware{TContext}"/> delegate to invoke.</summary>
    Func<TContext, CancellationToken, Task> Next { get; set; }
 

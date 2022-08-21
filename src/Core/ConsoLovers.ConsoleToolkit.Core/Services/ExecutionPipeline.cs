@@ -8,6 +8,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.Services;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,33 +16,25 @@ using ConsoLovers.ConsoleToolkit.Core.Middleware;
 
 using JetBrains.Annotations;
 
-internal class ExecutionPipeline : IExecutionPipeline
+internal class ExecutionPipeline<T> : IExecutionPipeline<T>
+      where T : class
 {
-   private readonly IServiceProvider serviceProvider;
 
-   public ExecutionPipeline([NotNull] IServiceProvider serviceProvider)
+   private readonly IMiddleware<IExecutionContext<T>>[] middlewares;
+
+   public ExecutionPipeline(IEnumerable<IMiddleware<IExecutionContext<T>>> middlewares)
    {
-      this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+      // TODO sort middleware tests
+      this.middlewares = middlewares.OrderBy(m => m.ExecutionOrder).ToArray();
    }
 
-   public Task Execute<T>(IExecutionContext<T> context, CancellationToken cancellationToken)
-      where T : class
+   public Task Execute(IExecutionContext<T> context, CancellationToken cancellationToken)
    {
-      // var middlewares = serviceProvider.GetService<IEnumerable<IMiddleware<IExecutionContext<T>>>>();
-      // var middleware = serviceProvider.GetService<IMiddleware<IExecutionContext<T>>>();
+      var builder = new PipeBuilder<IExecutionContext<T>>();
+      foreach (var middleware in middlewares)
+         builder.AddMiddleware(middleware);
 
-      var builder = new PipeBuilder<IExecutionContext<T>>(serviceProvider)
-         .AddMiddleware(typeof(ParserMiddleware<T>))
-         .AddMiddleware(typeof(MapperMiddleware<T>));
-
-      //foreach (var middleware in middlewares)
-      //   builder.AddMiddleware(middleware);
-
-      var initialMiddleware = builder
-         .AddMiddleware(typeof(ExecutionMiddleware<T>))
-         .Build();
-
-
+      var initialMiddleware = builder.Build();
       return initialMiddleware(context, cancellationToken);
    }
 }

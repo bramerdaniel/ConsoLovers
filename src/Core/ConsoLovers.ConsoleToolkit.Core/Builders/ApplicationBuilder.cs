@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+using ConsoLovers.ConsoleToolkit.Core.Middleware;
 using ConsoLovers.ConsoleToolkit.Core.Services;
 
 using JetBrains.Annotations;
@@ -124,6 +125,11 @@ internal class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigura
 
       ServiceCollection.EnsureServiceAndImplementation<IApplicationLogic, DefaultApplicationLogic>();
       ServiceCollection.TryAddSingleton<IConsoleApplication<T>, ConsoleApplication<T>>();
+
+      ServiceCollection.EnsureServiceAndImplementation<IExecutionPipeline<T>, ExecutionPipeline<T>>();
+      ServiceCollection.AddTransient<IMiddleware<IExecutionContext<T>>, ParserMiddleware<T>>();
+      ServiceCollection.AddTransient<IMiddleware<IExecutionContext<T>>, MapperMiddleware<T>>();
+      ServiceCollection.AddTransient<IMiddleware<IExecutionContext<T>>, ExecutionMiddleware<T>>();
    }
 
    protected void SetServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory)

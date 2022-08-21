@@ -13,10 +13,10 @@ public static class Program
       var executable = await ConsoleApplication.WithArguments<ApplicationArgs>()
          //.UseServiceProviderFactory(new DefaultServiceProviderFactory())
          .UseApplicationLogic(Execute)
-         .AddMiddleware(typeof(TrycatchMiddleware))
-         .AddMiddleware(typeof(RepeatMiddleware))
+         .AddMiddleware(typeof(TryCatchMiddleware))
+         .AddMiddleware<ApplicationArgs, RepeatMiddleware>()
          .RunAsync();
-      
+
       Console.ReadLine();
    }
 
@@ -32,15 +32,39 @@ public class RepeatMiddleware : Middleware<IExecutionContext<ApplicationArgs>>
    public override async Task Execute(IExecutionContext<ApplicationArgs> context, CancellationToken cancellationToken)
    {
       for (int i = 0; i < 5; i++)
+      {
          await Next(context, cancellationToken);
+         context.ApplicationArguments.DeleteCommand.Arguments.User.Arguments.Force =
+            !context.ApplicationArguments.DeleteCommand.Arguments.User.Arguments.Force;
+      }
+
+      context.ApplicationArguments.DeleteCommand.Arguments.User.Arguments.UserName = "Calvin";
+      await Next(context, cancellationToken);
    }
 }
 
-public class TrycatchMiddleware : Middleware<IExecutionContext<ApplicationArgs>>
+public class TryCatchMiddleware : Middleware<IExecutionContext<ApplicationArgs>>
 {
+   private readonly IConsole console;
+
+   public TryCatchMiddleware(IConsole console)
+   {
+      this.console = console ?? throw new ArgumentNullException(nameof(console));
+   }
+
    public override async Task Execute(IExecutionContext<ApplicationArgs> context, CancellationToken cancellationToken)
    {
-      for (int i = 0; i < 5; i++)
+      try
+      {
+         console.WriteLine("--- Try --->", ConsoleColor.Yellow);
+
          await Next(context, cancellationToken);
+
+         console.WriteLine("--- Ok --->", ConsoleColor.Green);
+      }
+      catch (Exception e)
+      {
+         console.WriteLine("--- Catch --->", ConsoleColor.Red);
+      }
    }
 }

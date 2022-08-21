@@ -38,6 +38,12 @@ internal class MapperMiddleware<T> : Middleware<IExecutionContext<T>>
 
    #endregion
 
+   #region Public Properties
+
+   public override int ExecutionOrder => KnownLocations.MapperMiddleware;
+
+   #endregion
+
    #region Public Methods and Operators
 
    public override Task Execute(IExecutionContext<T> context, CancellationToken cancellationToken)
@@ -85,6 +91,7 @@ internal class MapperMiddleware<T> : Middleware<IExecutionContext<T>>
 
    private void OnUnmappedCommandLineArgument(object sender, MapperEventArgs e)
    {
+      // TODO do something with that
    }
 
    #endregion

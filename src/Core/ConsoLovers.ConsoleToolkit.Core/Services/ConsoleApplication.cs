@@ -26,13 +26,13 @@ internal class ConsoleApplication<T> : IConsoleApplication<T>
 {
    #region Constants and Fields
 
-   private readonly IExecutionPipeline executionPipeline;
+   private readonly IExecutionPipeline<T> executionPipeline;
 
    #endregion
 
    #region Constructors and Destructors
 
-   public ConsoleApplication(T arguments, [NotNull] IExecutionEngine executionEngine, [NotNull] IExecutionPipeline executionPipeline)
+   public ConsoleApplication(T arguments, [NotNull] IExecutionEngine executionEngine, [NotNull] IExecutionPipeline<T> executionPipeline)
    {
       this.executionPipeline = executionPipeline ?? throw new ArgumentNullException(nameof(executionPipeline));
       Arguments = arguments;

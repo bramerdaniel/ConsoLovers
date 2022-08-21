@@ -203,7 +203,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.DIContainer
       {
          Register(ServiceDescriptor.Singleton(service, implementation));
       }
-      
+
       /// <summary>Registers the service type with an implementation type.</summary>
       /// <typeparam name="T">The type of the service to register. </typeparam>
       /// <param name="implementation">The implementation of the service. </param>

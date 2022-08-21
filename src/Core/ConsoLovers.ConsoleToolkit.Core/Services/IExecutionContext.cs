@@ -6,21 +6,20 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.Services;
 
-using System.Threading;
-
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
 public interface IExecutionContext<T>
-where T : class
+   where T : class
 {
    #region Public Properties
 
+   /// <summary>Gets or sets the application arguments.</summary>
    T ApplicationArguments { get; set; }
 
-   CancellationToken CancellationToken { get; }
-
+   /// <summary>Gets or sets the raw commandline (string or string[]).</summary>
    object Commandline { get; set; }
 
+   /// <summary>Gets or sets the parsed arguments (normally set by the parser middleware).</summary>
    CommandLineArgumentList ParsedArguments { get; set; }
 
    #endregion

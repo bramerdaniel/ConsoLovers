@@ -9,8 +9,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.Services;
 using System.Threading;
 using System.Threading.Tasks;
 
-internal interface IExecutionPipeline
+internal interface IExecutionPipeline<T>
+      where T : class
 {
-   Task Execute<T>(IExecutionContext<T> context, CancellationToken cancellationToken)
-      where T : class;
+   Task Execute(IExecutionContext<T> context, CancellationToken cancellationToken);
 }

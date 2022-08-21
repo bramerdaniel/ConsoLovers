@@ -16,13 +16,28 @@ using ConsoLovers.ConsoleToolkit.Core.Services;
 internal class ParserMiddleware<T> : Middleware<IExecutionContext<T>>
    where T : class
 {
+   #region Constants and Fields
+
    private readonly ICommandLineArgumentParser parser;
 
+   #endregion
+
+   #region Constructors and Destructors
 
    public ParserMiddleware(ICommandLineArgumentParser parser)
    {
       this.parser = parser;
    }
+
+   #endregion
+
+   #region Public Properties
+
+   public override int ExecutionOrder => KnownLocations.ParserMiddleware;
+
+   #endregion
+
+   #region Public Methods and Operators
 
    public override Task Execute(IExecutionContext<T> context, CancellationToken cancellationToken)
    {
@@ -32,6 +47,10 @@ internal class ParserMiddleware<T> : Middleware<IExecutionContext<T>>
       ParseArguments(context);
       return Next(context, cancellationToken);
    }
+
+   #endregion
+
+   #region Methods
 
    private void ParseArguments(IExecutionContext<T> context)
    {
@@ -48,4 +67,6 @@ internal class ParserMiddleware<T> : Middleware<IExecutionContext<T>>
          throw new InvalidOperationException($"The type {context.Commandline.GetType().Name} is not supported for argument initialization");
       }
    }
+
+   #endregion
 }

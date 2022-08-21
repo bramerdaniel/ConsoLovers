@@ -17,6 +17,10 @@ public abstract class Middleware<TContext> : IMiddleware<TContext>
 {
    #region IMiddleware<TContext> Members
 
+   protected virtual MiddlewareLocation Placement => MiddlewareLocation.BeforeExecution;
+
+   public virtual int ExecutionOrder => (int)Placement;
+
    /// <summary>Gets the next <see cref="T:ConsoLovers.ConsoleToolkit.Core.Middleware.Middleware`1"/> delegate to invoke.</summary>
    public Func<TContext, CancellationToken, Task> Next { get; set; }
 

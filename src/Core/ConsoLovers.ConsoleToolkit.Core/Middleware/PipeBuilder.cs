@@ -20,41 +20,28 @@ public class PipeBuilder<T>
 
    readonly Func<T, CancellationToken, Task> finalStep;
 
-   private readonly IServiceProvider serviceProvider;
-
+   
    private readonly IList<IMiddleware<T>> middlewares;
 
    #endregion
 
    #region Constructors and Destructors
 
-   public PipeBuilder(IServiceProvider serviceProvider, Func<T, CancellationToken, Task> finalStep)
+   public PipeBuilder(Func<T, CancellationToken, Task> finalStep)
    {
       this.finalStep = finalStep;
-      this.serviceProvider = serviceProvider;
 
       middlewares= new List<IMiddleware<T>>();
    }
 
-   public PipeBuilder(IServiceProvider serviceProvider)
-      : this(serviceProvider, FinalStep)
+   public PipeBuilder()
+      : this(FinalStep)
    {
    }
 
    #endregion
 
    #region Public Methods and Operators
-
-   public PipeBuilder<T> AddMiddleware(Type middlewareType)
-   {
-      var middleware = (IMiddleware<T>)ActivatorUtilities.CreateInstance(serviceProvider, middlewareType);
-      return AddMiddleware(middleware);
-   }
-
-   public PipeBuilder<T> AddMiddleware<TMiddleware>()
-   {
-      return AddMiddleware(typeof(TMiddleware));
-   }
 
    public PipeBuilder<T> AddMiddleware(IMiddleware<T> middleware)
    {

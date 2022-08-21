@@ -10,13 +10,15 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using ConsoLovers.ConsoleToolkit.Core.Builders;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 using ConsoLovers.ConsoleToolkit.Core.Services;
 
 using JetBrains.Annotations;
 
-internal class ExecutionMiddleware<T> : Middleware<IExecutionContext<T>>
+/// <summary>The middleware that is responsible for executing the defined commands or application logic</summary>
+/// <typeparam name="T">The type of the arguments</typeparam>
+/// <seealso cref="ConsoLovers.ConsoleToolkit.Core.Middleware.Middleware&lt;ConsoLovers.ConsoleToolkit.Core.Services.IExecutionContext&lt;T&gt;&gt;"/>
+public class ExecutionMiddleware<T> : Middleware<IExecutionContext<T>>
    where T : class
 {
    #region Constants and Fields
@@ -28,10 +30,19 @@ internal class ExecutionMiddleware<T> : Middleware<IExecutionContext<T>>
 
    #region Constructors and Destructors
 
+   /// <summary>Initializes a new instance of the <see cref="ExecutionMiddleware{T}"/> class.</summary>
+   /// <param name="executionEngine">The execution engine.</param>
+   /// <exception cref="System.ArgumentNullException">executionEngine</exception>
    public ExecutionMiddleware([NotNull] IExecutionEngine executionEngine)
    {
       this.executionEngine = executionEngine ?? throw new ArgumentNullException(nameof(executionEngine));
    }
+
+   #endregion
+
+   #region Public Properties
+
+   public override int ExecutionOrder => KnownLocations.ExecutionMiddleware;
 
    #endregion
 
@@ -42,9 +53,9 @@ internal class ExecutionMiddleware<T> : Middleware<IExecutionContext<T>>
       if (cancellationToken.IsCancellationRequested)
          return;
 
-      var executedCommand = await executionEngine.ExecuteCommandAsync(context.ApplicationArguments, context.CancellationToken);
+      var executedCommand = await executionEngine.ExecuteCommandAsync(context.ApplicationArguments, cancellationToken);
       if (executedCommand == null)
-         await executionEngine.ExecuteAsync(context.ApplicationArguments, context.CancellationToken);
+         await executionEngine.ExecuteAsync(context.ApplicationArguments, cancellationToken);
 
       await Next(context, cancellationToken);
    }
