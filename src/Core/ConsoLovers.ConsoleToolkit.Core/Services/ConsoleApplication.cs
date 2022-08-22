@@ -11,7 +11,6 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using ConsoLovers.ConsoleToolkit.Core.Builders;
-using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
 using JetBrains.Annotations;
 
@@ -28,15 +27,16 @@ internal class ConsoleApplication<T> : IConsoleApplication<T>
 
    private readonly IExecutionPipeline<T> executionPipeline;
 
+   private ExecutionContext<T> context;
+
    #endregion
 
    #region Constructors and Destructors
 
-   public ConsoleApplication(T arguments, [NotNull] IExecutionEngine executionEngine, [NotNull] IExecutionPipeline<T> executionPipeline)
+   public ConsoleApplication([NotNull] IExecutionPipeline<T> executionPipeline)
    {
+      // Arguments = arguments;
       this.executionPipeline = executionPipeline ?? throw new ArgumentNullException(nameof(executionPipeline));
-      Arguments = arguments;
-      ExecutionEngine = executionEngine ?? throw new ArgumentNullException(nameof(executionEngine));
    }
 
    #endregion
@@ -44,7 +44,7 @@ internal class ConsoleApplication<T> : IConsoleApplication<T>
    #region IConsoleApplication<T> Members
 
    /// <summary>Gets the arguments.</summary>
-   public T Arguments { get; private set; }
+   public T Arguments => context?.ApplicationArguments;
 
    public async Task<IConsoleApplication<T>> RunAsync(string args, CancellationToken cancellationToken)
    {
@@ -54,17 +54,9 @@ internal class ConsoleApplication<T> : IConsoleApplication<T>
 
    public async Task<IConsoleApplication<T>> RunAsync(string[] args, CancellationToken cancellationToken)
    {
-
-
       await ExecutePipelineAnsyc(args, cancellationToken);
       return this;
    }
-
-   #endregion
-
-   #region Properties
-
-   [NotNull] private IExecutionEngine ExecutionEngine { get; }
 
    #endregion
 
@@ -75,13 +67,10 @@ internal class ConsoleApplication<T> : IConsoleApplication<T>
       if (args == null)
          throw new ArgumentNullException(nameof(args));
 
-      // TODO handle unmapped command line arguments
-      // TODO support exception handling
 
-      var context = new ExecutionContext<T>(Arguments, args);
+      context = new ExecutionContext<T>(args);
       await executionPipeline.Execute(context, cancellationToken);
    }
-
 
    #endregion
 }

@@ -48,20 +48,20 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.DIContainer
       public void CreateSimpleObjectWithDependencies()
       {
          var container = Setup.Container().Done();
-         var dependancies = container.Create<HaveDependancies>();
-         dependancies.Should().NotBeNull();
-         dependancies.Demo.Should().BeNull();
+         var dependencies = container.Create<HaveDependancies>();
+         dependencies.Should().NotBeNull();
+         dependencies.Demo.Should().BeNull();
 
          container.Register<IDemo, Demo>();
-         dependancies = container.Create<HaveDependancies>();
-         dependancies.Should().NotBeNull();
-         dependancies.Demo.Should().NotBeNull();
+         dependencies = container.Create<HaveDependancies>();
+         dependencies.Should().NotBeNull();
+         dependencies.Demo.Should().NotBeNull();
       }
 
       [TestMethod]
       public void CreateSimpleObjectWithOptions()
       {
-         Container container = new Container();
+         var container = Setup.Container().Done();
 
          // Normal method
          var simple = container.Create(typeof(Simple), new ContainerOptions { ConstructorSelectionStrategy = ConstructorSelectionStrategies.WithInjectionConstructorAttribute });

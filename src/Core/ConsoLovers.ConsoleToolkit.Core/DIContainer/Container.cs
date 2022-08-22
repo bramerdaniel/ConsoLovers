@@ -31,17 +31,18 @@ namespace ConsoLovers.ConsoleToolkit.Core.DIContainer
 
       #region Constants and Fields
 
-      private readonly ServiceCollection services;
+      private readonly IServiceCollection services;
 
       #endregion
 
       #region Constructors and Destructors
 
       /// <summary>Initializes a new instance of the <see cref="Container"/> class.</summary>
-      public Container([NotNull] ServiceCollection serviceCollection)
+      public Container([NotNull] IServiceCollection serviceCollection)
       {
          services = serviceCollection ?? throw new ArgumentNullException(nameof(serviceCollection));
          services.AddSingleton(typeof(IContainer), this);
+         services.AddSingleton(typeof(IServiceProvider), this);
       }
 
       /// <summary>Initializes a new instance of the <see cref="Container"/> class.</summary>
