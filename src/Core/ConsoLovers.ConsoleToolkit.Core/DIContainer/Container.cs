@@ -320,8 +320,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.DIContainer
          if (descriptor.Lifetime == ServiceLifetime.Singleton)
          {
             var singleton = ServiceDescriptor.Singleton(descriptor.ServiceType, instance);
+            services.Insert(services.IndexOf(descriptor), singleton);
             services.Remove(descriptor);
-            services.Add(singleton);
          }
 
          return instance;
