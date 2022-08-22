@@ -6,6 +6,7 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
 {
+   using ConsoLovers.ConsoleToolkit.Core;
    using System;
    using System.Collections.Generic;
    using System.Globalization;
@@ -24,17 +25,16 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
 
       #endregion
 
-      public IParserOptions Options { get; set; }
+      public ICommandLineOptions Options { get; set; } = new CommandLineOptions();
 
       #region ICommandLineArgumentParser Members
 
       /// <summary>Parses the given arguments into a dictionary.</summary>
       /// <param name="args">The command line arguments.</param>
-      /// <param name="caseSensitive">if set to <c>true</c> the arguments should be treated case sensitive.</param>
       /// <returns>The created dictionary</returns>
-      public CommandLineArgumentList ParseArguments(string[] args, bool caseSensitive)
+      public CommandLineArgumentList ParseArguments(string[] args)
       {
-         var arguments = new CommandLineArgumentList(caseSensitive ? StringComparer.InvariantCulture : StringComparer.InvariantCultureIgnoreCase);
+         var arguments = new CommandLineArgumentList(Options.CaseSensitive ? StringComparer.InvariantCulture : StringComparer.InvariantCultureIgnoreCase);
          int index = 0;
 
          foreach (string argument in NormalizeArguments(args).Where(x => !string.IsNullOrEmpty(x)))
@@ -50,10 +50,13 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
          return arguments;
       }
 
-      public CommandLineArgumentList ParseArguments(string args, bool caseSensitive)
+      /// <summary>Parses the given arguments into a dictionary.</summary>
+      /// <param name="args">The command line arguments as string.</param>
+      /// <returns>The created dictionary</returns>
+      public CommandLineArgumentList ParseArguments(string args)
       {
          int skipFirst = args.Equals(Environment.CommandLine) ? 1 : 0;
-         var argumentList = new CommandLineArgumentList(caseSensitive ? StringComparer.InvariantCulture : StringComparer.InvariantCultureIgnoreCase);
+         var argumentList = new CommandLineArgumentList(Options.CaseSensitive ? StringComparer.InvariantCulture : StringComparer.InvariantCultureIgnoreCase);
          int index = 0;
          foreach (var arg in SplitIntoArgs(args).Skip(skipFirst))
          {
@@ -64,13 +67,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
 
          return argumentList;
       }
-
-      /// <summary>Parses the given arguments into a dictionary.</summary>
-      /// <param name="args">The command line arguments as string.</param>
-      /// <returns>The created dictionary</returns>
-      public CommandLineArgumentList ParseArguments(string args) => ParseArguments(args, false);
-
-      public CommandLineArgumentList ParseArguments(string[] args) => ParseArguments(args, false);
 
       #endregion
 

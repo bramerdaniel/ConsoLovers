@@ -23,7 +23,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
 
       protected CommandLineArgumentList Parse(params string[] parameters)
       {
-         return GetTarget().ParseArguments(parameters, false);
+         return GetTarget().ParseArguments(parameters);
       }
 
       #endregion

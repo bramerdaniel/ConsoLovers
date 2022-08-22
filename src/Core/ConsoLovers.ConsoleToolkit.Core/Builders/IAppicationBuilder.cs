@@ -13,4 +13,5 @@ namespace ConsoLovers.ConsoleToolkit.Core.Builders
    {
       IConsoleApplication<T> Build();
    }
+
 }

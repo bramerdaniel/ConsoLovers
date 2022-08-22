@@ -154,4 +154,9 @@ internal class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigura
    }
 
    #endregion
+
+   public IApplicationBuilder<T> ReturnInstance()
+   {
+      return this;
+   }
 }

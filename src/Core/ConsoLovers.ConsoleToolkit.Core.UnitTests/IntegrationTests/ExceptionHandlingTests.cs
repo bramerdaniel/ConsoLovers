@@ -27,6 +27,7 @@ public class ExceptionHandlingTests
          .ShowHelpWithoutArguments()
          .RunAsync("run parameter=ok", CancellationToken.None);
 
+      //Assert.Fail();
    }
 
    public class Args

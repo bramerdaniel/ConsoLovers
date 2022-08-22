@@ -50,14 +50,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       /// <summary>Maps the specified arguments to given object of the given type.</summary>
       /// <typeparam name="T">The type of the class to map the argument to.</typeparam>
       /// <param name="args">The arguments that should be mapped to the instance.</param>
-      /// <param name="caseSensitive">if set to <c>true</c> the parameters are treated case sensitive.</param>
-      /// <returns>The created instance of the arguments class.</returns>
-      T Map<T>(string[] args, bool caseSensitive)
-         where T : class;
-
-      /// <summary>Maps the specified arguments to given object of the given type.</summary>
-      /// <typeparam name="T">The type of the class to map the argument to.</typeparam>
-      /// <param name="args">The arguments that should be mapped to the instance.</param>
       /// <param name="instance">The instance of <see cref="T"/> the args should be mapped to.</param>
       /// <returns>The created instance of the arguments class.</returns>
       T Map<T>(string[] args, T instance)
@@ -69,39 +61,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       /// <param name="instance">The instance of <see cref="T"/> the args should be mapped to.</param>
       /// <returns>The created instance of the arguments class.</returns>
       T Map<T>(string args, T instance)
-         where T : class;
-
-      /// <summary>Maps the specified arguments to given object of the given type.</summary>
-      /// <typeparam name="T">The type of the class to map the argument to.</typeparam>
-      /// <param name="args">The arguments that should be mapped to the instance.</param>
-      /// <param name="caseSensitive">if set to <c>true</c> the parameters are treated case sensitive.</param>
-      /// <returns>The created instance of the arguments class.</returns>
-      T Map<T>(string args, bool caseSensitive)
-         where T : class;
-
-      /// <summary>Maps the specified arguments to given object of the given type.</summary>
-      /// <typeparam name="T">The type of the class to map the argument to.</typeparam>
-      /// <param name="args">The arguments that should be mapped to the instance.</param>
-      /// <returns>The created instance of the arguments class.</returns>
-      T Map<T>(string args)
-         where T : class;
-
-      /// <summary>Maps the specified arguments to given object of the given type.</summary>
-      /// <typeparam name="T">The type of the class to map the argument to.</typeparam>
-      /// <param name="args">The arguments that should be mapped to the instance.</param>
-      /// <param name="instance">The instance of <see cref="T"/> the args should be mapped to.</param>
-      /// <param name="caseSensitive">if set to <c>true</c> the parameters are treated case sensitive.</param>
-      /// <returns>The created instance of the arguments class.</returns>
-      T Map<T>(string args, T instance, bool caseSensitive)
-         where T : class;
-
-      /// <summary>Maps the specified arguments to given object of the given type.</summary>
-      /// <typeparam name="T">The type of the class to map the argument to.</typeparam>
-      /// <param name="args">The arguments that should be mapped to the instance.</param>
-      /// <param name="instance">The instance of <see cref="T"/> the args should be mapped to.</param>
-      /// <param name="caseSensitive">if set to <c>true</c> the parameters are treated case sensitive.</param>
-      /// <returns>The created instance of the arguments class.</returns>
-      T Map<T>(string[] args, T instance, bool caseSensitive)
          where T : class;
 
       /// <summary>Prints the help to the <see cref="Console"/>.</summary>

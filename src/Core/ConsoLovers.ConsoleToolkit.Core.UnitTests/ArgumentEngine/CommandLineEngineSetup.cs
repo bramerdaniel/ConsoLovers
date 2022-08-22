@@ -26,7 +26,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
          var serviceProvider = new DefaultServiceProvider(serviceCollection);
          var argumentReflector = new ArgumentReflector();
          var commandExecutor = new ExecutionEngine(argumentReflector, serviceProvider);
-         return new CommandLineEngine(serviceProvider, commandExecutor, new CommandLineArgumentParser(), argumentReflector);
+         return new CommandLineEngine(serviceProvider, new CommandLineArgumentParser(), argumentReflector);
       }
 
       #endregion

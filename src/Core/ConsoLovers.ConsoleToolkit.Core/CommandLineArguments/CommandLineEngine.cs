@@ -11,7 +11,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
    using System.Linq;
    using System.Reflection;
    using System.Text;
-
+   using ConsoLovers.ConsoleToolkit.Core;
    using ConsoLovers.ConsoleToolkit.Core.DIContainer;
 
    using JetBrains.Annotations;
@@ -26,8 +26,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       #region Constructors and Destructors
 
       [InjectionConstructor]
-      public CommandLineEngine([NotNull] IServiceProvider serviceProvider, [NotNull] IExecutionEngine executionEngine,
-         [NotNull] ICommandLineArgumentParser argumentParser, [NotNull] IArgumentReflector argumentReflector)
+      public CommandLineEngine([NotNull] IServiceProvider serviceProvider, [NotNull] ICommandLineArgumentParser argumentParser, [NotNull] IArgumentReflector argumentReflector)
       {
          ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
          ArgumentParser = argumentParser ?? throw new ArgumentNullException(nameof(argumentParser));
@@ -85,6 +84,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          return stringBuilder;
       }
 
+      public ICommandLineOptions Options => ArgumentParser.Options;
+
+
       /// <summary>Gets the help information for the class of the given type.</summary>
       /// <typeparam name="T">The argument class for creating the help for</typeparam>
       /// <param name="localizationService">The <see cref="ILocalizationService"/> that will be used for localization</param>
@@ -94,25 +96,15 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          return GetHelpForProperties(typeof(T), localizationService);
       }
 
-      /// <summary>Maps the specified arguments to a class of the given type.</summary>
+
+      /// <summary>Maps the specified arguments to given object of the given type.</summary>
       /// <typeparam name="T">The type of the class to map the argument to.</typeparam>
-      /// <param name="args">The arguments.</param>
+      /// <param name="args">The arguments that should be mapped to the instance.</param>
       /// <returns>The created instance of the arguments class.</returns>
       public T Map<T>(string[] args)
          where T : class
       {
-         return Map<T>(args, false);
-      }
-
-      /// <summary>Maps the specified arguments to given object of the given type.</summary>
-      /// <typeparam name="T">The type of the class to map the argument to.</typeparam>
-      /// <param name="args">The arguments that should be mapped to the instance.</param>
-      /// <param name="caseSensitive">if set to <c>true</c> the parameters are treated case sensitive.</param>
-      /// <returns>The created instance of the arguments class.</returns>
-      public T Map<T>(string[] args, bool caseSensitive)
-         where T : class
-      {
-         var arguments = ArgumentParser.ParseArguments(args, caseSensitive);
+         var arguments = ArgumentParser.ParseArguments(args);
          var mapper = CreateMapper<T>();
 
          try
@@ -128,52 +120,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          }
       }
 
-      /// <summary>Maps the specified arguments to given object of the given type.</summary>
-      /// <typeparam name="T">The type of the class to map the argument to.</typeparam>
-      /// <param name="args">The arguments that should be mapped to the instance.</param>
-      /// <param name="instance">The instance of <see cref="T"/> the args should be mapped to.</param>
-      /// <returns>The created instance of the arguments class.</returns>
-      public T Map<T>(string[] args, T instance)
-         where T : class
-      {
-         return Map(args, instance, false);
-      }
 
       public T Map<T>(string args, T instance)
          where T : class
       {
-         return Map(args, instance, false);
-      }
-
-      public T Map<T>(string args)
-         where T : class
-      {
-         return Map<T>(args, false);
-      }
-
-      public T Map<T>(string args, bool caseSensitive)
-         where T : class
-      {
-         var arguments = ArgumentParser.ParseArguments(args, caseSensitive);
-         var mapper = CreateMapper<T>();
-
-         try
-         {
-            mapper.UnmappedCommandLineArgument += OnUnmappedCommandLineArgument;
-            mapper.MappedCommandLineArgument += OnMappedCommandLineArgument;
-            return mapper.Map(arguments);
-         }
-         finally
-         {
-            mapper.MappedCommandLineArgument -= OnMappedCommandLineArgument;
-            mapper.UnmappedCommandLineArgument -= OnUnmappedCommandLineArgument;
-         }
-      }
-
-      public T Map<T>(string args, T instance, bool caseSensitive)
-         where T : class
-      {
-         var arguments = ArgumentParser.ParseArguments(args, caseSensitive);
+         var arguments = ArgumentParser.ParseArguments(args);
          var mapper = CreateMapper<T>();
 
          try
@@ -193,12 +144,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       /// <typeparam name="T">The type of the class to map the argument to.</typeparam>
       /// <param name="args">The arguments that should be mapped to the instance.</param>
       /// <param name="instance">The instance of <see cref="T"/> the args should be mapped to.</param>
-      /// <param name="caseSensitive">if set to <c>true</c> the parameters are treated case sensitive.</param>
       /// <returns>The created instance of the arguments class.</returns>
-      public T Map<T>(string[] args, T instance, bool caseSensitive)
+      public T Map<T>(string[] args, T instance)
          where T : class
       {
-         var arguments = ArgumentParser.ParseArguments(args, caseSensitive);
+         var arguments = ArgumentParser.ParseArguments(args);
          var mapper = CreateMapper<T>();
 
          try
