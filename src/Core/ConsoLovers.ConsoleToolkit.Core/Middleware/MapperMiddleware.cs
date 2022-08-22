@@ -17,7 +17,7 @@ using JetBrains.Annotations;
 
 using Microsoft.Extensions.DependencyInjection;
 
-internal class MapperMiddleware<T> : Middleware<IExecutionContext<T>>
+internal class MapperMiddleware<T> : Middleware<T>
    where T : class
 {
    #region Constants and Fields

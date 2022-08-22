@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="PipeBuilder.cs" company="KUKA Deutschland GmbH">
+// <copyright file="ExecutionPipelineBuilder.cs" company="KUKA Deutschland GmbH">
 //   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -12,29 +12,29 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Microsoft.Extensions.DependencyInjection;
+using ConsoLovers.ConsoleToolkit.Core.Services;
 
-public class PipeBuilder<T>
+public class ExecutionPipelineBuilder<T>
+   where T : class
 {
    #region Constants and Fields
 
-   readonly Func<T, CancellationToken, Task> finalStep;
+   readonly Func<IExecutionContext<T>, CancellationToken, Task> finalStep;
 
    
-   private readonly IList<IMiddleware<T>> middlewares;
+   private readonly IList<IMiddleware<T>> middlewareList;
 
    #endregion
 
    #region Constructors and Destructors
 
-   public PipeBuilder(Func<T, CancellationToken, Task> finalStep)
+   public ExecutionPipelineBuilder(Func<IExecutionContext<T>, CancellationToken, Task> finalStep)
    {
       this.finalStep = finalStep;
-
-      middlewares= new List<IMiddleware<T>>();
+      middlewareList= new List<IMiddleware<T>>();
    }
 
-   public PipeBuilder()
+   public ExecutionPipelineBuilder()
       : this(FinalStep)
    {
    }
@@ -43,13 +43,13 @@ public class PipeBuilder<T>
 
    #region Public Methods and Operators
 
-   public PipeBuilder<T> AddMiddleware(IMiddleware<T> middleware)
+   public ExecutionPipelineBuilder<T> AddMiddleware(IMiddleware<T> middleware)
    {
-      middlewares.Add(middleware);
+      middlewareList.Add(middleware);
       return this;
    }
 
-   public Func<T, CancellationToken, Task> Build()
+   public Func<IExecutionContext<T>, CancellationToken, Task> Build()
    {
       return CreatePipe();
    }
@@ -62,14 +62,14 @@ public class PipeBuilder<T>
    /// <param name="context">The context that was passed.</param>
    /// <param name="cancellationToken">The cancellation token.</param>
    /// <returns></returns>
-   private static Task FinalStep(T context, CancellationToken cancellationToken)
+   private static Task FinalStep(IExecutionContext<T> context, CancellationToken cancellationToken)
    {
       return cancellationToken.IsCancellationRequested ? Task.FromCanceled(cancellationToken) : Task.CompletedTask;
    }
 
-   private Func<T, CancellationToken, Task> CreatePipe()
+   private Func<IExecutionContext<T>, CancellationToken, Task> CreatePipe()
    {
-      var reversed = middlewares.Reverse().ToArray();
+      var reversed = middlewareList.Reverse().ToArray();
       var current = reversed[0];
       current.Next = finalStep;
 

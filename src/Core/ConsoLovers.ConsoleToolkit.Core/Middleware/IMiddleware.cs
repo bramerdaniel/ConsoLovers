@@ -10,16 +10,19 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
+using ConsoLovers.ConsoleToolkit.Core.Services;
+
 /// <summary>Interface defining a middleware component</summary>
-/// <typeparam name="TContext">The type of the context.</typeparam>
-public interface IMiddleware<TContext>
+/// <typeparam name="T">The type of the application arguments.</typeparam>
+public interface IMiddleware<T>
+   where T : class
 {
    #region Public Properties
 
    int ExecutionOrder { get; }
 
    /// <summary>Gets the next <see cref="Middleware{TContext}"/> delegate to invoke.</summary>
-   Func<TContext, CancellationToken, Task> Next { get; set; }
+   Func<IExecutionContext<T>, CancellationToken, Task> Next { get; set; }
 
    #endregion
 
@@ -29,7 +32,7 @@ public interface IMiddleware<TContext>
    /// <param name="context">The context that is passed along the execution pipeline.</param>
    /// <param name="cancellationToken">The cancellation token for canceling the execution.</param>
    /// <returns>The execution <see cref="Task"/></returns>
-   Task Execute(TContext context, CancellationToken cancellationToken);
+   Task Execute(IExecutionContext<T> context, CancellationToken cancellationToken);
 
    #endregion
 }

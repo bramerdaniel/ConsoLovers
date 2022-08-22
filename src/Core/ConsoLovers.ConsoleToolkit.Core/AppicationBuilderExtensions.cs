@@ -23,7 +23,7 @@ public static class ApplicationBuilderExtensions
    #region Public Methods and Operators
 
    public static IApplicationBuilder<T> AddMiddleware<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder,
-      [JetBrains.Annotations.NotNull] IMiddleware<IExecutionContext<T>> middleware)
+      [JetBrains.Annotations.NotNull] IMiddleware<T> middleware)
       where T : class
    {
       if (builder == null)
@@ -43,12 +43,12 @@ public static class ApplicationBuilderExtensions
       if (middlewareType == null)
          throw new ArgumentNullException(nameof(middlewareType));
 
-      return builder.ConfigureServices(x => x.AddTransient(typeof(IMiddleware<IExecutionContext<T>>), middlewareType));
+      return builder.ConfigureServices(x => x.AddTransient(typeof(IMiddleware<T>), middlewareType));
    }
 
    public static IApplicationBuilder<T> AddMiddleware<T, TMiddleware>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder)
       where T : class
-      where TMiddleware : IMiddleware<IExecutionContext<T>>
+      where TMiddleware : IMiddleware<T>
    {
       if (builder == null)
          throw new ArgumentNullException(nameof(builder));

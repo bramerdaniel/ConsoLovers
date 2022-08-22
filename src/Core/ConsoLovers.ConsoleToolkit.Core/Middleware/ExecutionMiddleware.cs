@@ -18,7 +18,7 @@ using JetBrains.Annotations;
 /// <summary>The middleware that is responsible for executing the defined commands or application logic</summary>
 /// <typeparam name="T">The type of the arguments</typeparam>
 /// <seealso cref="ConsoLovers.ConsoleToolkit.Core.Middleware.Middleware&lt;ConsoLovers.ConsoleToolkit.Core.Services.IExecutionContext&lt;T&gt;&gt;"/>
-public class ExecutionMiddleware<T> : Middleware<IExecutionContext<T>>
+public class ExecutionMiddleware<T> : Middleware<T>
    where T : class
 {
    #region Constants and Fields

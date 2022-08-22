@@ -6,7 +6,6 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.Services;
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -14,15 +13,12 @@ using System.Threading.Tasks;
 
 using ConsoLovers.ConsoleToolkit.Core.Middleware;
 
-using JetBrains.Annotations;
-
 internal class ExecutionPipeline<T> : IExecutionPipeline<T>
       where T : class
 {
+   private readonly IMiddleware<T>[] middlewares;
 
-   private readonly IMiddleware<IExecutionContext<T>>[] middlewares;
-
-   public ExecutionPipeline(IEnumerable<IMiddleware<IExecutionContext<T>>> middlewares)
+   public ExecutionPipeline(IEnumerable<IMiddleware<T>> middlewares)
    {
       // TODO sort middleware tests
       this.middlewares = middlewares.OrderBy(m => m.ExecutionOrder).ToArray();
@@ -30,7 +26,7 @@ internal class ExecutionPipeline<T> : IExecutionPipeline<T>
 
    public Task Execute(IExecutionContext<T> context, CancellationToken cancellationToken)
    {
-      var builder = new PipeBuilder<IExecutionContext<T>>();
+      var builder = new ExecutionPipelineBuilder<T>();
       foreach (var middleware in middlewares)
          builder.AddMiddleware(middleware);
 

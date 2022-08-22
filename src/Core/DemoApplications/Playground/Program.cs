@@ -12,10 +12,11 @@ public static class Program
    {
       var executable = ConsoleApplication.WithArguments<ApplicationArgs>()
          //.UseServiceProviderFactory(new DefaultServiceProviderFactory())
-         // .UseApplicationLogic(Execute)
-         //.AddMiddleware(typeof(TryCatchMiddleware))
-         //.AddMiddleware<ApplicationArgs, RepeatMiddleware>()
-         .Run(t => throw new InvalidOperationException($"That went wrong {t}"));
+         .UseApplicationLogic(Execute)
+         .AddMiddleware(typeof(TryCatchMiddleware))
+         .AddMiddleware<ApplicationArgs, RepeatMiddleware>()
+         .Run();
+         //.Run(t => throw new InvalidOperationException($"That went wrong {t}"));
 
       Console.ReadLine();
    }
@@ -27,23 +28,23 @@ public static class Program
    }
 }
 
-public class RepeatMiddleware : Middleware<IExecutionContext<ApplicationArgs>>
+public class RepeatMiddleware : Middleware<ApplicationArgs>
 {
    public override async Task Execute(IExecutionContext<ApplicationArgs> context, CancellationToken cancellationToken)
    {
       for (int i = 0; i < 5; i++)
       {
          await Next(context, cancellationToken);
-         context.ApplicationArguments.DeleteCommand.Arguments.User.Arguments.Force =
-            !context.ApplicationArguments.DeleteCommand.Arguments.User.Arguments.Force;
+         //context.ApplicationArguments.DeleteCommand.Arguments.User.Arguments.Force =
+         //   !context.ApplicationArguments.DeleteCommand.Arguments.User.Arguments.Force;
       }
 
-      context.ApplicationArguments.DeleteCommand.Arguments.User.Arguments.UserName = "Calvin";
+      // context.ApplicationArguments.DeleteCommand.Arguments.User.Arguments.UserName = "Calvin";
       await Next(context, cancellationToken);
    }
 }
 
-public class TryCatchMiddleware : Middleware<IExecutionContext<ApplicationArgs>>
+public class TryCatchMiddleware : Middleware<ApplicationArgs>
 {
    private readonly IConsole console;
 
@@ -56,11 +57,11 @@ public class TryCatchMiddleware : Middleware<IExecutionContext<ApplicationArgs>>
    {
       try
       {
-         console.WriteLine("--- Try --->", ConsoleColor.Yellow);
+         context.ParsedArguments.RemoveFirst("removeMe");
 
          await Next(context, cancellationToken);
 
-         console.WriteLine("--- Ok --->", ConsoleColor.Green);
+
       }
       catch (Exception e)
       {

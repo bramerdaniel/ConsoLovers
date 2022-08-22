@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 using ConsoLovers.ConsoleToolkit.Core.Services;
 
-public class ExceptionHandlingMiddleware<T> : Middleware<IExecutionContext<T>>
+public class ExceptionHandlingMiddleware<T> : Middleware<T>
    where T : class
 {
    private readonly IExceptionHandler exceptionHandler;

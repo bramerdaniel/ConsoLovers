@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 using ConsoLovers.ConsoleToolkit.Core.Services;
 
-internal class ParserMiddleware<T> : Middleware<IExecutionContext<T>>
+internal class ParserMiddleware<T> : Middleware<T>
    where T : class
 {
    #region Constants and Fields

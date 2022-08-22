@@ -24,6 +24,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
 
       #endregion
 
+      public IParserOptions Options { get; set; }
+
       #region ICommandLineArgumentParser Members
 
       /// <summary>Parses the given arguments into a dictionary.</summary>

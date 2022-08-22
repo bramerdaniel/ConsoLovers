@@ -132,10 +132,10 @@ internal class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigura
    private void AddDefaultMiddleware()
    {
       ServiceCollection.EnsureSingleton<IExecutionPipeline<T>, ExecutionPipeline<T>>();
-      ServiceCollection.AddTransient<IMiddleware<IExecutionContext<T>>, ExceptionHandlingMiddleware<T>>();
-      ServiceCollection.AddTransient<IMiddleware<IExecutionContext<T>>, ParserMiddleware<T>>();
-      ServiceCollection.AddTransient<IMiddleware<IExecutionContext<T>>, MapperMiddleware<T>>();
-      ServiceCollection.AddTransient<IMiddleware<IExecutionContext<T>>, ExecutionMiddleware<T>>();
+      ServiceCollection.AddTransient<IMiddleware<T>, ExceptionHandlingMiddleware<T>>();
+      ServiceCollection.AddTransient<IMiddleware<T>, ParserMiddleware<T>>();
+      ServiceCollection.AddTransient<IMiddleware<T>, MapperMiddleware<T>>();
+      ServiceCollection.AddTransient<IMiddleware<T>, ExecutionMiddleware<T>>();
    }
 
    protected void SetServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory)
