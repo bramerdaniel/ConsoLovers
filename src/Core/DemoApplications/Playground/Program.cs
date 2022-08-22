@@ -12,11 +12,11 @@ public static class Program
    {
       var executable = ConsoleApplication.WithArguments<ApplicationArgs>()
          //.UseServiceProviderFactory(new DefaultServiceProviderFactory())
-         .UseApplicationLogic(Execute)
-         .AddMiddleware(typeof(TryCatchMiddleware))
-         .AddMiddleware<ApplicationArgs, RepeatMiddleware>()
-         .Run();
-         //.Run(t => throw new InvalidOperationException($"That went wrong {t}"));
+         //.UseApplicationLogic(Execute)
+         //.AddMiddleware(typeof(TryCatchMiddleware))
+         //.AddMiddleware<ApplicationArgs, RepeatMiddleware>()
+         // .Run();
+         .Run(t => throw new InvalidOperationException($"That went wrong {t}"));
 
       Console.ReadLine();
    }
