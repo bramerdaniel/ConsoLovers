@@ -27,6 +27,8 @@ internal class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigura
 
    private Func<IServiceCollection, IServiceProvider> createServiceProvider;
 
+   private IServiceProvider serviceProvider;
+
    #endregion
 
    #region IApplicationBuilder<T> Members
@@ -37,7 +39,7 @@ internal class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigura
       return this;
    }
 
-   public IApplicationBuilder<T> ConfigureServices(Action<IServiceCollection> serviceSetup)
+   public IApplicationBuilder<T> AddService(Action<IServiceCollection> serviceSetup)
    {
       serviceSetup(ServiceCollection);
       return this;
@@ -45,9 +47,7 @@ internal class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigura
 
    public IConsoleApplication<T> Build()
    {
-      var serviceProvider = CreateServiceProvider();
-      var executable = serviceProvider.GetRequiredService<IConsoleApplication<T>>();
-      return executable;
+      return GetOrCreateServiceProvider().GetRequiredService<IConsoleApplication<T>>();
    }
 
    #endregion
@@ -93,8 +93,11 @@ internal class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigura
 
    #region Methods
 
-   internal IServiceProvider CreateServiceProvider()
+   internal IServiceProvider GetOrCreateServiceProvider()
    {
+      if (serviceProvider != null)
+         return serviceProvider;
+
       EnsureRequiredServices();
 
       if (createServiceProvider != null)
@@ -102,12 +105,13 @@ internal class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigura
 
       var factory = new BuildInServiceProviderFactory();
       var collection = factory.CreateBuilder(ServiceCollection);
-      var serviceProvider = factory.CreateServiceProvider(collection);
+      var provider = factory.CreateServiceProvider(collection);
 
       foreach (var configurationAction in serviceConfigurationActions)
-         configurationAction(serviceProvider);
+         configurationAction(provider);
 
-      return serviceProvider;
+      serviceProvider = provider;
+      return provider;
    }
 
    protected virtual void AddServiceConfigurationAction([NotNull] Action<IServiceProvider> configAction)

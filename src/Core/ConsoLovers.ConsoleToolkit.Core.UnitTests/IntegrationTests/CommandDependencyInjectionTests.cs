@@ -39,7 +39,7 @@ public class CommandDependencyInjectionTests
    public async Task EnsureServicesAreInjectedIntoCommandsCorrectly()
    {
       var application = await ConsoleApplication.WithArguments<ApplicationArgs>()
-         .ConfigureServices(s => s.AddSingleton(new Service("Bam")))
+         .AddService(s => s.AddSingleton(new Service("Bam")))
          .RunAsync("run", CancellationToken.None);
 
       application.Arguments.Command.Service.Should().NotBeNull();

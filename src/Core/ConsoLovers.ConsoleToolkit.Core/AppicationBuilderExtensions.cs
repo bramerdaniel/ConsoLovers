@@ -31,7 +31,7 @@ public static class ApplicationBuilderExtensions
       if (middleware == null)
          throw new ArgumentNullException(nameof(middleware));
 
-      return builder.ConfigureServices(x => x.AddSingleton(middleware));
+      return builder.AddService(x => x.AddSingleton(middleware));
    }
 
    public static IApplicationBuilder<T> AddMiddleware<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder,
@@ -43,7 +43,7 @@ public static class ApplicationBuilderExtensions
       if (middlewareType == null)
          throw new ArgumentNullException(nameof(middlewareType));
 
-      return builder.ConfigureServices(x => x.AddTransient(typeof(IMiddleware<T>), middlewareType));
+      return builder.AddService(x => x.AddTransient(typeof(IMiddleware<T>), middlewareType));
    }
 
    public static IApplicationBuilder<T> AddMiddleware<T, TMiddleware>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder)
@@ -76,7 +76,7 @@ public static class ApplicationBuilderExtensions
       Type serviceType, Type implementationType)
       where T : class
    {
-      return builder.ConfigureServices(s => s.AddScoped(serviceType, implementationType));
+      return builder.AddService(s => s.AddScoped(serviceType, implementationType));
    }
 
    /// <summary>Adds a singleton service of the type specified in <paramref name="serviceType"/> to the specified <see cref="IServiceCollection"/>.</summary>
@@ -87,19 +87,19 @@ public static class ApplicationBuilderExtensions
    public static IApplicationBuilder<T> AddSingleton<T>(this IApplicationBuilder<T> builder, Type serviceType)
       where T : class
    {
-      return builder.ConfigureServices(s => s.AddSingleton(serviceType));
+      return builder.AddService(s => s.AddSingleton(serviceType));
    }
 
    public static IApplicationBuilder<T> AddSingleton<T>(this IApplicationBuilder<T> builder, Type serviceType, Type implementationType)
       where T : class
    {
-      return builder.ConfigureServices(s => s.AddSingleton(serviceType, implementationType));
+      return builder.AddService(s => s.AddSingleton(serviceType, implementationType));
    }
 
    public static IApplicationBuilder<T> AddSingleton<T>(this IApplicationBuilder<T> builder, Type serviceType, object implementation)
       where T : class
    {
-      return builder.ConfigureServices(s => s.AddSingleton(serviceType, implementation));
+      return builder.AddService(s => s.AddSingleton(serviceType, implementation));
    }
 
    public static IApplicationBuilder<T> ConfigureCommandLineParser<T>(this IApplicationBuilder<T> builder, Action<ICommandLineOptions> configurationAction)
@@ -162,13 +162,19 @@ public static class ApplicationBuilderExtensions
    public static IConsoleApplication<T> Run<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder, Action<T> applicationLogic)
       where T : class
    {
+      return builder.Run(applicationLogic, Environment.CommandLine);
+   }
+
+   public static IConsoleApplication<T> Run<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder, Action<T> applicationLogic, string args)
+      where T : class
+   {
       builder.UseApplicationLogic((t, _) =>
       {
          applicationLogic(t);
          return Task.CompletedTask;
       });
 
-      return builder.Run(Environment.CommandLine);
+      return builder.Run(args);
    }
 
    public static IConsoleApplication<T> Run<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder,
@@ -239,7 +245,7 @@ public static class ApplicationBuilderExtensions
       if (builder == null)
          throw new ArgumentNullException(nameof(builder));
 
-      return builder.ConfigureServices(x => x.AddTransient<IApplicationLogic, ShowHelpLogic>());
+      return builder.AddService(x => x.AddTransient<IApplicationLogic, ShowHelpLogic>());
    }
 
    public static IApplicationBuilder<T> UseApplicationLogic<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder,
@@ -251,7 +257,7 @@ public static class ApplicationBuilderExtensions
       if (applicationLogic == null)
          throw new ArgumentNullException(nameof(applicationLogic));
 
-      return builder.ConfigureServices(x => x.AddSingleton(applicationLogic));
+      return builder.AddService(x => x.AddSingleton(applicationLogic));
    }
 
    public static IApplicationBuilder<T> UseApplicationLogic<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder,
@@ -263,7 +269,7 @@ public static class ApplicationBuilderExtensions
       if (applicationLogic == null)
          throw new ArgumentNullException(nameof(applicationLogic));
 
-      return builder.ConfigureServices(x => x.AddSingleton(applicationLogic));
+      return builder.AddService(x => x.AddSingleton(applicationLogic));
    }
 
    public static IApplicationBuilder<T> UseApplicationLogic<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder,
@@ -275,7 +281,7 @@ public static class ApplicationBuilderExtensions
       if (applicationLogic == null)
          throw new ArgumentNullException(nameof(applicationLogic));
 
-      return builder.ConfigureServices(x => x.AddSingleton<IApplicationLogic>(new DelegateLogic<T>(applicationLogic)));
+      return builder.AddService(x => x.AddSingleton<IApplicationLogic>(new DelegateLogic<T>(applicationLogic)));
    }
 
    public static IApplicationBuilder<T> UseApplicationLogic<T, TLogic>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder)
@@ -286,18 +292,10 @@ public static class ApplicationBuilderExtensions
       if (builder == null)
          throw new ArgumentNullException(nameof(builder));
 
-      return builder.ConfigureServices(x => x.AddTransient<IApplicationLogic, TLogic>());
+      return builder.AddService(x => x.AddTransient<IApplicationLogic, TLogic>());
    }
 
-   public static IApplicationBuilder<T> UseExceptionHandler<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder,
-      IExceptionHandler exceptionHandler)
-      where T : class
-   {
-      if (builder == null)
-         throw new ArgumentNullException(nameof(builder));
 
-      return builder.ConfigureServices(x => x.AddSingleton(exceptionHandler));
-   }
 
    #endregion
 }

@@ -20,6 +20,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.DIContainer
    using JetBrains.Annotations;
 
    using Microsoft.Extensions.DependencyInjection;
+   using Microsoft.Extensions.DependencyInjection.Extensions;
 
    #endregion
 
@@ -30,16 +31,23 @@ namespace ConsoLovers.ConsoleToolkit.Core.DIContainer
 
       #region Constants and Fields
 
-      private readonly List<ServiceDescriptor> entries = new();
+      private readonly ServiceCollection services;
 
       #endregion
 
       #region Constructors and Destructors
 
       /// <summary>Initializes a new instance of the <see cref="Container"/> class.</summary>
-      public Container()
+      public Container([NotNull] ServiceCollection serviceCollection)
       {
-         Register(typeof(IContainer), this);
+         services = serviceCollection ?? throw new ArgumentNullException(nameof(serviceCollection));
+         services.AddSingleton(typeof(IContainer), this);
+      }
+
+      /// <summary>Initializes a new instance of the <see cref="Container"/> class.</summary>
+      public Container()
+         : this(new ServiceCollection())
+      {
       }
 
       #endregion
@@ -47,7 +55,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.DIContainer
       #region Public Properties
 
       /// <summary>Gets or sets the options the <see cref="Container"/> uses.</summary>
-      public ContainerOptions Options { get; set; } = new ContainerOptions();
+      public ContainerOptions Options { get; set; } = new();
 
       #endregion
 
@@ -57,7 +65,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.DIContainer
       {
          if (descriptor == null)
             throw new ArgumentNullException(nameof(descriptor));
-         entries.Add(descriptor);
+         services.Add(descriptor);
       }
 
       /// <summary>Builds up the given object and injects the dependencies.</summary>
@@ -261,7 +269,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.DIContainer
          if (service.IsGenericType && service.GenericTypeArguments.Length == 1 && typeof(IEnumerable).IsAssignableFrom(service))
             return ResolveListWithElementType(service.GenericTypeArguments[0]);
 
-         var descriptor = entries.FirstOrDefault(x => x.ServiceType == service);
+         var descriptor = services.FirstOrDefault(x => x.ServiceType == service);
          if (descriptor == null)
             return null;
 
@@ -290,7 +298,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.DIContainer
 
       private IEnumerable<ServiceDescriptor> FindAll(Type service)
       {
-         return entries.Where(x => x.ServiceType == service);
+         return services.Where(x => x.ServiceType == service);
       }
 
       private object ResolveInternal(ServiceDescriptor descriptor)
@@ -311,8 +319,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.DIContainer
          if (descriptor.Lifetime == ServiceLifetime.Singleton)
          {
             var singleton = ServiceDescriptor.Singleton(descriptor.ServiceType, instance);
-            entries.Remove(descriptor);
-            entries.Add(singleton);
+            services.Remove(descriptor);
+            services.Add(singleton);
          }
 
          return instance;
