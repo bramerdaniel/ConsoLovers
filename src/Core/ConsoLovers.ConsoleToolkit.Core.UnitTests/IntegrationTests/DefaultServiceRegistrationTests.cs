@@ -42,15 +42,11 @@ public class DefaultServiceRegistrationTests
       var customExecutor = new Mock<IExecutionEngine>();
 
       var serviceProvider = ConsoleApplication.WithArguments<ApplicationArgs>()
-         .ConfigureServices(s => s.AddSingleton(customExecutor.Object))
+         .AddService(s => s.AddSingleton(customExecutor.Object))
          .CreateServiceProvider();
 
       serviceProvider.GetService<IExecutionEngine>()
          .Should().BeSameAs(customExecutor.Object);
-
-      var engine = serviceProvider.GetService<CommandLineEngine>();
-      Assert.IsNotNull(engine);
-      engine.ExecutionEngine.Should().BeSameAs(customExecutor.Object);
    }
 
    [TestMethod]
@@ -65,7 +61,7 @@ public class DefaultServiceRegistrationTests
       var customParser = new Mock<ICommandLineArgumentParser>();
 
       var serviceProvider = ConsoleApplication.WithArguments<ApplicationArgs>()
-         .ConfigureServices(s => s.AddSingleton(customParser.Object))
+         .AddService(s => s.AddSingleton(customParser.Object))
          .CreateServiceProvider();
 
       serviceProvider.GetService<ICommandLineArgumentParser>()
@@ -108,7 +104,7 @@ public class DefaultServiceRegistrationTests
          .Returns(() => Task.FromResult(mock.Object));
 
       var application = ConsoleApplication.WithArguments<SomeArgs>()
-         .ConfigureServices(s => s.AddSingleton(mock.Object))
+         .AddService(s => s.AddSingleton(mock.Object))
          .Run();
 
       mock.Verify(x => x.RunAsync(It.IsAny<string>(), CancellationToken.None), Times.Once);

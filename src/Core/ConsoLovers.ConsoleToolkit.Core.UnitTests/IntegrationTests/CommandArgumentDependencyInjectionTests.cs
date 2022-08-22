@@ -29,7 +29,7 @@ public class CommandArgumentDependencyInjectionTests
    public async Task EnsureServicesAreInjectedIntoCommandsCorrectly()
    {
       var application = await ConsoleApplication.WithArguments<ApplicationArgs>()
-         .ConfigureServices(s => s.AddTransient<Service>())
+         .AddService(s => s.AddTransient<Service>())
          .RunAsync("run Hello", CancellationToken.None);
 
       application.Arguments.Command.Arguments.Service.Should().NotBeNull();

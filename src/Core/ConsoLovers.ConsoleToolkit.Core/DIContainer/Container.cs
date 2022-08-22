@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Container.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2017
+// <copyright file="Container.cs" company="KUKA Deutschland GmbH">
+//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -19,34 +19,35 @@ namespace ConsoLovers.ConsoleToolkit.Core.DIContainer
 
    using JetBrains.Annotations;
 
+   using Microsoft.Extensions.DependencyInjection;
+   using Microsoft.Extensions.DependencyInjection.Extensions;
+
    #endregion
 
    /// <summary>Simple implementation of a dependency injection container</summary>
-   public class Container : IContainer
+   public class Container : IContainer, IServiceProvider
    {
       // ReSharper disable ExceptionNotDocumented
 
       #region Constants and Fields
 
-      private readonly List<ContainerEntry> entries = new List<ContainerEntry>();
+      private readonly ServiceCollection services;
 
       #endregion
 
       #region Constructors and Destructors
 
       /// <summary>Initializes a new instance of the <see cref="Container"/> class.</summary>
-      public Container()
+      public Container([NotNull] ServiceCollection serviceCollection)
       {
-         Register(typeof(IContainer), this);
+         services = serviceCollection ?? throw new ArgumentNullException(nameof(serviceCollection));
+         services.AddSingleton(typeof(IContainer), this);
       }
 
       /// <summary>Initializes a new instance of the <see cref="Container"/> class.</summary>
-      /// <param name="serviceProvider">The service provider. </param>
-      public Container(IServiceProvider serviceProvider)
-         : this()
+      public Container()
+         : this(new ServiceCollection())
       {
-         ServiceProvider = serviceProvider;
-         Register(typeof(IServiceProvider), serviceProvider);
       }
 
       #endregion
@@ -54,18 +55,18 @@ namespace ConsoLovers.ConsoleToolkit.Core.DIContainer
       #region Public Properties
 
       /// <summary>Gets or sets the options the <see cref="Container"/> uses.</summary>
-      public ContainerOptions Options { get; set; } = new ContainerOptions();
-
-      #endregion
-
-      #region Properties
-
-      /// <summary>Gets or sets the service provider.</summary>
-      protected IServiceProvider ServiceProvider { get; set; }
+      public ContainerOptions Options { get; set; } = new();
 
       #endregion
 
       #region Public Methods and Operators
+
+      public void Register([NotNull] ServiceDescriptor descriptor)
+      {
+         if (descriptor == null)
+            throw new ArgumentNullException(nameof(descriptor));
+         services.Add(descriptor);
+      }
 
       /// <summary>Builds up the given object and injects the dependencies.</summary>
       /// <param name="instance">The instance. </param>
@@ -73,8 +74,10 @@ namespace ConsoLovers.ConsoleToolkit.Core.DIContainer
       /// <exception cref="TargetException">The object does not match the target type.-or-The property is an instance property, but obj /> is null. </exception>
       /// <exception cref="TargetParameterCountException">The number of parameters in index does not match the number of parameters the indexed property takes. </exception>
       /// <exception cref="MethodAccessException">There was an illegal attempt to access a private or protected method inside a class. </exception>
-      /// <exception cref="TargetInvocationException">An error occurred while setting the property value. For example, an index value specified for an indexed property is out of range. The
-      ///    <see cref="P:System.Exception.InnerException"/> property indicates the reason for the error.</exception>
+      /// <exception cref="TargetInvocationException">
+      ///    An error occurred while setting the property value. For example, an index value specified for an indexed
+      ///    property is out of range. The <see cref="P:System.Exception.InnerException"/> property indicates the reason for the error.
+      /// </exception>
       public void BuildUp(object instance)
       {
          BuildUp(instance, Options.PropertySelectionStrategy);
@@ -87,8 +90,10 @@ namespace ConsoLovers.ConsoleToolkit.Core.DIContainer
       /// <exception cref="TargetException">The object does not match the target type.-or-The property is an instance property, but obj is null. </exception>
       /// <exception cref="TargetParameterCountException">The number of parameters in index does not match the number of parameters the indexed property takes. </exception>
       /// <exception cref="MethodAccessException">There was an illegal attempt to access a private or protected method inside a class. </exception>
-      /// <exception cref="TargetInvocationException">An error occurred while setting the property value. For example, an index value specified for an indexed property is out of range. The
-      ///    <see cref="P:System.Exception.InnerException"/> property indicates the reason for the error.</exception>
+      /// <exception cref="TargetInvocationException">
+      ///    An error occurred while setting the property value. For example, an index value specified for an indexed
+      ///    property is out of range. The <see cref="P:System.Exception.InnerException"/> property indicates the reason for the error.
+      /// </exception>
       public void BuildUp([NotNull] object instance, PropertySelectionStrategy strategy)
       {
          if (instance == null)
@@ -97,7 +102,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.DIContainer
          IEnumerable<PropertyInfo> injectables = strategy.SelectProperties(instance.GetType());
          foreach (var propertyInfo in injectables.ToList())
          {
-            var injectionInstance = ResolveNamed(propertyInfo.PropertyType, ComputeName(propertyInfo));
+            var injectionInstance = Resolve(propertyInfo.PropertyType);
             if (injectionInstance != null)
             {
                propertyInfo.SetValue(instance, injectionInstance, null);
@@ -110,8 +115,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.DIContainer
       /// <returns>The created instance </returns>
       /// <exception cref="NotSupportedException">
       ///    <paramref name="type"/> cannot be a <see cref="T:System.Reflection.Emit.TypeBuilder"/>.-or- Creation of
-      ///    <see cref="T:System.TypedReference"/>, <see cref="T:System.ArgIterator"/>, <see cref="T:System.Void"/>, and <see cref="T:System.RuntimeArgumentHandle"/> types, or arrays of
-      ///    those types, is not supported.
+      ///    <see cref="T:System.TypedReference"/>, <see cref="T:System.ArgIterator"/>, <see cref="T:System.Void"/>, and
+      ///    <see cref="T:System.RuntimeArgumentHandle"/> types, or arrays of those types, is not supported.
       /// </exception>
       /// <exception cref="ArgumentException">
       ///    <paramref name="type"/> is not a RuntimeType. -or-<paramref name="type"/> is an open generic type (that is, the
@@ -120,9 +125,15 @@ namespace ConsoLovers.ConsoleToolkit.Core.DIContainer
       /// <exception cref="ArgumentNullException"><paramref name="type"/> is null. </exception>
       /// <exception cref="TargetInvocationException">The constructor being called throws an exception. </exception>
       /// <exception cref="TypeLoadException"><paramref name="type"/> is not a valid type. </exception>
-      /// <exception cref="COMException"><paramref name="type"/> is a COM object but the class identifier used to obtain the type is invalid, or the identified class is not registered. </exception>
+      /// <exception cref="COMException">
+      ///    <paramref name="type"/> is a COM object but the class identifier used to obtain the type is invalid, or the identified
+      ///    class is not registered.
+      /// </exception>
       /// <exception cref="MissingMethodException">No matching public constructor was found. </exception>
-      /// <exception cref="InvalidComObjectException">The COM type was not obtained through Overload:System.Type.GetTypeFromProgID" or "Overload:System.Type.GetTypeFromCLSID". </exception>
+      /// <exception cref="InvalidComObjectException">
+      ///    The COM type was not obtained through Overload:System.Type.GetTypeFromProgID" or
+      ///    "Overload:System.Type.GetTypeFromCLSID".
+      /// </exception>
       /// <exception cref="MemberAccessException">Cannot create an instance of an abstract class, or this member was invoked with a late-binding mechanism. </exception>
       /// <exception cref="MethodAccessException">The caller does not have permission to call this constructor. </exception>
       public object Create(Type type)
@@ -136,8 +147,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.DIContainer
       /// <returns>The created instance </returns>
       /// <exception cref="NotSupportedException">
       ///    <paramref name="type"/> cannot be a <see cref="T:System.Reflection.Emit.TypeBuilder"/>.-or- Creation of
-      ///    <see cref="T:System.TypedReference"/>, <see cref="T:System.ArgIterator"/>, <see cref="T:System.Void"/>, and <see cref="T:System.RuntimeArgumentHandle"/> types, or arrays of
-      ///    those types, is not supported.
+      ///    <see cref="T:System.TypedReference"/>, <see cref="T:System.ArgIterator"/>, <see cref="T:System.Void"/>, and
+      ///    <see cref="T:System.RuntimeArgumentHandle"/> types, or arrays of those types, is not supported.
       /// </exception>
       /// <exception cref="ArgumentException">
       ///    <paramref name="type"/> is not a RuntimeType. -or-<paramref name="type"/> is an open generic type (that is, the
@@ -146,9 +157,15 @@ namespace ConsoLovers.ConsoleToolkit.Core.DIContainer
       /// <exception cref="ArgumentNullException"><paramref name="type"/> is null. </exception>
       /// <exception cref="TargetInvocationException">The constructor being called throws an exception. </exception>
       /// <exception cref="TypeLoadException"><paramref name="type"/> is not a valid type. </exception>
-      /// <exception cref="COMException"><paramref name="type"/> is a COM object but the class identifier used to obtain the type is invalid, or the identified class is not registered. </exception>
+      /// <exception cref="COMException">
+      ///    <paramref name="type"/> is a COM object but the class identifier used to obtain the type is invalid, or the identified
+      ///    class is not registered.
+      /// </exception>
       /// <exception cref="MissingMethodException">No matching public constructor was found. </exception>
-      /// <exception cref="InvalidComObjectException">The COM type was not obtained through Overload:System.Type.GetTypeFromProgID" or "Overload:System.Type.GetTypeFromCLSID". </exception>
+      /// <exception cref="InvalidComObjectException">
+      ///    The COM type was not obtained through Overload:System.Type.GetTypeFromProgID" or
+      ///    "Overload:System.Type.GetTypeFromCLSID".
+      /// </exception>
       /// <exception cref="MemberAccessException">Cannot create an instance of an abstract class, or this member was invoked with a late-binding mechanism. </exception>
       /// <exception cref="MethodAccessException">The caller does not have permission to call this constructor. </exception>
       public object Create(Type type, ContainerOptions containerOptions)
@@ -175,23 +192,24 @@ namespace ConsoLovers.ConsoleToolkit.Core.DIContainer
          return Create(typeof(T), buildingOptions) as T;
       }
 
+      public void Register<T>(Func<IServiceProvider, object> handler, ServiceLifetime lifetime)
+         where T : class
+      {
+         Register(typeof(T), handler, lifetime);
+      }
+
+      public void Register(Type service, Func<IServiceProvider, object> handler, ServiceLifetime lifetime)
+      {
+         Register(ServiceDescriptor.Describe(service, handler, lifetime));
+      }
+
       /// <summary>Registers the instance at the container.</summary>
       /// <param name="service">The service to register. </param>
       /// <param name="implementation">The implementation of the service. </param>
       /// <returns>The registered container element used for fluent configuration </returns>
-      public IContainerEntry Register(Type service, object implementation)
+      public void Register(Type service, object implementation)
       {
-         return Register(service, c => implementation);
-      }
-
-      /// <summary>Registers the instance at the container.</summary>
-      /// <param name="service">The service to register.</param>
-      /// <param name="implementation">The implementation of the service.</param>
-      /// <param name="name">The name.</param>
-      /// <returns>The registered container element used for fluent configuration</returns>
-      public IContainerEntry Register(Type service, object implementation, string name)
-      {
-         return RegisterNamed(service, c => implementation, name);
+         Register(ServiceDescriptor.Singleton(service, implementation));
       }
 
       /// <summary>Registers the service type with an implementation type.</summary>
@@ -199,88 +217,48 @@ namespace ConsoLovers.ConsoleToolkit.Core.DIContainer
       /// <param name="implementation">The implementation of the service. </param>
       /// ///
       /// <returns> The registered container element used for fluent configuration </returns>
-      public IContainerEntry Register<T>(object implementation)
+      public void Register<T>(object implementation)
          where T : class
       {
-         return Register(typeof(T), implementation);
+         Register(typeof(T), implementation);
       }
 
       /// <summary>Registers this instance.</summary>
       /// <typeparam name="TSer">The type to register. </typeparam>
       /// <typeparam name="TImpl">The type of the instance. </typeparam>
       /// <returns>The registered container element used for fluent configuration </returns>
-      public IContainerEntry Register<TSer, TImpl>()
+      public void Register<TSer, TImpl>()
          where TSer : class where TImpl : class
       {
-         return Register(typeof(TSer), typeof(TImpl));
-      }
-
-      public IContainerEntry RegisterNamed<T>(object implementation, string name)
-         where T : class
-      {
-         return RegisterNamed(typeof(T), implementation, name);
-      }
-
-      public IContainerEntry RegisterNamed(Type service, object implementation, string name)
-      {
-         return RegisterNamed(service, c => implementation, name);
-      }
-
-      public IContainerEntry RegisterNamed<T>(Func<IContainer, object> handler, string name)
-         where T : class
-      {
-         return RegisterInternal(typeof(T), handler, name);
-      }
-
-      public IContainerEntry RegisterNamed<TService, TImplementation>(string name)
-         where TService : class where TImplementation : class
-      {
-         return RegisterNamed(typeof(TService), typeof(TImplementation), name);
-      }
-
-      public IContainerEntry RegisterNamed(Type service, Func<IContainer, object> handler, string name)
-      {
-         return RegisterInternal(service, handler, name);
+         Register(typeof(TSer), typeof(TImpl));
       }
 
       /// <summary>Registers the type at the container.</summary>
       /// <param name="service">The service type to register. </param>
       /// <param name="handler">The the function that constructs the object. </param>
       /// <returns>The registered container element used for fluent configuration </returns>
-      public IContainerEntry Register(Type service, Func<IContainer, object> handler)
+      public void Register(Type service, Func<IServiceProvider, object> handler)
       {
-         return RegisterInternal(service, handler, null);
-      }
-
-      private IContainerEntry RegisterInternal(Type service, Func<IContainer, object> handler, string name)
-      {
-         var entry = GetOrCreateEntry(service, name);
-         entry.FactoryMethod = handler;
-         return entry;
+         Register(ServiceDescriptor.Scoped(service, handler));
       }
 
       /// <summary>Registers the type at the container.</summary>
       /// <typeparam name="T">The service type </typeparam>
       /// <param name="handler">The the function that constructs the object. </param>
       /// <returns>The registered container element used for fluent configuration </returns>
-      public IContainerEntry Register<T>(Func<IContainer, object> handler)
+      public void Register<T>(Func<IServiceProvider, object> handler)
          where T : class
       {
-         return Register(typeof(T), handler);
+         Register(typeof(T), handler);
       }
 
       /// <summary>Registers the specified service.</summary>
       /// <param name="service">The service. </param>
       /// <param name="implementation">The implementation. </param>
       /// <returns>The registered container element used for fluent configuration </returns>
-      public IContainerEntry Register(Type service, Type implementation)
+      public void Register(Type service, Type implementation)
       {
-         return Register(service, c => BuildInstance(implementation, Options.ConstructorSelectionStrategy));
-      }
-
-      public IContainerEntry RegisterNamed(Type service, Type implementation, string name)
-      {
-         return RegisterNamed(service, c => BuildInstance(implementation, Options.ConstructorSelectionStrategy), name);
+         Register(ServiceDescriptor.Scoped(service, implementation));
       }
 
       /// <summary>Resolves the registered implementation for the given type.</summary>
@@ -288,7 +266,64 @@ namespace ConsoLovers.ConsoleToolkit.Core.DIContainer
       /// <returns>The resolved type </returns>
       public object Resolve(Type service)
       {
-         return ResolveNamed(service, null);
+         if (service.IsGenericType && service.GenericTypeArguments.Length == 1 && typeof(IEnumerable).IsAssignableFrom(service))
+            return ResolveListWithElementType(service.GenericTypeArguments[0]);
+
+         var descriptor = services.FirstOrDefault(x => x.ServiceType == service);
+         if (descriptor == null)
+            return null;
+
+         return ResolveInternal(descriptor);
+      }
+
+      private object ResolveListWithElementType(Type elementType)
+      {
+         var constructedListType = typeof(List<>).MakeGenericType(elementType);
+         var instance = (IList)Activator.CreateInstance(constructedListType);
+         if (instance != null)
+         {
+            foreach (var element in ResolveAll(elementType))
+               instance.Add(element);
+         }
+
+         return instance;
+      }
+
+      private IEnumerable ResolveAll(Type elementType)
+      {
+         var serviceDescriptors = FindAll(elementType).ToArray();
+         foreach (var serviceDescriptor in serviceDescriptors)
+            yield return ResolveInternal(serviceDescriptor);
+      }
+
+      private IEnumerable<ServiceDescriptor> FindAll(Type service)
+      {
+         return services.Where(x => x.ServiceType == service);
+      }
+
+      private object ResolveInternal(ServiceDescriptor descriptor)
+      {
+         if (descriptor.ImplementationInstance != null)
+            return descriptor.ImplementationInstance;
+
+         object instance;
+         if (descriptor.ImplementationFactory != null)
+         {
+            instance = descriptor.ImplementationFactory(this);
+         }
+         else
+         {
+            instance = BuildInstance(descriptor.ImplementationType, Options.ConstructorSelectionStrategy);
+         }
+
+         if (descriptor.Lifetime == ServiceLifetime.Singleton)
+         {
+            var singleton = ServiceDescriptor.Singleton(descriptor.ServiceType, instance);
+            services.Remove(descriptor);
+            services.Add(singleton);
+         }
+
+         return instance;
       }
 
       /// <summary>Resolves the registered implementation for the given type.</summary>
@@ -298,121 +333,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.DIContainer
          where T : class
       {
          var resolve = Resolve(typeof(T));
-         return resolve is T ? (T)resolve : default(T);
-      }
-
-      /// <summary>Gets all the instances registered for the given type.</summary>
-      /// <param name="service">The service. </param>
-      /// <returns>An <see cref="IEnumerable{T}"/> of the registered implementations </returns>
-      /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-      public IEnumerable<object> ResolveAll(Type service)
-      {
-         var typeEntries = entries.Where(x => x.ServiceType == service).ToArray();
-         if (typeEntries.Any())
-            return typeEntries.Select(t => t.FactoryMethod(this));
-
-         var instance = ServiceProvider?.GetService(service);
-         if (instance != null)
-            return new[] { instance };
-
-         return new object[0];
-      }
-
-      /// <summary>Gets all the instances registered for the given type.</summary>
-      /// <typeparam name="T">The service to resolve </typeparam>
-      /// <returns>An <see cref="IEnumerable{T}"/> of the registered implementations </returns>
-      public IEnumerable<T> ResolveAll<T>()
-         where T : class
-      {
-         return ResolveAll(typeof(T)).OfType<T>();
-      }
-
-      /// <summary>Resolves the registered implementation with the given type for the given key.</summary>
-      /// <typeparam name="T">The service type to resolve </typeparam>
-      /// <param name="name">The key the implementation was registered with. </param>
-      /// <returns>The resolved type </returns>
-      public T ResolveNamed<T>(string name)
-         where T : class
-      {
-         var resolve = ResolveNamed(typeof(T), name);
-         return resolve is T ? (T)resolve : default(T);
-      }
-
-      /// <summary>Resolves the registered implementation with the given type for the given key.</summary>
-      /// <param name="service">The service type to resolve. </param>
-      /// <param name="name">The key the implementation was registered with. </param>
-      /// <returns>The resolved type </returns>
-      public object ResolveNamed(Type service, string name)
-      {
-         var entry = GetEntry(service, name);
-         if (entry != null)
-         {
-            return ResolveInstance(entry);
-         }
-
-         var instance = ServiceProvider?.GetService(service);
-         if (instance != null)
-            return instance;
-
-         if (typeof(Delegate).IsAssignableFrom(service))
-         {
-            var typeToCreate = service.GetGenericArguments()[0];
-            var factoryFactoryType = typeof(FactoryFactory<>).MakeGenericType(typeToCreate);
-            var factoryFactoryHost = Activator.CreateInstance(factoryFactoryType);
-            var factoryFactoryMethod = factoryFactoryType.GetMethod("Create");
-            return factoryFactoryMethod.Invoke(factoryFactoryHost, new object[] { this });
-         }
-
-         if (typeof(string).IsAssignableFrom(service))
-            return null;
-
-         if (typeof(IEnumerable).IsAssignableFrom(service))
-         {
-            var listType = service.GetGenericArguments()[0];
-            var instances = ResolveAll(listType).ToList();
-            var array = Array.CreateInstance(listType, instances.Count);
-            for (var i = 0; i < array.Length; i++)
-            {
-               array.SetValue(instances[i], i);
-            }
-
-            return array;
-         }
-
-         return null;
-      }
-
-      /// <summary>Unregisters the specified <see cref="IContainerEntry"/>.</summary>
-      /// <param name="entry">The entry.</param>
-      public void Unregister(IContainerEntry entry)
-      {
-         var entryImp = (ContainerEntry)entry;
-         if (entries.Contains(entryImp))
-         {
-            entries.Remove(entryImp);
-         }
-      }
-
-      /// <summary>Unregisters this instance of type <typeparamref name="T"/>.</summary>
-      /// <typeparam name="T">The type that should be unregistered.</typeparam>
-      public void Unregister<T>()
-      {
-         Unregister(typeof(T), null);
-      }
-
-      /// <summary>Unregisters the specified <paramref name="type"/>.</summary>
-      /// <param name="type">The <see cref="Type"/> that should be unregistered.</param>
-      public void Unregister(Type type)
-      {
-         Unregister(type, null);
-      }
-
-      /// <summary>Unregisters the named instance of type <typeparamref name="T"/>.</summary>
-      /// <typeparam name="T">The type that should be unregistered.</typeparam>
-      /// <param name="name">The name of the component that should be unregistered.</param>
-      public void UnregisterNamed<T>(string name)
-      {
-         Unregister(typeof(T), name);
+         return resolve as T;
       }
 
       #endregion
@@ -430,15 +351,21 @@ namespace ConsoLovers.ConsoleToolkit.Core.DIContainer
       /// </exception>
       /// <exception cref="NotSupportedException">
       ///    <paramref name="type"/> cannot be a <see cref="T:System.Reflection.Emit.TypeBuilder"/>.-or- Creation of
-      ///    <see cref="T:System.TypedReference"/>, <see cref="T:System.ArgIterator"/>, <see cref="T:System.Void"/>, and <see cref="T:System.RuntimeArgumentHandle"/> types, or arrays of
-      ///    those types, is not supported.
+      ///    <see cref="T:System.TypedReference"/>, <see cref="T:System.ArgIterator"/>, <see cref="T:System.Void"/>, and
+      ///    <see cref="T:System.RuntimeArgumentHandle"/> types, or arrays of those types, is not supported.
       /// </exception>
       /// <exception cref="TargetInvocationException">The constructor being called throws an exception. </exception>
       /// <exception cref="MethodAccessException">The caller does not have permission to call this constructor. </exception>
       /// <exception cref="MemberAccessException">Cannot create an instance of an abstract class, or this member was invoked with a late-binding mechanism. </exception>
-      /// <exception cref="InvalidComObjectException">The COM type was not obtained through Overload:System.Type.GetTypeFromProgID" or "Overload:System.Type.GetTypeFromCLSID". </exception>
+      /// <exception cref="InvalidComObjectException">
+      ///    The COM type was not obtained through Overload:System.Type.GetTypeFromProgID" or
+      ///    "Overload:System.Type.GetTypeFromCLSID".
+      /// </exception>
       /// <exception cref="MissingMethodException">No matching public constructor was found. </exception>
-      /// <exception cref="COMException"><paramref name="type"/> is a COM object but the class identifier used to obtain the type is invalid, or the identified class is not registered. </exception>
+      /// <exception cref="COMException">
+      ///    <paramref name="type"/> is a COM object but the class identifier used to obtain the type is invalid, or the identified
+      ///    class is not registered.
+      /// </exception>
       /// <exception cref="TypeLoadException"><paramref name="type"/> is not a valid type. </exception>
       protected virtual object ActivateInstance(Type type, object[] args)
       {
@@ -456,14 +383,20 @@ namespace ConsoLovers.ConsoleToolkit.Core.DIContainer
       /// </exception>
       /// <exception cref="NotSupportedException">
       ///    <paramref name="type"/> cannot be a <see cref="T:System.Reflection.Emit.TypeBuilder"/>.-or- Creation of
-      ///    <see cref="T:System.TypedReference"/>, <see cref="T:System.ArgIterator"/>, <see cref="T:System.Void"/>, and <see cref="T:System.RuntimeArgumentHandle"/> types, or arrays of
-      ///    those types, is not supported.
+      ///    <see cref="T:System.TypedReference"/>, <see cref="T:System.ArgIterator"/>, <see cref="T:System.Void"/>, and
+      ///    <see cref="T:System.RuntimeArgumentHandle"/> types, or arrays of those types, is not supported.
       /// </exception>
       /// <exception cref="MethodAccessException">The caller does not have permission to call this constructor. </exception>
       /// <exception cref="MemberAccessException">Cannot create an instance of an abstract class, or this member was invoked with a late-binding mechanism. </exception>
-      /// <exception cref="InvalidComObjectException">The COM type was not obtained through Overload:System.Type.GetTypeFromProgID" or "Overload:System.Type.GetTypeFromCLSID". </exception>
+      /// <exception cref="InvalidComObjectException">
+      ///    The COM type was not obtained through Overload:System.Type.GetTypeFromProgID" or
+      ///    "Overload:System.Type.GetTypeFromCLSID".
+      /// </exception>
       /// <exception cref="MissingMethodException">No matching public constructor was found. </exception>
-      /// <exception cref="COMException"><paramref name="type"/> is a COM object but the class identifier used to obtain the type is invalid, or the identified class is not registered. </exception>
+      /// <exception cref="COMException">
+      ///    <paramref name="type"/> is a COM object but the class identifier used to obtain the type is invalid, or the identified
+      ///    class is not registered.
+      /// </exception>
       /// <exception cref="TypeLoadException"><paramref name="type"/> is not a valid type. </exception>
       /// <exception cref="TargetInvocationException">The constructor being called throws an exception. </exception>
       protected object BuildInstance(Type type, ConstructorSelectionStrategy strategy)
@@ -481,82 +414,15 @@ namespace ConsoLovers.ConsoleToolkit.Core.DIContainer
          if (constructor == null)
             return null;
 
-         args.AddRange(constructor.GetParameters().Select(info => ResolveNamed(info.ParameterType, ComputeName(info))));
+         args.AddRange(constructor.GetParameters().Select(info => Resolve(info.ParameterType)));
          return args.ToArray();
-      }
-
-      private string ComputeName(ParameterInfo info)
-      {
-         var attribute = info.GetCustomAttribute(typeof(DependencyAttribute)) as DependencyAttribute;
-         return attribute?.Name;
-      }
-
-      private string ComputeName(PropertyInfo info)
-      {
-         var attribute = info.GetCustomAttribute(typeof(DependencyAttribute)) as DependencyAttribute;
-         return attribute?.Name;
-      }
-
-      private ContainerEntry GetEntry(Type service, string name)
-      {
-         if (service == null && name != null)
-         {
-            return entries.FirstOrDefault(x => x.Name == name);
-         }
-
-         return entries.FirstOrDefault(x => x.ServiceType == service && x.Name == name);
-      }
-
-      private ContainerEntry GetOrCreateEntry(Type service, string name)
-      {
-         var entry = GetEntry(service, name);
-         if (entry == null)
-         {
-            entry = new ContainerEntry(this) { ServiceType = service, Name = name };
-            entries.Add(entry);
-         }
-         else
-         {
-            throw new InvalidOperationException($"An entry of type {service.FullName} was already registered with the name {name}.");
-         }
-
-         return entry;
-      }
-
-      private object ResolveInstance(ContainerEntry entry)
-      {
-         switch (entry.Lifetime)
-         {
-            case Lifetime.Singleton: return entry.Instance;
-            case Lifetime.None: return entry.FactoryMethod(this);
-            default: throw new ArgumentOutOfRangeException();
-         }
       }
 
       #endregion
 
-      private class FactoryFactory<T>
+      public object GetService(Type serviceType)
       {
-         #region Public Methods and Operators
-
-         // ReSharper disable UnusedMember.Local
-         // It is used by reflection
-         public Func<T> Create(Container container)
-            // ReSharper restore UnusedMember.Local
-         {
-            return () => (T)container.ResolveNamed(typeof(T), null);
-         }
-
-         #endregion
-      }
-
-      private void Unregister(Type type, string name)
-      {
-         var entry = GetEntry(type, name);
-         if (entry != null)
-         {
-            entries.Remove(entry);
-         }
+         return Resolve(serviceType);
       }
    }
 

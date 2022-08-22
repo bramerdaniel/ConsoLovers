@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+using ConsoLovers.ConsoleToolkit.Core.Middleware;
 using ConsoLovers.ConsoleToolkit.Core.Services;
 
 using JetBrains.Annotations;
@@ -26,6 +27,8 @@ internal class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigura
 
    private Func<IServiceCollection, IServiceProvider> createServiceProvider;
 
+   private IServiceProvider serviceProvider;
+
    #endregion
 
    #region IApplicationBuilder<T> Members
@@ -36,7 +39,7 @@ internal class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigura
       return this;
    }
 
-   public IApplicationBuilder<T> ConfigureServices(Action<IServiceCollection> serviceSetup)
+   public IApplicationBuilder<T> AddService(Action<IServiceCollection> serviceSetup)
    {
       serviceSetup(ServiceCollection);
       return this;
@@ -44,9 +47,7 @@ internal class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigura
 
    public IConsoleApplication<T> Build()
    {
-      var serviceProvider = CreateServiceProvider();
-      var executable = serviceProvider.GetRequiredService<IConsoleApplication<T>>();
-      return executable;
+      return GetOrCreateServiceProvider().GetRequiredService<IConsoleApplication<T>>();
    }
 
    #endregion
@@ -92,8 +93,11 @@ internal class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigura
 
    #region Methods
 
-   internal IServiceProvider CreateServiceProvider()
+   internal IServiceProvider GetOrCreateServiceProvider()
    {
+      if (serviceProvider != null)
+         return serviceProvider;
+
       EnsureRequiredServices();
 
       if (createServiceProvider != null)
@@ -101,12 +105,13 @@ internal class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigura
 
       var factory = new BuildInServiceProviderFactory();
       var collection = factory.CreateBuilder(ServiceCollection);
-      var serviceProvider = factory.CreateServiceProvider(collection);
+      var provider = factory.CreateServiceProvider(collection);
 
       foreach (var configurationAction in serviceConfigurationActions)
-         configurationAction(serviceProvider);
+         configurationAction(provider);
 
-      return serviceProvider;
+      serviceProvider = provider;
+      return provider;
    }
 
    protected virtual void AddServiceConfigurationAction([NotNull] Action<IServiceProvider> configAction)
@@ -122,8 +127,19 @@ internal class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigura
       ServiceCollection.AddRequiredServices();
       ServiceCollection.AddArgumentTypes<T>();
 
-      ServiceCollection.EnsureServiceAndImplementation<IApplicationLogic, DefaultApplicationLogic>();
+      ServiceCollection.EnsureSingleton<IApplicationLogic, DefaultApplicationLogic>();
       ServiceCollection.TryAddSingleton<IConsoleApplication<T>, ConsoleApplication<T>>();
+
+      AddDefaultMiddleware();
+   }
+
+   private void AddDefaultMiddleware()
+   {
+      ServiceCollection.EnsureSingleton<IExecutionPipeline<T>, ExecutionPipeline<T>>();
+      ServiceCollection.AddTransient<IMiddleware<T>, ExceptionHandlingMiddleware<T>>();
+      ServiceCollection.AddTransient<IMiddleware<T>, ParserMiddleware<T>>();
+      ServiceCollection.AddTransient<IMiddleware<T>, MapperMiddleware<T>>();
+      ServiceCollection.AddTransient<IMiddleware<T>, ExecutionMiddleware<T>>();
    }
 
    protected void SetServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory)
@@ -142,4 +158,9 @@ internal class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigura
    }
 
    #endregion
+
+   public IApplicationBuilder<T> ReturnInstance()
+   {
+      return this;
+   }
 }

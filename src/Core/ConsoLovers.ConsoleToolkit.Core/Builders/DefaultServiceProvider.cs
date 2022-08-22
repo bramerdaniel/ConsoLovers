@@ -7,6 +7,8 @@
 namespace ConsoLovers.ConsoleToolkit.Core.Builders;
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 using ConsoLovers.ConsoleToolkit.Core.DIContainer;
 
@@ -38,47 +40,12 @@ internal class DefaultServiceProvider : IServiceProvider
    public DefaultServiceProvider(IServiceCollection serviceCollection)
    {
       container = new Container();
-      container.Register<IServiceProvider>(this)
-         .WithLifetime(Lifetime.Singleton);
+      container.Register(ServiceDescriptor.Singleton(typeof(IServiceProvider), this));
 
       foreach (var service in serviceCollection)
-      {
-         switch (service.Lifetime)
-         {
-            case ServiceLifetime.Singleton:
-               RegisterSingleton(service);
-               break;
-            case ServiceLifetime.Scoped:
-            case ServiceLifetime.Transient:
-               RegisterTransient(service);
-               break;
-            default:
-               throw new ArgumentOutOfRangeException();
-         }
-      }
+         container.Register(service);
    }
 
-   private void RegisterTransient(ServiceDescriptor service)
-   {
-      container.Register(service.ServiceType, service.ImplementationType)
-         .WithLifetime(Lifetime.None);
-   }
-
-   private void RegisterSingleton(ServiceDescriptor serviceDescriptor)
-   {
-      if (serviceDescriptor.ImplementationType != null)
-      {
-         container.Register(serviceDescriptor.ServiceType, serviceDescriptor.ImplementationType).WithLifetime(Lifetime.Singleton);
-      }
-      else if (serviceDescriptor.ImplementationInstance != null)
-      {
-         container.Register(serviceDescriptor.ServiceType, serviceDescriptor.ImplementationInstance).WithLifetime(Lifetime.Singleton);
-      }
-      else if (serviceDescriptor.ImplementationFactory != null)
-      {
-         container.Register(serviceDescriptor.ServiceType, _ => serviceDescriptor.ImplementationFactory(this)).WithLifetime(Lifetime.Singleton);
-      }
-   }
 
    #endregion
 

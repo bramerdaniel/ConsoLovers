@@ -5,7 +5,7 @@
 		<OutputPath>$(SolutionDir)$(Configuration)</OutputPath>
 		<Authors>Daniel Bramer</Authors>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>5.0.0-alpha4</Version>
+		<Version>5.0.0-alpha5</Version>
 		<PackageTags>Console Shell ConsoleToolkit .Net CommandLineArgument CommandLineArguments CommandLineParser</PackageTags>
 		<PackageIconUrl>https://raw.githubusercontent.com/bramerdaniel/ConsoLovers/master/src/ConsoLovers.ConsoleToolkit/Resources/Icon.ico</PackageIconUrl>
 		<PackageProjectUrl>https://github.com/bramerdaniel/ConsoLovers</PackageProjectUrl>
@@ -59,6 +59,7 @@
 
 	<ItemGroup>
 		<Folder Include="CommandLineArguments\Mapping\" />
+		<Folder Include="Extensions\" />
 	</ItemGroup>
 
 	<ItemGroup>

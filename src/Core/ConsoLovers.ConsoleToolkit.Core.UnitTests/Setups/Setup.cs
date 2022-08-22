@@ -8,7 +8,10 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups
 {
    using ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine;
 
-   internal class Setup
+   using FluentSetups;
+
+   [FluentRoot]
+   internal partial class Setup
    {
       #region Public Methods and Operators
 

@@ -32,7 +32,7 @@ public class LocalizationServiceTests
       var customService = new Mock<ILocalizationService>().Object;
 
       var builder = ConsoleApplication.WithArguments<ApplicationArgs>()
-         .ConfigureServices(s => s.AddSingleton(customService))
+         .AddService(s => s.AddSingleton(customService))
          .AddResourceManager(FirstResource.ResourceManager);
 
       builder.Invoking(x => x.Build())
@@ -78,7 +78,7 @@ public class LocalizationServiceTests
       customLocalizationService.Setup(x => x.GetLocalizedSting("Value")).Returns<string>(_ => "ValueLocalized");
 
       var application = await ConsoleApplication.WithArguments<ApplicationArgs>()
-         .ConfigureServices(s => s.AddSingleton(customLocalizationService.Object))
+         .AddService(s => s.AddSingleton(customLocalizationService.Object))
          .RunAsync("key=Value", CancellationToken.None);
 
       application.Arguments.Localize("Value").Should().Be("ValueLocalized");

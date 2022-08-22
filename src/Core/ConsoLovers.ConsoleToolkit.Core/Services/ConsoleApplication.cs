@@ -4,28 +4,39 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-using ConsoLovers.ConsoleToolkit.Core.Builders;
-
 namespace ConsoLovers.ConsoleToolkit.Core.Services;
 
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
+using ConsoLovers.ConsoleToolkit.Core.Builders;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
 using JetBrains.Annotations;
 
+/// <summary>
+///    The default implementation of the <see cref="IConsoleApplication{T}"/> interface. This is where all the executionEngine workflow is
+///    orchestrated
+/// </summary>
+/// <typeparam name="T">The argument type of the application</typeparam>
+/// <seealso cref="ConsoLovers.ConsoleToolkit.Core.Builders.IConsoleApplication&lt;T&gt;"/>
 internal class ConsoleApplication<T> : IConsoleApplication<T>
    where T : class
 {
+   #region Constants and Fields
+
+   private readonly IExecutionPipeline<T> executionPipeline;
+
+   #endregion
+
    #region Constructors and Destructors
 
-   public ConsoleApplication(T arguments, [NotNull] ICommandLineEngine commandLineEngine)
+   public ConsoleApplication(T arguments, [NotNull] IExecutionEngine executionEngine, [NotNull] IExecutionPipeline<T> executionPipeline)
    {
+      this.executionPipeline = executionPipeline ?? throw new ArgumentNullException(nameof(executionPipeline));
       Arguments = arguments;
-      CommandLineEngine = commandLineEngine ?? throw new ArgumentNullException(nameof(commandLineEngine));
-      ExecutionEngine = CommandLineEngine.ExecutionEngine;
+      ExecutionEngine = executionEngine ?? throw new ArgumentNullException(nameof(executionEngine));
    }
 
    #endregion
@@ -37,39 +48,40 @@ internal class ConsoleApplication<T> : IConsoleApplication<T>
 
    public async Task<IConsoleApplication<T>> RunAsync(string args, CancellationToken cancellationToken)
    {
-      // TODO handle unmapped command line arguments
-      // TODO support exception handling
-      // TODO support IArgumentInitializer<> again ?
-
-      Arguments = CommandLineEngine.Map(args, Arguments);
-      return await RunInternalAsync(cancellationToken);
+      await ExecutePipelineAnsyc(args, cancellationToken);
+      return this;
    }
 
    public async Task<IConsoleApplication<T>> RunAsync(string[] args, CancellationToken cancellationToken)
    {
-      // TODO handle unmapped command line arguments
-      // TODO support exception handling
-      // TODO support IArgumentInitializer<> again ?
 
-      Arguments = CommandLineEngine.Map(args, Arguments);
-      return await RunInternalAsync(cancellationToken);
-   }
 
-   private async Task<IConsoleApplication<T>> RunInternalAsync(CancellationToken cancellationToken)
-   {
-      var executedCommand = await ExecutionEngine.ExecuteCommandAsync(Arguments, cancellationToken);
-      if (executedCommand == null)
-         await ExecutionEngine.ExecuteAsync(Arguments, cancellationToken);
+      await ExecutePipelineAnsyc(args, cancellationToken);
       return this;
    }
 
    #endregion
 
-   #region Public Properties
-
-   [NotNull] private ICommandLineEngine CommandLineEngine { get; }
+   #region Properties
 
    [NotNull] private IExecutionEngine ExecutionEngine { get; }
+
+   #endregion
+
+   #region Methods
+
+   private async Task ExecutePipelineAnsyc([NotNull] object args, CancellationToken cancellationToken)
+   {
+      if (args == null)
+         throw new ArgumentNullException(nameof(args));
+
+      // TODO handle unmapped command line arguments
+      // TODO support exception handling
+
+      var context = new ExecutionContext<T>(Arguments, args);
+      await executionPipeline.Execute(context, cancellationToken);
+   }
+
 
    #endregion
 }

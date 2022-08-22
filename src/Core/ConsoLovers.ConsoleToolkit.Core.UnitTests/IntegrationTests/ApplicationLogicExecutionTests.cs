@@ -43,7 +43,7 @@ public class ApplicationLogicExecutionTests
       var logicMock = new Mock<IApplicationLogic>();
 
       await ConsoleApplication.WithArguments<ApplicationArgs>()
-         .ConfigureServices(s => s.AddSingleton(logicMock.Object))
+         .AddService(s => s.AddSingleton(logicMock.Object))
          .RunAsync(CancellationToken.None);
 
       logicMock.Verify(x => x.ExecuteAsync(It.IsAny<ApplicationArgs>(), CancellationToken.None), Times.Once);
