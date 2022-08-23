@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ConsoleMenuBase.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2017
+// <copyright file="ConsoleMenuBase.cs" company="KUKA Deutschland GmbH">
+//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -12,7 +12,6 @@ namespace ConsoLovers.ConsoleToolkit.Menu
    using System.Linq;
    using System.Runtime.CompilerServices;
 
-   using ConsoLovers.ConsoleToolkit.Console;
    using ConsoLovers.ConsoleToolkit.Contracts;
    using ConsoLovers.ConsoleToolkit.Core;
    using ConsoLovers.ConsoleToolkit.InputHandler;
@@ -51,6 +50,8 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       private MouseMode mouseMode = MouseMode.Hover;
 
+      private DefaultMenuPrinter printer;
+
       private ConsoleMenuItem selectedItem;
 
       private SelectionMode selectionMode;
@@ -61,10 +62,21 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       #endregion
 
+      #region Constructors and Destructors
+
+      protected ConsoleMenuBase()
+      {
+         printer = new DefaultMenuPrinter(Console);
+      }
+
+      #endregion
+
       #region Public Events
 
       /// <summary>Occurs when an exception is thrown during the execution of an command.</summary>
       public event EventHandler<ExceptionEventArgs> ExecutionError;
+
+      public event PropertyChangedEventHandler PropertyChanged;
 
       #endregion
 
@@ -97,7 +109,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          }
       }
 
-      public ConsoleKey[] CloseKeys { get; set; } = new ConsoleKey[0];
+      public ConsoleKey[] CloseKeys { get; set; } = Array.Empty<ConsoleKey>();
 
       public bool ExecuteOnIndexSelection { get; set; }
 
@@ -110,7 +122,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
                return;
 
             expander = value;
-            Invalidate();
+            RefreshMenu();
          }
       }
 
@@ -279,10 +291,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          item.Menu = this;
       }
 
-      public void Invalidate()
-      {
-         RefreshMenu();
-      }
+      public void Invalidate() => RefreshMenu();
 
       /// <summary>Removes the given item from the menu.</summary>
       /// <param name="item">The item to remove.</param>
@@ -309,6 +318,8 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       public void Show()
       {
+         printer = new DefaultMenuPrinter(Console);
+
          RefreshMenu();
 
          inputHandler = new ConsoleMenuInputHandler();
@@ -331,15 +342,19 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
          UpdateElements();
 
-         PrintHeader();
+         printer.Header(Header);
 
-         if (elements.Count > 0)
+         if (elements.Any())
          {
-            unifiedLength = elements.Values.Max(m => m.Text.Length + m.Indent.Length) + Selector.Length + expanderWidth + indexWidth;
+            unifiedLength = elements.Values.Max(m => m.Text.Length + m.Indent.Length)
+                            + Selector.Length
+                            + expanderWidth
+                            + indexWidth;
+
             PrintElements();
          }
 
-         PrintFooter();
+         printer.Footer(Footer);
       }
 
       internal void UpdateMouseOver(ElementInfo value)
@@ -400,6 +415,12 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       {
       }
 
+      [NotifyPropertyChangedInvocator]
+      protected virtual void RaisePropertyChanged([CallerMemberName] string propertyName = null)
+      {
+         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+      }
+
       private static string DisabledHint(ConsoleMenuItem menuItem)
       {
          if (menuItem.DisabledHint != null)
@@ -455,7 +476,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
                return;
 
             if (selectParentWhenCollapsed)
-               SelectedItem = (ConsoleMenuItem)SelectedItem.Parent;
+               SelectedItem = (ConsoleMenuItem) SelectedItem.Parent;
          }
          else
          {
@@ -481,14 +502,15 @@ namespace ConsoLovers.ConsoleToolkit.Menu
                   Disabled = true,
                   Hint = null,
                   Indent = string.Empty.PadRight(indent * IndentSize),
-                  IsExpanded = null
+                  IsExpanded = null,
+                  Expander = Expander
                };
 
                yield return seperatorElement;
                continue;
             }
 
-            var identifier = useNumbers ? (i + 1).ToString() : ((char)(97 + i)).ToString();
+            var identifier = useNumbers ? (i + 1).ToString() : ((char) (97 + i)).ToString();
             var elementInfo = new ElementInfo
             {
                Identifier = identifier,
@@ -502,8 +524,9 @@ namespace ConsoLovers.ConsoleToolkit.Menu
                Disabled = !CanExecute(menuItem),
                Hint = DisabledHint(menuItem),
                Indent = string.Empty.PadRight(indent * IndentSize),
-               IsExpanded = menuItem.HasChildren ? (bool?)menuItem.IsExpanded : null,
-               IsSelectable = true
+               IsExpanded = menuItem.HasChildren ? (bool?) menuItem.IsExpanded : null,
+               IsSelectable = true,
+               Expander = Expander
             };
 
             indexMap.Add(parent == null ? identifier : parent.Path + identifier, elementInfo);
@@ -663,132 +686,17 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          }
       }
 
-      private void PrintElement(ElementInfo element)
-      {
-         var foreground = GetMenuItemForeground(element.IsSelected, element.Disabled, element.IsMouseOver, element.Foreground);
-         var background = GetMenuItemBackground(element.IsSelected, element.Disabled, element.IsMouseOver, element.Background);
-
-         Write(element.Indent, foreground, background);
-         WriteExpander(element, foreground, background);
-
-         if (IndexMenuItems)
-            Write(element.IndexString, foreground, background);
-
-         Write(element.Text, foreground, background);
-
-         if (SelectionMode == SelectionMode.UnifiedLength)
-         {
-            var padding = unifiedLength - Console.CursorLeft;
-            if (padding > 0)
-               Write(string.Empty.PadRight(padding), foreground, background);
-         }
-
-         if (SelectionMode == SelectionMode.FullLine)
-         {
-            var padding = Console.WindowWidth - Console.CursorLeft - 1;
-            Write(string.Empty.PadRight(padding), foreground, background);
-         }
-      }
-
-      //{
-      //   return Theme.MouseOverForeground;
-      //}
-
       private void PrintElements()
       {
          foreach (var elementInfo in elements.Values)
          {
             elementInfo.Line = Console.CursorTop;
 
-            PrintSelector(elementInfo);
-            PrintElement(elementInfo);
-
+            printer.Element(elementInfo, Selector, SelectionMode);
             elementInfo.Length = Console.CursorLeft;
 
-            PrintHint(elementInfo, false);
-
             Console.WriteLine();
             Console.ResetColor();
-         }
-      }
-
-      private void PrintFooter()
-      {
-         if (Footer is string stringFooter)
-         {
-            Write(stringFooter, GetFooterForeground(), GetFooterBackground());
-            Console.WriteLine();
-            return;
-         }
-
-         if (Footer is ICustomFooter customFooter)
-         {
-            customFooter.PrintFooter();
-            return;
-         }
-
-         if (Footer != null)
-            Console.WriteLine(Footer.ToString());
-      }
-
-      private void PrintHeader()
-      {
-         if (Header is string stringHeader)
-         {
-            Write(stringHeader, GetHeaderForeground(), GetHeaderBackground());
-            Console.WriteLine();
-            return;
-         }
-
-         if (Header is ICustomHeader customHeader)
-         {
-            customHeader.PrintHeader();
-            return;
-         }
-
-         if (Header != null)
-            Console.WriteLine(Header.ToString());
-      }
-
-      private void PrintHint(ElementInfo menuItem, bool show)
-      {
-         if (show)
-         {
-            var disabledHint = menuItem.Hint;
-            var foreground = GetHintForeground(menuItem.IsSelected, menuItem.Disabled);
-            var background = GetHintBackground(menuItem.IsSelected, menuItem.Disabled);
-
-            if (SelectionMode == SelectionMode.FullLine)
-            {
-               Console.SetCursorPosition(Console.CursorLeft - disabledHint.Length, Console.CursorTop);
-               Write(disabledHint, foreground, background);
-            }
-            else
-            {
-               Write(disabledHint, foreground, background);
-            }
-
-            Console.ResetColor();
-         }
-         else
-         {
-            var totalWidth = Console.WindowWidth - Console.CursorLeft - 1;
-            Write(string.Empty.PadRight(Math.Max(totalWidth, 0)), GetConsoleBackground(), GetConsoleBackground());
-         }
-      }
-
-      private void PrintSelector(ElementInfo element)
-      {
-         var foreground = GetSelectorForeground(element.IsSelected, element.Disabled, element.IsMouseOver);
-         var background = GetSelectorBackground(element.IsSelected, element.Disabled, element.IsMouseOver);
-
-         if (element.IsSelected)
-         {
-            Write(Selector, foreground, background);
-         }
-         else
-         {
-            Write(string.Empty.PadRight(Selector.Length), foreground, background);
          }
       }
 
@@ -803,9 +711,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
             Console.CursorTop = elementToUpdate.Line;
             Console.CursorLeft = 0;
 
-            PrintSelector(elementToUpdate);
-            PrintElement(elementToUpdate);
-            PrintHint(elementToUpdate, showHint);
+            printer.Element(elementToUpdate, Selector, SelectionMode);
          }
       }
 
@@ -857,6 +763,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       private void UpdateElements()
       {
          elements.Clear();
+
          foreach (var element in CreateElements(root.Items, null))
             elements[element.MenuItem] = element;
       }
@@ -893,7 +800,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
                if (SelectedItem == null || SelectedItem.Parent == root)
                   return;
 
-               SelectedItem = (ConsoleMenuItem)SelectedItem.Parent;
+               SelectedItem = (ConsoleMenuItem) SelectedItem.Parent;
                break;
             case ConsoleKey.Home:
                SelectedItem = root.Items.OfType<ConsoleMenuItem>().FirstOrDefault();
@@ -919,47 +826,6 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          }
       }
 
-      private void Write(string text, ConsoleColor foreground, ConsoleColor background)
-      {
-         if (string.IsNullOrEmpty(text))
-            return;
-
-         Console.ForegroundColor = foreground;
-         Console.BackgroundColor = background;
-         Console.Write(text);
-         Console.ResetColor();
-      }
-
-      private void WriteExpander(ElementInfo element, ConsoleColor itemForeground, ConsoleColor itemBackground)
-      {
-         if (!element.IsExpanded.HasValue)
-         {
-            Write(string.Empty.PadRight(expanderWidth), itemForeground, itemBackground);
-         }
-         else
-         {
-            itemForeground = GetExpanderForeground(element.IsSelected, element.Disabled, element.IsMouseOver);
-            itemBackground = GetExpanderBackground(element.IsSelected, element.Disabled, element.IsMouseOver);
-
-            if (element.IsExpanded.Value)
-            {
-               Write(Expander.Expanded, itemForeground, itemBackground);
-            }
-            else
-            {
-               Write(Expander.Collapsed, itemForeground, itemBackground);
-            }
-         }
-      }
-
       #endregion
-
-      public event PropertyChangedEventHandler PropertyChanged;
-
-      [NotifyPropertyChangedInvocator]
-      protected virtual void RaisePropertyChanged([CallerMemberName] string propertyName = null)
-      {
-         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-      }
    }
 }

@@ -44,6 +44,8 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       public ConsoleColor? Background { get; set; }
 
+      public ExpanderDescription Expander { get; set; }
+
       #endregion
    }
 }
