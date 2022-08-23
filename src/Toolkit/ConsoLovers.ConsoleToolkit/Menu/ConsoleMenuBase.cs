@@ -1,23 +1,16 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ConsoleMenuBase.cs" company="KUKA Deutschland GmbH">
-//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
-// </copyright>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using ConsoLovers.ConsoleToolkit.Contracts;
+using ConsoLovers.ConsoleToolkit.Core;
+using ConsoLovers.ConsoleToolkit.InputHandler;
+using JetBrains.Annotations;
 
 namespace ConsoLovers.ConsoleToolkit.Menu
 {
-   using System;
-   using System.Collections.Generic;
-   using System.ComponentModel;
-   using System.Linq;
-   using System.Runtime.CompilerServices;
-
-   using ConsoLovers.ConsoleToolkit.Contracts;
-   using ConsoLovers.ConsoleToolkit.Core;
-   using ConsoLovers.ConsoleToolkit.InputHandler;
-
-   using JetBrains.Annotations;
-
    public abstract class ConsoleMenuBase : IConsoleMenuOptions
    {
       #region Constants and Fields
@@ -50,7 +43,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       private MouseMode mouseMode = MouseMode.Hover;
 
-      private DefaultMenuPrinter printer;
+      private IMenuRenderer renderer;
 
       private ConsoleMenuItem selectedItem;
 
@@ -66,7 +59,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       protected ConsoleMenuBase()
       {
-         printer = new DefaultMenuPrinter(Console);
+         renderer = GetMenuRenderer(Console);
       }
 
       #endregion
@@ -318,12 +311,13 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       public void Show()
       {
-         printer = new DefaultMenuPrinter(Console);
+         renderer = GetMenuRenderer(Console);
 
          RefreshMenu();
 
          inputHandler = new ConsoleMenuInputHandler();
          inputHandler.InputChanged += OnInputChanged;
+
          AttachMouseEvents(MouseMode != MouseMode.Disabled);
          inputHandler.Start();
       }
@@ -342,7 +336,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
          UpdateElements();
 
-         printer.Header(Header);
+         renderer.Header(Header);
 
          if (elements.Any())
          {
@@ -354,7 +348,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
             PrintElements();
          }
 
-         printer.Footer(Footer);
+         renderer.Footer(Footer);
       }
 
       internal void UpdateMouseOver(ElementInfo value)
@@ -593,6 +587,14 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          }
       }
 
+      private IMenuRenderer GetMenuRenderer(IConsole console)
+      {
+         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            return new DefaultMenuRenderer(console);
+
+         return new LinuxMenuRenderer(console);
+      }
+
       private ElementInfo GetMouseOverElement(MouseEventArgs e)
       {
          foreach (var element in elements.Values)
@@ -692,7 +694,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          {
             elementInfo.Line = Console.CursorTop;
 
-            printer.Element(elementInfo, Selector, SelectionMode);
+            renderer.Element(elementInfo, Selector, SelectionMode);
             elementInfo.Length = Console.CursorLeft;
 
             Console.WriteLine();
@@ -711,7 +713,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
             Console.CursorTop = elementToUpdate.Line;
             Console.CursorLeft = 0;
 
-            printer.Element(elementToUpdate, Selector, SelectionMode);
+            renderer.Element(elementToUpdate, Selector, SelectionMode);
          }
       }
 

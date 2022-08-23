@@ -1,31 +1,39 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IInputHandler.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2022
-// </copyright>
-// --------------------------------------------------------------------------------------------------------------------
-
-namespace ConsoLovers.ConsoleToolkit.InputHandler
+﻿namespace ConsoLovers.ConsoleToolkit.InputHandler
 {
    using System;
 
    public interface IInputHandler
    {
-      event EventHandler<MouseEventArgs> MouseDoubleClicked;
+      #region Public Events
 
-      event EventHandler<MouseEventArgs> MouseClicked;
-
-      event EventHandler<MouseEventArgs> MouseMoved;
-
-      event EventHandler<MouseEventArgs> MouseWheelChanged;
-
+      /// <summary>Occurs when a keyboard key was pressed.</summary>
       event EventHandler<KeyEventArgs> KeyDown;
 
-      event WindowsConsoleInputHandler.ConsoleWindowBufferSizeEvent WindowBufferSizeEvent;
+      /// <summary>Occurs when a mouse button was clicked.</summary>
+      event EventHandler<MouseEventArgs> MouseClicked;
 
+      /// <summary>Occurs when a mouse button was double clicked.</summary>
+      event EventHandler<MouseEventArgs> MouseDoubleClicked;
+
+      /// <summary>Occurs when the mouse was moved.</summary>
+      event EventHandler<MouseEventArgs> MouseMoved;
+
+      /// <summary>Occurs when the mouse wheel position changed.</summary>
+      event EventHandler<MouseEventArgs> MouseWheelChanged;
+
+      #endregion
+
+      #region Public Methods and Operators
+
+      /// <summary>Starts the input observation.</summary>
       void Start();
 
+      /// <summary>Stops the input observation.</summary>
       void Stop();
 
+      /// <summary>Joins the calling and the input handler thread.</summary>
       void Wait();
+
+      #endregion
    }
 }

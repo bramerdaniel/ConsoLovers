@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IMenuPrinter.cs" company="KUKA Deutschland GmbH">
+// <copyright file="IMenuRenderer.cs" company="KUKA Deutschland GmbH">
 //   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -8,7 +8,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 {
    using ConsoLovers.ConsoleToolkit.Contracts;
 
-   internal interface IMenuPrinter
+   internal interface IMenuRenderer
    {
       #region Public Methods and Operators
 

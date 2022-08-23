@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ConsoleInputHandler.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2022
+// <copyright file="LinuxConsoleInputHandler.cs" company="KUKA Deutschland GmbH">
+//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -9,30 +9,38 @@ namespace ConsoLovers.ConsoleToolkit.InputHandler
    using System;
    using System.Threading;
 
-   public class ConsoleInputHandler : IInputHandler
+   internal sealed class LinuxConsoleInputHandler : IInputHandler
    {
-      private Thread thread;
+      #region Constants and Fields
 
       private bool isRunning;
 
+      private Thread thread;
+
+      #endregion
+
       #region Public Events
 
+      /// <summary>Occurs when a keyboard key was pressed.</summary>
       public event EventHandler<KeyEventArgs> KeyDown;
 
+      /// <summary>Occurs when a mouse button was clicked. Mouse event is not supported!</summary>
       public event EventHandler<MouseEventArgs> MouseClicked;
 
+      /// <summary>Occurs when a mouse button was double clicked. Mouse event is not supported!</summary>
       public event EventHandler<MouseEventArgs> MouseDoubleClicked;
 
+      /// <summary>Occurs when the mouse was moved. Mouse event is not supported!</summary>
       public event EventHandler<MouseEventArgs> MouseMoved;
 
+      /// <summary>Occurs when the mouse wheel position changed. Mouse event is not supported!</summary>
       public event EventHandler<MouseEventArgs> MouseWheelChanged;
-
-      public event WindowsConsoleInputHandler.ConsoleWindowBufferSizeEvent WindowBufferSizeEvent;
 
       #endregion
 
       #region IInputHandler Members
 
+      /// <summary>Starts the input observation.</summary>
       public void Start()
       {
          isRunning = true;
@@ -45,7 +53,7 @@ namespace ConsoLovers.ConsoleToolkit.InputHandler
                   if (isRunning)
                   {
                      var keyInfo = Console.ReadKey();
-                     KeyDown?.Invoke(this, new KeyEventArgs { Key = keyInfo.Key });
+                     KeyDown?.Invoke(this, new KeyEventArgs {Key = keyInfo.Key});
                   }
                   else
                   {
@@ -57,15 +65,11 @@ namespace ConsoLovers.ConsoleToolkit.InputHandler
          thread.Start();
       }
 
-      public void Stop()
-      {
-         isRunning = false;
-      }
+      /// <summary>Stops the input observation.</summary>
+      public void Stop() => isRunning = false;
 
-      public void Wait()
-      {
-         thread.Join();
-      }
+      /// <summary>Joins the calling and the input handler thread.</summary>
+      public void Wait() => thread.Join();
 
       #endregion
    }
