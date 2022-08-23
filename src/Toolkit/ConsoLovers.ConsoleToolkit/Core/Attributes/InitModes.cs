@@ -1,22 +1,15 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IMenuArgumentManager.cs" company="ConsoLovers">
+// <copyright file="InitModes.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace ConsoLovers.ConsoleToolkit.Core
 {
-   using System;
-
-   public interface IMenuArgumentManager
+   public enum InitModes
    {
-      #region Public Methods and Operators
+      None,
 
-      /// <summary>Clears all cached argument values.</summary>
-      void Clear();
-
-      object GetOrCreate(Type argumentType);
-
-      #endregion
+      AsMenu
    }
 }

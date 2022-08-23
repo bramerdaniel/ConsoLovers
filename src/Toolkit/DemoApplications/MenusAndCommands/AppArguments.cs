@@ -36,8 +36,8 @@ public class AppArguments
    [Command("Hidden")]
    public CommandGroup<HiddenCommands> Hidden { get; set; }
 
-   [Command("Execute")]
-   public ExecuteCommand Execute { get; set; }
+   [Command("Clear")]
+   public ClearCommand Clear { get; set; }
 
    [Command("help", "?")]
    [Menu(Visible = false)]

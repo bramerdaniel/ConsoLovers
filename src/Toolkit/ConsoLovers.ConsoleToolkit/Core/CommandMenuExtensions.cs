@@ -8,6 +8,7 @@ namespace ConsoLovers.ConsoleToolkit
 {
    using System;
 
+   using ConsoLovers.ConsoleToolkit.Core;
    using ConsoLovers.ConsoleToolkit.Core.Builders;
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 

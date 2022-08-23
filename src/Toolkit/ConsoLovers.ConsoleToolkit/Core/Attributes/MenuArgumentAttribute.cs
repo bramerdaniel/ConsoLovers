@@ -30,16 +30,6 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       public string DisplayName { get; set; }
 
-      /// <summary>Gets or sets the edit mode of the argument in the menu.</summary>
-      public EditModes EditMode { get; set; }
-
       #endregion
-   }
-
-   public enum EditModes
-   {
-      None,
-
-      AsMenu
    }
 }

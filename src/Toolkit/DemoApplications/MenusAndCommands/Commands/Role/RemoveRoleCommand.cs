@@ -1,10 +1,10 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ShowControllersCommand.cs" company="ConsoLovers">
+// <copyright file="RemoveRoleCommand.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace MenusAndCommands.Commands.Controllers;
+namespace MenusAndCommands.Commands.Role;
 
 using System;
 
@@ -12,7 +12,7 @@ using ConsoLovers.ConsoleToolkit;
 using ConsoLovers.ConsoleToolkit.Core;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
-public class ShowControllersCommand : ICommand<ShowControllerArgs>, IMenuCommand
+public class RemoveRoleCommand : ICommand<RemoveRoleCommand.RemoveRoleArgs>, IMenuCommand
 {
    #region Constants and Fields
 
@@ -22,14 +22,16 @@ public class ShowControllersCommand : ICommand<ShowControllerArgs>, IMenuCommand
 
    #region Constructors and Destructors
 
-   public ShowControllersCommand(IConsole console)
+   public RemoveRoleCommand(IConsole console)
    {
       this.console = console ?? throw new ArgumentNullException(nameof(console));
    }
 
    #endregion
 
-   #region ICommand<ShowControllerArgs> Members
+   #region ICommand<AddRoleArgs> Members
+
+   public RemoveRoleArgs Arguments { get; set; }
 
    public void Execute()
    {
@@ -40,11 +42,9 @@ public class ShowControllersCommand : ICommand<ShowControllerArgs>, IMenuCommand
          return;
       }
 
-      console.WriteLine($"Showing controller of address {Arguments.Address}");
+      console.WriteLine($"Role {Arguments.Name} was removed ({Arguments.Force})");
       console.ReadLine();
    }
-
-   public ShowControllerArgs Arguments { get; set; }
 
    #endregion
 
@@ -56,23 +56,18 @@ public class ShowControllersCommand : ICommand<ShowControllerArgs>, IMenuCommand
    }
 
    #endregion
-}
 
-public class ShowControllerArgs
-{
-   #region Public Properties
+   public class RemoveRoleArgs : SharedArgs
+   {
+      #region Public Properties
 
-   [Argument("address", Required = true)]
-   [MenuArgument(Visible = true)]
-   public string Address { get; set; } = "Huber";
+      [Argument("name")]
+      public string Name { get; set; }
 
-   [Argument("force")]
-   [MenuArgument(Visible = true)]
-   public bool Force { get; set; }
+      [Argument("force", "f")]
+      public bool Force { get; set; }
 
-   [Argument("hidden")]
-   [MenuArgument(Visible = false)]
-   public bool Hidden { get; set; }
+      #endregion
+   }
 
-   #endregion
 }
