@@ -10,12 +10,12 @@ namespace ConsoLovers.ConsoleToolkit
    using System.Threading;
    using System.Threading.Tasks;
 
-   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+   using ConsoLovers.ConsoleToolkit.Core;
 
    using JetBrains.Annotations;
 
    /// <summary><see cref="IApplicationLogic"/> implementation that shows a consolovers menu from the specified application arguments</summary>
-   /// <seealso cref="ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.IApplicationLogic" />
+   /// <seealso cref="IApplicationLogic" />
    public class ShowMenuApplicationLogic : IApplicationLogic
    {
       private readonly ICommandMenuManager commandMenuManager;

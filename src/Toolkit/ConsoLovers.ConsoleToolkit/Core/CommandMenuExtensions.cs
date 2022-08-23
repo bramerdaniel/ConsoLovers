@@ -10,7 +10,6 @@ namespace ConsoLovers.ConsoleToolkit
 
    using ConsoLovers.ConsoleToolkit.Core;
    using ConsoLovers.ConsoleToolkit.Core.Builders;
-   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
    using JetBrains.Annotations;
 
