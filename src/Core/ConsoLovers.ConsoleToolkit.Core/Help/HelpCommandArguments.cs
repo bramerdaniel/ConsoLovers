@@ -13,8 +13,8 @@ namespace ConsoLovers.ConsoleToolkit.Core
    {
       #region Public Properties
 
-      /// <summary>Gets or sets the argument dictionary.</summary>
-      public ICommandLineArguments ArgumentDictionary { get; set; }
+      /// <summary>Gets or sets the <see cref="ICommandLineArguments"/>.</summary>
+      public ICommandLineArguments CommandLineArguments { get; set; }
 
       /// <summary>Gets or sets the argument infos.</summary>
       public ArgumentClassInfo ArgumentInfos { get; set; }

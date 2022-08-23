@@ -9,8 +9,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.Services;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-
-using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+using ConsoLovers.ConsoleToolkit.Core;
 
 using JetBrains.Annotations;
 

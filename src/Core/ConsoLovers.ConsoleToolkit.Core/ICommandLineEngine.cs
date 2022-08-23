@@ -1,16 +1,38 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="ICommandLineEngine.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2018
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+/* Unmerged change from project 'ConsoLovers.ConsoleToolkit.Core (netstandard2.0)'
+Before:
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
+{
+   using System;
+After:
+namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+   using System;
+*/
+
+/* Unmerged change from project 'ConsoLovers.ConsoleToolkit.Core (net461)'
+Before:
+namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
+{
+   using System;
+After:
+namespace ConsoLovers.ConsoleToolkit.Core.ConsoleToolkit.Core;
+   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+   using System;
+*/
+
+namespace ConsoLovers.ConsoleToolkit.Core
 {
    using System;
    using System.Collections.Generic;
    using System.Reflection;
-   using System.Resources;
    using System.Text;
+
+   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
    /// <summary>Interface for parsing/analyzing command line arguments and mapping them to a specified class</summary>
    public interface ICommandLineEngine
@@ -22,7 +44,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       /// <summary>Occurs when command line argument was passed to the <see cref="ICommandLineEngine"/> the could not be processed in any way.</summary>
       event EventHandler<CommandLineArgumentEventArgs> UnhandledCommandLineArgument;
-      
+
       #endregion
 
       #region Public Methods and Operators

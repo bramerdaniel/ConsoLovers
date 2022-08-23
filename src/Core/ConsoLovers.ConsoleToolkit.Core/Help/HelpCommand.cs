@@ -8,13 +8,10 @@ namespace ConsoLovers.ConsoleToolkit.Core
 {
    using System;
    using System.Linq;
-
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Core.DIContainer;
 
    using JetBrains.Annotations;
-
-   // TODO move help stuff to own namespace
 
    /// <summary>Implementation of the help command</summary>
    public class HelpCommand : ICommand<HelpCommandArguments>
@@ -52,7 +49,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       /// <summary>Executes this instance.</summary>
       public virtual void Execute()
       {
-         var helpRequest = Arguments.ArgumentDictionary.OrderBy(x => x.Index).Select(x => x.Name).ToArray();
+         var helpRequest = Arguments.CommandLineArguments.OrderBy(x => x.Index).Select(x => x.Name).ToArray();
          PrintHelp(helpRequest);
       }
 
