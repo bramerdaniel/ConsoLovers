@@ -44,7 +44,7 @@ public class LocalizationServiceTests
    {
       var application = ConsoleApplication.WithArguments<ApplicationArgs>()
          .AddResourceManager(FirstResource.ResourceManager)
-         .Build();
+         .Run();
 
       application.Arguments.Localize("DoesNotExist").Should().Be("DoesNotExist");
    }
@@ -55,7 +55,7 @@ public class LocalizationServiceTests
       var application = ConsoleApplication.WithArguments<ApplicationArgs>()
          .AddResourceManager(FirstResource.ResourceManager)
          .AddResourceManager(SecondResource.ResourceManager)
-         .Build();
+         .Run();
 
       application.Arguments.Localize("FirstKey").Should().Be("FirstValue");
       application.Arguments.Localize("SecondKey").Should().Be("SecondValue");
@@ -66,7 +66,7 @@ public class LocalizationServiceTests
    {
       var application = ConsoleApplication.WithArguments<ApplicationArgs>()
          .AddResourceManager(FirstResource.ResourceManager)
-         .Build();
+         .Run();
 
       application.Arguments.Localize("FirstKey").Should().Be("FirstValue");
    }

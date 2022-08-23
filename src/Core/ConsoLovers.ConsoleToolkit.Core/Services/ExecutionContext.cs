@@ -23,9 +23,8 @@ internal class ExecutionContext<T> : IExecutionContext<T>
    public object Commandline { get; set; }
    
 
-   public ExecutionContext([NotNull] T arguments, [NotNull] object commandLine)
+   public ExecutionContext([NotNull] object commandLine)
    {
-      ApplicationArguments = arguments ?? throw new ArgumentNullException(nameof(arguments));
       Commandline = commandLine ?? throw new ArgumentNullException(nameof(commandLine));
    }
 }

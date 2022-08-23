@@ -7,7 +7,9 @@
 namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.DIContainer;
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 using ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups;
 
@@ -15,6 +17,8 @@ using FluentAssertions;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+using Moq;
 
 [TestClass]
 [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Reviewed. Suppression is OK here.")]
@@ -83,6 +87,24 @@ public class SingletonTests
       var second = container.GetService<IExceptionHandler>();
 
       first.Should().BeSameAs(second);
+   }
+
+
+   [TestMethod]
+   public void CreateMultipleSingletonsShouldWork()
+   {
+      var container = Setup.Container()
+         .Register(ServiceDescriptor.Singleton(typeof(IExceptionHandler),typeof(CustomHandler)))
+         .Register(ServiceDescriptor.Singleton(typeof(IExceptionHandler), new Mock<IExceptionHandler>().Object))
+         .Done();
+
+      var first = container.GetService<IExceptionHandler>();
+      first.Should().BeOfType<CustomHandler>();
+
+      var all = container.GetService<IEnumerable<IExceptionHandler>>()?.ToArray();
+      Assert.IsNotNull(all);
+      all.Should().HaveCount(2);
+      all[0].Should().BeOfType<CustomHandler>();
    }
 
 

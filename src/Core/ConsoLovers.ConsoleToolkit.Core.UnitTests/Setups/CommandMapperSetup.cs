@@ -8,6 +8,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups;
 
 using ConsoLovers.ConsoleToolkit.Core.Builders;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+using ConsoLovers.ConsoleToolkit.Core.DIContainer;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -18,7 +19,7 @@ public class CommandMapperSetup<T> : SetupBase<CommandMapper<T>>
 
    protected override CommandMapper<T> CreateInstance()
    {
-      var serviceProvider = new DefaultServiceProvider(serviceCollection);
+      var serviceProvider = new Container(serviceCollection);
       return new CommandMapper<T>(serviceProvider, new ArgumentReflector());
    }
 
