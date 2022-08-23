@@ -4,11 +4,12 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
+namespace ConsoLovers.ConsoleToolkit.Core
 {
    using System;
    using System.Linq;
 
+   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Core.DIContainer;
 
    using JetBrains.Annotations;
@@ -33,9 +34,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       /// <param name="console">The console that should be used by the command.</param>
       /// <param name="localizationService">The <see cref="ILocalizationService"/> that is used for translating resources.</param>
       /// <param name="argumentReflector"></param>
-      /// <exception cref="System.ArgumentNullException">engine</exception>
+      /// <exception cref="ArgumentNullException">engine</exception>
       [InjectionConstructor]
-      public HelpCommand([NotNull] ICommandLineEngine engine, [NotNull] ILocalizationService localizationService, 
+      public HelpCommand([NotNull] ICommandLineEngine engine, [NotNull] ILocalizationService localizationService,
          [NotNull] IConsole console, [NotNull] IArgumentReflector argumentReflector)
       {
          this.engine = engine ?? throw new ArgumentNullException(nameof(engine));

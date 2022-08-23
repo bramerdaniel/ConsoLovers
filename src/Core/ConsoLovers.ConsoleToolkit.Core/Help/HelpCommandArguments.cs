@@ -4,9 +4,9 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
+namespace ConsoLovers.ConsoleToolkit.Core
 {
-   using System.Collections.Generic;
+   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
    /// <summary>Arguments class for the help command</summary>
    public class HelpCommandArguments
