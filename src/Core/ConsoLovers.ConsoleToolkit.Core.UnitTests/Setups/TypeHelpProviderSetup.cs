@@ -10,7 +10,10 @@ using System;
 
 using ConsoLovers.ConsoleToolkit.Core.Builders;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+using ConsoLovers.ConsoleToolkit.Core.DIContainer;
 using ConsoLovers.ConsoleToolkit.Core.Services;
+
+using Microsoft.Extensions.DependencyInjection;
 
 public class TypeHelpProviderSetup : SetupBase<TypeHelpProvider>
 {
@@ -25,7 +28,9 @@ public class TypeHelpProviderSetup : SetupBase<TypeHelpProvider>
    public TypeHelpProviderSetup AddArgumentTypes<T>()
       where T : class
    {
-      serviceProvider = DefaultServiceProvider.ForType<T>();
+      var serviceCollection = new ServiceCollection();
+      serviceCollection.AddApplicationTypes<T>();
+      serviceProvider = new Container(serviceCollection);
       return this;
    }
 
@@ -35,7 +40,7 @@ public class TypeHelpProviderSetup : SetupBase<TypeHelpProvider>
 
    protected override TypeHelpProvider CreateInstance()
    {
-      return new TypeHelpProvider(serviceProvider ?? new DefaultServiceProvider(), new DefaultLocalizationService());
+      return new TypeHelpProvider(serviceProvider ?? new Container(), new DefaultLocalizationService());
    }
 
    #endregion

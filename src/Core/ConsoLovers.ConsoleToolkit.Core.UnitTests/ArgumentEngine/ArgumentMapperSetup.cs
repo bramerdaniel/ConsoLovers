@@ -4,6 +4,7 @@
 
    using ConsoLovers.ConsoleToolkit.Core.Builders;
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+   using ConsoLovers.ConsoleToolkit.Core.DIContainer;
    using ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups;
 
    using Microsoft.Extensions.DependencyInjection;
@@ -22,7 +23,9 @@
    {
       public ArgumentMapper<T> Done()
       {
-         return new ArgumentMapper<T>(DefaultServiceProvider.ForType<T>());
+         var serviceCollection = new ServiceCollection();
+         serviceCollection.AddApplicationTypes<T>();
+         return new ArgumentMapper<T>(new Container(serviceCollection));
       }
    }
 }

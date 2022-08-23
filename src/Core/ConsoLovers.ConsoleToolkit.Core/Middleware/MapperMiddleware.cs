@@ -51,7 +51,12 @@ internal class MapperMiddleware<T> : Middleware<T>
       if (cancellationToken.IsCancellationRequested)
          return Task.FromCanceled(cancellationToken);
 
+      // Normally the mapper should create the arguments,
+      // but if another middleware would decide to create and initialize them e.g. with default values,
+      // we are ok with that here
+      context.ApplicationArguments ??= serviceProvider.GetRequiredService<T>();
       Map(context.ParsedArguments, context.ApplicationArguments);
+
       return Next(context, cancellationToken);
    }
 
@@ -67,7 +72,7 @@ internal class MapperMiddleware<T> : Middleware<T>
          : ActivatorUtilities.GetServiceOrCreateInstance<ArgumentMapper<T>>(serviceProvider);
    }
 
-   private T Map(CommandLineArgumentList args, T instance)
+   private void Map(CommandLineArgumentList args, T instance)
    {
       var mapper = CreateMapper();
 
@@ -76,7 +81,7 @@ internal class MapperMiddleware<T> : Middleware<T>
          mapper.UnmappedCommandLineArgument += OnUnmappedCommandLineArgument;
          mapper.MappedCommandLineArgument += OnMappedCommandLineArgument;
 
-         return mapper.Map(args, instance);
+         mapper.Map(args, instance);
       }
       finally
       {
@@ -87,11 +92,12 @@ internal class MapperMiddleware<T> : Middleware<T>
 
    private void OnMappedCommandLineArgument(object sender, MapperEventArgs e)
    {
+      // TODO do something with that
    }
 
    private void OnUnmappedCommandLineArgument(object sender, MapperEventArgs e)
    {
-      // TODO do something with that
+      // TODO handle unmapped command line arguments
    }
 
    #endregion
