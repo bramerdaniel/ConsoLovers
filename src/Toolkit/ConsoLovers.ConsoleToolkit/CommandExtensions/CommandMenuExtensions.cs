@@ -22,8 +22,8 @@ namespace ConsoLovers.ConsoleToolkit.CommandExtensions
       public static IApplicationBuilder<T> UseMenuWithoutArguments<T>(this IApplicationBuilder<T> bootstrapper, Action<ICommandMenuOptions> configureOptions)
          where T : class
       {
-         bootstrapper.ConfigureServices(s => s.AddSingleton<ICommandMenuManager, CommandMenuManager>());
-         bootstrapper.ConfigureServices(s => s.AddSingleton<IApplicationLogic, ShowMenuApplicationLogic>());
+         bootstrapper.AddService(s => s.AddSingleton<ICommandMenuManager, CommandMenuManager>());
+         bootstrapper.AddService(s => s.AddSingleton<IApplicationLogic, ShowMenuApplicationLogic>());
 
          if (configureOptions != null)
             ConfigureMenu(bootstrapper, configureOptions);

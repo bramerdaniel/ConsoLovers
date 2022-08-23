@@ -4,11 +4,12 @@
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<AssemblyTitle>ConsoLovers.ConsoleToolkit</AssemblyTitle>
 		<PackageId>ConsoLovers.ConsoleToolkit</PackageId>
-		<Version>6.0.0-rc2</Version>
+		<Version>6.0.0-rc3</Version>
 		<AssemblyVersion>3.0.0.0</AssemblyVersion>
 		<FileVersion>3.0.0.0</FileVersion>
 		<PackageReleaseNotes>
-			6.0.0-rc1
+			6.0.0
+			- Added console menu application logic
 			- Updated to ConsoloversToolkit.Core 5
 			- Updated to .NET 6.0
 			- Multi-Target for .NET Framework 4.7.2 and .NET 6.0

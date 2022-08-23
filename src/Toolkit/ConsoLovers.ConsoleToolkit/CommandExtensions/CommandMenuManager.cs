@@ -162,7 +162,7 @@ namespace ConsoLovers.ConsoleToolkit.CommandExtensions
          if (command is IMenuCommand menuCommand)
          {
             var executionContext = new MenuExecutionContext { MenuItem = menuItem };
-            menuCommand.ExecuteFromMenu(executionContext);
+            menuCommand.Execute(executionContext);
          }
          else if(command is ICommandBase commandBase)
          {
