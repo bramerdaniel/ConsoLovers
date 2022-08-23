@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="MenuSettingsAttribute.cs" company="KUKA Deutschland GmbH">
-//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
+// <copyright file="MenuArgumentAttribute.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -8,16 +8,19 @@ namespace ConsoLovers.ConsoleToolkit.Core
 {
    using System;
 
+   /// <summary>Attribute for a consolovers command that is displayed in a consolovers menu</summary>
+   /// <seealso cref="MenuAttribute"/>
    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Property)]
-   public class MenuSettingsAttribute : MenuVisibleAttribute
+   public class MenuArgumentAttribute : MenuAttribute
    {
       #region Constructors and Destructors
 
-      public MenuSettingsAttribute(string displayName)
+      public MenuArgumentAttribute(string displayName)
       {
          DisplayName = displayName;
       }
-      public MenuSettingsAttribute()
+
+      public MenuArgumentAttribute()
       {
       }
 
@@ -27,8 +30,16 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       public string DisplayName { get; set; }
 
-      public bool Visible { get; set; } = true;
+      /// <summary>Gets or sets the edit mode of the argument in the menu.</summary>
+      public EditModes EditMode { get; set; }
 
       #endregion
+   }
+
+   public enum EditModes
+   {
+      None,
+
+      AsMenu
    }
 }

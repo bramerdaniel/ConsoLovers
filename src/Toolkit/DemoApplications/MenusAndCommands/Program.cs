@@ -26,6 +26,7 @@ namespace MenusAndCommands
                options.Menu.CloseKeys = new[] { ConsoleKey.Escape };
                options.MenuBehaviour = MenuBuilderBehaviour.ShowAllCommand;
             })
+            .ConfigureCommandLineParser(o => o.CaseSensitive =true)
             .RunAsync(CancellationToken.None);
       }
 

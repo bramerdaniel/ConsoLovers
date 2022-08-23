@@ -12,6 +12,6 @@ using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 public class ControllerCommands
 {
    [Command("Show")]
-   [MenuSettings("Show controllers")]
+   [MenuCommand("Show controllers")]
    public ShowControllersCommand Show { get; set; }
 }

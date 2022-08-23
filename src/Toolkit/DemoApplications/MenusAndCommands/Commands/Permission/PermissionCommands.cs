@@ -14,11 +14,11 @@ public class PermissionCommands
    #region Public Properties
 
    [Command("Add")]
-   [MenuSettings("Add permission")]
+   [MenuCommand("Add permission")]
    public AddPermissionCommand Add { get; set; }
 
    [Command("Remove")]
-   [MenuSettings(Visible = false)]
+   [MenuCommand(Visible = false)]
    public RemovePermissionCommand Remove { get; set; }
 
    #endregion

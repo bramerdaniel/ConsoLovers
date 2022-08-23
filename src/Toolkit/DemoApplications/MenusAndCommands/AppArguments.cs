@@ -19,15 +19,15 @@ public class AppArguments
    #region Public Properties
 
    [Command("Controller")]
-   [MenuSettings("Manage controllers")]
+   [MenuCommand("Manage controllers")]
    public CommandGroup<ControllerCommands> Controller{ get; set; }
 
    [Command("User")]
-   [MenuSettings("Manage users")]
+   [MenuCommand("Manage users")]
    public CommandGroup<UserCommands> User { get; set; }
 
    [Command("Roles")]
-   [MenuSettings("Manage roles")]
+   [MenuCommand("Manage roles")]
    public CommandGroup<RoleCommands> Role { get; set; }
 
    [Command("Permissions")]
@@ -40,7 +40,7 @@ public class AppArguments
    public ExecuteCommand Execute { get; set; }
 
    [Command("help", "?")]
-   [MenuVisible(Visible = false)]
+   [Menu(Visible = false)]
    public HelpCommand Help{ get; set; }
 
    #endregion

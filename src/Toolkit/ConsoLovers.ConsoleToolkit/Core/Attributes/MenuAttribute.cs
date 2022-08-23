@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="MenuVisibleAttribute.cs" company="ConsoLovers">
+// <copyright file="MenuAttribute.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -9,19 +9,19 @@ namespace ConsoLovers.ConsoleToolkit.Core
    using System;
 
    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Property)]
-   public class MenuVisibleAttribute : Attribute
+   public class MenuAttribute : Attribute
    {
       #region Constructors and Destructors
 
-      /// <summary>Initializes a new instance of the <see cref="MenuVisibleAttribute"/> class.</summary>
+      /// <summary>Initializes a new instance of the <see cref="MenuAttribute"/> class.</summary>
       /// <param name="visible">if set to <c>true</c> [visible].</param>
-      public MenuVisibleAttribute(bool visible)
+      public MenuAttribute(bool visible)
       {
          Visible = visible;
       }
 
-      /// <summary>Initializes a new instance of the <see cref="MenuVisibleAttribute"/> class.</summary>
-      public MenuVisibleAttribute()
+      /// <summary>Initializes a new instance of the <see cref="MenuAttribute"/> class.</summary>
+      public MenuAttribute()
          : this(true)
       {
       }

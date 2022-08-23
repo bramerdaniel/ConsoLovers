@@ -12,7 +12,7 @@ using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 using MenusAndCommands.Commands.Permission;
 using MenusAndCommands.Commands.Role;
 
-[MenuSettings(Visible = false)]
+[MenuCommand(Visible = false)]
 public class HiddenCommands
 {
    [Command("Add")]

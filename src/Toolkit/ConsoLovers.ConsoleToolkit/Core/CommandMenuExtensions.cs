@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="CommandMenuExtensions.cs" company="KUKA Deutschland GmbH">
-//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
+// <copyright file="CommandMenuExtensions.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -11,17 +11,22 @@ namespace ConsoLovers.ConsoleToolkit
    using ConsoLovers.ConsoleToolkit.Core.Builders;
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
+   using JetBrains.Annotations;
+
    using Microsoft.Extensions.DependencyInjection;
 
+   [UsedImplicitly]
    public static class CommandMenuExtensions
    {
       #region Public Methods and Operators
 
-      public static IApplicationBuilder<T> UseMenuWithoutArguments<T>(this IApplicationBuilder<T> bootstrapper, Action<ICommandMenuOptions> configureOptions)
+      public static IApplicationBuilder<T> UseMenuWithoutArguments<T>(this IApplicationBuilder<T> bootstrapper,
+         Action<ICommandMenuOptions> configureOptions)
          where T : class
       {
          bootstrapper.AddService(s => s.AddSingleton<ICommandMenuManager, CommandMenuManager>());
          bootstrapper.AddService(s => s.AddSingleton<IApplicationLogic, ShowMenuApplicationLogic>());
+         bootstrapper.AddService(s => s.AddSingleton<IMenuArgumentManager, MenuArgumentManager>());
 
          if (configureOptions != null)
             ConfigureMenu(bootstrapper, configureOptions);
@@ -29,6 +34,7 @@ namespace ConsoLovers.ConsoleToolkit
          return bootstrapper;
       }
 
+      [UsedImplicitly]
       public static IApplicationBuilder<T> UseMenuWithoutArguments<T>(this IApplicationBuilder<T> bootstrapper)
          where T : class
       {
