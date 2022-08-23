@@ -42,6 +42,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       public IReadOnlyCollection<CommandInfo> CommandInfos => commandInfos;
 
+      /// <summary>Gets the default command.</summary>
       public CommandInfo DefaultCommand { get; private set; }
 
       public bool HasCommands => CommandInfos.Any();

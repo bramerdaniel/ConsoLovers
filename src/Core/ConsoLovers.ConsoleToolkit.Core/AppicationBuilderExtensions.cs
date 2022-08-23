@@ -13,7 +13,6 @@ using System.Threading.Tasks;
 using ConsoLovers.ConsoleToolkit.Core;
 using ConsoLovers.ConsoleToolkit.Core.Builders;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
-using ConsoLovers.ConsoleToolkit.Core.Middleware;
 using ConsoLovers.ConsoleToolkit.Core.Services;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -22,39 +21,6 @@ public static class ApplicationBuilderExtensions
 {
    #region Public Methods and Operators
 
-   public static IApplicationBuilder<T> AddMiddleware<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder,
-      [JetBrains.Annotations.NotNull] IMiddleware<T> middleware)
-      where T : class
-   {
-      if (builder == null)
-         throw new ArgumentNullException(nameof(builder));
-      if (middleware == null)
-         throw new ArgumentNullException(nameof(middleware));
-
-      return builder.AddService(x => x.AddSingleton(middleware));
-   }
-
-   public static IApplicationBuilder<T> AddMiddleware<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder,
-      [JetBrains.Annotations.NotNull] Type middlewareType)
-      where T : class
-   {
-      if (builder == null)
-         throw new ArgumentNullException(nameof(builder));
-      if (middlewareType == null)
-         throw new ArgumentNullException(nameof(middlewareType));
-
-      return builder.AddService(x => x.AddTransient(typeof(IMiddleware<T>), middlewareType));
-   }
-
-   public static IApplicationBuilder<T> AddMiddleware<T, TMiddleware>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder)
-      where T : class
-      where TMiddleware : IMiddleware<T>
-   {
-      if (builder == null)
-         throw new ArgumentNullException(nameof(builder));
-
-      return builder.AddMiddleware(typeof(TMiddleware));
-   }
 
    public static IApplicationBuilder<T> AddResourceManager<T>(this IApplicationBuilder<T> builder, ResourceManager resourceManager)
       where T : class

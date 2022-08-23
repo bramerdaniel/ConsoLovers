@@ -4,14 +4,12 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Core.Services;
+namespace ConsoLovers.ConsoleToolkit.Core.Middleware;
 
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
-using ConsoLovers.ConsoleToolkit.Core.Middleware;
 
 internal class ExecutionPipeline<T> : IExecutionPipeline<T>
       where T : class

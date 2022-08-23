@@ -10,8 +10,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using ConsoLovers.ConsoleToolkit.Core.Services;
-
 public class ExceptionHandlingMiddleware<T> : Middleware<T>
    where T : class
 {

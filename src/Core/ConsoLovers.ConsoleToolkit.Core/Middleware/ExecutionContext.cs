@@ -4,13 +4,12 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Core.Services;
+namespace ConsoLovers.ConsoleToolkit.Core.Middleware;
 
 using System;
 using System.Threading;
 
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
-
 using JetBrains.Annotations;
 
 internal class ExecutionContext<T> : IExecutionContext<T>
@@ -21,7 +20,7 @@ internal class ExecutionContext<T> : IExecutionContext<T>
    public T ApplicationArguments { get; set; }
 
    public object Commandline { get; set; }
-   
+
 
    public ExecutionContext([NotNull] object commandLine)
    {

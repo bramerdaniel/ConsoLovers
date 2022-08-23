@@ -10,8 +10,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using ConsoLovers.ConsoleToolkit.Core.Services;
-
 /// <summary>Interface defining a middleware component</summary>
 /// <typeparam name="T">The type of the application arguments.</typeparam>
 public interface IMiddleware<T>

@@ -10,8 +10,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using ConsoLovers.ConsoleToolkit.Core.Services;
-
 /// <summary>Base class for a <see cref="IMiddleware{TContext}"/></summary>
 /// <typeparam name="TArgs">The type of the context.</typeparam>
 /// <seealso cref="ConsoLovers.ConsoleToolkit.Core.Middleware.IMiddleware&lt;TContext&gt;"/>

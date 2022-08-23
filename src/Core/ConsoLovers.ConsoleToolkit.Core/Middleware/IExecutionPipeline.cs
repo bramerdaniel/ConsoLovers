@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Core.Services;
+namespace ConsoLovers.ConsoleToolkit.Core.Middleware;
 
 using System.Threading;
 using System.Threading.Tasks;

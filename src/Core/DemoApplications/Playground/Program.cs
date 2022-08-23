@@ -2,7 +2,6 @@
 
 using ConsoLovers.ConsoleToolkit.Core;
 using ConsoLovers.ConsoleToolkit.Core.Middleware;
-using ConsoLovers.ConsoleToolkit.Core.Services;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,8 +10,8 @@ public static class Program
    public static void Main()
    {
       var executable = ConsoleApplication.WithArguments<ApplicationArgs>()
-         //.UseServiceProviderFactory(new DefaultServiceProviderFactory())
-         //.UseApplicationLogic(Execute)
+         .UseServiceProviderFactory(new DefaultServiceProviderFactory())
+         // .UseApplicationLogic(Execute)
          //.AddMiddleware(typeof(TryCatchMiddleware))
          //.AddMiddleware<ApplicationArgs, RepeatMiddleware>()
          // .Run();

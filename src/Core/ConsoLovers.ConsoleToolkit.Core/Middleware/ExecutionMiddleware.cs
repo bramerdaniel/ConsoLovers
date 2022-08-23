@@ -11,13 +11,12 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
-using ConsoLovers.ConsoleToolkit.Core.Services;
 
 using JetBrains.Annotations;
 
 /// <summary>The middleware that is responsible for executing the defined commands or application logic</summary>
 /// <typeparam name="T">The type of the arguments</typeparam>
-/// <seealso cref="ConsoLovers.ConsoleToolkit.Core.Middleware.Middleware&lt;ConsoLovers.ConsoleToolkit.Core.Services.IExecutionContext&lt;T&gt;&gt;"/>
+/// <seealso cref="ConsoLovers.ConsoleToolkit.Core.Middleware.Middleware&lt;IExecutionContext&lt;T&gt;&gt;"/>
 public class ExecutionMiddleware<T> : Middleware<T>
    where T : class
 {
