@@ -15,12 +15,3 @@ public interface ICustomizedHeader
 
    #endregion
 }
-public interface ICustomizedFooter
-{
-   #region Public Methods and Operators
-
-   /// <summary>Writes the custom footer to the console.</summary>
-   void WriteFooter(IConsole console);
-
-   #endregion
-}

@@ -13,6 +13,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
    using JetBrains.Annotations;
 
+   // TODO move help stuff to own namespace
+
    /// <summary>Implementation of the help command</summary>
    public class HelpCommand : ICommand<HelpCommandArguments>
    {

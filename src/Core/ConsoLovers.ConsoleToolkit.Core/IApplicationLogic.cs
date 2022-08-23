@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+namespace ConsoLovers.ConsoleToolkit.Core;
 
 using System.Threading;
 using System.Threading.Tasks;
