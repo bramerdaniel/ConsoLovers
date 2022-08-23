@@ -27,6 +27,8 @@ internal class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigura
 
    private Func<IServiceCollection, IServiceProvider> createServiceProvider;
 
+   private IServiceCollection serviceCollection;
+
    private IServiceProvider serviceProvider;
 
    #endregion
@@ -48,6 +50,16 @@ internal class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigura
    public IConsoleApplication<T> Build()
    {
       return GetOrCreateServiceProvider().GetRequiredService<IConsoleApplication<T>>();
+   }
+
+   public IApplicationBuilder<T> UseServiceCollection([NotNull] IServiceCollection collection)
+   {
+      if (collection == null)
+         throw new ArgumentNullException(nameof(collection));
+
+      // TODO write test for this scenario
+      serviceCollection = CopyRegisteredService(collection);
+      return this;
    }
 
    #endregion
@@ -87,7 +99,19 @@ internal class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigura
 
    #region Properties
 
-   protected IServiceCollection ServiceCollection { get; } = new ServiceCollection();
+   protected IServiceCollection ServiceCollection
+   {
+      get => serviceCollection ??= new ServiceCollection();
+   }
+
+   #endregion
+
+   #region Public Methods and Operators
+
+   public IApplicationBuilder<T> ReturnInstance()
+   {
+      return this;
+   }
 
    #endregion
 
@@ -133,15 +157,6 @@ internal class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigura
       AddDefaultMiddleware();
    }
 
-   private void AddDefaultMiddleware()
-   {
-      ServiceCollection.EnsureSingleton<IExecutionPipeline<T>, ExecutionPipeline<T>>();
-      ServiceCollection.AddTransient<IMiddleware<T>, ExceptionHandlingMiddleware<T>>();
-      ServiceCollection.AddTransient<IMiddleware<T>, ParserMiddleware<T>>();
-      ServiceCollection.AddTransient<IMiddleware<T>, MapperMiddleware<T>>();
-      ServiceCollection.AddTransient<IMiddleware<T>, ExecutionMiddleware<T>>();
-   }
-
    protected void SetServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory)
       where TContainerBuilder : notnull
    {
@@ -157,10 +172,25 @@ internal class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigura
       }
    }
 
-   #endregion
-
-   public IApplicationBuilder<T> ReturnInstance()
+   private void AddDefaultMiddleware()
    {
-      return this;
+      ServiceCollection.EnsureSingleton<IExecutionPipeline<T>, ExecutionPipeline<T>>();
+      ServiceCollection.AddTransient<IMiddleware<T>, ExceptionHandlingMiddleware<T>>();
+      ServiceCollection.AddTransient<IMiddleware<T>, ParserMiddleware<T>>();
+      ServiceCollection.AddTransient<IMiddleware<T>, MapperMiddleware<T>>();
+      ServiceCollection.AddTransient<IMiddleware<T>, ExecutionMiddleware<T>>();
    }
+
+   private IServiceCollection CopyRegisteredService(IServiceCollection collection)
+   {
+      if (serviceCollection != null)
+      {
+         foreach (var descriptor in serviceCollection)
+            collection.Add(descriptor);
+      }
+
+      return collection;
+   }
+
+   #endregion
 }
