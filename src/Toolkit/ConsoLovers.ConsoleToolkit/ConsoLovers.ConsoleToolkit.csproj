@@ -28,13 +28,13 @@
 		<UserSecretsId>534a9709-5fde-4041-8ae2-4da7909b60da</UserSecretsId>
 	</PropertyGroup>
 	<ItemGroup>
-		<Resource Include="Resources\Icon.ico"/>
+		<Resource Include="Resources\Icon.ico" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="ConsoLovers.ConsoleToolkit.Core"/>
+		<PackageReference Include="ConsoLovers.ConsoleToolkit.Core" />
 	</ItemGroup>
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
-		<Reference Include="Microsoft.CSharp"/>
+		<Reference Include="Microsoft.CSharp" />
 	</ItemGroup>
 </Project>

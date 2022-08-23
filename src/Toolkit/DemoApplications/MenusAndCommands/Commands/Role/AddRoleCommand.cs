@@ -8,7 +8,7 @@ namespace MenusAndCommands.Commands.Role;
 
 using System;
 
-using ConsoLovers.ConsoleToolkit.CommandExtensions;
+using ConsoLovers.ConsoleToolkit;
 using ConsoLovers.ConsoleToolkit.Core;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 

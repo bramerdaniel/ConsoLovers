@@ -6,7 +6,7 @@
 
 namespace MenusAndCommands.Commands;
 
-using ConsoLovers.ConsoleToolkit.CommandExtensions;
+using ConsoLovers.ConsoleToolkit.Core;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
 using MenusAndCommands.Commands.Permission;

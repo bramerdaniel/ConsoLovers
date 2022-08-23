@@ -4,14 +4,12 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.CommandExtensions
+namespace ConsoLovers.ConsoleToolkit
 {
    using System;
 
-   using ConsoLovers.ConsoleToolkit.Core;
    using ConsoLovers.ConsoleToolkit.Core.Builders;
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
-   using ConsoLovers.ConsoleToolkit.Menu;
 
    using Microsoft.Extensions.DependencyInjection;
 

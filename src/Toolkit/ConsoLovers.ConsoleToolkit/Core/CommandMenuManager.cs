@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.CommandExtensions
+namespace ConsoLovers.ConsoleToolkit
 {
    using System;
    using System.Collections.Generic;
@@ -105,6 +105,13 @@ namespace ConsoLovers.ConsoleToolkit.CommandExtensions
 
       private  MenuSettingsAttribute GetOrCreateMenuAttribute(CommandInfo info)
       {
+         var visibleAttribute = info.PropertyInfo.GetAttribute<MenuVisibleAttribute>();
+         if (visibleAttribute != null)
+         {
+            if (!visibleAttribute.Visible)
+               return null;
+         }
+
          var menuAttribute = info.PropertyInfo.GetAttribute<MenuSettingsAttribute>();
          if (menuAttribute == null)
          {

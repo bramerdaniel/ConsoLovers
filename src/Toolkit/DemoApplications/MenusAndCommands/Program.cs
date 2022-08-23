@@ -10,7 +10,7 @@ namespace MenusAndCommands
    using System.Threading;
    using System.Threading.Tasks;
 
-   using ConsoLovers.ConsoleToolkit.CommandExtensions;
+   using ConsoLovers.ConsoleToolkit;
    using ConsoLovers.ConsoleToolkit.Core;
 
    public static class Program

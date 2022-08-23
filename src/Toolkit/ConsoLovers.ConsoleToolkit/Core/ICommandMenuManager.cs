@@ -4,10 +4,8 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.CommandExtensions
+namespace ConsoLovers.ConsoleToolkit
 {
-   using ConsoLovers.ConsoleToolkit.Menu;
-
    /// <summary>Service that can show a consolovers menu from the defined command structure </summary>
    public interface ICommandMenuManager
    {

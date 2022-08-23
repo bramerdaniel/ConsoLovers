@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.CommandExtensions
+namespace ConsoLovers.ConsoleToolkit
 {
    using System;
    using System.Threading;

@@ -4,8 +4,10 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.CommandExtensions
+namespace ConsoLovers.ConsoleToolkit
 {
+   // TODO Add IAsyncMenuCommand
+
    public interface IMenuCommand
    {
       #region Public Methods and Operators

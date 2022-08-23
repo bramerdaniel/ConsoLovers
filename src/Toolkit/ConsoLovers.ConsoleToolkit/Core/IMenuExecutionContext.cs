@@ -4,12 +4,14 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.CommandExtensions
+namespace ConsoLovers.ConsoleToolkit
 {
    using ConsoLovers.ConsoleToolkit.Menu;
 
    public interface IMenuExecutionContext
    {
+      // TODO Change the name of the ICustomHeader interface to something better (e.g. IMenuHeader)
+
       ConsoleMenuItem MenuItem { get; }
    }
 

@@ -6,9 +6,10 @@
 
 namespace MenusAndCommands;
 
-using ConsoLovers.ConsoleToolkit.CommandExtensions;
+using ConsoLovers.ConsoleToolkit.Core;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 using MenusAndCommands.Commands;
+using MenusAndCommands.Commands.Controllers;
 using MenusAndCommands.Commands.Permission;
 using MenusAndCommands.Commands.Role;
 using MenusAndCommands.Commands.User;
@@ -16,6 +17,10 @@ using MenusAndCommands.Commands.User;
 public class AppArguments
 {
    #region Public Properties
+
+   [Command("Controller")]
+   [MenuSettings("Manage controllers")]
+   public CommandGroup<ControllerCommands> Controller{ get; set; }
 
    [Command("User")]
    [MenuSettings("Manage users")]
@@ -35,6 +40,7 @@ public class AppArguments
    public ExecuteCommand Execute { get; set; }
 
    [Command("help", "?")]
+   [MenuVisible(Visible = false)]
    public HelpCommand Help{ get; set; }
 
    #endregion

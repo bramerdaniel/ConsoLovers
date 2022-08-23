@@ -6,7 +6,7 @@
 
 namespace MenusAndCommands.Commands.Permission;
 
-using ConsoLovers.ConsoleToolkit.CommandExtensions;
+using ConsoLovers.ConsoleToolkit.Core;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
 public class PermissionCommands

@@ -4,12 +4,12 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.CommandExtensions
+namespace ConsoLovers.ConsoleToolkit.Core
 {
    using System;
 
    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Property)]
-   public class MenuSettingsAttribute : Attribute
+   public class MenuSettingsAttribute : MenuVisibleAttribute
    {
       #region Constructors and Destructors
 
