@@ -8,11 +8,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests;
 
 using System.Diagnostics;
 
-using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
-
 /// <summary>unit test helper command</summary>
 /// <typeparam name="TArgs">The type of the arguments.</typeparam>
-/// <seealso cref="ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.ICommand&lt;TArgs&gt;"/>
+/// <seealso cref="Commands.ICommand&lt;TArgs&gt;"/>
 [DebuggerDisplay("{ComputeName()}")]
 public class CommandMock<TArgs> : ICommand<TArgs>
 {

@@ -4,8 +4,10 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
+namespace ConsoLovers.ConsoleToolkit.Core
 {
+   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+
    /// <summary>Basic interface for commands without arguments</summary>
    public interface ICommand : ICommandBase
    {

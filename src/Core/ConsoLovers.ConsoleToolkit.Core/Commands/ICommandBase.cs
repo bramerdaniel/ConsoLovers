@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
+namespace ConsoLovers.ConsoleToolkit.Core
 {
    /// <summary>Shared base interface for normal <see cref="ICommand"/>s and <see cref="IAsyncCommand{T}"/> s</summary>
    public interface ICommandBase

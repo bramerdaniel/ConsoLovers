@@ -4,13 +4,15 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
+namespace ConsoLovers.ConsoleToolkit.Core
 {
    using System.Threading;
    using System.Threading.Tasks;
 
+   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+
    /// <summary>Interface for an async command/></summary>
-   /// <seealso cref="ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.ICommandBase" />
+   /// <seealso cref="ICommandBase" />
    public interface IAsyncCommand : ICommandBase
    {
       #region Public Properties
@@ -21,7 +23,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
    }
 
    /// <summary>Interface for an async command with arguments/></summary>
-   public interface IAsyncCommand<T> : IAsyncCommand , ICommandArguments<T>
+   public interface IAsyncCommand<T> : IAsyncCommand, ICommandArguments<T>
    {
    }
 }

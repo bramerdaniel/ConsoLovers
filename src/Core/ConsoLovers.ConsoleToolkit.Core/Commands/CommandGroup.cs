@@ -4,11 +4,13 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+namespace ConsoLovers.ConsoleToolkit.Core;
 
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+
+using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
 using JetBrains.Annotations;
 
@@ -17,15 +19,23 @@ using JetBrains.Annotations;
 ///    execution
 /// </summary>
 /// <typeparam name="T">Arguments class containing the child commands</typeparam>
-/// <seealso cref="ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.IAsyncCommand&lt;T&gt;"/>
+/// <seealso cref="IAsyncCommand&lt;T&gt;"/>
 public class CommandGroup<T> : IAsyncCommand<T>
 {
+   #region Constants and Fields
+
    private readonly IExecutionEngine executionEngine;
+
+   #endregion
+
+   #region Constructors and Destructors
 
    public CommandGroup([NotNull] IExecutionEngine executionEngine)
    {
       this.executionEngine = executionEngine ?? throw new ArgumentNullException(nameof(executionEngine));
    }
+
+   #endregion
 
    #region IAsyncCommand<T> Members
 

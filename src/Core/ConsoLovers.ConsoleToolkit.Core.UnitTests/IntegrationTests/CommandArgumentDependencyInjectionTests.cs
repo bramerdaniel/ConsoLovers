@@ -10,8 +10,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 
-using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
-
 using FluentAssertions;
 
 using JetBrains.Annotations;
