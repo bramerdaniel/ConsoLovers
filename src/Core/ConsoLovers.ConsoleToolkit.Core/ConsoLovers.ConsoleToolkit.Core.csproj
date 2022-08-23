@@ -61,6 +61,7 @@
 	<ItemGroup>
 		<Folder Include="CommandLineArguments\Mapping\" />
 		<Folder Include="Extensions\" />
+		<Folder Include="Commands\" />
 	</ItemGroup>
 
 	<ItemGroup>

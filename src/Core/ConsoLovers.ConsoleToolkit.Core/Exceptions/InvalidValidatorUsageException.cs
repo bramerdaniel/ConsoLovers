@@ -4,13 +4,13 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
+namespace ConsoLovers.ConsoleToolkit.Core.Exceptions
 {
    using System;
    using System.Runtime.Serialization;
 
    /// <summary>Occurs when an <see cref="IArgumentValidator{T}"/> was not implemented correctly</summary>
-   /// <seealso cref="ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.CommandLineArgumentException"/>
+   /// <seealso cref="CommandLineArgumentException"/>
    public class InvalidValidatorUsageException : CommandLineArgumentException
    {
       #region Constructors and Destructors

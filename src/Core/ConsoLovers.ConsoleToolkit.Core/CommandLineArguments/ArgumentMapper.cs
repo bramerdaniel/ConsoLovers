@@ -10,6 +10,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
    using System.Collections.Generic;
    using System.Linq;
    using System.Reflection;
+   using ConsoLovers.ConsoleToolkit.Core;
+   using ConsoLovers.ConsoleToolkit.Core.Exceptions;
 
    using JetBrains.Annotations;
 

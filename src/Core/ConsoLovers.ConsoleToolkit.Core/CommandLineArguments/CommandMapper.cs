@@ -9,7 +9,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
    using System;
    using System.Linq;
    using System.Reflection;
-
+   using ConsoLovers.ConsoleToolkit.Core.Exceptions;
    using JetBrains.Annotations;
 
    using Microsoft.Extensions.DependencyInjection;

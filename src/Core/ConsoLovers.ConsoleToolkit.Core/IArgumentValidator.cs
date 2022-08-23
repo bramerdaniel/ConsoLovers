@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
+namespace ConsoLovers.ConsoleToolkit.Core
 {
    /// <summary>Interface for implementing custom command line argument validation</summary>
    /// <typeparam name="T">The type of the value that should be validated</typeparam>

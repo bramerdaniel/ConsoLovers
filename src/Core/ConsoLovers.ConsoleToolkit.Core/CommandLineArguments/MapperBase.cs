@@ -6,6 +6,7 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
+   using ConsoLovers.ConsoleToolkit.Core.Exceptions;
    using System;
    using System.Globalization;
    using System.Linq;

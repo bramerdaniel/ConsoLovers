@@ -13,6 +13,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
    using System.Linq;
    using System.Text;
 
+   using ConsoLovers.ConsoleToolkit.Core.Exceptions;
+
    /// <summary>Default implementation of the <see cref="ICommandLineArgumentParser"/> interface</summary>
    /// <seealso cref="ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.ICommandLineArgumentParser"/>
    public class CommandLineArgumentParser : ICommandLineArgumentParser

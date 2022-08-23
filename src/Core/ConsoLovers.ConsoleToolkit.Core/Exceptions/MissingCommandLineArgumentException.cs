@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
+namespace ConsoLovers.ConsoleToolkit.Core.Exceptions
 {
    /// <summary>Exception that is thrown when a command line argument is missing</summary>
    public class MissingCommandLineArgumentException : CommandLineArgumentException

@@ -10,6 +10,7 @@ namespace XCopyApplication.Commands
 
    using ConsoLovers.ConsoleToolkit.Core;
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+   using ConsoLovers.ConsoleToolkit.Core.Exceptions;
 
    public class CopyCommandArgs
    {

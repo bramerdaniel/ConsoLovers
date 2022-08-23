@@ -10,7 +10,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
    using System.Diagnostics.CodeAnalysis;
 
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
-
+   using ConsoLovers.ConsoleToolkit.Core.Exceptions;
    using FluentAssertions;
 
    using Microsoft.VisualStudio.TestTools.UnitTesting;
