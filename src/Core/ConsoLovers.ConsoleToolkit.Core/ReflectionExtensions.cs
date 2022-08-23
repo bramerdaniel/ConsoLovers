@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
-
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing;
 using ConsoLovers.ConsoleToolkit.Core.Services;

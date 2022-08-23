@@ -8,7 +8,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
    using System;
    using System.Xml.Serialization;
-
    using JetBrains.Annotations;
 
    /// <summary>Base attribute class for the usage with the <see cref="ArgumentMapper{T}"/> class.</summary>

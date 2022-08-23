@@ -6,7 +6,7 @@
 
 namespace Playground.Commands.Delete.Files;
 
-using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+using ConsoLovers.ConsoleToolkit.Core;
 
 public class DeleteFileArgs
 {

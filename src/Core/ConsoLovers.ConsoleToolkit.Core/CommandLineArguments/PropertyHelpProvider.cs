@@ -8,7 +8,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
    using System;
    using System.Reflection;
-   using System.Resources;
 
    using ConsoLovers.ConsoleToolkit.Core.DIContainer;
 

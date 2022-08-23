@@ -1,7 +1,6 @@
 ﻿namespace CommandLineEngineDemo
 {
    using System;
-   using System.Collections.Generic;
    using System.Reflection;
 
    using ConsoLovers.ConsoleToolkit.Core;

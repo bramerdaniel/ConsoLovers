@@ -4,8 +4,9 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
+namespace ConsoLovers.ConsoleToolkit.Core
 {
+   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
    using System;
    using System.Collections.Generic;
    using System.Xml.Serialization;

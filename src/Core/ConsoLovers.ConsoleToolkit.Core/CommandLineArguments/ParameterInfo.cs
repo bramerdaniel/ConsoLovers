@@ -10,7 +10,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
    using System.Diagnostics;
    using System.Linq;
    using System.Reflection;
-
    using JetBrains.Annotations;
 
    /// <summary>Data class containing all information for a defined command line parameter in its according data class</summary>

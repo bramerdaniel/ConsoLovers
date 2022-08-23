@@ -7,7 +7,6 @@
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
    using System;
-
    using JetBrains.Annotations;
 
    public static class Extensions

@@ -7,7 +7,6 @@
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
    using System;
-
    using JetBrains.Annotations;
 
    /// <summary>Attribute that is used to specify the type of an <see cref="IArgumentValidator{T}"/> implementation.</summary>

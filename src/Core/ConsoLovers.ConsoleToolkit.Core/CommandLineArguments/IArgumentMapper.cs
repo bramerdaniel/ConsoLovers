@@ -7,7 +7,6 @@
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
    using System;
-   using System.Collections.Generic;
    using System.IO;
 
    public interface IArgumentMapper
