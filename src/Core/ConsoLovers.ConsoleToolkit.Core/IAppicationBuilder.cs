@@ -4,8 +4,22 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+
+/* Unmerged change from project 'ConsoLovers.ConsoleToolkit.Core (net461)'
+Before:
 namespace ConsoLovers.ConsoleToolkit.Core.Builders
+After:
+namespace ConsoLovers.ConsoleToolkit.Core
 {
+   using ConsoLovers;
+   using ConsoLovers.ConsoleToolkit;
+   using ConsoLovers.ConsoleToolkit.Core;
+   using ConsoLovers.ConsoleToolkit.Core;
+   using ConsoLovers.ConsoleToolkit.Core.Builders
+*/
+namespace ConsoLovers.ConsoleToolkit.Core
+{
+   using ConsoLovers.ConsoleToolkit.Core.Builders;
    using Microsoft.Extensions.DependencyInjection;
 
    public interface IApplicationBuilder<T> : IDependencyInjectionAbstraction<IApplicationBuilder<T>>

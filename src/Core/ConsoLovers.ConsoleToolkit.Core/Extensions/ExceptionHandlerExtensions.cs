@@ -7,8 +7,7 @@
 namespace ConsoLovers.ConsoleToolkit.Core;
 
 using System;
-
-using ConsoLovers.ConsoleToolkit.Core.Builders;
+using ConsoLovers.ConsoleToolkit.Core;
 
 using Microsoft.Extensions.DependencyInjection;
 

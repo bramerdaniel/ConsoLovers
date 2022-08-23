@@ -4,7 +4,6 @@
    using System.Reflection;
 
    using ConsoLovers.ConsoleToolkit.Core;
-   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
    [HelpTextProvider(typeof(CustomizedHelpArgs))]
    internal class CustomizedHelpArgs : IHelpProvider

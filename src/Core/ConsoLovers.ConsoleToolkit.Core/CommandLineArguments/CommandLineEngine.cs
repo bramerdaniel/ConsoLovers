@@ -18,8 +18,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
    using Microsoft.Extensions.DependencyInjection;
 
-   using ServiceProviderServiceExtensions = ConsoLovers.ConsoleToolkit.Core.ServiceProviderServiceExtensions;
-
    /// <summary>Main class that us is used for processing command line arguments</summary>
    public class CommandLineEngine : ICommandLineEngine
    {

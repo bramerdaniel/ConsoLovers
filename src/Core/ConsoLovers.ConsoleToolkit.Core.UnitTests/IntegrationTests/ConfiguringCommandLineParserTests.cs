@@ -11,7 +11,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using ConsoLovers.ConsoleToolkit.Core;
-using ConsoLovers.ConsoleToolkit.Core.Builders;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
 using FluentAssertions;

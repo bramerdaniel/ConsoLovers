@@ -4,11 +4,12 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
+namespace ConsoLovers.ConsoleToolkit.Core
 {
    using System;
    using System.Reflection;
 
+   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Core.DIContainer;
 
    /// <summary><see cref="IHelpProvider"/> implementation for properties</summary>

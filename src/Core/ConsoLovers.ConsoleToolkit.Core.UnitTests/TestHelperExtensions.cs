@@ -8,7 +8,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests;
 
 using System;
 using System.Threading.Tasks;
-
+using ConsoLovers.ConsoleToolkit.Core;
 using ConsoLovers.ConsoleToolkit.Core.Builders;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;

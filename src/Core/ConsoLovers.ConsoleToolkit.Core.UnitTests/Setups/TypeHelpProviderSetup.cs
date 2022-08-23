@@ -8,8 +8,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups;
 
 using System;
 
-using ConsoLovers.ConsoleToolkit.Core.Builders;
-using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 using ConsoLovers.ConsoleToolkit.Core.DIContainer;
 using ConsoLovers.ConsoleToolkit.Core.Services;
 

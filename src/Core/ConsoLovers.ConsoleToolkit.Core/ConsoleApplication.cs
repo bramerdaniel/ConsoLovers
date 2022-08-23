@@ -9,7 +9,6 @@ namespace ConsoLovers.ConsoleToolkit.Core;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-
 using ConsoLovers.ConsoleToolkit.Core.Builders;
 using ConsoLovers.ConsoleToolkit.Core.Middleware;
 

@@ -4,13 +4,15 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
+namespace ConsoLovers.ConsoleToolkit.Core
 {
    using System;
    using System.Collections.Generic;
    using System.Linq;
    using System.Reflection;
    using System.Text;
+
+   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Core.DIContainer;
 
    using JetBrains.Annotations;
@@ -20,7 +22,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       public IServiceProvider ServiceProvider { get; }
 
       #region Constants and Fields
-      
+
       private readonly ILocalizationService localizationService;
 
       private IConsole console;

@@ -4,10 +4,13 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
+namespace ConsoLovers.ConsoleToolkit.Core
 {
    using System;
    using System.Xml.Serialization;
+
+   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+
    using JetBrains.Annotations;
 
    /// <summary>Base attribute class for the usage with the <see cref="ArgumentMapper{T}"/> class.</summary>

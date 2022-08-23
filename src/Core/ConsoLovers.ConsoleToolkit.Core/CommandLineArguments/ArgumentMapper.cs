@@ -15,6 +15,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
    using JetBrains.Annotations;
 
+   using Microsoft.Extensions.DependencyInjection;
+
    /// <inheritdoc cref="IArgumentMapper{T}"/>
    /// <summary>Class that can map a dictionary to an instance of a class, filling the properties.</summary>
    /// <typeparam name="T">The type of the class to create</typeparam>

@@ -11,7 +11,6 @@ namespace CommandLineEngineDemo
    using System.Resources;
 
    using ConsoLovers.ConsoleToolkit.Core;
-   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
    [HelpTextProvider(typeof(CustomHelpCommand))]
    internal class CustomHelpCommand : ICommand, IHelpProvider
