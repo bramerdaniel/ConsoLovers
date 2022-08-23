@@ -34,6 +34,8 @@ public class InputBox<T>
 
    #endregion
 
+   // TODO support escape key 
+
    #region Constructors and Destructors
 
    /// <inheritdoc/>

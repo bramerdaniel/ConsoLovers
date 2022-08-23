@@ -7,6 +7,9 @@
 namespace ConsoLovers.ConsoleToolkit.Core
 {
    using System;
+   using System.Collections;
+   using System.Collections.Generic;
+   using System.Linq;
 
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
@@ -19,11 +22,30 @@ namespace ConsoLovers.ConsoleToolkit.Core
          CommandInfo = commandInfo ?? throw new ArgumentNullException(nameof(commandInfo));
       }
 
-      public string DisplayName{ get; set; }
+      public string DisplayName { get; set; }
 
       public bool Visible { get; set; }
 
       /// <summary>Gets the <see cref="CommandInfo"/> this <see cref="MenuCommandInfo"/> was create for.</summary>
       public CommandInfo CommandInfo { get; }
+
+      public InitModes InitMode { get; set; }
+
+      public ArgumentClassInfo ArgumentInfo { get; set; }
+
+      public IEnumerable<MenuArgumentInfo> GetArgumentInfos()
+      {
+         if (ArgumentInfo != null)
+         {
+            foreach (var property in ArgumentInfo.Properties)
+            {
+               var argumentAttribute = property.PropertyInfo.GetAttribute<MenuArgumentAttribute>();
+               yield return new MenuArgumentInfo(property)
+               {
+                  DisplayName = argumentAttribute?.DisplayName ?? property.ParameterName 
+               };
+            }
+         }
+      }
    }
 }

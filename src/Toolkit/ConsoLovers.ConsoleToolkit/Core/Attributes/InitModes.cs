@@ -8,8 +8,9 @@ namespace ConsoLovers.ConsoleToolkit.Core
 {
    public enum InitModes
    {
+      AsMenu,
+      WhileExecution,
       None,
 
-      AsMenu
    }
 }

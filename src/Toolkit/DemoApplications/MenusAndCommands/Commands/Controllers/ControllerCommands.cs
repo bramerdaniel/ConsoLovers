@@ -7,11 +7,22 @@
 namespace MenusAndCommands.Commands.Controllers;
 
 using ConsoLovers.ConsoleToolkit.Core;
-using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
 public class ControllerCommands
 {
+   #region Public Properties
+
    [Command("Show")]
    [MenuCommand("Show controllers")]
    public ShowControllersCommand Show { get; set; }
+
+   #endregion
+
+   #region Properties
+
+   [Command("delete")]
+   [MenuCommand("Delete controller", InitMode = InitModes.WhileExecution)]
+   internal DeleteControllerCommand Delete { get; set; }
+
+   #endregion
 }
