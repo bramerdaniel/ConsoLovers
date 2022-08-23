@@ -14,7 +14,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       #region Public Properties
 
       /// <summary>Gets or sets the argument dictionary.</summary>
-      public CommandLineArgumentList ArgumentDictionary { get; set; }
+      public ICommandLineArguments ArgumentDictionary { get; set; }
 
       /// <summary>Gets or sets the argument infos.</summary>
       public ArgumentClassInfo ArgumentInfos { get; set; }

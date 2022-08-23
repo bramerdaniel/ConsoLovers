@@ -16,7 +16,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
    using ConsoLovers.ConsoleToolkit.Core.Exceptions;
 
    /// <summary>Default implementation of the <see cref="ICommandLineArgumentParser"/> interface</summary>
-   /// <seealso cref="ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.ICommandLineArgumentParser"/>
+   /// <seealso cref="ICommandLineArgumentParser"/>
    public class CommandLineArgumentParser : ICommandLineArgumentParser
    {
       #region Constants and Fields
@@ -34,7 +34,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
       /// <summary>Parses the given arguments into a dictionary.</summary>
       /// <param name="args">The command line arguments.</param>
       /// <returns>The created dictionary</returns>
-      public CommandLineArgumentList ParseArguments(string[] args)
+      public ICommandLineArguments ParseArguments(string[] args)
       {
          var arguments = new CommandLineArgumentList(Options.CaseSensitive ? StringComparer.InvariantCulture : StringComparer.InvariantCultureIgnoreCase);
          int index = 0;
@@ -55,7 +55,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
       /// <summary>Parses the given arguments into a dictionary.</summary>
       /// <param name="args">The command line arguments as string.</param>
       /// <returns>The created dictionary</returns>
-      public CommandLineArgumentList ParseArguments(string args)
+      public ICommandLineArguments ParseArguments(string args)
       {
          int skipFirst = args.Equals(Environment.CommandLine) ? 1 : 0;
          var argumentList = new CommandLineArgumentList(Options.CaseSensitive ? StringComparer.InvariantCulture : StringComparer.InvariantCultureIgnoreCase);

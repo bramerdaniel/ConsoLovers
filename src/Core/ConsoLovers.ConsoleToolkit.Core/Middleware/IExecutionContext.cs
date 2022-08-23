@@ -6,8 +6,6 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.Middleware;
 
-using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
-
 public interface IExecutionContext<T>
    where T : class
 {
@@ -20,7 +18,7 @@ public interface IExecutionContext<T>
    object Commandline { get; set; }
 
    /// <summary>Gets or sets the parsed arguments (normally set by the parser middleware).</summary>
-   CommandLineArgumentList ParsedArguments { get; set; }
+   ICommandLineArguments ParsedArguments { get; set; }
 
    #endregion
 }

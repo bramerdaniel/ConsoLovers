@@ -8,6 +8,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
    using System;
    using System.Reflection;
+
    using JetBrains.Annotations;
 
    public class PropertyHelpRequest

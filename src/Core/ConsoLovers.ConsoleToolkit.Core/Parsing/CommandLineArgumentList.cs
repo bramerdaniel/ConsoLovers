@@ -4,13 +4,13 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+namespace ConsoLovers.ConsoleToolkit.Core;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class CommandLineArgumentList : List<CommandLineArgument>
+public class CommandLineArgumentList : List<CommandLineArgument>, ICommandLineArguments
 {
    #region Constructors and Destructors
 
@@ -22,22 +22,6 @@ public class CommandLineArgumentList : List<CommandLineArgument>
    public CommandLineArgumentList(IEqualityComparer<string> comparer)
    {
       Comparer = comparer;
-   }
-
-   public CommandLineArgumentList(IDictionary<string, CommandLineArgument> arguments, IEqualityComparer<string> comparer)
-      : this(comparer)
-   {
-      AddRange(arguments.Values);
-      return;
-      foreach (var argument in arguments)
-      {
-         if (string.IsNullOrWhiteSpace(argument.Value.Value))
-         {
-            argument.Value.Value = argument.Key;
-         }
-
-         Add(argument.Value);
-      }
    }
 
    public CommandLineArgument this[string name] => this.FirstOrDefault(x => Comparer.Equals(x.Name, name));
@@ -91,4 +75,15 @@ public class CommandLineArgumentList : List<CommandLineArgument>
    }
 
    #endregion
+}
+
+public interface ICommandLineArguments : IList<CommandLineArgument>
+{
+   bool TryGetValue(string name, out CommandLineArgument argument);
+
+   void RemoveFirst(string name);
+
+   bool ContainsName(string name);
+
+   CommandLineArgument this[string name] { get; }
 }

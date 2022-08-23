@@ -10,7 +10,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.CommandLineParserTests
    using System.Collections.Generic;
    using System.Diagnostics.CodeAnalysis;
 
-   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine;
 
    using FluentAssertions;
@@ -159,7 +158,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.CommandLineParserTests
 
       #region Methods
 
-      private static void AssertContains(CommandLineArgumentList arguments, string expectedKey, string expectedValue = null)
+      private static void AssertContains(ICommandLineArguments arguments, string expectedKey, string expectedValue = null)
       {
          arguments.ContainsName(expectedKey).Should().BeTrue();
          arguments.ContainsName(expectedKey.ToUpper()).Should().BeTrue();

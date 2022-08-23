@@ -34,14 +34,14 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       /// <returns>The instance of the class, the command line argument were mapped to</returns>
       /// <exception cref="System.IO.InvalidDataException">Option attribute can only be applied to boolean properties</exception>
       /// <exception cref="InvalidDataException">Option attribute can only be applied to boolean properties</exception>
-      T Map(CommandLineArgumentList arguments, T instance);
+      T Map(ICommandLineArguments arguments, T instance);
 
       /// <summary>Maps the give argument dictionary to the given instance.</summary>
       /// <param name="arguments">The arguments to map.</param>
       /// <returns>The instance of the class, the command line argument were mapped to</returns>
       /// <exception cref="System.IO.InvalidDataException">Option attribute can only be applied to boolean properties</exception>
       /// <exception cref="InvalidDataException">Option attribute can only be applied to boolean properties</exception>
-      T Map(CommandLineArgumentList arguments);
+      T Map(ICommandLineArguments arguments);
 
       #endregion
    }

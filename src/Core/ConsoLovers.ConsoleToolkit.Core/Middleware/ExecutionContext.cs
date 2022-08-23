@@ -9,13 +9,12 @@ namespace ConsoLovers.ConsoleToolkit.Core.Middleware;
 using System;
 using System.Threading;
 
-using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 using JetBrains.Annotations;
 
 internal class ExecutionContext<T> : IExecutionContext<T>
    where T : class
 {
-   public CommandLineArgumentList ParsedArguments { get; set; }
+   public ICommandLineArguments ParsedArguments { get; set; }
 
    public T ApplicationArguments { get; set; }
 

@@ -10,6 +10,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
    using System.Collections.Generic;
    using System.Diagnostics;
    using System.Reflection;
+
    using JetBrains.Annotations;
 
    [DebuggerDisplay("{" + nameof(GetDebuggerString) + "()}")]

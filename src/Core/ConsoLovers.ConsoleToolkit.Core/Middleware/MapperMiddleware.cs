@@ -71,7 +71,7 @@ internal class MapperMiddleware<T> : Middleware<T>
          : ActivatorUtilities.GetServiceOrCreateInstance<ArgumentMapper<T>>(serviceProvider);
    }
 
-   private void Map(CommandLineArgumentList args, T instance)
+   private void Map(ICommandLineArguments args, T instance)
    {
       var mapper = CreateMapper();
 

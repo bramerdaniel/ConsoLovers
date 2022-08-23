@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
+namespace ConsoLovers.ConsoleToolkit.Core
 {
    /// <summary>Interface that creates a command line dictionary from the given command line arguments</summary>
    public interface ICommandLineArgumentParser
@@ -20,13 +20,13 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       /// <summary>Parses the given arguments into a dictionary.</summary>
       /// <param name="args">The command line arguments as string.</param>
-      /// <returns>The <see cref="CommandLineArgumentList"/></returns>
-      CommandLineArgumentList ParseArguments(string args);
+      /// <returns>The <see cref="ICommandLineArguments"/></returns>
+      ICommandLineArguments ParseArguments(string args);
 
       /// <summary>Parses the given arguments into a dictionary.</summary>
       /// <param name="args">The command line arguments.</param>
-      /// <returns>The <see cref="CommandLineArgumentList"/></returns>
-      CommandLineArgumentList ParseArguments(string[] args);
+      /// <returns>The <see cref="ICommandLineArguments"/></returns>
+      ICommandLineArguments ParseArguments(string[] args);
 
       #endregion
    }

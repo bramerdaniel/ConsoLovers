@@ -42,6 +42,12 @@
 		<AssemblyOriginatorKeyFile>..\..\..\certificate\ConsoleToolkit.Core.snk</AssemblyOriginatorKeyFile>
 	</PropertyGroup>
 
+	<ItemGroup>
+	  <Compile Remove="CommandLineArguments\Mapping\**" />
+	  <EmbeddedResource Remove="CommandLineArguments\Mapping\**" />
+	  <None Remove="CommandLineArguments\Mapping\**" />
+	</ItemGroup>
+
 
 	<ItemGroup>
 		<Compile Update="Properties\Resources.Designer.cs">
@@ -59,7 +65,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="CommandLineArguments\Mapping\" />
 		<Folder Include="Extensions\" />
 	</ItemGroup>
 

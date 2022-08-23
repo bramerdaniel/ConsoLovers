@@ -1,23 +1,23 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="DetailedHelpTextAttribute.cs" company="ConsoLovers">
+// <copyright file="HelpTextAttribute.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2017
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
+namespace ConsoLovers.ConsoleToolkit.Core
 {
    using System;
 
    /// <summary>Attribute for describing the help text for a command line arguments</summary>
    [AttributeUsage(AttributeTargets.Property)]
-   public class DetailedHelpTextAttribute : Attribute
+   public class HelpTextAttribute : Attribute
    {
       #region Constructors and Destructors
 
-      /// <summary>Initializes a new instance of the <see cref="DetailedHelpTextAttribute"/> class.</summary>
+      /// <summary>Initializes a new instance of the <see cref="HelpTextAttribute"/> class.</summary>
       /// <param name="description">The description.</param>
       /// <param name="resourceKey">The resource key.</param>
-      public DetailedHelpTextAttribute(string description, string resourceKey)
+      public HelpTextAttribute(string description, string resourceKey)
       {
          Description = description;
          ResourceKey = resourceKey;
@@ -25,13 +25,13 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       /// <summary>Initializes a new instance of the <see cref="HelpTextAttribute"/> class.</summary>
       /// <param name="description">The description.</param>
-      public DetailedHelpTextAttribute(string description)
+      public HelpTextAttribute(string description)
          : this(description, null)
       {
       }
 
-      /// <summary>Initializes a new instance of the <see cref="DetailedHelpTextAttribute"/> class.</summary>
-      public DetailedHelpTextAttribute()
+      /// <summary>Initializes a new instance of the <see cref="HelpTextAttribute"/> class.</summary>
+      public HelpTextAttribute()
          : this(null, null)
       {
       }
@@ -42,6 +42,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       /// <summary>Gets or sets the not localized description.</summary>
       public string Description { get; set; }
+
+      /// <summary>Gets or sets the order that is used when displaying the help.</summary>
+      public int Priority { get; set; }
 
       /// <summary>Gets or sets the resource key that will be used for localizing the help text.</summary>
       public string ResourceKey { get; set; }

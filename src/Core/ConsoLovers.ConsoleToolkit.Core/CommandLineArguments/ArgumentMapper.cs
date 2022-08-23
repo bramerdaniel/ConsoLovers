@@ -48,13 +48,13 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       #region IArgumentMapper<T> Members
 
-      public T Map(CommandLineArgumentList arguments)
+      public T Map(ICommandLineArguments arguments)
       {
          var instance = serviceProvider.GetService<T>();
          return Map(arguments, instance);
       }
 
-      public T Map(CommandLineArgumentList arguments, T instance)
+      public T Map(ICommandLineArguments arguments, T instance)
       {
          var sharedArguments = new HashSet<CommandLineArgument>();
          foreach (var mapping in MappingList.FromType<T>())
@@ -105,7 +105,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          return null;
       }
 
-      private void CheckForUnmappedArguments(CommandLineArgumentList arguments, HashSet<CommandLineArgument> sharedArguments, T instance)
+      private void CheckForUnmappedArguments(ICommandLineArguments arguments, HashSet<CommandLineArgument> sharedArguments, T instance)
       {
          if (arguments.Count <= 0)
             return;

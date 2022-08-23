@@ -9,8 +9,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
    using System;
    using System.Collections.Generic;
    using System.Diagnostics.CodeAnalysis;
-
-   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Core.Exceptions;
    using ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups;
 
