@@ -53,7 +53,7 @@ namespace ConsoLovers.ConsoleToolkit.InputHandler
                   if (isRunning)
                   {
                      var keyInfo = Console.ReadKey();
-                     KeyDown?.Invoke(this, new KeyEventArgs {Key = keyInfo.Key});
+                     KeyDown?.Invoke(this, new KeyEventArgs { Key = keyInfo.Key });
                   }
                   else
                   {
