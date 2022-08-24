@@ -179,7 +179,7 @@ namespace ConsoLovers.ConsoleToolkit
          {
             Visible = menuAttribute.Visible,
             DisplayName = GetValue(x => x.DisplayName ?? commandInfo.ParameterName, commandInfo.ParameterName),
-            InitMode = GetValue(x => x.InitMode, InitModes.AsMenu),
+            ArgumentInitializationMode = GetValue(x => x.ArgumentInitializationMode, ArgumentInitializationModes.AsMenu),
             ArgumentInfo = argumentInfo
          };
 
@@ -195,7 +195,7 @@ namespace ConsoLovers.ConsoleToolkit
       private ConsoleMenuItem CreateArgumentsMenu(MenuCommandInfo menuInfo, ArgumentClassInfo argumentInfo)
       {
          var menuAttribute = menuInfo.CommandInfo.PropertyInfo.GetAttribute<MenuCommandAttribute>();
-         if (menuAttribute == null || menuAttribute.InitMode == InitModes.AsMenu)
+         if (menuAttribute == null || menuAttribute.ArgumentInitializationMode == ArgumentInitializationModes.AsMenu)
             return new ConsoleMenuItem(menuInfo.DisplayName, () => CreateArgumentItems(menuInfo.CommandInfo, argumentInfo), true);
          return new ConsoleMenuItem(menuInfo.DisplayName, x => Execute(x, menuInfo));
       }
@@ -308,7 +308,7 @@ namespace ConsoLovers.ConsoleToolkit
       {
          var command = serviceProvider.GetRequiredService(menuInfo.CommandInfo.ParameterType);
 
-         if (menuInfo.InitMode != InitModes.WhileExecution)
+         if (menuInfo.ArgumentInitializationMode != ArgumentInitializationModes.WhileExecution)
             return command;
 
          var argumentsProperty = command.GetType().GetProperty(nameof(ICommandArguments<Type>.Arguments));

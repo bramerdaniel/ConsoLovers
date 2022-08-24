@@ -19,6 +19,7 @@ internal class ExecutionPipeline<T> : IExecutionPipeline<T>
    public ExecutionPipeline(IEnumerable<IMiddleware<T>> middlewares)
    {
       // TODO sort middleware tests
+      // TODO make the build in middlwares replaceable
       this.middlewares = middlewares.OrderBy(m => m.ExecutionOrder).ToArray();
    }
 

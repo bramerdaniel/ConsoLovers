@@ -30,7 +30,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       public string DisplayName { get; set; }
 
       /// <summary>Gets or sets the edit mode of the argument in the menu.</summary>
-      public InitModes InitMode { get; set; }
+      public ArgumentInitializationModes ArgumentInitializationMode { get; set; }
 
       #endregion
    }

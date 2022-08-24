@@ -21,7 +21,7 @@ public class ControllerCommands
    #region Properties
 
    [Command("delete")]
-   [MenuCommand("Delete controller", InitMode = InitModes.WhileExecution)]
+   [MenuCommand("Delete controller", ArgumentInitializationMode = ArgumentInitializationModes.WhileExecution)]
    internal DeleteControllerCommand Delete { get; set; }
 
    #endregion

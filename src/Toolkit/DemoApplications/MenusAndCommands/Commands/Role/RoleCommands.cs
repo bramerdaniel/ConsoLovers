@@ -17,7 +17,7 @@ public class RoleCommands
    public AddRoleCommand Add { get; set; }
 
    [Command("Remove")]
-   [MenuCommand("Remove role", InitMode = InitModes.None)]
+   [MenuCommand("Remove role", ArgumentInitializationMode = ArgumentInitializationModes.None)]
    public RemoveRoleCommand Remove { get; set; }
 
    #endregion

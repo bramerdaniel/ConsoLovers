@@ -29,7 +29,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       /// <summary>Gets the <see cref="CommandInfo"/> this <see cref="MenuCommandInfo"/> was create for.</summary>
       public CommandInfo CommandInfo { get; }
 
-      public InitModes InitMode { get; set; }
+      public ArgumentInitializationModes ArgumentInitializationMode { get; set; }
 
       public ArgumentClassInfo ArgumentInfo { get; set; }
 
