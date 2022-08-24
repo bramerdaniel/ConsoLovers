@@ -18,6 +18,11 @@ public class CommandLineArgumentsSetup : SetupBase<CommandLineArgumentList>
       arguments.Add(commandLineArgument);
       return this;
    }
+
+   public CommandLineArgumentsSetup Add(string name, string value)
+   {
+      return Add(new CommandLineArgument { Name = name, Value = value });
+   }
    
    protected override CommandLineArgumentList CreateInstance()
    {

@@ -19,15 +19,9 @@ public static class Program
          {
             o.UnhandledArgumentsBehavior = UnhandledArgumentsBehaviors.UseCustomHandler;
          })
-         .Run(t => throw new InvalidOperationException($"That went wrong {t}"));
+         .Run(t => throw new InvalidOperationException("No command could be was executed"));
 
       Console.ReadLine();
-   }
-
-   private static Task Execute(ApplicationArgs args, CancellationToken cancellationToken)
-   {
-      Console.WriteLine("Executed with func");
-      return Task.CompletedTask;
    }
 }
 

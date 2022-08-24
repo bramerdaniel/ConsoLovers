@@ -167,8 +167,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       {
          var commandType = commandInfo.PropertyInfo.PropertyType;
          if (!ImplementsICommand(commandType))
-            throw new ArgumentException(
-               $"The type '{commandType}' of the property '{commandInfo.PropertyInfo.Name}' does not implement the {typeof(ICommandBase).FullName} interface");
+            throw new CommandLineAttributeException($"The type '{commandType}' of the property '{commandInfo.PropertyInfo.Name}' does not implement the {typeof(ICommandBase).FullName} interface");
 
          if (TryGetArgumentType(commandType, out var argumentType))
          {
@@ -254,7 +253,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       /// <param name="arguments">The arguments.</param>
       private void MapArgumentsToCommand(T instance, ArgumentClassInfo argumentInfo, ICommandLineArguments arguments)
       {
-         // Note: per definition the help command has to be the first command line argument
+         // Note: per definition the command has to be the first command line argument
          var firstArgument = GetFirstArgument(arguments);
 
          // NOTE: if the argument class contains a command that has the IsDefaultCommand property set to true,

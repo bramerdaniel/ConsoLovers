@@ -23,6 +23,10 @@
     "create user": {
       "commandName": "Project",
       "commandLineArgs": "create user Hans"
+    },
+    "fail": {
+      "commandName": "Project",
+      "commandLineArgs": "fail"
     }
   }
 }

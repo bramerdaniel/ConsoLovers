@@ -25,134 +25,146 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
       public void NamedArgumentAlias2Test()
       {
          var commandTestClass = new ArgumentTestClass();
-         var dictionary = new Dictionary<string, CommandLineArgument>
-         {
-            { "AliasName2", new CommandLineArgument { Value = "TheNameValue" } },
-            { "RequiredArgument", new CommandLineArgument { Value = "RequiredArgumentValue" } }
-         };
+         var argumentList = Setup.CommandLineArguments()
+            .Add("AliasName2", "TheNameValue")
+            .Add("RequiredArgument", "RequiredArgumentValue")
+            .Done();
 
          var target = Setup.ArgumentMapper().ForType<ArgumentTestClass>().Done();
-         var result = target.Map(CommandLineArgumentList.FromDictionary(dictionary), commandTestClass);
+         var result = target.Map(argumentList, commandTestClass);
 
-         Assert.AreEqual(result.NamedArgument, "TheNameValue");
+         Assert.AreEqual("TheNameValue", result.NamedArgument);
       }
 
       [TestMethod]
       public void NamedArgumentAliasTest()
       {
          var commandTestClass = new ArgumentTestClass();
-         var dictionary = new Dictionary<string, CommandLineArgument>
-         {
-            { "AliasName1", new CommandLineArgument { Value = "TheNameValue" } },
-            { "RequiredArgument", new CommandLineArgument { Value = "RequiredArgumentValue" } }
-         };
+
+         var argumentList = Setup.CommandLineArguments()
+            .Add("AliasName1", "TheNameValue")
+            .Add("RequiredArgument", "RequiredArgumentValue")
+            .Done();
 
          var argumentMapper = Setup.ArgumentMapper().ForType<ArgumentTestClass>().Done();
-         var result = argumentMapper.Map(CommandLineArgumentList.FromDictionary(dictionary), commandTestClass);
+         var result = argumentMapper.Map(argumentList, commandTestClass);
 
-         Assert.AreEqual(result.NamedArgument, "TheNameValue");
+         Assert.AreEqual("TheNameValue", result.NamedArgument);
       }
 
       [TestMethod]
       public void NotUsedRequiredArgumentErrorTest()
       {
          var commandTestClass = new ArgumentTestClass();
-         var dictionary = new Dictionary<string, CommandLineArgument>();
+
+         var argumentList = Setup.CommandLineArguments()
+            .Done();
 
          var argumentMapper = Setup.ArgumentMapper().ForType<ArgumentTestClass>().Done();
-         argumentMapper.Invoking(x => x.Map(CommandLineArgumentList.FromDictionary(dictionary), commandTestClass)).Should().Throw<MissingCommandLineArgumentException>();
+         argumentMapper.Invoking(x => x.Map(argumentList, commandTestClass))
+            .Should().Throw<MissingCommandLineArgumentException>();
       }
 
       [TestMethod]
       public void RegularUsageTest()
       {
          var commandTestClass = new ArgumentTestClass();
-         var dictionary = new Dictionary<string, CommandLineArgument>
-         {
-            { "SimpleArgument", new CommandLineArgument { Value = "\"SimpleArgumentValue\"" } },
-            { "TheName", new CommandLineArgument { Value = "TheNameValue" } },
-            { "TrimmedArgument", new CommandLineArgument { Value = "TrimmedArgumentValue" } },
-            { "RequiredArgument", new CommandLineArgument { Value = "RequiredArgumentValue" } }
-         };
-         var argumentMapper = Setup.ArgumentMapper().ForType<ArgumentTestClass>().Done();
-         var result = argumentMapper.Map(CommandLineArgumentList.FromDictionary(dictionary), commandTestClass);
 
-         Assert.AreEqual(result.SimpleArgument, "\"SimpleArgumentValue\"");
-         Assert.AreEqual(result.NamedArgument, "TheNameValue");
-         Assert.AreEqual(result.TrimmedArgument, "TrimmedArgumentValue");
-         Assert.AreEqual(result.RequiredArgument, "RequiredArgumentValue");
+         var argumentList = Setup.CommandLineArguments()
+            .Add("SimpleArgument", "\"SimpleArgumentValue\"")
+            .Add("TheName", "TheNameValue")
+            .Add("TrimmedArgument", "TrimmedArgumentValue")
+            .Add("RequiredArgument", "RequiredArgumentValue")
+            .Done();
+
+         var argumentMapper = Setup.ArgumentMapper()
+            .ForType<ArgumentTestClass>()
+            .Done();
+
+         var result = argumentMapper.Map(argumentList, commandTestClass);
+
+         Assert.AreEqual("\"SimpleArgumentValue\"", result.SimpleArgument);
+         Assert.AreEqual("TheNameValue", result.NamedArgument);
+         Assert.AreEqual("TrimmedArgumentValue", result.TrimmedArgument);
+         Assert.AreEqual("RequiredArgumentValue", result.RequiredArgument);
       }
 
       [TestMethod]
       public void TrimmedArgumentTest()
       {
          var commandTestClass = new ArgumentTestClass();
-         var dictionary = new Dictionary<string, CommandLineArgument>
-         {
-            { "TrimmedArgument", new CommandLineArgument { Value = "\"UntrimmedValue\"" } },
-            { "RequiredArgument", new CommandLineArgument { Value = "RequiredArgumentValue" } }
-         };
+         var argumentList = Setup.CommandLineArguments()
+            .Add("TrimmedArgument", "\"UntrimmedValue\"")
+            .Add("RequiredArgument", "RequiredArgumentValue")
+            .Done();
 
          var argumentMapper = Setup.ArgumentMapper().ForType<ArgumentTestClass>().Done();
-         var result = argumentMapper.Map(CommandLineArgumentList.FromDictionary(dictionary), commandTestClass);
+         var result = argumentMapper.Map(argumentList, commandTestClass);
 
-         Assert.AreEqual(result.TrimmedArgument, "UntrimmedValue");
+         Assert.AreEqual("UntrimmedValue", result.TrimmedArgument);
       }
 
       [TestMethod]
       public void EnsureUnmappedArgumentsRaiseUnmappedCommandLineArgumentEvent()
       {
          var args = new ArgumentTestClass();
-         var dictionary = new Dictionary<string, CommandLineArgument>
-         {
-            { "RequiredArgument", new CommandLineArgument { Value = "RequiredArgumentValue" } },
-            { "MisspelledArgument", new CommandLineArgument { Name = "MisspelledArgument", Value = "AnyValue" } }
-         };
+         var argumentList = Setup.CommandLineArguments()
+            .Add("RequiredArgument", "RequiredArgumentValue")
+            .Add("MisspelledArgument", "AnyValue")
+            .Done();
+
          var target = Setup.ArgumentMapper()
             .ForType<ArgumentTestClass>()
             .Done();
 
          var monitor = target.Monitor();
-         var result = target.Map(CommandLineArgumentList.FromDictionary(dictionary), args);
+         var result = target.Map(argumentList, args);
 
-         Assert.AreEqual(result.RequiredArgument, "RequiredArgumentValue");
+         Assert.AreEqual("RequiredArgumentValue", result.RequiredArgument);
          monitor.Should().Raise(nameof(IArgumentMapper<ArgumentTestClass>.UnmappedCommandLineArgument))
             .WithArgs<MapperEventArgs>(e => e.Argument.Name == "MisspelledArgument" && e.Argument.Value == "AnyValue");
       }
-      
+
       [TestMethod]
       public void EnsureMappedArgumentsRaiseMappedCommandLineArgumentEvent()
       {
          var args = new ArgumentTestClass();
-         var argument = new CommandLineArgument { Name = "RequiredArgument",Value = "Olla" };
+         var argument = new CommandLineArgument { Name = "RequiredArgument", Value = "Olla" };
          var property = typeof(ArgumentTestClass).GetProperty(nameof(ArgumentTestClass.RequiredArgument));
-         var dictionary = new Dictionary<string, CommandLineArgument>{{ argument.Name, argument }};
+         
+         var argumentList = Setup.CommandLineArguments()
+            .Add(argument)
+            .Done();
+
          var target = Setup.ArgumentMapper()
             .ForType<ArgumentTestClass>()
             .Done();
 
          var monitor = target.Monitor();
-         var result = target.Map(CommandLineArgumentList.FromDictionary(dictionary), args);
+         var result = target.Map(argumentList, args);
 
          result.RequiredArgument.Should().Be(argument.Value);
          monitor.Should().Raise(nameof(IArgumentMapper<ArgumentTestClass>.MappedCommandLineArgument))
             .WithArgs<MapperEventArgs>(e => e.Argument == argument)
             .WithArgs<MapperEventArgs>(e => e.PropertyInfo == property);
-      }      
-      
+      }
+
       [TestMethod]
       public void EnsureMappedOptionsRaiseMappedCommandLineArgumentEvent()
       {
          var args = new OptionsTestClass();
          var argument = new CommandLineArgument { Name = "Wait" };
          var property = typeof(OptionsTestClass).GetProperty(nameof(OptionsTestClass.Wait));
-         var dictionary = new Dictionary<string, CommandLineArgument>{{ argument.Name, argument }};
          var target = Setup.ArgumentMapper()
             .ForType<OptionsTestClass>()
             .Done();
 
+         var argumentList = Setup.CommandLineArguments()
+            .Add(argument)
+            .Done();
+
          var monitor = target.Monitor();
-         var result = target.Map(CommandLineArgumentList.FromDictionary(dictionary), args);
+         var result = target.Map(argumentList, args);
 
          result.Wait.Should().BeTrue();
          monitor.Should().Raise(nameof(IArgumentMapper<OptionsTestClass>.MappedCommandLineArgument))

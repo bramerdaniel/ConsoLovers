@@ -28,6 +28,9 @@ public class ApplicationArgs : IMappingHandler
 
    [Option("w")]
    public bool Wait{ get; set; } = false;
+   
+   [Command("Fail")]
+   public bool Fails{ get; set; } = false;
 
    public bool TryMap(CommandLineArgument argument)
    {

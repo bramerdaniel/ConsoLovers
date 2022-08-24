@@ -11,6 +11,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
    using System.IO;
 
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+   using ConsoLovers.ConsoleToolkit.Core.Exceptions;
    using ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine;
 
    using FluentAssertions;
@@ -44,7 +45,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       public void EnsureCommandPropertiesImplementICommand()
       {
          var target = GetTarget();
-         target.Invoking(t => t.Map<InvalidCommands>(new[] { "noCommand" })).Should().Throw<ArgumentException>();
+         target.Invoking(t => t.Map<InvalidCommands>(new[] { "noCommand" }))
+            .Should().Throw<CommandLineAttributeException>();
       }
 
 
