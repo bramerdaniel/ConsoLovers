@@ -23,8 +23,6 @@ internal class ExecutionPipeline<T> : IExecutionPipeline<T>
 
    public ExecutionPipeline([NotNull] IEnumerable<IMiddleware<T>> middleware)
    {
-      // TODO make the build in middleware replaceable
-      
       if (middleware == null)
          throw new ArgumentNullException(nameof(middleware));
 

@@ -30,9 +30,20 @@ internal class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigura
 
    private IServiceProvider serviceProvider;
 
+   private readonly List<Action<IServiceCollection>> removeActions = new List<Action<IServiceCollection>>();
+
    #endregion
 
    #region IApplicationBuilder<T> Members
+
+   public IApplicationBuilder<T> RemoveService([NotNull] Action<IServiceCollection> removeAction)
+   {
+      if (removeAction == null)
+         throw new ArgumentNullException(nameof(removeAction));
+
+      removeActions.Add(removeAction);
+      return this;
+   }
 
    public IApplicationBuilder<T> UseServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory)
    {
@@ -122,12 +133,15 @@ internal class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigura
 
       EnsureRequiredServices();
 
+
+
       if (createServiceProvider != null)
          return createServiceProvider(ServiceCollection);
 
       var factory = new BuildInServiceProviderFactory();
       var collection = factory.CreateBuilder(ServiceCollection);
       var provider = factory.CreateServiceProvider(collection);
+
 
       foreach (var configurationAction in serviceConfigurationActions)
          configurationAction(provider);
@@ -153,7 +167,9 @@ internal class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigura
       ServiceCollection.TryAddSingleton<IConsoleApplication<T>, ConsoleApplication<T>>();
 
       AddDefaultMiddleware();
-
+      
+      foreach (var removeAction in removeActions)
+         removeAction(ServiceCollection);
    }
 
    protected void SetServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory)
