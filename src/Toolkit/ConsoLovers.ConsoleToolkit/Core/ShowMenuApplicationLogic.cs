@@ -37,7 +37,7 @@ namespace ConsoLovers.ConsoleToolkit
 
       public Task ExecuteAsync<T>(T arguments, CancellationToken cancellationToken)
       {
-         commandMenuManager.Show<T>();
+         commandMenuManager.Show<T>(cancellationToken);
          return Task.CompletedTask;
       }
 

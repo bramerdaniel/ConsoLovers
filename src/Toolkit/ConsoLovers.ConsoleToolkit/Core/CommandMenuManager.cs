@@ -33,6 +33,8 @@ namespace ConsoLovers.ConsoleToolkit
 
       private ICommandMenuOptions commandMenuOptions = new CommandMenuOptions();
 
+      private CancellationToken? currentCancellationToken;
+
       #endregion
 
       // TODO sort by menu attribute
@@ -55,7 +57,12 @@ namespace ConsoLovers.ConsoleToolkit
 
       #region ICommandMenuManager Members
 
-      public void Show<T>()
+      public void Show<T>(CancellationToken cancellationToken)
+      {
+         ShowAsync<T>(cancellationToken).GetAwaiter().GetResult();
+      }
+
+      public Task ShowAsync<T>(CancellationToken cancellationToken)
       {
          var menu = new ConsoleMenu
          {
@@ -75,7 +82,17 @@ namespace ConsoLovers.ConsoleToolkit
          foreach (var item in CreateMenuItems<T>())
             menu.Add(item);
 
-         menu.Show();
+         try
+         {
+            currentCancellationToken = cancellationToken;
+            menu.Show();
+         }
+         finally
+         {
+            currentCancellationToken = null;
+         }
+
+         return Task.CompletedTask;
       }
 
       private IEnumerable<PrintableItem> CreateMenuItems<T>()
@@ -99,16 +116,6 @@ namespace ConsoLovers.ConsoleToolkit
       #region Properties
 
       private IConsoleMenuOptions ConsoleMenuOptions => commandMenuOptions.Menu;
-
-      #endregion
-
-      #region Public Methods and Operators
-
-      public Task ShowAsync<T>()
-      {
-         Show<T>();
-         return Task.CompletedTask;
-      }
 
       #endregion
 
@@ -273,11 +280,15 @@ namespace ConsoLovers.ConsoleToolkit
             var executionContext = new MenuExecutionContext { MenuItem = menuItem };
             menuCommand.Execute(executionContext);
          }
+         if (command is IAsyncMenuCommand asyncMenuCommand)
+         {
+            var executionContext = new MenuExecutionContext { MenuItem = menuItem };
+            asyncMenuCommand.ExecuteAsync(executionContext, currentCancellationToken.GetValueOrDefault(CancellationToken.None));
+         }
          else if (command is ICommandBase commandBase)
          {
             var executionEngine = serviceProvider.GetRequiredService<IExecutionEngine>();
-            executionEngine.ExecuteCommandAsync(commandBase, CancellationToken.None)
-               .GetAwaiter().GetResult();
+            executionEngine.ExecuteCommand(commandBase, CancellationToken.None);
          }
       }
 
