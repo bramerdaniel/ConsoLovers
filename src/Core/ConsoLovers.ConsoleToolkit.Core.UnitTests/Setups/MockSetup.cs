@@ -1,18 +1,24 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="MockSetup.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2017
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups
 {
-   public class MockSetup
+   internal class MockSetup
    {
-      #region Public Methods and Operators
+      #region Methods
 
-      public FluentCommandLineEngineMock CommandLineEngine()
+      internal FluentCommandLineEngineMock CommandLineEngine()
       {
          return new FluentCommandLineEngineMock();
+      }
+
+      internal MiddlewareMockSetup<T> Middleware<T>()
+         where T : class
+      {
+         return new MiddlewareMockSetup<T>();
       }
 
       #endregion

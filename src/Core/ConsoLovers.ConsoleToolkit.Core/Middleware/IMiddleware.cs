@@ -30,7 +30,7 @@ public interface IMiddleware<T>
    /// <param name="context">The context that is passed along the execution pipeline.</param>
    /// <param name="cancellationToken">The cancellation token for canceling the execution.</param>
    /// <returns>The execution <see cref="Task"/></returns>
-   Task Execute(IExecutionContext<T> context, CancellationToken cancellationToken);
+   Task ExecuteAsync(IExecutionContext<T> context, CancellationToken cancellationToken);
 
    #endregion
 }

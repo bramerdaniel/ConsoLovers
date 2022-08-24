@@ -45,7 +45,7 @@ internal class MapperMiddleware<T> : Middleware<T>
 
    #region Public Methods and Operators
 
-   public override Task Execute(IExecutionContext<T> context, CancellationToken cancellationToken)
+   public override Task ExecuteAsync(IExecutionContext<T> context, CancellationToken cancellationToken)
    {
       if (cancellationToken.IsCancellationRequested)
          return Task.FromCanceled(cancellationToken);

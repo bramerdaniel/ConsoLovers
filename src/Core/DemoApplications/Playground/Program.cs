@@ -29,7 +29,7 @@ public static class Program
 
 public class RepeatMiddleware : Middleware<ApplicationArgs>
 {
-   public override async Task Execute(IExecutionContext<ApplicationArgs> context, CancellationToken cancellationToken)
+   public override async Task ExecuteAsync(IExecutionContext<ApplicationArgs> context, CancellationToken cancellationToken)
    {
       for (int i = 0; i < 5; i++)
       {
@@ -52,7 +52,7 @@ public class TryCatchMiddleware : Middleware<ApplicationArgs>
       this.console = console ?? throw new ArgumentNullException(nameof(console));
    }
 
-   public override async Task Execute(IExecutionContext<ApplicationArgs> context, CancellationToken cancellationToken)
+   public override async Task ExecuteAsync(IExecutionContext<ApplicationArgs> context, CancellationToken cancellationToken)
    {
       try
       {

@@ -36,7 +36,7 @@ public class ExceptionHandlingMiddleware<T> : Middleware<T>
 
    #region Public Methods and Operators
 
-   public override async Task Execute(IExecutionContext<T> context, CancellationToken cancellationToken)
+   public override async Task ExecuteAsync(IExecutionContext<T> context, CancellationToken cancellationToken)
    {
       try
       {

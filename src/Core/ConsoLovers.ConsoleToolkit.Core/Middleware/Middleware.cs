@@ -27,7 +27,7 @@ public abstract class Middleware<TArgs> : IMiddleware<TArgs>
    /// <param name="context">The context that is passed along the execution pipeline.</param>
    /// <param name="cancellationToken">The cancellation token for canceling the execution.</param>
    /// <returns>The execution <see cref="T:System.Threading.Tasks.Task"/></returns>
-   public abstract Task Execute(IExecutionContext<TArgs> context, CancellationToken cancellationToken);
+   public abstract Task ExecuteAsync(IExecutionContext<TArgs> context, CancellationToken cancellationToken);
 
    #endregion
 

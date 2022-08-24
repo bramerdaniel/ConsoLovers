@@ -12,6 +12,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+using JetBrains.Annotations;
+
 public class ExecutionPipelineBuilder<T>
    where T : class
 {
@@ -25,9 +27,9 @@ public class ExecutionPipelineBuilder<T>
 
    #region Constructors and Destructors
 
-   public ExecutionPipelineBuilder(Func<IExecutionContext<T>, CancellationToken, Task> finalStep)
+   public ExecutionPipelineBuilder([NotNull] Func<IExecutionContext<T>, CancellationToken, Task> finalStep)
    {
-      this.finalStep = finalStep;
+      this.finalStep = finalStep ?? throw new ArgumentNullException(nameof(finalStep));
       middlewareList = new List<IMiddleware<T>>();
    }
 
@@ -72,11 +74,11 @@ public class ExecutionPipelineBuilder<T>
 
       foreach (var middleware in reversed.Skip(1))
       {
-         middleware.Next = current.Execute;
+         middleware.Next = current.ExecuteAsync;
          current = middleware;
       }
 
-      return current.Execute;
+      return current.ExecuteAsync;
    }
 
    #endregion

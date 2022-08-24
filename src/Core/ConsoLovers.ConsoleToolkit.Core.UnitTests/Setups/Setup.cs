@@ -73,5 +73,10 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups
       }
 
       #endregion
+
+      public static ExecutionPipelineSetup ExecutionPipeline()
+      {
+         return new ExecutionPipelineSetup();
+      }
    }
 }
