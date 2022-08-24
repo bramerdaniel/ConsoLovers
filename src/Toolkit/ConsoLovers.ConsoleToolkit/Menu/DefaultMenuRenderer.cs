@@ -103,16 +103,16 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
          if (selectionMode == SelectionMode.UnifiedLength)
          {
-            //var padding = unifiedLength - Console.CursorLeft;
+            //var padding = unifiedLength - console.CursorLeft;
 
-            var padding = System.Console.CursorLeft;
+            var padding = console.CursorLeft;
             if (padding > 0)
                Print(string.Empty.PadRight(padding), foreground, background);
          }
 
          if (selectionMode == SelectionMode.FullLine)
          {
-            var padding = System.Console.WindowWidth - System.Console.CursorLeft - 1;
+            var padding = console.WindowWidth - console.CursorLeft - 1;
             Print(string.Empty.PadRight(padding), foreground, background);
          }
 
@@ -131,7 +131,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
             if (selectionMode == SelectionMode.FullLine)
             {
-               System.Console.SetCursorPosition(System.Console.CursorLeft - disabledHint.Length, System.Console.CursorTop);
+               console.SetCursorPosition(console.CursorLeft - disabledHint.Length, console.CursorTop);
                Print(disabledHint, DEFAULT_FOREGROUND_COLOR, DEFAULT_BACKGROUND_COLOR);
             }
             else
@@ -143,7 +143,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          }
          else
          {
-            var totalWidth = System.Console.WindowWidth - System.Console.CursorLeft - 1;
+            var totalWidth = console.WindowWidth - console.CursorLeft - 1;
             Print(string.Empty.PadRight(Math.Max(totalWidth, 0)), DEFAULT_FOREGROUND_COLOR, DEFAULT_BACKGROUND_COLOR);
          }
       }

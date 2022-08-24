@@ -23,6 +23,8 @@ namespace ConsoLovers.ConsoleToolkit.Menu
    {
       #region Constants and Fields
 
+      private readonly IConsole console;
+
       private readonly IDictionary<PrintableItem, ElementInfo> elements = new Dictionary<PrintableItem, ElementInfo>();
 
       private readonly Dictionary<string, ElementInfo> indexMap = new Dictionary<string, ElementInfo>();
@@ -65,9 +67,19 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       #region Constructors and Destructors
 
+      /// <summary>Initializes a new instance of the <see cref="ConsoleMenuBase"/> class.</summary>
       protected ConsoleMenuBase()
+         : this(new ConsoleProxy())
       {
-         renderer = GetMenuRenderer(Console);
+      }
+
+      /// <summary>Initializes a new instance of the <see cref="ConsoleMenuBase"/> class.</summary>
+      /// <param name="console">The <see cref="IConsole"/> proxy.</param>
+      protected ConsoleMenuBase([NotNull] IConsole console)
+      {
+         this.console = console ?? throw new ArgumentNullException(nameof(console));
+
+         renderer = GetMenuRenderer(this.console);
       }
 
       #endregion
@@ -193,9 +205,6 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       #region Public Properties
 
-      /// <summary>Gets or sets the console that is used for printing the menu.</summary>
-      public IConsole Console { get; set; } = new ConsoleProxy();
-
       public int Count => root.Items.Count;
 
       /// <summary>Gets or sets a value indicating whether the mouse selection is enabled.</summary>
@@ -319,7 +328,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       public void Show()
       {
-         renderer = GetMenuRenderer(Console);
+         renderer = GetMenuRenderer(console);
 
          RefreshMenu();
 
@@ -336,7 +345,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       internal void RefreshMenu()
       {
-         Console.Clear(GetConsoleBackground());
+         console.Clear(GetConsoleBackground());
          expanderWidth = root.Items.OfType<ConsoleMenuItem>().Any(i => i.HasChildren) ? Expander.Length : 0;
 
          var indexWidth = IndexMenuItems ? 3 + (root.Items.Count < 10 ? 1 : 2) : 0;
@@ -552,7 +561,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
          var consoleWasCleared = ClearOnExecution;
          if (consoleWasCleared)
-            Console.Clear();
+            console.Clear();
 
          try
          {
@@ -700,13 +709,13 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       {
          foreach (var elementInfo in elements.Values)
          {
-            elementInfo.Line = Console.CursorTop;
+            elementInfo.Line = console.CursorTop;
 
             renderer.Element(elementInfo, Selector, SelectionMode);
-            elementInfo.Length = Console.CursorLeft;
+            elementInfo.Length = console.CursorLeft;
 
-            Console.WriteLine();
-            Console.ResetColor();
+            console.WriteLine();
+            console.ResetColor();
          }
       }
 
@@ -718,8 +727,8 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          if (elements.TryGetValue(itemToUpdate, out var elementToUpdate))
          {
             elementToUpdate.IsSelected = isSelected;
-            Console.CursorTop = elementToUpdate.Line;
-            Console.CursorLeft = 0;
+            console.CursorTop = elementToUpdate.Line;
+            console.CursorLeft = 0;
 
             renderer.Element(elementToUpdate, Selector, SelectionMode);
          }
