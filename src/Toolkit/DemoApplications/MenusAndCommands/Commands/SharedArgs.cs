@@ -6,7 +6,7 @@
 
 namespace MenusAndCommands.Commands;
 
-using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+using ConsoLovers.ConsoleToolkit.Core;
 
 public class SharedArgs
 {

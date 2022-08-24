@@ -6,7 +6,7 @@
 
 namespace Playground.Commands.Delete.User;
 
-using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+using ConsoLovers.ConsoleToolkit.Core;
 
 public class DeleteUserCommand : IAsyncCommand<DeleteUserArgs>
 {

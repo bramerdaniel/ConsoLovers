@@ -8,7 +8,7 @@ namespace XCopyApplication.Commands
 {
    using System.IO;
 
-   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+   using ConsoLovers.ConsoleToolkit.Core;
 
    public class DeleteCommand : ICommand<DeleteCommandArgs>
    {

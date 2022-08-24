@@ -6,7 +6,7 @@
 
 namespace Playground.Commands.Create.Role;
 
-using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+using ConsoLovers.ConsoleToolkit.Core;
 
 public class CreateRoleCommand : ICommand<CreateRoleArgs>
 {

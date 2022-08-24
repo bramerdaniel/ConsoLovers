@@ -8,7 +8,7 @@ namespace CommandLineEngineDemo
 {
    using CommandLineEngineDemo.Commands;
 
-   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+   using ConsoLovers.ConsoleToolkit.Core;
 
    internal class ApplicationArguments : LoggerArgs
    {

@@ -6,6 +6,8 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
+   using ConsoLovers.ConsoleToolkit.Core.Exceptions;
+
    using System;
    using System.Globalization;
    using System.Linq;
@@ -15,7 +17,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
    {
       #region Methods
 
-      internal static bool SetArgumentValue<T>(T instance, MappingInfo mappingInfo, CommandLineArgumentList arguments)
+      internal static bool SetArgumentValue<T>(T instance, MappingInfo mappingInfo, ICommandLineArguments arguments)
       {
          if (mappingInfo.IsCommand())
             return false;
@@ -75,7 +77,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          return count > 0;
       }
 
-      internal static bool SetOptionValue<T>(T instance, MappingInfo mappingInfo, CommandLineArgumentList arguments)
+      internal static bool SetOptionValue<T>(T instance, MappingInfo mappingInfo, ICommandLineArguments arguments)
       {
          foreach (var name in mappingInfo.GetNames())
          {
@@ -167,7 +169,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          return trim ? originalValue.Trim('"', '\'') : originalValue;
       }
 
-      private static bool TryGetByIndex(CommandLineArgumentList arguments, MappingInfo mappingInfo, out CommandLineArgument argument)
+      private static bool TryGetByIndex(ICommandLineArguments arguments, MappingInfo mappingInfo, out CommandLineArgument argument)
       {
          var index = mappingInfo.CommandLineAttribute.GetIndex();
          if (index >= 0)

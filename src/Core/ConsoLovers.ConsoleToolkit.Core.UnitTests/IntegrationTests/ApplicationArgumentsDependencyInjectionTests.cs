@@ -28,7 +28,7 @@ public class ApplicationArgumentsDependencyInjectionTests
    {
       var application = ConsoleApplication.WithArguments<ApplicationArgs>()
          .AddSingleton(typeof(Service))
-         .Build();
+         .Run();
 
       application.Should().NotBeNull();
       application.Arguments.Service.Should().NotBeNull();

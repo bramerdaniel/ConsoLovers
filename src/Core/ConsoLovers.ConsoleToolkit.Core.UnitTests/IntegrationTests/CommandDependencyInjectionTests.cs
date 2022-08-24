@@ -11,8 +11,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 
-using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
-
 using FluentAssertions;
 
 using JetBrains.Annotations;
@@ -39,7 +37,7 @@ public class CommandDependencyInjectionTests
    public async Task EnsureServicesAreInjectedIntoCommandsCorrectly()
    {
       var application = await ConsoleApplication.WithArguments<ApplicationArgs>()
-         .ConfigureServices(s => s.AddSingleton(new Service("Bam")))
+         .AddService(s => s.AddSingleton(new Service("Bam")))
          .RunAsync("run", CancellationToken.None);
 
       application.Arguments.Command.Service.Should().NotBeNull();

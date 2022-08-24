@@ -7,7 +7,6 @@
 namespace Playground.Commands.Delete.Role;
 
 using ConsoLovers.ConsoleToolkit.Core;
-using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
 public class DeleteRoleArgs : ICustomizedFooter
 {

@@ -10,6 +10,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.DIContainer
    using ConsoLovers.ConsoleToolkit.Core.DIContainer;
    using ConsoLovers.ConsoleToolkit.Core.DIContainer.Strategies;
    using ConsoLovers.ConsoleToolkit.Core.UnitTests.DIContainer.Testclasses;
+   using ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups;
 
    using FluentAssertions;
 
@@ -22,10 +23,12 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.DIContainer
       [TestMethod]
       public void CreateSimpleObjectWithoutDependenciesByType()
       {
-         var simple = CreateTarget().Create(typeof(Simple));
+         var container = Setup.Container().Done();
+
+         var simple = container.Create(typeof(Simple));
          simple.Should().NotBeNull();
 
-         var demo = CreateTarget().Create<Demo>();
+         var demo = container.Create<Demo>();
          demo.Should().NotBeNull();
          demo.GetId().Should().Be(0);
       }
@@ -33,31 +36,32 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.DIContainer
       [TestMethod]
       public void CreateSimpleObjectWithoutDependenciesByGenericParameter()
       {
-         var simple = CreateTarget().Create<Simple>();
+         var container = Setup.Container().Done();
+         var simple = container.Create<Simple>();
          simple.Should().NotBeNull();
 
-         var demo = (Demo)CreateTarget().Create(typeof(Demo));
+         var demo = (Demo)container.Create(typeof(Demo));
          demo.Should().NotBeNull();
       }
 
       [TestMethod]
       public void CreateSimpleObjectWithDependencies()
       {
-         var container = CreateTarget();
-         var dependancies = container.Create<HaveDependancies>();
-         dependancies.Should().NotBeNull();
-         dependancies.Demo.Should().BeNull();
+         var container = Setup.Container().Done();
+         var dependencies = container.Create<HaveDependancies>();
+         dependencies.Should().NotBeNull();
+         dependencies.Demo.Should().BeNull();
 
          container.Register<IDemo, Demo>();
-         dependancies = container.Create<HaveDependancies>();
-         dependancies.Should().NotBeNull();
-         dependancies.Demo.Should().NotBeNull();
+         dependencies = container.Create<HaveDependancies>();
+         dependencies.Should().NotBeNull();
+         dependencies.Demo.Should().NotBeNull();
       }
 
       [TestMethod]
       public void CreateSimpleObjectWithOptions()
       {
-         Container container = new Container();
+         var container = Setup.Container().Done();
 
          // Normal method
          var simple = container.Create(typeof(Simple), new ContainerOptions { ConstructorSelectionStrategy = ConstructorSelectionStrategies.WithInjectionConstructorAttribute });
@@ -88,26 +92,5 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.DIContainer
          combined.Id.Should().Be(2);
       }
 
-      [TestMethod]
-      public void CreateObjectWithNamedDependencies()
-      {
-         var container = CreateTarget();
-         container.Register<IDemo, Demo>();
-
-         var dependancies = container.Create<HaveNamedDependancies>();
-         dependancies.Should().NotBeNull();
-         dependancies.Demo.Should().BeNull();
-
-         container.RegisterNamed<IDemo, Demo>("Name");
-
-         dependancies = container.Create<HaveNamedDependancies>();
-         dependancies.Should().NotBeNull();
-         dependancies.Demo.Should().NotBeNull();
-      }
-
-      private static Container CreateTarget()
-      {
-         return new Container();
-      }
    }
 }

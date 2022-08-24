@@ -1,8 +1,9 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="BuildUp.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2017
+// <copyright file="BuildUp.cs" company="KUKA Deutschland GmbH">
+//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.DIContainer
 {
    using System;
@@ -20,11 +21,47 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.DIContainer
    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Reviewed. Suppression is OK here.")]
    public class BuildUp
    {
+      #region Public Methods and Operators
+
       [TestMethod]
       public void BuildUp_null_must_throw_ArgumentNullException()
       {
          var container = CreateTarget();
          container.Invoking(c => c.BuildUp(null)).Should().Throw<ArgumentNullException>();
+      }
+
+      [TestMethod]
+      public void BuildUpAnExistingObjectAndInjectOnlyPropertiesWithAttributes()
+      {
+         IContainer container = CreateTarget();
+         container.Register<IDemo>(new Demo(222));
+         var injectionTarget = new PropertyInjection();
+         container.BuildUp(injectionTarget);
+
+         // Normal property injection
+         injectionTarget.Attribute.Should().NotBeNull();
+         injectionTarget.Attribute.GetId().Should().Be(222);
+
+         injectionTarget.NoAttribute.Should().BeNull();
+         injectionTarget.PrivateAttribute.Should().BeNull();
+
+         // Again with other selection strategy
+         container = new Container
+         {
+            Options = new ContainerOptions { PropertySelectionStrategy = PropertySelectionStrategies.AllWithDepencencyAttribute }
+         };
+
+         container.Register<IDemo>(new Demo(666));
+         container.BuildUp(injectionTarget);
+
+         // Normal property injection
+         injectionTarget.Attribute.Should().NotBeNull();
+         injectionTarget.Attribute.GetId().Should().Be(666);
+         injectionTarget.NoAttribute.Should().BeNull();
+
+         // Now also privates were injected
+         injectionTarget.PrivateAttribute.Should().NotBeNull();
+         injectionTarget.Attribute.GetId().Should().Be(666);
       }
 
       [TestMethod]
@@ -45,77 +82,15 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.DIContainer
          otb.Container.Should().BeSameAs(container);
       }
 
-      [TestMethod]
-      public void BuildUpAnExistingObjectAndInjectOnlyPropertiesWithAttributes()
-      {
-         IContainer container = CreateTarget();
-         container.Register<IDemo>(new Demo(222));
-         var injectionTarget = new PropertyInjection();
-         container.BuildUp(injectionTarget);
+      #endregion
 
-         // Normal property injection
-         injectionTarget.Attribute.Should().NotBeNull();
-         injectionTarget.Attribute.GetId().Should().Be(222);
-
-         injectionTarget.NoAttribute.Should().BeNull();
-         injectionTarget.PrivateAttribute.Should().BeNull();
-
-         // Again with other selection strategy
-         container = new Container { Options = new ContainerOptions { PropertySelectionStrategy = PropertySelectionStrategies.AllWithDepencencyAttribute } };
-
-         container.Register<IDemo>(new Demo(666));
-         container.BuildUp(injectionTarget);
-
-         // Normal property injection
-         injectionTarget.Attribute.Should().NotBeNull();
-         injectionTarget.Attribute.GetId().Should().Be(666);
-         injectionTarget.NoAttribute.Should().BeNull();
-
-         // Now also privates were injected
-         injectionTarget.PrivateAttribute.Should().NotBeNull();
-         injectionTarget.Attribute.GetId().Should().Be(666);
-      }
-
-      [TestMethod]
-      public void BuildUpAnObjectWithTheServiceProviderDependencies()
-      {
-         IServiceProvider provider = new TestServiceProvider();
-         IContainer container = new Container(provider);
-
-         var toBuild = new ObjectToBuild();
-         container.BuildUp(toBuild);
-         toBuild.Demo.Should().NotBeNull();
-
-         toBuild.Container.Should().BeSameAs(container);
-         toBuild.ServiceProvider.Should().BeSameAs(provider);
-
-         toBuild.PrivateDemo.Should().BeNull();
-         toBuild.ProtectedDemo.Should().BeNull();
-
-         container.BuildUp(toBuild, new AttributePropertySelectionStrategy(true));
-         toBuild.NoSetterDemo.Should().BeNull();
-         toBuild.PrivateDemo.Should().NotBeNull();
-         toBuild.ProtectedDemo.Should().NotBeNull();
-      }
-
-      [TestMethod]
-      public void BuildUpAnObjectWithNamedDependenciesShouldWork()
-      {
-         IContainer container = CreateTarget();
-         container.Register<IDemo, Demo>();
-
-         var toBuild = new ObjectWithNamedDependencies();
-         container.BuildUp(toBuild);
-         toBuild.Demo.Should().BeNull();
-
-         container.RegisterNamed<IDemo, Demo>("Name");
-         container.BuildUp(toBuild);
-         toBuild.Demo.Should().NotBeNull();
-      }
+      #region Methods
 
       private static Container CreateTarget()
       {
          return new Container();
       }
+
+      #endregion
    }
 }

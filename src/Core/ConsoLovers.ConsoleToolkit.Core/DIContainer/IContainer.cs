@@ -11,10 +11,14 @@ namespace ConsoLovers.ConsoleToolkit.Core.DIContainer
 
    using ConsoLovers.ConsoleToolkit.Core.DIContainer.Strategies;
 
+   using Microsoft.Extensions.DependencyInjection;
+
    /// <summary>Interface for the depencency injection container</summary>
    public interface IContainer
    {
       #region Public Methods and Operators
+
+      void Register(ServiceDescriptor descriptor);
 
       /// <summary>Builds up the given object and injects the dependencies.</summary>
       /// <param name="instance">The instance.</param>
@@ -53,72 +57,47 @@ namespace ConsoLovers.ConsoleToolkit.Core.DIContainer
       /// <param name="service">The service type to register.</param>
       /// <param name="handler">The the function that constructs the object.</param>
       /// <returns>The registered container element used for fluent configuration</returns>
-      IContainerEntry Register(Type service, Func<IContainer, object> handler);
+      void Register(Type service, Func<IServiceProvider, object> handler);
 
       /// <summary>Registers the type at the container.</summary>
       /// <typeparam name="T">The service type</typeparam>
       /// <param name="handler">The the function that constructs the object.</param>
       /// <returns>The registered container element used for fluent configuration</returns>
-      IContainerEntry Register<T>(Func<IContainer, object> handler)
+      void Register<T>(Func<IServiceProvider, object> handler)
+         where T : class;
+
+      /// <summary>Registers the type at the container.</summary>
+      /// <typeparam name="T">The service type</typeparam>
+      /// <param name="handler">The the function that constructs the object.</param>
+      /// <returns>The registered container element used for fluent configuration</returns>
+      void Register<T>(Func<IServiceProvider, object> handler, ServiceLifetime lifetime)
          where T : class;
 
       /// <summary>Registers the instance at the container.</summary>
       /// <param name="service">The service to register. </param>
       /// <param name="implementation">The implementation of the service. </param>
       /// <returns>The registered container element used for fluent configuration</returns>
-      IContainerEntry Register(Type service, object implementation);
+      void Register(Type service, object implementation);
 
       /// <summary>Registers the specified service type with the implementation type, that is contructed on request.</summary>
       /// <param name="service">The service type.</param>
       /// <param name="implementation">The implementation type.</param>
       /// <returns>The registered container element used for fluent configuration</returns>
-      IContainerEntry Register(Type service, Type implementation);
+      void Register(Type service, Type implementation);
 
       /// <summary>Registers the service type with an implementation type.</summary>
       /// <typeparam name="T">The type of the service to register.</typeparam>
       /// <param name="implementation">The implementation of the service.</param>
       /// <returns>The registered container element used for fluent configuration</returns>
-      IContainerEntry Register<T>(object implementation)
+      void Register<T>(object implementation)
          where T : class;
 
       /// <summary>Registers this instance.</summary>
       /// <typeparam name="TService">The type of the service to register.</typeparam>
       /// <typeparam name="TImplementation">The type of the implementation for the type.</typeparam>
       /// <returns>The registered container element used for fluent configuration</returns>
-      IContainerEntry Register<TService, TImplementation>()
+      void Register<TService, TImplementation>()
          where TService : class where TImplementation : class;
-
-      /// <summary>Registers the service type with an implementation type.</summary>
-      /// <typeparam name="T">The type of the service to register.</typeparam>
-      /// <param name="implementation">The implementation of the service.</param>
-      /// <param name="name">The name.</param>
-      /// <returns>The registered container element used for fluent configuration</returns>
-      IContainerEntry RegisterNamed<T>(object implementation, string name)
-         where T : class;
-
-      IContainerEntry RegisterNamed(Type service, object implementation, string name);
-
-      /// <summary>Registers the specified service type with the implementation type with the given name.</summary>
-      /// <param name="service">The service type.</param>
-      /// <param name="implementation">The implementation type.</param>
-      /// <param name="name">The named.</param>
-      /// <returns>The registered container element used for fluent configuration</returns>
-      IContainerEntry RegisterNamed(Type service, Type implementation, string name);
-
-      /// <summary>Registers the service type with the given name .</summary>
-      /// <typeparam name="TService">The type of the service to register.</typeparam>
-      /// <typeparam name="TImplementation">The type of the implementation for the type.</typeparam>
-      /// <param name="name">The name the dependency should be registered with.</param>
-      /// <returns>The registered container element used for fluent configuration</returns>
-      IContainerEntry RegisterNamed<TService, TImplementation>(string name)
-         where TService : class where TImplementation : class;
-
-      /// <summary>Registers the specified service type with the implementation type with the given name.</summary>
-      /// <param name="service">The service type.</param>
-      /// <param name="handler">The factory method that will be used to resolve the dependency.</param>
-      /// <param name="name">The name of the dpendency.</param>
-      /// <returns>The registered container element used for fluent configuration</returns>
-      IContainerEntry RegisterNamed(Type service, Func<IContainer, object> handler, string name);
 
       /// <summary>Resolves the registered implementation for the given type.</summary>
       /// <param name="service">The service.</param>
@@ -130,47 +109,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.DIContainer
       /// <returns>The resolved type</returns>
       T Resolve<T>()
          where T : class;
-
-      /// <summary>Gets all the instances registered for the given type.</summary>
-      /// <param name="service">The service to resolve.</param>
-      /// <returns>An <see cref="IEnumerable{T}"/> of the registered imlpementations</returns>
-      IEnumerable<object> ResolveAll(Type service);
-
-      /// <summary>Gets all the instances registered for the given type.</summary>
-      /// <typeparam name="T">The service to resolve</typeparam>
-      /// <returns>An <see cref="IEnumerable{T}"/> of the registered imlpementations</returns>
-      IEnumerable<T> ResolveAll<T>()
-         where T : class;
-
-      /// <summary>Resolves the registered implementation with the given type for the given key.</summary>
-      /// <typeparam name="T">The service type to resolve</typeparam>
-      /// <param name="name">The key the implementation was registered with.</param>
-      /// <returns>The resolved type</returns>
-      T ResolveNamed<T>(string name)
-         where T : class;
-
-      /// <summary>Resolves the registered implementation with the given type for the given key.</summary>
-      /// <param name="service">The service type to resolve.</param>
-      /// <param name="name">The key the implementation was registered with.</param>
-      /// <returns>The resolved type</returns>
-      object ResolveNamed(Type service, string name);
-
-      /// <summary>Unregisters the specified <see cref="IContainerEntry"/>.</summary>
-      /// <param name="entry">The entry.</param>
-      void Unregister(IContainerEntry entry);
-
-      /// <summary>Unregisters this instance of type <typeparamref name="T"/>.</summary>
-      /// <typeparam name="T">The type that should be unregistered.</typeparam>
-      void Unregister<T>();
-
-      /// <summary>Unregisters the specified <paramref name="type"/>.</summary>
-      /// <param name="type">The <see cref="Type"/> that should be unregistered.</param>
-      void Unregister(Type type);
-
-      /// <summary>Unregisters the named instance of type <typeparamref name="T"/>.</summary>
-      /// <typeparam name="T">The type that should be unregistered.</typeparam>
-      /// <param name="name">The name of the component that should be unregistered.</param>
-      void UnregisterNamed<T>(string name);
 
       #endregion
    }

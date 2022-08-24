@@ -9,8 +9,7 @@ namespace MenusAndCommands.Commands.Permission;
 using System.Threading;
 using System.Threading.Tasks;
 
-using ConsoLovers.ConsoleToolkit.CommandExtensions;
-using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+using ConsoLovers.ConsoleToolkit.Core;
 
 
 public class RemovePermissionCommand : IAsyncCommand

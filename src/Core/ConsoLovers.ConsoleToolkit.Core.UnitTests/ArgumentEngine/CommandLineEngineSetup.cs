@@ -9,6 +9,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
    using ConsoLovers.ConsoleToolkit.Core.Builders;
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing;
+   using ConsoLovers.ConsoleToolkit.Core.DIContainer;
    using ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups;
 
    using Microsoft.Extensions.DependencyInjection;
@@ -23,10 +24,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
 
       protected override CommandLineEngine CreateInstance()
       {
-         var serviceProvider = new DefaultServiceProvider(serviceCollection);
+         var serviceProvider = new Container(serviceCollection);
          var argumentReflector = new ArgumentReflector();
-         var commandExecutor = new ExecutionEngine(argumentReflector, serviceProvider);
-         return new CommandLineEngine(serviceProvider, commandExecutor, new CommandLineArgumentParser(), argumentReflector);
+         return new CommandLineEngine(serviceProvider, new CommandLineArgumentParser(), argumentReflector);
       }
 
       #endregion

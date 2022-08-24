@@ -10,6 +10,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
    using System.Linq;
    using System.Reflection;
 
+   using ConsoLovers.ConsoleToolkit.Core.Exceptions;
+
    using JetBrains.Annotations;
 
    using Microsoft.Extensions.DependencyInjection;
@@ -56,13 +58,13 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       /// <summary>Maps the give argument dictionary to the given instance.</summary>
       /// <param name="arguments">The arguments to map.</param>
       /// <returns>The instance of the class, the command line argument were mapped to</returns>
-      public T Map(CommandLineArgumentList arguments)
+      public T Map(ICommandLineArguments arguments)
       {
          var instance = serviceProvider.GetService<T>();
          return Map(arguments, instance);
       }
 
-      public T Map(CommandLineArgumentList arguments, T instance)
+      public T Map(ICommandLineArguments arguments, T instance)
       {
          var argumentInfo = ArgumentReflector.GetTypeInfo<T>();
          var helpRequest = GetHelpRequest(arguments, argumentInfo);
@@ -93,13 +95,13 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       #region Methods
 
-      private static void DecreaseIndices(CommandLineArgumentList arguments)
+      private static void DecreaseIndices(ICommandLineArguments arguments)
       {
          foreach (var argument in arguments)
             argument.Index--;
       }
 
-      private static CommandInfo GetCommandByNameOrDefault(ArgumentClassInfo argumentInfo, string commandName, CommandLineArgumentList arguments)
+      private static CommandInfo GetCommandByNameOrDefault(ArgumentClassInfo argumentInfo, string commandName, ICommandLineArguments arguments)
       {
          if (commandName == null)
             return argumentInfo.DefaultCommand;
@@ -127,7 +129,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          return argumentInfo.DefaultCommand;
       }
 
-      private static CommandLineArgument GetFirstArgument(CommandLineArgumentList arguments)
+      private static CommandLineArgument GetFirstArgument(ICommandLineArguments arguments)
       {
          CommandLineArgument lowestRemainingIndex = null;
          foreach (var argument in arguments)
@@ -139,7 +141,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          return lowestRemainingIndex;
       }
 
-      private static CommandLineArgument GetHelpRequest(CommandLineArgumentList arguments, ArgumentClassInfo argumentInfo)
+      private static CommandLineArgument GetHelpRequest(ICommandLineArguments arguments, ArgumentClassInfo argumentInfo)
       {
          if (argumentInfo.HelpCommand == null)
             return null;
@@ -161,7 +163,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          return string.Equals(declaredNameOrAlias, givenName, StringComparison.InvariantCultureIgnoreCase);
       }
 
-      private object CreateCommandInstance(CommandInfo commandInfo, CommandLineArgumentList arguments)
+      private object CreateCommandInstance(CommandInfo commandInfo, ICommandLineArguments arguments)
       {
          var commandType = commandInfo.PropertyInfo.PropertyType;
          if (!ImplementsICommand(commandType))
@@ -231,7 +233,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          return commandType.GetInterface(typeof(ICommandBase).FullName!) != null;
       }
 
-      private void MapApplicationArguments(T instance, CommandLineArgumentList arguments)
+      private void MapApplicationArguments(T instance, ICommandLineArguments arguments)
       {
          var defaultMapper = new ArgumentMapper<T>(serviceProvider);
          try
@@ -250,7 +252,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       /// <param name="instance">The instance.</param>
       /// <param name="argumentInfo">The argument information.</param>
       /// <param name="arguments">The arguments.</param>
-      private void MapArgumentsToCommand(T instance, ArgumentClassInfo argumentInfo, CommandLineArgumentList arguments)
+      private void MapArgumentsToCommand(T instance, ArgumentClassInfo argumentInfo, ICommandLineArguments arguments)
       {
          // Note: per definition the help command has to be the first command line argument
          var firstArgument = GetFirstArgument(arguments);
@@ -274,10 +276,10 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          }
       }
 
-      private void MapHelpOnly(T instance, ArgumentClassInfo argumentInfo, CommandLineArgumentList arguments, CommandLineArgument helpRequest)
+      private void MapHelpOnly(T instance, ArgumentClassInfo argumentInfo, ICommandLineArguments arguments, CommandLineArgument helpRequest)
       {
          var helpCommand = serviceProvider.GetRequiredService<HelpCommand>();
-         helpCommand.Arguments = new HelpCommandArguments { ArgumentInfos = argumentInfo, ArgumentDictionary = arguments };
+         helpCommand.Arguments = new HelpCommandArguments { ArgumentInfos = argumentInfo, CommandLineArguments = arguments };
          argumentInfo.HelpCommand.PropertyInfo.SetValue(instance, helpCommand);
 
          MappedCommandLineArgument?.Invoke(this,

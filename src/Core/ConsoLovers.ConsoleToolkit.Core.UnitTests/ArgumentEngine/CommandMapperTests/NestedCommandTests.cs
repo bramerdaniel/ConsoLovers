@@ -8,7 +8,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine.CommandMapper
 
 using System.Collections.Generic;
 
-using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 using ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups;
 
 using FluentAssertions;

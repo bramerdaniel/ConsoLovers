@@ -1,6 +1,6 @@
 ﻿namespace XCopyApplication
 {
-   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+   using ConsoLovers.ConsoleToolkit.Core;
 
    using global::XCopyApplication.Commands;
 

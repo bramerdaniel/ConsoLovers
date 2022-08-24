@@ -6,8 +6,6 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
 {
-   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
-
    /// <summary>Base class for a command that does not required any arguments</summary>
    /// <seealso cref="ConsoLovers.ConsoleToolkit.CommandLineArguments.ICommand"/>
    public class Command : ICommand

@@ -1,7 +1,8 @@
 {
   "profiles": {
     "Playground": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "-removeMe"
     },
     "help": {
       "commandName": "Project",

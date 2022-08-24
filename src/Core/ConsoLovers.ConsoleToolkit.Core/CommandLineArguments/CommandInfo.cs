@@ -8,7 +8,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
    using System;
    using System.Reflection;
-
    using JetBrains.Annotations;
 
    /// <summary>Information class for a property that was decorated with the <see cref="CommandAttribute"/></summary>

@@ -8,7 +8,7 @@ namespace MenusAndCommands.Commands.User;
 
 using System;
 
-using ConsoLovers.ConsoleToolkit.CommandExtensions;
+using ConsoLovers.ConsoleToolkit;
 using ConsoLovers.ConsoleToolkit.Core;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
@@ -41,7 +41,7 @@ public class DeleteUserCommand : ICommand<DeleteUserCommand.DeleteUserArgs>, IMe
 
    #region IMenuCommand Members
 
-   public void ExecuteFromMenu(IMenuExecutionContext context)
+   public void Execute(IMenuExecutionContext context)
    {
       console.WriteLine("User deleted");
       console.ReadLine();

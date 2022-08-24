@@ -8,6 +8,8 @@ using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
 namespace Playground.Commands.Create.Role;
 
+using ConsoLovers.ConsoleToolkit.Core;
+
 public class CreateRoleArgs
 {
    #region Public Properties

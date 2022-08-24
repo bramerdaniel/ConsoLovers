@@ -10,9 +10,6 @@ namespace CommandLineEngineDemo
    using System.Reflection;
 
    using ConsoLovers.ConsoleToolkit.Core;
-   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
-
-   using Microsoft.Extensions.DependencyInjection;
 
    class Program
    {

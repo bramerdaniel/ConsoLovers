@@ -8,7 +8,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
    using System.Linq;
    using System.Reflection;
-
    using JetBrains.Annotations;
 
    /// <summary>Helper class providing information about a command line parameter, that was decorated with the <see cref="ArgumentAttribute"/></summary>

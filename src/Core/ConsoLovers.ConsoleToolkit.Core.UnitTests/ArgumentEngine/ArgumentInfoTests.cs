@@ -1,6 +1,5 @@
 namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
 {
-   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine.TestData;
    using ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups;
 

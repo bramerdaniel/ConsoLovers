@@ -7,8 +7,6 @@
 namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
 {
    using System.Collections.Generic;
-
-   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing;
    using ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups;
 
@@ -21,9 +19,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
          return Setup.CommandLineArgumentParser().Done();
       }
 
-      protected CommandLineArgumentList Parse(params string[] parameters)
+      protected ICommandLineArguments Parse(params string[] parameters)
       {
-         return GetTarget().ParseArguments(parameters, false);
+         return GetTarget().ParseArguments(parameters);
       }
 
       #endregion

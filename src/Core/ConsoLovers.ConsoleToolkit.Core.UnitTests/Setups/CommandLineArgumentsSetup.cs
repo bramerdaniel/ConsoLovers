@@ -9,8 +9,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
-using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
-
 public class CommandLineArgumentsSetup : SetupBase<CommandLineArgumentList>
 {
    private readonly CommandLineArgumentList arguments = new();

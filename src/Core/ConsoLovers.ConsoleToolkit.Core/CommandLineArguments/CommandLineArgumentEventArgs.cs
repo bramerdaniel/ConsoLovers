@@ -9,7 +9,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
    using System;
    using System.Diagnostics;
    using System.Reflection;
-
+   using ConsoLovers.ConsoleToolkit.Core;
    using JetBrains.Annotations;
 
    /// <summary>Event args class for the <see cref="ICommandLineEngine.HandledCommandLineArgument"/> and the <see cref="ICommandLineEngine.UnhandledCommandLineArgument"/> event</summary>

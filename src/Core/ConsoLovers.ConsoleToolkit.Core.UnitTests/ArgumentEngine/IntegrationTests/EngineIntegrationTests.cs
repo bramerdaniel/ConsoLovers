@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+using ConsoLovers.ConsoleToolkit.Core.Exceptions;
 using ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups;
 
 using FluentAssertions;

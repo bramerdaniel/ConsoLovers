@@ -6,8 +6,6 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests.Utils
 {
-   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
-
    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
    public class GenericExecuteCommand : ICommand<TestCommandArguments>

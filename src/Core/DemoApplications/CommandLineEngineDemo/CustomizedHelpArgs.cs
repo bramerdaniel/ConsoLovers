@@ -2,9 +2,8 @@
 {
    using System;
    using System.Reflection;
-   using System.Resources;
 
-   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+   using ConsoLovers.ConsoleToolkit.Core;
 
    [HelpTextProvider(typeof(CustomizedHelpArgs))]
    internal class CustomizedHelpArgs : IHelpProvider

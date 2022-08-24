@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ReflectionExtensions.cs" company="KUKA Deutschland GmbH">
-//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
+// <copyright file="ReflectionExtensions.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
-
+using ConsoLovers.ConsoleToolkit.Core;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing;
 using ConsoLovers.ConsoleToolkit.Core.Services;
@@ -27,13 +27,31 @@ public static class ReflectionExtensions
    public static T GetAttribute<T>(this PropertyInfo propertyInfo)
       where T : Attribute
    {
-      return propertyInfo.GetCustomAttributes<T>(true).FirstOrDefault();
+      return propertyInfo.GetAttribute<T>(true);
+   }
+
+   public static T GetAttribute<T>(this PropertyInfo propertyInfo, bool inherit)
+      where T : Attribute
+   {
+      return propertyInfo.GetAttribute<T>(inherit, () => null);
+   }
+
+   public static T GetAttribute<T>(this PropertyInfo propertyInfo, bool inherit, Func<T> defaultValue)
+      where T : Attribute
+   {
+      return propertyInfo.GetCustomAttributes<T>(inherit).FirstOrDefault() ?? defaultValue();
    }
 
    public static T GetAttribute<T>(this Type type)
       where T : Attribute
    {
-      return type.GetCustomAttributes<T>(true).FirstOrDefault();
+      return type.GetAttribute<T>(true);
+   }
+
+   public static T GetAttribute<T>(this Type type, bool inherit)
+      where T : Attribute
+   {
+      return type.GetCustomAttributes<T>(inherit).FirstOrDefault();
    }
 
    #endregion
@@ -100,16 +118,17 @@ public static class ReflectionExtensions
       serviceCollection.AddSingleton<IArgumentReflector>(argumentReflector);
       serviceCollection.AddSingleton(argumentReflector);
 
-      EnsureServiceAndImplementation<ICommandLineArgumentParser, CommandLineArgumentParser>(serviceCollection);
-      EnsureServiceAndImplementation<ICommandLineEngine, CommandLineEngine>(serviceCollection);
-      EnsureServiceAndImplementation<IExecutionEngine, ExecutionEngine>(serviceCollection);
-      EnsureServiceAndImplementation<ILocalizationService, DefaultLocalizationService>(serviceCollection);
-      EnsureServiceAndImplementation<IConsole, ConsoleProxy>(serviceCollection);
+      EnsureSingleton<ICommandLineArgumentParser, CommandLineArgumentParser>(serviceCollection);
+      EnsureSingleton<ICommandLineEngine, CommandLineEngine>(serviceCollection);
+      EnsureSingleton<IExecutionEngine, ExecutionEngine>(serviceCollection);
+      EnsureSingleton<IExceptionHandler, ExceptionHandler>(serviceCollection);
+      EnsureSingleton<ILocalizationService, DefaultLocalizationService>(serviceCollection);
+      EnsureSingleton<IConsole, ConsoleProxy>(serviceCollection);
 
       return serviceCollection;
    }
 
-   internal static IServiceCollection EnsureServiceAndImplementation<TService, TImplementation>(this IServiceCollection serviceCollection)
+   internal static IServiceCollection EnsureSingleton<TService, TImplementation>(this IServiceCollection serviceCollection)
       where TImplementation : TService
    {
       var serviceType = typeof(TService);

@@ -7,7 +7,6 @@
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 {
    using System.Reflection;
-
    using JetBrains.Annotations;
 
    /// <summary>

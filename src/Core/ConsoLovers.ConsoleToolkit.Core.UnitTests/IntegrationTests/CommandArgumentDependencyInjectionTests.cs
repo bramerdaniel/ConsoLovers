@@ -10,8 +10,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 
-using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
-
 using FluentAssertions;
 
 using JetBrains.Annotations;
@@ -29,7 +27,7 @@ public class CommandArgumentDependencyInjectionTests
    public async Task EnsureServicesAreInjectedIntoCommandsCorrectly()
    {
       var application = await ConsoleApplication.WithArguments<ApplicationArgs>()
-         .ConfigureServices(s => s.AddTransient<Service>())
+         .AddService(s => s.AddTransient<Service>())
          .RunAsync("run Hello", CancellationToken.None);
 
       application.Arguments.Command.Arguments.Service.Should().NotBeNull();

@@ -5,7 +5,7 @@
 		<OutputPath>$(SolutionDir)$(Configuration)</OutputPath>
 		<Authors>Daniel Bramer</Authors>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>5.0.0-alpha4</Version>
+		<Version>5.0.0-rc5</Version>
 		<PackageTags>Console Shell ConsoleToolkit .Net CommandLineArgument CommandLineArguments CommandLineParser</PackageTags>
 		<PackageIconUrl>https://raw.githubusercontent.com/bramerdaniel/ConsoLovers/master/src/ConsoLovers.ConsoleToolkit/Resources/Icon.ico</PackageIconUrl>
 		<PackageProjectUrl>https://github.com/bramerdaniel/ConsoLovers</PackageProjectUrl>
@@ -16,6 +16,7 @@
 		</Description>
 		<LangVersion>latest</LangVersion>
 		<PackageReleaseNotes>5.0.0
+ - Introduced middleware execution pipeline for better customization of userdefined applications
  - Introduced IApplicationLogic that is executed by default for applications called without arguments
  - Introduced IArgumentReflector that caches all the type information used determined during the run 
  - Introduced ILocalizationService to be able to replace localization mechanism
@@ -41,6 +42,12 @@
 		<AssemblyOriginatorKeyFile>..\..\..\certificate\ConsoleToolkit.Core.snk</AssemblyOriginatorKeyFile>
 	</PropertyGroup>
 
+	<ItemGroup>
+	  <Compile Remove="CommandLineArguments\Mapping\**" />
+	  <EmbeddedResource Remove="CommandLineArguments\Mapping\**" />
+	  <None Remove="CommandLineArguments\Mapping\**" />
+	</ItemGroup>
+
 
 	<ItemGroup>
 		<Compile Update="Properties\Resources.Designer.cs">
@@ -58,7 +65,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="CommandLineArguments\Mapping\" />
+		<Folder Include="Extensions\" />
 	</ItemGroup>
 
 	<ItemGroup>
