@@ -9,7 +9,7 @@ namespace ConsoLovers.ConsoleToolkit.InputHandler
    using System;
    using System.Threading;
 
-   internal sealed class LinuxConsoleInputHandler : IInputHandler
+   public sealed class LinuxConsoleInputHandler : IInputHandler
    {
       #region Constants and Fields
 

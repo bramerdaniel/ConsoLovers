@@ -10,7 +10,7 @@ namespace ConsoLovers.ConsoleToolkit.InputHandler
    using System.Runtime.InteropServices;
    using System.Threading;
 
-   internal sealed class WindowsConsoleInputHandler : IInputHandler
+   public sealed class WindowsConsoleInputHandler : IInputHandler
    {
       #region Constants and Fields
 
