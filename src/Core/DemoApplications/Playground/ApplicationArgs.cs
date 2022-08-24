@@ -8,7 +8,7 @@ using ConsoLovers.ConsoleToolkit.Core;
 
 using Playground.Commands.Delete;
 
-public class ApplicationArgs : IMappingHandler
+public class ApplicationArgs 
 {
    [Command("create")]
    [HelpText("Root command for nested command")]
@@ -32,8 +32,4 @@ public class ApplicationArgs : IMappingHandler
    [Command("Fail")]
    public bool Fails{ get; set; } = false;
 
-   public bool TryMap(CommandLineArgument argument)
-   {
-      return true;
-   }
 }

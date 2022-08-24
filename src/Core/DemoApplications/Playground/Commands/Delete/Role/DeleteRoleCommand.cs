@@ -8,7 +8,7 @@ namespace Playground.Commands.Delete.Role;
 
 using ConsoLovers.ConsoleToolkit.Core;
 
-public class DeleteRoleCommand : IAsyncCommand<DeleteRoleArgs>
+public class DeleteRoleCommand : IAsyncCommand<DeleteRoleArgs>, IArgumentSink
 {
    public Task ExecuteAsync(CancellationToken cancellationToken)
    {
@@ -17,4 +17,15 @@ public class DeleteRoleCommand : IAsyncCommand<DeleteRoleArgs>
    }
 
    public DeleteRoleArgs Arguments { get; set; } = null!;
+
+   public bool TakeArgument(CommandLineArgument argument)
+   {
+      if (argument.Name == "Reset")
+      {
+         Console.ResetColor();
+         return true;
+      }
+
+      return false;
+   }
 }

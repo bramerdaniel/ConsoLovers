@@ -7,6 +7,8 @@
 namespace ConsoLovers.ConsoleToolkit.Core.Middleware;
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -71,6 +73,7 @@ internal class MapperMiddleware<T> : Middleware<T>
 
       cancelExecution = false;
       Map(context.ParsedArguments, context.ApplicationArguments);
+      InvokeMappingHandlers(context);
 
       if (cancelExecution)
          return Task.CompletedTask;
@@ -79,6 +82,37 @@ internal class MapperMiddleware<T> : Middleware<T>
          return Task.FromCanceled(cancellationToken);
 
       return Next(context, cancellationToken);
+   }
+
+   private void InvokeMappingHandlers(IExecutionContext<T> context)
+   {
+      if (context.ParsedArguments.Count == 0)
+         return;
+
+      if (!Options.UnhandledArgumentsBehavior.HasFlag(UnhandledArgumentsBehaviors.UseCustomHandler))
+         return;
+
+      var mappingHandlers = GetMappingHandlers();
+      if (mappingHandlers.Length == 0)
+         return;
+
+      var arguments = context.ParsedArguments.ToArray();
+      foreach (var argument in arguments)
+      {
+         if (MapWithHandler(context, mappingHandlers, argument))
+            context.ParsedArguments.Remove(argument);
+      }
+   }
+
+   private static bool MapWithHandler(IExecutionContext<T> context, IMappingHandler<T>[] mappingHandlers, CommandLineArgument argument)
+   {
+      return mappingHandlers.Any(mappingHandler => mappingHandler.TryMap(context.ApplicationArguments, argument));
+   }
+
+   private IMappingHandler<T>[] GetMappingHandlers()
+   {
+      var handlers = serviceProvider.GetService<IEnumerable<IMappingHandler<T>>>();
+      return handlers == null ? Array.Empty<IMappingHandler<T>>() : handlers.ToArray();
    }
 
    #endregion
@@ -98,11 +132,12 @@ internal class MapperMiddleware<T> : Middleware<T>
       // TODO create the correct infrastructure to forward these arguments directly to the current command
 
 
-      if (args.Instance is IMappingHandler handler)
+      if (args.Instance is IArgumentSink handler)
       {
-         if (handler.TryMap(args.Argument))
+         if (handler.TakeArgument(args.Argument))
             return true;
       }
+
 
       return false;
 

@@ -8,7 +8,7 @@ namespace Playground.Commands.Delete.Role;
 
 using ConsoLovers.ConsoleToolkit.Core;
 
-public class DeleteRoleArgs : ICustomizedFooter, IMappingHandler
+public class DeleteRoleArgs : ICustomizedFooter, IArgumentSink
 {
    [Argument("name", Index = 0)]
    [HelpText("Name of the role to delete")]
@@ -23,8 +23,15 @@ public class DeleteRoleArgs : ICustomizedFooter, IMappingHandler
       console.WriteLine();
    }
 
-   public bool TryMap(CommandLineArgument argument)
+   public bool TakeArgument(CommandLineArgument argument)
    {
-      return true;
+      if (Enum.TryParse<ConsoleColor>(argument.Name, out var value))
+      {
+         Console.ForegroundColor = value;
+         return true;
+      }
+
+      return false;
+
    }
 }

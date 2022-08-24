@@ -171,31 +171,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
          if (TryGetArgumentType(commandType, out var argumentType))
          {
-            var argumentInstance = serviceProvider.GetRequiredService(argumentType);
-
-            CreateMapper(argumentType, out var mapper, out var genericType);
-
-            var eventInfo = genericType.GetEvent(nameof(IArgumentMapper.MappedCommandLineArgument));
-            EventHandler<MapperEventArgs> handler = OnMappedCommandLineArgument;
-
-            try
-            {
-               eventInfo?.AddEventHandler(mapper, handler);
-
-               var methodInfo = genericType.GetMethod(nameof(IArgumentMapper<T>.Map),
-                  new[] { typeof(CommandLineArgumentList), argumentType });
-               // ReSharper disable once PossibleNullReferenceException
-               methodInfo.Invoke(mapper, new[] { arguments, argumentInstance });
-            }
-            catch (TargetInvocationException e)
-            {
-               if (e.InnerException is CommandLineArgumentException exception)
-                  throw exception;
-            }
-            finally
-            {
-               eventInfo?.RemoveEventHandler(mapper, handler);
-            }
+            var argumentInstance = CreateCommandArguments(arguments, argumentType);
 
             var command = serviceProvider.GetService(commandType);
             var argumentsProperty = commandType.GetProperty(nameof(ICommand<T>.Arguments));
@@ -203,10 +179,42 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
                throw new InvalidOperationException("The ICommand<T> implementation does not contain a Arguments property.");
 
             argumentsProperty.SetValue(command, argumentInstance);
+            CallArgumentSinks(command, argumentInstance, arguments);
             return command;
          }
 
          return serviceProvider.GetService(commandType);
+      }
+
+      private object CreateCommandArguments(ICommandLineArguments arguments, Type argumentType)
+      {
+         var argumentInstance = serviceProvider.GetRequiredService(argumentType);
+
+         CreateMapper(argumentType, out var mapper, out var genericType);
+
+         var eventInfo = genericType.GetEvent(nameof(IArgumentMapper.MappedCommandLineArgument));
+         EventHandler<MapperEventArgs> handler = OnMappedCommandLineArgument;
+
+         try
+         {
+            eventInfo?.AddEventHandler(mapper, handler);
+
+            var methodInfo = genericType.GetMethod(nameof(IArgumentMapper<T>.Map),
+               new[] { typeof(CommandLineArgumentList), argumentType });
+            // ReSharper disable once PossibleNullReferenceException
+            methodInfo.Invoke(mapper, new[] { arguments, argumentInstance });
+         }
+         catch (TargetInvocationException e)
+         {
+            if (e.InnerException is CommandLineArgumentException exception)
+               throw exception;
+         }
+         finally
+         {
+            eventInfo?.RemoveEventHandler(mapper, handler);
+         }
+
+         return argumentInstance;
       }
 
       private void CreateMapper(Type argumentType, out object mapper, out Type genericType)
@@ -272,6 +280,28 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
             var commandLineArgument = firstArgument ?? new CommandLineArgument();
             MappedCommandLineArgument?.Invoke(this, new MapperEventArgs(commandLineArgument, commandToCreate.PropertyInfo, instance));
+         }
+      }
+
+      private void CallArgumentSinks(object command, object arguments, ICommandLineArguments commandLineArguments)
+      {
+         if (commandLineArguments.Count == 0)
+            return;
+
+         if (arguments is IArgumentSink argumentSink)
+         {
+            var copy = commandLineArguments.ToArray();
+            foreach (var argument in copy)
+               if (argumentSink.TakeArgument(argument))
+                  commandLineArguments.Remove(argument);
+         }
+
+         if (command is IArgumentSink commandSink)
+         {
+            var copy = commandLineArguments.ToArray();
+            foreach (var argument in copy)
+               if (commandSink.TakeArgument(argument))
+                  commandLineArguments.Remove(argument);
          }
       }
 

@@ -101,7 +101,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
       }
 
       [TestMethod]
-      public void EnsureOptionsCanOnlyBeMappedToBoolaenProperties()
+      public void EnsureOptionsCanOnlyBeMappedToBooleanProperties()
       {
          var target = Setup.ArgumentMapper().ForType<Options>().Done();
          var dictionary = new Dictionary<string, CommandLineArgument>(StringComparer.InvariantCultureIgnoreCase)

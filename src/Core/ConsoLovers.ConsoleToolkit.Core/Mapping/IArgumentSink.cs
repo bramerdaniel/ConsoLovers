@@ -1,12 +1,12 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IMappingHandler.cs" company="ConsoLovers">
+// <copyright file="IArgumentSink.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace ConsoLovers.ConsoleToolkit.Core;
 
-public interface IMappingHandler<T>
+public interface IArgumentSink
 {
-   bool TryMap(T arguments, CommandLineArgument argument);
+   bool TakeArgument(CommandLineArgument argument);
 }

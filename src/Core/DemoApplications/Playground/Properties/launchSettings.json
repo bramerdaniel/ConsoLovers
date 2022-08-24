@@ -18,7 +18,7 @@
     },
     "test": {
       "commandName": "Project",
-      "commandLineArgs": "delete role name -to -much"
+      "commandLineArgs": "delete role name file=Hans.txt file=Robert.txt"
     },
     "create user": {
       "commandName": "Project",

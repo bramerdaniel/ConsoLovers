@@ -1,5 +1,7 @@
 ﻿namespace Playground;
 
+using System.Security.Cryptography.X509Certificates;
+
 using ConsoLovers.ConsoleToolkit.Core;
 using ConsoLovers.ConsoleToolkit.Core.Middleware;
 
@@ -10,18 +12,27 @@ public static class Program
    public static void Main()
    {
       var executable = ConsoleApplication.WithArguments<ApplicationArgs>()
-         .UseServiceProviderFactory(new DefaultServiceProviderFactory())
+         //.UseServiceProviderFactory(new DefaultServiceProviderFactory())
          // .UseApplicationLogic(Execute)
          //.AddMiddleware(typeof(TryCatchMiddleware))
          //.AddMiddleware<ApplicationArgs, RepeatMiddleware>()
          // .Run();
          .ConfigureMapping(o =>
          {
-            o.UnhandledArgumentsBehavior = UnhandledArgumentsBehaviors.UseCustomHandler;
+            o.UnhandledArgumentsBehavior = UnhandledArgumentsBehaviors.UseCustomHandler | UnhandledArgumentsBehaviors.LogToConsole;
          })
+         .AddService(x => x.AddSingleton<IMappingHandler<ApplicationArgs>>(new Handler()))
          .Run(t => throw new InvalidOperationException("No command could be was executed"));
 
       Console.ReadLine();
+   }
+}
+
+public class Handler : IMappingHandler<ApplicationArgs>
+{
+   public bool TryMap(ApplicationArgs arguments, CommandLineArgument argument)
+   {
+      return false;
    }
 }
 
