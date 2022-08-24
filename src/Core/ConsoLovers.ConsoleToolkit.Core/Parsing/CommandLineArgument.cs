@@ -8,8 +8,6 @@ namespace ConsoLovers.ConsoleToolkit.Core
    {
       #region Public Properties
 
-      // TODO Add a ArgumentPrefix for the - and / sign
-
       internal string DebuggerString => $"[{Index}] {Name}={Value}";
 
       /// <summary>Gets or sets the original string that was passed to the command line.</summary>
@@ -26,6 +24,9 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       /// <summary>Gets or sets a value indicating whether this <see cref="CommandLineArgument"/> was mapped.</summary>
       internal bool Mapped { get; set; }
+
+      /// <summary>Gets or sets the name prefix of the argument (e.g. - or / ).</summary>
+      public string Prefix { get; set; }
 
       #endregion
 

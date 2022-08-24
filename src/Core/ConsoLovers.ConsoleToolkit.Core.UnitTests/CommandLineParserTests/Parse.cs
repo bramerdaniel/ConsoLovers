@@ -23,6 +23,28 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.CommandLineParserTests
       #region Public Methods and Operators
 
       [TestMethod]
+      public void EnsureMinusNamePrefixIsParsedCorrectly()
+      {
+         ParseSingle("-name=Hans").Prefix.Should().Be("-");
+         ParseSingle("-force").Prefix.Should().Be("-");
+      }
+
+      [TestMethod]
+      public void EnsureSlashNamePrefixIsParsedCorrectly()
+      {
+
+         ParseSingle("/name=Hans").Prefix.Should().Be("/");
+         ParseSingle("/force").Prefix.Should().Be("/");
+      }
+
+      [TestMethod]
+      public void EnsureNoNamePrefixIsParsedCorrectly()
+      {
+         ParseSingle("name=Hans").Prefix.Should().BeEmpty();
+         ParseSingle("force").Prefix.Should().BeEmpty();
+      }
+
+      [TestMethod]
       public void EnsureParsingOfSingleOptionWorksCorrectly()
       {
          var arguments = Parse("-Enabled");

@@ -68,22 +68,11 @@ public class CommandLineArgumentList : List<CommandLineArgument>, ICommandLineAr
          Remove(argument);
    }
 
-   public bool TryGetValue(string name, out CommandLineArgument commandLineArgument)
+   public bool TryGetValue(string name, out CommandLineArgument argument)
    {
-      commandLineArgument = this.FirstOrDefault(x => Comparer.Equals(x.Name, name));
-      return commandLineArgument != null;
+      argument = this.FirstOrDefault(x => Comparer.Equals(x.Name, name));
+      return argument != null;
    }
 
    #endregion
-}
-
-public interface ICommandLineArguments : IList<CommandLineArgument>
-{
-   bool TryGetValue(string name, out CommandLineArgument argument);
-
-   void RemoveFirst(string name);
-
-   bool ContainsName(string name);
-
-   CommandLineArgument this[string name] { get; }
 }

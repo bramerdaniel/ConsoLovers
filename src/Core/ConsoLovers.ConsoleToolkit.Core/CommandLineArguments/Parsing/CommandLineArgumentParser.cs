@@ -157,6 +157,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
          if (string.IsNullOrEmpty(name))
             throw new CommandLineArgumentException(string.Format(CultureInfo.InvariantCulture, "The argument \"{0}\" is invalid.", argumentString));
 
+         var prefix = tokens[0].Substring(0, tokens[0].Length - name.Length);
+
          string valueString = tokens[1].Trim();
 
          if (arguments.ContainsName(name))
@@ -165,7 +167,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
                argumentString));
          }
 
-         arguments.Add(new CommandLineArgument { Name = name, Value = valueString, Index = index, OriginalString = argumentString });
+         arguments.Add(new CommandLineArgument { Name = name, Value = valueString, Index = index, OriginalString = argumentString, Prefix = prefix });
       }
 
       private static void ParseOption(string argumentString, CommandLineArgumentList arguments, int index)
@@ -177,13 +179,15 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
          if (string.IsNullOrEmpty(option))
             return;
 
+         var prefix = argumentString.Substring(0, argumentString.Length - option.Length);
+
          if (arguments.ContainsName(option))
          {
             throw new CommandLineArgumentException(string.Format(CultureInfo.InvariantCulture, "The option \"{0}\" occurs more than once.",
                argumentString));
          }
 
-         arguments.Add(new CommandLineArgument { Name = option, Value = null, Index = index, OriginalString = argumentString });
+         arguments.Add(new CommandLineArgument { Name = option, Value = null, Index = index, OriginalString = argumentString, Prefix = prefix });
       }
 
       private static string[] Split(string argumentString)
@@ -207,10 +211,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
 
       private CommandLineArgument ParseSingleArgument(string argument, int index)
       {
-         StringBuilder nameBuilder = new StringBuilder();
+         var nameBuilder = new StringBuilder();
          StringBuilder valueBuilder = null;
          bool inName = true;
          bool foundNameSeparator = false;
+         string prefix = string.Empty;
 
          foreach (var charInfo in new CharRope(argument))
          {
@@ -224,13 +229,19 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
             }
             else
             {
-               if (!charInfo.IsFirst() || !ArgumentSigns.Contains(charInfo.Current))
+               var isArgumentSign = ArgumentSigns.Contains(charInfo.Current);
+               if (isArgumentSign)
+               {
+                  prefix = charInfo.Current.ToString();
+               }
+
+               if (!charInfo.IsFirst() || !isArgumentSign)
                   AppendCharacter(charInfo);
             }
          }
 
          var name = nameBuilder.ToString();
-         return new CommandLineArgument { Index = index, Name = name, Value = valueBuilder?.ToString(), OriginalString = argument };
+         return new CommandLineArgument { Index = index, Name = name, Value = valueBuilder?.ToString(), OriginalString = argument, Prefix = prefix };
 
          void AppendCharacter(CharInfo charInfo)
          {
@@ -249,13 +260,13 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
 
          StringBuilder GetValueBuilder()
          {
-            return valueBuilder ?? (valueBuilder = new StringBuilder());
+            return valueBuilder ??= new StringBuilder();
          }
       }
 
       private IEnumerable<string> SplitIntoArgs(string args)
       {
-         StringBuilder builder = new StringBuilder();
+         var builder = new StringBuilder();
          foreach (var charInfo in new CharRope(args))
          {
             if (charInfo.IsWhiteSpace() && !charInfo.InsideQuotes())

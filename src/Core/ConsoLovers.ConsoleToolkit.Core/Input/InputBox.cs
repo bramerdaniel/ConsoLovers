@@ -16,6 +16,8 @@ using System.Globalization;
 [SuppressMessage("ReSharper", "UnusedMember.Global")]
 public class InputBox<T>
 {
+   // TODO support escape key 
+
    #region Constants and Fields
 
    private readonly int defaultLength = 0;
@@ -361,6 +363,4 @@ public class InputBox<T>
    }
 
    #endregion
-
-   // TODO support escape key 
 }

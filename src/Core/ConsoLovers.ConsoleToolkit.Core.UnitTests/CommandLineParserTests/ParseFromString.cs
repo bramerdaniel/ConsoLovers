@@ -25,6 +25,42 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.CommandLineParserTests
       #region Public Methods and Operators
 
       [TestMethod]
+      public void EnsureNamePrefixEdgeCasesWorkCorrectly()
+      {
+         var target = Setup.CommandLineArgumentParser().Done();
+
+         target.GetSingleArgument("-").Prefix.Should().Be("-");
+         target.GetSingleArgument("-a").Prefix.Should().Be("-");
+      }
+
+      [TestMethod]
+      public void EnsureMinusNamePrefixIsParsedCorrectly()
+      {
+         var target = Setup.CommandLineArgumentParser().Done();
+
+         target.GetSingleArgument("-name=Hans").Prefix.Should().Be("-");
+         target.GetSingleArgument("-force").Prefix.Should().Be("-");
+      }
+
+      [TestMethod]
+      public void EnsureSlashNamePrefixIsParsedCorrectly()
+      {
+         var target = Setup.CommandLineArgumentParser().Done();
+
+         target.GetSingleArgument("/name=Hans").Prefix.Should().Be("/");
+         target.GetSingleArgument("/force").Prefix.Should().Be("/");
+      }
+      
+      [TestMethod]
+      public void EnsureNoNamePrefixIsParsedCorrectly()
+      {
+         var target = Setup.CommandLineArgumentParser().Done();
+
+         target.GetSingleArgument("name=Hans").Prefix.Should().BeEmpty();
+         target.GetSingleArgument("force").Prefix.Should().BeEmpty();
+      }
+
+      [TestMethod]
       public void ParsePathArgumentWithName()
       {
          var target = Setup.CommandLineArgumentParser().Done();
