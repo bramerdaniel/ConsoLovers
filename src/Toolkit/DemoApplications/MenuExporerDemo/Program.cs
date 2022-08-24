@@ -156,6 +156,10 @@ namespace MenuDemo
       {
          Console.WriteLine("Enter the user name");
          userName = Console.ReadLine();
+
+         Console.WriteLine();
+         Console.WriteLine($"You entered {userName}. Press any key to return to menu.");
+         Console.ReadKey();
       }
 
       private static IEnumerable<ConsoleMenuItem> LazyLoadChildren()

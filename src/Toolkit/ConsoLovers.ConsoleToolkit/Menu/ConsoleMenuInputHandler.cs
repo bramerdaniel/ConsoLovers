@@ -36,7 +36,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          }
          else
          {
-            handler = new ConsoleInputHandler();
+            handler = new LinuxConsoleInputHandler();
          }
       }
 

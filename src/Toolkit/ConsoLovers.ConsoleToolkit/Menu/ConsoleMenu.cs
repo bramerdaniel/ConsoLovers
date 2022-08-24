@@ -1,12 +1,16 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="ConsoleMenu.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2016
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace ConsoLovers.ConsoleToolkit.Menu
 {
    using System;
+
+   using ConsoLovers.ConsoleToolkit.Core;
+
+   using JetBrains.Annotations;
 
    public class ConsoleMenu : ConsoleMenuBase
    {
@@ -15,6 +19,23 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       private readonly ConsoleColor sharedBackground = ConsoleColor.Black;
 
       private readonly ConsoleColor sharedForeground = ConsoleColor.Gray;
+
+      #endregion
+
+      #region Constructors and Destructors
+
+      /// <summary>Initializes a new instance of the <see cref="ConsoleMenu"/> class.</summary>
+      public ConsoleMenu()
+      : base()
+      {
+      }
+
+      /// <summary>Initializes a new instance of the <see cref="ConsoleMenu"/> class.</summary>
+      /// <param name="console">The <see cref="IConsole"/> proxy.</param>
+      public ConsoleMenu([NotNull] IConsole console)
+         : base(console)
+      {
+      }
 
       #endregion
 

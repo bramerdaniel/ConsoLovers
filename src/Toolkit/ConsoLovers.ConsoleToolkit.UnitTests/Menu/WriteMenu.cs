@@ -25,8 +25,7 @@ namespace ConsoLovers.UnitTests.Menu
          var header = "Some test header";
 
          var consoleMock = new Mock<IConsole>();
-         var target = new ConsoleMenu { Console = consoleMock.Object };
-         target.Header = header;
+         var target = new ConsoleMenu(consoleMock.Object) { Header = header };
 
          target.RefreshMenu();
 
@@ -40,8 +39,7 @@ namespace ConsoLovers.UnitTests.Menu
          var footer = "Some test footer";
 
          var consoleMock = new Mock<IConsole>();
-         var target = new ConsoleMenu { Console = consoleMock.Object };
-         target.Footer = footer;
+         var target = new ConsoleMenu(consoleMock.Object) { Footer = footer };
 
          target.RefreshMenu();
 
@@ -53,7 +51,7 @@ namespace ConsoLovers.UnitTests.Menu
       public void EnsureFlatItemIsDisplayed()
       {
          var consoleMock = new Mock<IConsole>();
-         var target = new ConsoleMenu { Console = consoleMock.Object };
+         var target = new ConsoleMenu(consoleMock.Object);
          target.Add(new ConsoleMenuItem("Item 1"));
 
          target.RefreshMenu();

@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="SharedArgs.cs" company="KUKA Deutschland GmbH">
-//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
+// <copyright file="SharedArgs.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -12,11 +12,9 @@ public class SharedArgs
 {
    #region Public Properties
 
-   [Argument("password")] 
-   public string Password { get; set; }
+   [Argument("password")] public string Password { get; set; }
 
-   [Argument("userName")] 
-   public string UserName { get; set; }
+   [Argument("userName")] public string UserName { get; set; }
 
    #endregion
 }

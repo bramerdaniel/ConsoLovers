@@ -1,13 +1,12 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="HiddenCommands.cs" company="KUKA Deutschland GmbH">
-//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
+// <copyright file="HiddenCommands.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace MenusAndCommands.Commands;
 
 using ConsoLovers.ConsoleToolkit.Core;
-using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
 using MenusAndCommands.Commands.Permission;
 using MenusAndCommands.Commands.Role;
@@ -15,9 +14,11 @@ using MenusAndCommands.Commands.Role;
 [MenuCommand(Visible = false)]
 public class HiddenCommands
 {
-   [Command("Add")]
-   public AddRoleCommand Add { get; set; }
+   #region Public Properties
 
-   [Command("Remove")]
-   public RemovePermissionCommand Remove { get; set; }
+   [Command("Add")] public AddRoleCommand Add { get; set; }
+
+   [Command("Remove")] public RemovePermissionCommand Remove { get; set; }
+
+   #endregion
 }

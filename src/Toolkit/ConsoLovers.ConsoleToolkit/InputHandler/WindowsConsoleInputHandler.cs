@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ConsoleInputHandler.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2016
+// <copyright file="WindowsConsoleInputHandler.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -10,15 +10,11 @@ namespace ConsoLovers.ConsoleToolkit.InputHandler
    using System.Runtime.InteropServices;
    using System.Threading;
 
-   public class WindowsConsoleInputHandler : IInputHandler
+   public sealed class WindowsConsoleInputHandler : IInputHandler
    {
       #region Constants and Fields
 
-      public const uint STD_ERROR_HANDLE = unchecked((uint)-12);
-
-      public const uint STD_INPUT_HANDLE = unchecked((uint)-10);
-
-      public const uint STD_OUTPUT_HANDLE = unchecked((uint)-11);
+      private const uint STD_INPUT_HANDLE = unchecked((uint) -10);
 
       private bool isRunning;
 
@@ -26,58 +22,28 @@ namespace ConsoLovers.ConsoleToolkit.InputHandler
 
       #endregion
 
-      #region Delegates
-
-      public delegate void ConsoleKeyEvent(KEY_EVENT_RECORD r);
-      
-      public delegate void ConsoleWindowBufferSizeEvent(WINDOW_BUFFER_SIZE_RECORD r);
-
-      #endregion
-
       #region Public Events
 
-      public event EventHandler<MouseEventArgs> MouseDoubleClicked;
-
-      public event EventHandler<MouseEventArgs> MouseClicked;
-      
-      public event EventHandler<MouseEventArgs> MouseMoved;
-
-      public event EventHandler<MouseEventArgs> MouseWheelChanged;
-
+      /// <summary>Occurs when a keyboard key was pressed.</summary>
       public event EventHandler<KeyEventArgs> KeyDown;
 
-      public event ConsoleWindowBufferSizeEvent WindowBufferSizeEvent;
+      /// <summary>Occurs when a mouse button was clicked.</summary>
+      public event EventHandler<MouseEventArgs> MouseClicked;
+
+      /// <summary>Occurs when a mouse button was double clicked.</summary>
+      public event EventHandler<MouseEventArgs> MouseDoubleClicked;
+
+      /// <summary>Occurs when the mouse was moved.</summary>
+      public event EventHandler<MouseEventArgs> MouseMoved;
+
+      /// <summary>Occurs when the mouse wheel position changed.</summary>
+      public event EventHandler<MouseEventArgs> MouseWheelChanged;
 
       #endregion
 
-      #region Public Methods and Operators
+      #region IInputHandler Members
 
-      [DllImport("kernel32.dll")]
-      public static extern bool GetConsoleMode(IntPtr hConsoleInput, ref uint lpMode);
-
-      [DllImport("kernel32.dll")]
-      public static extern IntPtr GetStdHandle(uint nStdHandle);
-
-      [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
-      public static extern bool ReadConsoleInput(IntPtr hConsoleInput, [Out] INPUT_RECORD[] lpBuffer, uint nLength, ref uint lpNumberOfEventsRead);
-
-      [DllImport("kernel32.dll")]
-      public static extern bool SetConsoleMode(IntPtr hConsoleInput, uint dwMode);
-
-      [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
-      public static extern bool WriteConsoleInput(IntPtr hConsoleInput, INPUT_RECORD[] lpBuffer, uint nLength, ref uint lpNumberOfEventsWritten);
-
-      protected void Prepare()
-      {
-         IntPtr inHandle = GetStdHandle(STD_INPUT_HANDLE);
-         uint mode = 0;
-         GetConsoleMode(inHandle, ref mode);
-         mode &= ~ConsoleModes.ENABLE_QUICK_EDIT_MODE; //disable
-         mode |= ConsoleModes.ENABLE_WINDOW_INPUT; //enable (if you want)
-         mode |= ConsoleModes.ENABLE_MOUSE_INPUT; //enable
-         SetConsoleMode(inHandle, mode);
-      }
-
+      /// <summary>Starts the input observation.</summary>
       public void Start()
       {
          if (isRunning)
@@ -105,6 +71,7 @@ namespace ConsoLovers.ConsoleToolkit.InputHandler
                            {
                               MouseClicked?.Invoke(this, CreateEventArgs(mouseEvent));
                            }
+
                            if (mouseEvent.dwEventFlags == dwEventFlags.DOUBLE_CLICK)
                            {
                               MouseDoubleClicked?.Invoke(this, CreateEventArgs(mouseEvent));
@@ -126,9 +93,6 @@ namespace ConsoLovers.ConsoleToolkit.InputHandler
                               KeyDown?.Invoke(this, CreateEventArgs(keyEvent));
 
                            break;
-                        case INPUT_RECORD.WINDOW_BUFFER_SIZE_EVENT:
-                           WindowBufferSizeEvent?.Invoke(record[0].WindowBufferSizeEvent);
-                           break;
                      }
                   else
                   {
@@ -142,28 +106,57 @@ namespace ConsoLovers.ConsoleToolkit.InputHandler
          thread.Start();
       }
 
-      private KeyEventArgs CreateEventArgs(KEY_EVENT_RECORD keyEvent)
-      {
-         return new KeyEventArgs
-         {
-            Key = (ConsoleKey)keyEvent.wVirtualKeyCode,
-            KeyChar = keyEvent.UnicodeChar,
-            VirtualKeyCode = keyEvent.wVirtualKeyCode,
-            ControlKeys = (ControlKeyState)keyEvent.dwControlKeyState
-      };
-      }
-
+      /// <summary>Stops the input observation.</summary>
       public void Stop() => isRunning = false;
 
+      /// <summary>Joins the calling and the input handler thread.</summary>
       public void Wait() => thread.Join();
 
       #endregion
 
       #region Methods
 
-      private MouseEventArgs CreateEventArgs(MOUSE_EVENT_RECORD mouseEvent)
+      [DllImport("kernel32.dll")]
+      private static extern bool GetConsoleMode(IntPtr hConsoleInput, ref uint lpMode);
+
+      [DllImport("kernel32.dll")]
+      private static extern IntPtr GetStdHandle(uint nStdHandle);
+
+      [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+      private static extern bool ReadConsoleInput(IntPtr hConsoleInput, [Out] INPUT_RECORD[] lpBuffer, uint nLength, ref uint lpNumberOfEventsRead);
+
+      [DllImport("kernel32.dll")]
+      private static extern bool SetConsoleMode(IntPtr hConsoleInput, uint dwMode);
+
+      [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+      private static extern bool WriteConsoleInput(IntPtr hConsoleInput, INPUT_RECORD[] lpBuffer, uint nLength, ref uint lpNumberOfEventsWritten);
+
+      private KeyEventArgs CreateEventArgs(KEY_EVENT_RECORD keyEvent)
       {
-         return new MouseEventArgs { ButtonState = (ButtonStates)mouseEvent.dwButtonState, WindowLeft = mouseEvent.dwMousePosition.X, WindowTop = mouseEvent.dwMousePosition.Y };
+         return new KeyEventArgs
+         {
+            Key = (ConsoleKey) keyEvent.wVirtualKeyCode,
+            KeyChar = keyEvent.UnicodeChar,
+            VirtualKeyCode = keyEvent.wVirtualKeyCode,
+            ControlKeys = (ControlKeyState) keyEvent.dwControlKeyState
+         };
+      }
+
+      private MouseEventArgs CreateEventArgs(MOUSE_EVENT_RECORD mouseEvent) =>
+         new MouseEventArgs {ButtonState = (ButtonStates) mouseEvent.dwButtonState, WindowLeft = mouseEvent.dwMousePosition.X, WindowTop = mouseEvent.dwMousePosition.Y};
+
+      private void Prepare()
+      {
+         var inHandle = GetStdHandle(STD_INPUT_HANDLE);
+
+         uint mode = 0;
+         GetConsoleMode(inHandle, ref mode);
+
+         mode &= ~ConsoleModes.ENABLE_QUICK_EDIT_MODE; //disable
+         mode |= ConsoleModes.ENABLE_WINDOW_INPUT; //enable (if you want)
+         mode |= ConsoleModes.ENABLE_MOUSE_INPUT; //enable
+
+         SetConsoleMode(inHandle, mode);
       }
 
       #endregion
