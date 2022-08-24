@@ -17,6 +17,7 @@ using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing;
 using ConsoLovers.ConsoleToolkit.Core.Services;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using ParameterInfo = ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.ParameterInfo;
 
@@ -124,6 +125,7 @@ public static class ReflectionExtensions
       EnsureSingleton<IExceptionHandler, ExceptionHandler>(serviceCollection);
       EnsureSingleton<ILocalizationService, DefaultLocalizationService>(serviceCollection);
       EnsureSingleton<IConsole, ConsoleProxy>(serviceCollection);
+      serviceCollection.TryAddSingleton(serviceCollection);
 
       return serviceCollection;
    }

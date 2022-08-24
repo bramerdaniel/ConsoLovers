@@ -55,8 +55,7 @@ internal class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigura
    {
       if (collection == null)
          throw new ArgumentNullException(nameof(collection));
-
-      // TODO write test for this scenario
+      
       serviceCollection = CopyRegisteredService(collection);
       return this;
    }
@@ -154,6 +153,7 @@ internal class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigura
       ServiceCollection.TryAddSingleton<IConsoleApplication<T>, ConsoleApplication<T>>();
 
       AddDefaultMiddleware();
+
    }
 
    protected void SetServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory)

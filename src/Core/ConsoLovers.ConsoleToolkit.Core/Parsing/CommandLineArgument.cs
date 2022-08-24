@@ -8,6 +8,8 @@ namespace ConsoLovers.ConsoleToolkit.Core
    {
       #region Public Properties
 
+      // TODO Add a ArgumentPrefix for the - and / sign
+
       internal string DebuggerString => $"[{Index}] {Name}={Value}";
 
       /// <summary>Gets or sets the original string that was passed to the command line.</summary>

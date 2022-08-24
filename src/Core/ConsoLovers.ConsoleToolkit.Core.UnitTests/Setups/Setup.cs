@@ -15,6 +15,12 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups
    {
       #region Public Methods and Operators
 
+      public static ApplicationBuilderSetup<T> ApplicationBuilder<T>()
+         where T : class
+      {
+         return new ApplicationBuilderSetup<T>();
+      }
+
       public static ArgumentClassInfoSetup ArgumentClassInfo()
       {
          return new ArgumentClassInfoSetup();
@@ -40,14 +46,15 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups
          return new CommandLineEngineSetup();
       }
 
+      public static CommandMapperSetup<T> CommandMapper<T>()
+         where T : class
+      {
+         return new CommandMapperSetup<T>();
+      }
+
       public static HelpCommandSetup HelpCommand()
       {
          return new HelpCommandSetup();
-      }
-
-      public static MockSetup MockFor()
-      {
-         return new MockSetup();
       }
 
       public static InputRangeSetup InputRange()
@@ -55,17 +62,16 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups
          return new InputRangeSetup();
       }
 
-      #endregion
-
-      public static CommandMapperSetup<T> CommandMapper<T>()
-         where T : class
+      public static MockSetup MockFor()
       {
-         return new CommandMapperSetup<T>();
+         return new MockSetup();
       }
 
       public static TypeHelpProviderSetup TypeHelpProvider()
       {
          return new TypeHelpProviderSetup();
       }
+
+      #endregion
    }
 }
