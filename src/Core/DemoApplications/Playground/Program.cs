@@ -62,7 +62,7 @@ public class TryCatchMiddleware : Middleware<ApplicationArgs>
 
 
       }
-      catch (Exception e)
+      catch (Exception)
       {
          console.WriteLine("--- Catch --->", ConsoleColor.Red);
       }

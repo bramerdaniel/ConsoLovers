@@ -13,5 +13,5 @@ public class CreateUserCommand : ICommand<CreateUserArgs>
       Console.WriteLine($"Create user {Arguments.UserName}");
    }
 
-   public CreateUserArgs Arguments { get; set; }
+   public CreateUserArgs Arguments { get; set; } = null!;
 }

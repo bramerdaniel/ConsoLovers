@@ -1,6 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
+		<SignAssembly>True</SignAssembly>
+		<AssemblyOriginatorKeyFile>..\..\..\certificate\ConsoleToolkit.Core.snk</AssemblyOriginatorKeyFile>
 	</PropertyGroup>
 	<Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
 
@@ -19,4 +21,5 @@
 	<ItemGroup>
 		<ProjectReference Include="..\ConsoLovers.ConsoleToolkit\ConsoLovers.ConsoleToolkit.csproj" />
 	</ItemGroup>
+
 </Project>

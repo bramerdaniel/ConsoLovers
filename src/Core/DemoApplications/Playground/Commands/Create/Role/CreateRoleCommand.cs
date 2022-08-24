@@ -17,7 +17,7 @@ public class CreateRoleCommand : ICommand<CreateRoleArgs>
       Console.WriteLine($"Role {Arguments.RoleName} with rank {Arguments.Rank}");
    }
 
-   public CreateRoleArgs Arguments { get; set; }
+   public CreateRoleArgs Arguments { get; set; } = null!;
 
    #endregion
 }
