@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AddUserCommand.cs" company="KUKA Deutschland GmbH">
-//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
+// <copyright file="AddUserCommand.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -10,7 +10,6 @@ using System;
 
 using ConsoLovers.ConsoleToolkit;
 using ConsoLovers.ConsoleToolkit.Core;
-using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
 public class AddUserCommand : ICommand<AddUserCommand.AddUserArgs>, IMenuCommand
 {
@@ -53,8 +52,7 @@ public class AddUserCommand : ICommand<AddUserCommand.AddUserArgs>, IMenuCommand
    {
       #region Public Properties
 
-      [Argument("name")]
-      public string Name { get; set; }
+      [Argument("name")] public string Name { get; set; }
 
       #endregion
    }

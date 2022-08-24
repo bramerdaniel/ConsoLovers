@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ICommandMenuOptions.cs" company="KUKA Deutschland GmbH">
-//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
+// <copyright file="ICommandMenuOptions.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -10,8 +10,12 @@ namespace ConsoLovers.ConsoleToolkit
 
    public interface ICommandMenuOptions
    {
+      #region Public Properties
+
       IConsoleMenuOptions Menu { get; }
 
       MenuBuilderBehaviour MenuBehaviour { get; set; }
+
+      #endregion
    }
 }
