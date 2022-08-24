@@ -26,6 +26,19 @@ namespace InputBoxDemo
 
       static void Main()
       {
+         try
+         {
+            ShowInputBoxes();
+         }
+         catch (InputCanceledException e)
+         {
+            Console.WriteLine($"Input was cancelled with last value {e.CurrentInput}");
+            Console.ReadLine();
+         }
+      }
+
+      private static void ShowInputBoxes()
+      {
          var password = new InputBox<string>("Enter password : ") { IsPassword = true }.ReadLine();
          Console.WriteLine(password);
          password = new InputBox<string>("Enter password : ", "Password") { IsPassword = true }.ReadLine(10);
@@ -33,7 +46,12 @@ namespace InputBoxDemo
          password = new InputBox<string>("Enter password : ", "Password") { IsPassword = true, PasswordChar = '$', PlaceholderChar = '.' }.ReadLine(10);
          Console.WriteLine(password);
 
-         int intValue = new InputBox<int>("Enter an integer: ").ReadLine();
+         int intValue = new InputBox<int>("Enter an integer: ")
+         {
+            CancellationHandler = int.Parse
+         }
+         .ReadLine();
+         
          Console.WriteLine(intValue);
 
          double doubleValue = new InputBox<double>("Enter an double: ").ReadLine();

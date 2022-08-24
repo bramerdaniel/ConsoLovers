@@ -16,8 +16,6 @@ using System.Globalization;
 [SuppressMessage("ReSharper", "UnusedMember.Global")]
 public class InputBox<T>
 {
-   // TODO support escape key 
-
    #region Constants and Fields
 
    private readonly int defaultLength = 0;
@@ -80,6 +78,12 @@ public class InputBox<T>
 
    /// <summary>Gets or sets the background of the input text.</summary>
    public ConsoleColor Background { get; set; } = ConsoleColor.Black;
+
+   /// <summary>Gets or sets the cancellation handler.</summary>
+   public Func<string, T> CancellationHandler { get; set; }
+
+   /// <summary>Gets or sets the <see cref="ConsoleKey"/> that is used to trigger a cancellation of the input.</summary>
+   public ConsoleKey? CancellationKey { get; set; } = ConsoleKey.Escape;
 
    /// <summary>Gets the console that is used.</summary>
    public IConsole Console { get; }
@@ -195,6 +199,12 @@ public class InputBox<T>
 
             return value;
          }
+         catch (InputCanceledException e)
+         {
+            if (CancellationHandler != null)
+               return CancellationHandler(e.CurrentInput);
+            throw;
+         }
          catch
          {
             Console.Clear();
@@ -294,6 +304,16 @@ public class InputBox<T>
                MoveCursor(1, initialLeft);
 
             continue;
+         }
+
+         if (key.Key == CancellationKey)
+         {
+            Console.ForegroundColor = originalForeground;
+            Console.BackgroundColor = originalBackground;
+            if (newline)
+               Console.WriteLine();
+
+            throw new InputCanceledException(inputRange.Text);
          }
 
          if (IsValidInput(key) && ValidForType(key))
