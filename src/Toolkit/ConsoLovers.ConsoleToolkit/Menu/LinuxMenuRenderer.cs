@@ -1,15 +1,25 @@
-﻿using System;
-using ConsoLovers.ConsoleToolkit.Contracts;
-using ConsoLovers.ConsoleToolkit.Core;
-using JetBrains.Annotations;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="LinuxMenuRenderer.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace ConsoLovers.ConsoleToolkit.Menu
 {
+   using System;
+
+   using ConsoLovers.ConsoleToolkit.Contracts;
+   using ConsoLovers.ConsoleToolkit.Core;
+
+   using JetBrains.Annotations;
+
    internal sealed class LinuxMenuRenderer : IMenuRenderer
    {
       #region Constants and Fields
 
       private readonly IConsole console;
+
+      private bool IndexMenuItems = true;
 
       #endregion
 
@@ -24,8 +34,6 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       #region IMenuRenderer Members
 
-      private bool IndexMenuItems = true;
-
       public void Element(ElementInfo element, string selector, SelectionMode selectionMode)
       {
          var selectorText = GetSelector(element, selector);
@@ -36,28 +44,8 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          var elementText = element.Text;
          var padRight = GetPadRight(selectionMode);
 
-         Print($"{selectorText}{indent}{expander}{index}{elementText}{padRight}"); 
+         Print($"{selectorText}{indent}{expander}{index}{elementText}{padRight}");
          //Hint(element, selectionMode, false);
-      }
-
-      private string GetPadRight(SelectionMode selectionMode)
-      {
-         if (selectionMode == SelectionMode.UnifiedLength)
-         {
-            //var padding = unifiedLength - Console.CursorLeft;
-
-            var padding = System.Console.CursorLeft;
-            if (padding > 0)
-               return string.Empty.PadRight(padding);
-         }
-
-         if (selectionMode == SelectionMode.FullLine)
-         {
-            var padding = System.Console.WindowWidth - System.Console.CursorLeft - 1;
-            return string.Empty.PadRight(padding);
-         }
-
-         return string.Empty;
       }
 
       public void Footer(object footer)
@@ -131,25 +119,9 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          }
       }
 
-      private string GetSelector(ElementInfo element, string selector)
-      {
-         if (element.IsSelected)
-            return selector;
-
-         return string.Empty.PadRight(selector.Length);
-      }
-
       #endregion
 
       #region Methods
-
-      private void Print(string text)
-      {
-         if (string.IsNullOrEmpty(text))
-            return;
-
-         console.Write(text);
-      }
 
       private string GetExpander(ElementInfo element)
       {
@@ -159,6 +131,42 @@ namespace ConsoLovers.ConsoleToolkit.Menu
             return string.Empty.PadRight(expanderWidth);
 
          return element.IsExpanded.Value ? element.Expander.Expanded : element.Expander.Collapsed;
+      }
+
+      private string GetPadRight(SelectionMode selectionMode)
+      {
+         if (selectionMode == SelectionMode.UnifiedLength)
+         {
+            //var padding = unifiedLength - Console.CursorLeft;
+
+            var padding = System.Console.CursorLeft;
+            if (padding > 0)
+               return string.Empty.PadRight(padding);
+         }
+
+         if (selectionMode == SelectionMode.FullLine)
+         {
+            var padding = System.Console.WindowWidth - System.Console.CursorLeft - 1;
+            return string.Empty.PadRight(padding);
+         }
+
+         return string.Empty;
+      }
+
+      private string GetSelector(ElementInfo element, string selector)
+      {
+         if (element.IsSelected)
+            return selector;
+
+         return string.Empty.PadRight(selector.Length);
+      }
+
+      private void Print(string text)
+      {
+         if (string.IsNullOrEmpty(text))
+            return;
+
+         console.Write(text);
       }
 
       #endregion

@@ -1,16 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using ConsoLovers.ConsoleToolkit.Contracts;
-using ConsoLovers.ConsoleToolkit.Core;
-using ConsoLovers.ConsoleToolkit.InputHandler;
-using JetBrains.Annotations;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ConsoleMenuBase.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace ConsoLovers.ConsoleToolkit.Menu
 {
+   using System;
+   using System.Collections.Generic;
+   using System.ComponentModel;
+   using System.Linq;
+   using System.Runtime.CompilerServices;
+   using System.Runtime.InteropServices;
+
+   using ConsoLovers.ConsoleToolkit.Contracts;
+   using ConsoLovers.ConsoleToolkit.Core;
+   using ConsoLovers.ConsoleToolkit.InputHandler;
+
+   using JetBrains.Annotations;
+
    public abstract class ConsoleMenuBase : IConsoleMenuOptions
    {
       #region Constants and Fields

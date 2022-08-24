@@ -1,10 +1,18 @@
-﻿using System;
-using ConsoLovers.ConsoleToolkit.Contracts;
-using ConsoLovers.ConsoleToolkit.Core;
-using JetBrains.Annotations;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="DefaultMenuRenderer.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace ConsoLovers.ConsoleToolkit.Menu
 {
+   using System;
+
+   using ConsoLovers.ConsoleToolkit.Contracts;
+   using ConsoLovers.ConsoleToolkit.Core;
+
+   using JetBrains.Annotations;
+
    internal class DefaultMenuRenderer : IMenuRenderer
    {
       #region Constants and Fields

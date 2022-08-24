@@ -1,4 +1,10 @@
-﻿namespace ConsoLovers.ConsoleToolkit.InputHandler
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="IInputHandler.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace ConsoLovers.ConsoleToolkit.InputHandler
 {
    using System;
 
