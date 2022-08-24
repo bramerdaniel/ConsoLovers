@@ -132,22 +132,22 @@ internal class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigura
          return serviceProvider;
 
       EnsureRequiredServices();
-
-
-
+      
       if (createServiceProvider != null)
-         return createServiceProvider(ServiceCollection);
-
-      var factory = new BuildInServiceProviderFactory();
-      var collection = factory.CreateBuilder(ServiceCollection);
-      var provider = factory.CreateServiceProvider(collection);
-
+      {
+         serviceProvider = createServiceProvider(ServiceCollection);
+      }
+      else
+      {
+         var factory = new BuildInServiceProviderFactory();
+         var collection = factory.CreateBuilder(ServiceCollection);
+         serviceProvider = factory.CreateServiceProvider(collection);
+      }
 
       foreach (var configurationAction in serviceConfigurationActions)
-         configurationAction(provider);
-
-      serviceProvider = provider;
-      return provider;
+         configurationAction(serviceProvider);
+      
+      return serviceProvider;
    }
 
    protected virtual void AddServiceConfigurationAction([NotNull] Action<IServiceProvider> configAction)
@@ -190,6 +190,8 @@ internal class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigura
    private void AddDefaultMiddleware()
    {
       ServiceCollection.EnsureSingleton<IExecutionPipeline<T>, ExecutionPipeline<T>>();
+      ServiceCollection.AddSingleton<IExecutionOptions, ExecutionOptions>();
+
       ServiceCollection.AddTransient<IMiddleware<T>, ExceptionHandlingMiddleware<T>>();
       ServiceCollection.AddTransient<IMiddleware<T>, ParserMiddleware<T>>();
       ServiceCollection.AddTransient<IMiddleware<T>, MapperMiddleware<T>>();

@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using ConsoLovers.ConsoleToolkit.Core.Builders;
+using ConsoLovers.ConsoleToolkit.Core.Middleware;
 using ConsoLovers.ConsoleToolkit.Core.Services;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -77,6 +78,19 @@ public static class ApplicationBuilderExtensions
       configurationAction(defaultOptions);
 
       configurationHandler.ConfigureRequiredService<ICommandLineArgumentParser>(p => p.Options = defaultOptions);
+      return builder;
+   }
+
+   public static IApplicationBuilder<T> ConfigureMapping<T>(this IApplicationBuilder<T> builder, Action<IMappingOptions> configurationMapping)
+      where T : class
+   {
+      if (builder is not IServiceConfigurationHandler configurationHandler)
+         throw new InvalidOperationException("The builder does not support service configuration");
+
+      var mappingOptions = new MappingOptions();
+      configurationMapping(mappingOptions);
+
+      configurationHandler.ConfigureRequiredService<IExecutionOptions>(p => p.MappingOptions = mappingOptions);
       return builder;
    }
 

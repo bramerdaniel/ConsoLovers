@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+using ConsoLovers.ConsoleToolkit.Core.Exceptions;
 
 using JetBrains.Annotations;
 
@@ -23,16 +24,23 @@ internal class MapperMiddleware<T> : Middleware<T>
 
    private readonly IArgumentReflector argumentReflector;
 
+   private readonly IConsole console;
+
    private readonly IServiceProvider serviceProvider;
+
+   private bool cancelExecution;
+
+   private IMappingOptions options;
 
    #endregion
 
    #region Constructors and Destructors
 
-   public MapperMiddleware([NotNull] IServiceProvider serviceProvider, [NotNull] IArgumentReflector argumentReflector)
+   public MapperMiddleware([NotNull] IServiceProvider serviceProvider, [NotNull] IArgumentReflector argumentReflector, [NotNull] IConsole console)
    {
       this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
       this.argumentReflector = argumentReflector ?? throw new ArgumentNullException(nameof(argumentReflector));
+      this.console = console ?? throw new ArgumentNullException(nameof(console));
    }
 
    #endregion
@@ -40,6 +48,12 @@ internal class MapperMiddleware<T> : Middleware<T>
    #region Public Properties
 
    public override int ExecutionOrder => KnownLocations.MapperMiddleware;
+
+   public IMappingOptions Options
+   {
+      get => options ??= serviceProvider.GetRequiredService<IExecutionOptions>().MappingOptions ?? new MappingOptions();
+      set => options = value;
+   }
 
    #endregion
 
@@ -54,7 +68,15 @@ internal class MapperMiddleware<T> : Middleware<T>
       // but if another middleware would decide to create and initialize them e.g. with default values,
       // we are ok with that here
       context.ApplicationArguments ??= serviceProvider.GetRequiredService<T>();
+
+      cancelExecution = false;
       Map(context.ParsedArguments, context.ApplicationArguments);
+
+      if (cancelExecution)
+         return Task.CompletedTask;
+
+      if (cancellationToken.IsCancellationRequested)
+         return Task.FromCanceled(cancellationToken);
 
       return Next(context, cancellationToken);
    }
@@ -71,6 +93,11 @@ internal class MapperMiddleware<T> : Middleware<T>
          : ActivatorUtilities.GetServiceOrCreateInstance<ArgumentMapper<T>>(serviceProvider);
    }
 
+   private void InvokeCustomHandler(MapperEventArgs args)
+   {
+      // TODO handle unmapped command line arguments
+   }
+
    private void Map(ICommandLineArguments args, T instance)
    {
       var mapper = CreateMapper();
@@ -78,25 +105,34 @@ internal class MapperMiddleware<T> : Middleware<T>
       try
       {
          mapper.UnmappedCommandLineArgument += OnUnmappedCommandLineArgument;
-         mapper.MappedCommandLineArgument += OnMappedCommandLineArgument;
-
          mapper.Map(args, instance);
       }
       finally
       {
          mapper.UnmappedCommandLineArgument -= OnUnmappedCommandLineArgument;
-         mapper.MappedCommandLineArgument -= OnMappedCommandLineArgument;
       }
-   }
-
-   private void OnMappedCommandLineArgument(object sender, MapperEventArgs e)
-   {
-      // TODO do something with that
    }
 
    private void OnUnmappedCommandLineArgument(object sender, MapperEventArgs e)
    {
-      // TODO handle unmapped command line arguments
+      ProcessUnmappedArguments(e);
+   }
+
+   private void ProcessUnmappedArguments(MapperEventArgs args)
+   {
+      var message = $"The argument {args.Argument.OriginalString} could not be mapped to the object {args.Instance}";
+
+      if (Options.UnhandledArgumentsBehavior.HasFlag(UnhandledArgumentsBehaviors.LogToConsole))
+         console.WriteLine(message, ConsoleColor.Red);
+
+      if (Options.UnhandledArgumentsBehavior.HasFlag(UnhandledArgumentsBehaviors.CancelExecution))
+         cancelExecution = true;
+
+      if (Options.UnhandledArgumentsBehavior.HasFlag(UnhandledArgumentsBehaviors.UseCustomHandler))
+         InvokeCustomHandler(args);
+
+      if (Options.UnhandledArgumentsBehavior.HasFlag(UnhandledArgumentsBehaviors.ThrowException))
+         throw new CommandLineArgumentException(message);
    }
 
    #endregion

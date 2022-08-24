@@ -15,6 +15,10 @@ public static class Program
          //.AddMiddleware(typeof(TryCatchMiddleware))
          //.AddMiddleware<ApplicationArgs, RepeatMiddleware>()
          // .Run();
+         .ConfigureMapping(o =>
+         {
+            o.UnhandledArgumentsBehavior = UnhandledArgumentsBehaviors.LogToConsole | UnhandledArgumentsBehaviors.CancelExecution;
+         })
          .Run(t => throw new InvalidOperationException($"That went wrong {t}"));
 
       Console.ReadLine();
