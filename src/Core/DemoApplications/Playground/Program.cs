@@ -17,7 +17,7 @@ public static class Program
          // .Run();
          .ConfigureMapping(o =>
          {
-            o.UnhandledArgumentsBehavior = UnhandledArgumentsBehaviors.LogToConsole | UnhandledArgumentsBehaviors.CancelExecution;
+            o.UnhandledArgumentsBehavior = UnhandledArgumentsBehaviors.UseCustomHandler;
          })
          .Run(t => throw new InvalidOperationException($"That went wrong {t}"));
 

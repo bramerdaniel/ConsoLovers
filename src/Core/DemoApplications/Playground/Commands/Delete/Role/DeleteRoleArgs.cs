@@ -8,7 +8,7 @@ namespace Playground.Commands.Delete.Role;
 
 using ConsoLovers.ConsoleToolkit.Core;
 
-public class DeleteRoleArgs : ICustomizedFooter
+public class DeleteRoleArgs : ICustomizedFooter, IMappingHandler
 {
    [Argument("name", Index = 0)]
    [HelpText("Name of the role to delete")]
@@ -21,5 +21,10 @@ public class DeleteRoleArgs : ICustomizedFooter
       console.WriteLine("Usage:");
       console.WriteLine("  delete role <name>:");
       console.WriteLine();
+   }
+
+   public bool TryMap(CommandLineArgument argument)
+   {
+      return true;
    }
 }

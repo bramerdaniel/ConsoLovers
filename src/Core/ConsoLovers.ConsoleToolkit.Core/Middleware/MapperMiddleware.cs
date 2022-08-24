@@ -93,9 +93,19 @@ internal class MapperMiddleware<T> : Middleware<T>
          : ActivatorUtilities.GetServiceOrCreateInstance<ArgumentMapper<T>>(serviceProvider);
    }
 
-   private void InvokeCustomHandler(MapperEventArgs args)
+   private bool HandledByCustomHandler(MapperEventArgs args)
    {
-      // TODO handle unmapped command line arguments
+      // TODO create the correct infrastructure to forward these arguments directly to the current command
+
+
+      if (args.Instance is IMappingHandler handler)
+      {
+         if (handler.TryMap(args.Argument))
+            return true;
+      }
+
+      return false;
+
    }
 
    private void Map(ICommandLineArguments args, T instance)
@@ -122,14 +132,17 @@ internal class MapperMiddleware<T> : Middleware<T>
    {
       var message = $"The argument {args.Argument.OriginalString} could not be mapped to the object {args.Instance}";
 
+      if (Options.UnhandledArgumentsBehavior.HasFlag(UnhandledArgumentsBehaviors.UseCustomHandler))
+      {
+         if (HandledByCustomHandler(args))
+            return;
+      }
+
       if (Options.UnhandledArgumentsBehavior.HasFlag(UnhandledArgumentsBehaviors.LogToConsole))
          console.WriteLine(message, ConsoleColor.Red);
 
       if (Options.UnhandledArgumentsBehavior.HasFlag(UnhandledArgumentsBehaviors.CancelExecution))
          cancelExecution = true;
-
-      if (Options.UnhandledArgumentsBehavior.HasFlag(UnhandledArgumentsBehaviors.UseCustomHandler))
-         InvokeCustomHandler(args);
 
       if (Options.UnhandledArgumentsBehavior.HasFlag(UnhandledArgumentsBehaviors.ThrowException))
          throw new CommandLineArgumentException(message);
