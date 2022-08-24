@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ConsoleApplication.cs" company="KUKA Deutschland GmbH">
-//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
+// <copyright file="ConsoleApplication.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -9,6 +9,7 @@ namespace ConsoLovers.ConsoleToolkit.Core;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+
 using ConsoLovers.ConsoleToolkit.Core.Builders;
 using ConsoLovers.ConsoleToolkit.Core.Middleware;
 
@@ -84,9 +85,8 @@ internal class ConsoleApplication<T> : IConsoleApplication<T>
       if (args == null)
          throw new ArgumentNullException(nameof(args));
 
-
       context = new ExecutionContext<T>(args);
-      await executionPipeline.Execute(context, cancellationToken);
+      await executionPipeline.ExecuteAsync(context, cancellationToken);
    }
 
    #endregion

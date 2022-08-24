@@ -1,30 +1,20 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IAppicationBuilder.cs" company="KUKA Deutschland GmbH">
-//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
+// <copyright file="IApplicationBuilder.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-
-/* Unmerged change from project 'ConsoLovers.ConsoleToolkit.Core (net461)'
-Before:
-namespace ConsoLovers.ConsoleToolkit.Core.Builders
-After:
-namespace ConsoLovers.ConsoleToolkit.Core
-{
-   using ConsoLovers;
-   using ConsoLovers.ConsoleToolkit;
-   using ConsoLovers.ConsoleToolkit.Core;
-   using ConsoLovers.ConsoleToolkit.Core;
-   using ConsoLovers.ConsoleToolkit.Core.Builders
-*/
 namespace ConsoLovers.ConsoleToolkit.Core
 {
    using ConsoLovers.ConsoleToolkit.Core.Builders;
+
    using Microsoft.Extensions.DependencyInjection;
 
    public interface IApplicationBuilder<T> : IDependencyInjectionAbstraction<IApplicationBuilder<T>>
       where T : class
    {
+      #region Public Methods and Operators
+
       /// <summary>Builds this <see cref="IConsoleApplication{T}"/> instance.</summary>
       /// <returns>The created <see cref="IConsoleApplication{T}"/></returns>
       IConsoleApplication<T> Build();
@@ -33,6 +23,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       /// <param name="collection">The <see cref="IServiceCollection"/> to use.</param>
       /// <returns>The <see cref="IApplicationBuilder{T}"/> for more configuration</returns>
       IApplicationBuilder<T> UseServiceCollection(IServiceCollection collection);
-   }
 
+      #endregion
+   }
 }

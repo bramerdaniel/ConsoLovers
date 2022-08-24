@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ExecutionPipelineBuilder.cs" company="KUKA Deutschland GmbH">
-//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
+// <copyright file="ExecutionPipelineBuilder.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -19,7 +19,6 @@ public class ExecutionPipelineBuilder<T>
 
    readonly Func<IExecutionContext<T>, CancellationToken, Task> finalStep;
 
-   
    private readonly IList<IMiddleware<T>> middlewareList;
 
    #endregion
@@ -29,7 +28,7 @@ public class ExecutionPipelineBuilder<T>
    public ExecutionPipelineBuilder(Func<IExecutionContext<T>, CancellationToken, Task> finalStep)
    {
       this.finalStep = finalStep;
-      middlewareList= new List<IMiddleware<T>>();
+      middlewareList = new List<IMiddleware<T>>();
    }
 
    public ExecutionPipelineBuilder()

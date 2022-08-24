@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ApplicationBuilderExtensions.cs" company="KUKA Deutschland GmbH">
-//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
+// <copyright file="ApplicationBuilderExtensions.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -10,9 +10,8 @@ using System;
 using System.Resources;
 using System.Threading;
 using System.Threading.Tasks;
-using ConsoLovers.ConsoleToolkit.Core;
+
 using ConsoLovers.ConsoleToolkit.Core.Builders;
-using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 using ConsoLovers.ConsoleToolkit.Core.Services;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -20,7 +19,6 @@ using Microsoft.Extensions.DependencyInjection;
 public static class ApplicationBuilderExtensions
 {
    #region Public Methods and Operators
-
 
    public static IApplicationBuilder<T> AddResourceManager<T>(this IApplicationBuilder<T> builder, ResourceManager resourceManager)
       where T : class
@@ -68,7 +66,8 @@ public static class ApplicationBuilderExtensions
       return builder.AddService(s => s.AddSingleton(serviceType, implementation));
    }
 
-   public static IApplicationBuilder<T> ConfigureCommandLineParser<T>(this IApplicationBuilder<T> builder, Action<ICommandLineOptions> configurationAction)
+   public static IApplicationBuilder<T> ConfigureCommandLineParser<T>(this IApplicationBuilder<T> builder,
+      Action<ICommandLineOptions> configurationAction)
       where T : class
    {
       if (builder is not IServiceConfigurationHandler configurationHandler)
@@ -131,7 +130,8 @@ public static class ApplicationBuilderExtensions
       return builder.Run(applicationLogic, Environment.CommandLine);
    }
 
-   public static IConsoleApplication<T> Run<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder, Action<T> applicationLogic, string args)
+   public static IConsoleApplication<T> Run<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder, Action<T> applicationLogic,
+      string args)
       where T : class
    {
       builder.UseApplicationLogic((t, _) =>
@@ -260,8 +260,6 @@ public static class ApplicationBuilderExtensions
 
       return builder.AddService(x => x.AddTransient<IApplicationLogic, TLogic>());
    }
-
-
 
    #endregion
 }

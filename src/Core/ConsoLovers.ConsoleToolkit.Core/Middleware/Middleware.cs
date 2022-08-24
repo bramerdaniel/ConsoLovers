@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Middleware.cs" company="KUKA Deutschland GmbH">
-//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
+// <copyright file="Middleware.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -16,9 +16,7 @@ using System.Threading.Tasks;
 public abstract class Middleware<TArgs> : IMiddleware<TArgs>
    where TArgs : class
 {
-   #region IMiddleware<TContext> Members
-
-   protected virtual MiddlewareLocation Placement => MiddlewareLocation.BeforeExecution;
+   #region IMiddleware<TArgs> Members
 
    public virtual int ExecutionOrder => (int)Placement;
 
@@ -30,6 +28,12 @@ public abstract class Middleware<TArgs> : IMiddleware<TArgs>
    /// <param name="cancellationToken">The cancellation token for canceling the execution.</param>
    /// <returns>The execution <see cref="T:System.Threading.Tasks.Task"/></returns>
    public abstract Task Execute(IExecutionContext<TArgs> context, CancellationToken cancellationToken);
+
+   #endregion
+
+   #region Properties
+
+   protected virtual MiddlewareLocation Placement => MiddlewareLocation.BeforeExecution;
 
    #endregion
 }

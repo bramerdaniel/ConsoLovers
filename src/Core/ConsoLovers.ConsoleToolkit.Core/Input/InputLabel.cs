@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="InputLabel.cs" company="KUKA Deutschland GmbH">
-//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
+// <copyright file="InputLabel.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -8,8 +8,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.Input;
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-
-using ConsoLovers.ConsoleToolkit.Core;
 
 [SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Global")]
 [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]

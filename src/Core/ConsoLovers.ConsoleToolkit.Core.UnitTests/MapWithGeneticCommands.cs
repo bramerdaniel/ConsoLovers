@@ -313,7 +313,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       {
          #region Public Properties
 
-         [Command("Execute", IsDefaultCommand = true)]
+         [Command("ExecuteAsync", IsDefaultCommand = true)]
          public GenericCommand<ExecuteArguments> Execute { get; set; }
 
          [Command("ExecuteMany")]

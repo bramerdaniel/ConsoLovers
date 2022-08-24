@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ApplicationLogicExecutionTests.cs" company="KUKA Deutschland GmbH">
-//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
+// <copyright file="ApplicationLogicExecutionTests.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -9,8 +9,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.IntegrationTests;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
-
-using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
 using FluentAssertions;
 
@@ -25,6 +23,35 @@ using Moq;
 [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Reviewed. Suppression is OK here.")]
 public class ApplicationLogicExecutionTests
 {
+   #region Public Methods and Operators
+
+   [TestMethod]
+   public async Task EnsureApplicationLogicIsExecutedWhenInvalidArgumentIsSpecified()
+   {
+      var logicMock = new Mock<IApplicationLogic>();
+
+      var application = await ConsoleApplication.WithArguments<ApplicationArgs>()
+         .UseApplicationLogic(logicMock.Object)
+         .RunAsync("NoCommand=5", CancellationToken.None);
+
+      application.Arguments.Command.Should().BeNull();
+      application.Arguments.NoCommand.Should().Be(5);
+      logicMock.Verify(x => x.ExecuteAsync(It.IsAny<ApplicationArgs>(), CancellationToken.None), Times.Once);
+   }
+
+   [TestMethod]
+   public async Task EnsureApplicationLogicIsNotExecutedWhenCommandIsSpecified()
+   {
+      var logicMock = new Mock<IApplicationLogic>();
+
+      var application = await ConsoleApplication.WithArguments<ApplicationArgs>()
+         .UseApplicationLogic(logicMock.Object)
+         .RunAsync("run", CancellationToken.None);
+
+      application.Arguments.Command.Executed.Should().BeTrue();
+      logicMock.Verify(x => x.ExecuteAsync(It.IsAny<ApplicationArgs>(), CancellationToken.None), Times.Never);
+   }
+
    [TestMethod]
    public async Task EnsureCustomApplicationLogicIsExecuted()
    {
@@ -50,30 +77,12 @@ public class ApplicationLogicExecutionTests
    }
 
    [TestMethod]
-   public async Task EnsureApplicationLogicIsNotExecutedWhenCommandIsSpecified()
+   public async Task EnsureExecutingWithoutCustomLogicDoesNotCauseErrors()
    {
-      var logicMock = new Mock<IApplicationLogic>();
-
       var application = await ConsoleApplication.WithArguments<ApplicationArgs>()
-         .UseApplicationLogic(logicMock.Object)
-         .RunAsync("run", CancellationToken.None);
+         .RunAsync(CancellationToken.None);
 
-      application.Arguments.Command.Executed.Should().BeTrue();
-      logicMock.Verify(x => x.ExecuteAsync(It.IsAny<ApplicationArgs>(), CancellationToken.None), Times.Never);
-   }
-
-   [TestMethod]
-   public async Task EnsureApplicationLogicIsExecutedWhenInvalidArgumentIsSpecified()
-   {
-      var logicMock = new Mock<IApplicationLogic>();
-
-      var application = await ConsoleApplication.WithArguments<ApplicationArgs>()
-         .UseApplicationLogic(logicMock.Object)
-         .RunAsync("NoCommand=5", CancellationToken.None);
-
-      application.Arguments.Command.Should().BeNull();
-      application.Arguments.NoCommand.Should().Be(5);
-      logicMock.Verify(x => x.ExecuteAsync(It.IsAny<ApplicationArgs>(), CancellationToken.None), Times.Once);
+      application.Should().NotBeNull();
    }
 
    [TestMethod]
@@ -89,46 +98,40 @@ public class ApplicationLogicExecutionTests
       applicationLogic.Arguments.Should().BeSameAs(application.Arguments);
    }
 
-   class Logic : IApplicationLogic<ApplicationArgs>
-   {
-      public Task ExecuteAsync(ApplicationArgs arguments, CancellationToken cancellationToken)
-      {
-         Executed = true;
-         Arguments = arguments;
-         return Task.CompletedTask;
-      }
-
-      public ApplicationArgs Arguments { get; private set; }
-
-      public bool Executed { get; private set; }
-   }
-
-
-   [TestMethod]
-   public async Task EnsureExecutingWithoutCustomLogicDoesNotCauseErrors()
-   {
-      var application = await ConsoleApplication.WithArguments<ApplicationArgs>()
-         .RunAsync(CancellationToken.None);
-
-      application.Should().NotBeNull();
-   }
+   #endregion
 
    [UsedImplicitly]
    internal class ApplicationArgs
    {
-      [Command("run")]
-      internal RunCommand Command { get; [UsedImplicitly] set; }
+      #region Public Properties
 
       [Argument("NoCommand")]
       public int NoCommand { get; set; }
 
+      #endregion
+
+      #region Properties
+
+      [Command("run")]
+      internal RunCommand Command { get; [UsedImplicitly] set; }
+
+      #endregion
+
+      [UsedImplicitly]
+      internal class CommandArgs
+      {
+         #region Public Properties
+
+         [Argument("parameter")]
+         public string Parameter { get; set; }
+
+         #endregion
+      }
+
       [UsedImplicitly]
       internal class RunCommand : IAsyncCommand<CommandArgs>
       {
-         public bool Executed { get; private set; }
-
-         public string Parameter { get; private set; }
-
+         #region IAsyncCommand<CommandArgs> Members
 
          public Task ExecuteAsync(CancellationToken cancellationToken)
          {
@@ -138,14 +141,38 @@ public class ApplicationLogicExecutionTests
          }
 
          public CommandArgs Arguments { get; set; }
-      }
 
-      [UsedImplicitly]
-      internal class CommandArgs
-      {
-         [Argument("parameter")]
-         public string Parameter { get; set; }
+         #endregion
+
+         #region Public Properties
+
+         public bool Executed { get; private set; }
+
+         public string Parameter { get; private set; }
+
+         #endregion
       }
    }
 
+   class Logic : IApplicationLogic<ApplicationArgs>
+   {
+      #region IApplicationLogic<ApplicationArgs> Members
+
+      public Task ExecuteAsync(ApplicationArgs arguments, CancellationToken cancellationToken)
+      {
+         Executed = true;
+         Arguments = arguments;
+         return Task.CompletedTask;
+      }
+
+      #endregion
+
+      #region Public Properties
+
+      public ApplicationArgs Arguments { get; private set; }
+
+      public bool Executed { get; private set; }
+
+      #endregion
+   }
 }

@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="MiddlewareLocation.cs" company="KUKA Deutschland GmbH">
-//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
+// <copyright file="MiddlewareLocation.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -29,13 +29,13 @@ static class KnownLocations
 {
    #region Constants and Fields
 
+   internal const int ExceptionHandlingMiddleware = 1000;
+
    internal const int ExecutionMiddleware = 4000;
 
    internal const int MapperMiddleware = 3000;
 
    internal const int ParserMiddleware = 2000;
-
-   internal const int ExceptionHandlingMiddleware = 1000;
 
    #endregion
 }

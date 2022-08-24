@@ -1,12 +1,11 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="CommandLineArgumentParser.cs" company="KUKA Deutschland GmbH">
-//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
+// <copyright file="CommandLineArgumentParser.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
 {
-   using ConsoLovers.ConsoleToolkit.Core;
    using System;
    using System.Collections.Generic;
    using System.Globalization;
@@ -27,16 +26,17 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
 
       #endregion
 
-      public ICommandLineOptions Options { get; set; } = new CommandLineOptions();
-
       #region ICommandLineArgumentParser Members
+
+      public ICommandLineOptions Options { get; set; } = new CommandLineOptions();
 
       /// <summary>Parses the given arguments into a dictionary.</summary>
       /// <param name="args">The command line arguments.</param>
       /// <returns>The created dictionary</returns>
       public ICommandLineArguments ParseArguments(string[] args)
       {
-         var arguments = new CommandLineArgumentList(Options.CaseSensitive ? StringComparer.InvariantCulture : StringComparer.InvariantCultureIgnoreCase);
+         var arguments =
+            new CommandLineArgumentList(Options.CaseSensitive ? StringComparer.InvariantCulture : StringComparer.InvariantCultureIgnoreCase);
          int index = 0;
 
          foreach (string argument in NormalizeArguments(args).Where(x => !string.IsNullOrEmpty(x)))
@@ -58,7 +58,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
       public ICommandLineArguments ParseArguments(string args)
       {
          int skipFirst = args.Equals(Environment.CommandLine) ? 1 : 0;
-         var argumentList = new CommandLineArgumentList(Options.CaseSensitive ? StringComparer.InvariantCulture : StringComparer.InvariantCultureIgnoreCase);
+         var argumentList =
+            new CommandLineArgumentList(Options.CaseSensitive ? StringComparer.InvariantCulture : StringComparer.InvariantCultureIgnoreCase);
          int index = 0;
          foreach (var arg in SplitIntoArgs(args).Skip(skipFirst))
          {

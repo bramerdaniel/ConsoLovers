@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ExecutionMiddleware.cs" company="KUKA Deutschland GmbH">
-//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
+// <copyright file="ExecutionMiddleware.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -9,8 +9,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.Middleware;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-
-using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
 using JetBrains.Annotations;
 

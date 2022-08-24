@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Container.cs" company="KUKA Deutschland GmbH">
-//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
+// <copyright file="Container.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -20,7 +20,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.DIContainer
    using JetBrains.Annotations;
 
    using Microsoft.Extensions.DependencyInjection;
-   using Microsoft.Extensions.DependencyInjection.Extensions;
 
    #endregion
 

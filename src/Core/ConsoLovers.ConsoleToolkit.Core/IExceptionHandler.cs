@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IExceptionHandler.cs" company="KUKA Deutschland GmbH">
-//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
+// <copyright file="IExceptionHandler.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -10,5 +10,12 @@ using System;
 
 public interface IExceptionHandler
 {
+   #region Public Methods and Operators
+
+   /// <summary>Handles the specified exception.</summary>
+   /// <param name="exception">The exception.</param>
+   /// <returns>True if the exception was handled, otherwise false</returns>
    bool Handle(Exception exception);
+
+   #endregion
 }

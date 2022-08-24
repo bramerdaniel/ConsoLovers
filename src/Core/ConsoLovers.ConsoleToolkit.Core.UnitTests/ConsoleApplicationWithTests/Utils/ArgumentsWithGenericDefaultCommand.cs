@@ -7,7 +7,7 @@
 
    public class ArgumentsWithGenericDefaultCommand 
    {
-      [Command("Execute", "e", IsDefaultCommand = true)]
+      [Command("ExecuteAsync", "e", IsDefaultCommand = true)]
       public GenericExecuteCommand Execute { get; set; }
 
    }

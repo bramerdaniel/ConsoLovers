@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="CommandLineEngine.cs" company="KUKA Deutschland GmbH">
-//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
+// <copyright file="CommandLineEngine.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -11,7 +11,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
    using System.Linq;
    using System.Reflection;
    using System.Text;
-   using ConsoLovers.ConsoleToolkit.Core;
+
    using ConsoLovers.ConsoleToolkit.Core.DIContainer;
 
    using JetBrains.Annotations;
@@ -24,7 +24,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       #region Constructors and Destructors
 
       [InjectionConstructor]
-      public CommandLineEngine([NotNull] IServiceProvider serviceProvider, [NotNull] ICommandLineArgumentParser argumentParser, [NotNull] IArgumentReflector argumentReflector)
+      public CommandLineEngine([NotNull] IServiceProvider serviceProvider, [NotNull] ICommandLineArgumentParser argumentParser,
+         [NotNull] IArgumentReflector argumentReflector)
       {
          ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
          ArgumentParser = argumentParser ?? throw new ArgumentNullException(nameof(argumentParser));
@@ -82,9 +83,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          return stringBuilder;
       }
 
-      public ICommandLineOptions Options => ArgumentParser.Options;
-
-
       /// <summary>Gets the help information for the class of the given type.</summary>
       /// <typeparam name="T">The argument class for creating the help for</typeparam>
       /// <param name="localizationService">The <see cref="ILocalizationService"/> that will be used for localization</param>
@@ -93,7 +91,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       {
          return GetHelpForProperties(typeof(T), localizationService);
       }
-
 
       /// <summary>Maps the specified arguments to given object of the given type.</summary>
       /// <typeparam name="T">The type of the class to map the argument to.</typeparam>
@@ -117,7 +114,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
             mapper.UnmappedCommandLineArgument -= OnUnmappedCommandLineArgument;
          }
       }
-
 
       public T Map<T>(string args, T instance)
          where T : class
@@ -193,6 +189,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       #region Public Properties
 
       public IArgumentReflector ArgumentReflector { get; }
+
+      public ICommandLineOptions Options => ArgumentParser.Options;
 
       #endregion
 

@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IDependencyInjectionAbstraction.cs" company="KUKA Deutschland GmbH">
-//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
+// <copyright file="IDependencyInjectionAbstraction.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -14,6 +14,8 @@ using Microsoft.Extensions.DependencyInjection;
 /// <typeparam name="T">The implementing type</typeparam>
 public interface IDependencyInjectionAbstraction<out T>
 {
+   #region Public Methods and Operators
+
    /// <summary>Add the one or more services to the passed <see cref="IServiceCollection"/>.</summary>
    /// <param name="serviceSetup">The function that passes the used <see cref="IServiceCollection"/>.</param>
    /// <returns>The current <see cref="T"/> for further configuration</returns>
@@ -24,4 +26,6 @@ public interface IDependencyInjectionAbstraction<out T>
    /// <param name="factory">The factory to use.</param>
    /// <returns>The current <see cref="T"/> for further configuration</returns>
    T UseServiceProviderFactory<TContainerBuilder>(IServiceProviderFactory<TContainerBuilder> factory);
+
+   #endregion
 }

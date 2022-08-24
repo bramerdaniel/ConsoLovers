@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="InputBox.cs" company="KUKA Deutschland GmbH">
-//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
+// <copyright file="InputBox.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -10,13 +10,11 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
-using ConsoLovers.ConsoleToolkit.Core;
-
 [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 [SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Global")]
 [SuppressMessage("ReSharper", "PropertyCanBeMadeInitOnly.Global")]
 [SuppressMessage("ReSharper", "UnusedMember.Global")]
-public class InputBox<T> 
+public class InputBox<T>
 {
    #region Constants and Fields
 
@@ -33,8 +31,6 @@ public class InputBox<T>
    private ConsoleColor originalForeground;
 
    #endregion
-
-   // TODO support escape key 
 
    #region Constructors and Destructors
 
@@ -95,7 +91,10 @@ public class InputBox<T>
    /// <summary>Gets or sets a value indicating whether the input is a password.</summary>
    public bool IsPassword { get; set; }
 
-   /// <summary>Gets or sets a function that is called to check if the pressed console key is valid in this context (default is !char.IsControl(key.KeyChar)).</summary>
+   /// <summary>
+   ///    Gets or sets a function that is called to check if the pressed console key is valid in this context (default is
+   ///    !char.IsControl(key.KeyChar)).
+   /// </summary>
    public Func<ConsoleKeyInfo, bool> IsValidInput
    {
       get => isValidInput ?? NoControlCharacter;
@@ -207,7 +206,7 @@ public class InputBox<T>
       var allowedMoves = Math.Max(expectedLeft, leftPadding);
       Console.SetCursorPosition(allowedMoves, Console.CursorTop);
    }
-   
+
    private string ReadInternal(int length, bool newline)
    {
       Label?.Print();
@@ -362,4 +361,6 @@ public class InputBox<T>
    }
 
    #endregion
+
+   // TODO support escape key 
 }

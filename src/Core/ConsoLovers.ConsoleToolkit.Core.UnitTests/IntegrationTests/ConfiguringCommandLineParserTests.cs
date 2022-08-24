@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ConfiguringCommandLineParserTests.cs" company="KUKA Deutschland GmbH">
-//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
+// <copyright file="ConfiguringCommandLineParserTests.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -8,21 +8,17 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.IntegrationTests;
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Threading;
-using System.Threading.Tasks;
-using ConsoLovers.ConsoleToolkit.Core;
-using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
 using FluentAssertions;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using Moq;
-
 [TestClass]
 [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Reviewed. Suppression is OK here.")]
 public class ConfiguringCommandLineParserTests
 {
+   #region Public Methods and Operators
+
    [TestMethod]
    public void EnsureCommandLinePipelineCanBeCaseSensitive()
    {
@@ -43,16 +39,26 @@ public class ConfiguringCommandLineParserTests
       application.Arguments.Name.Should().Be("Robert");
    }
 
+   #endregion
+
+   #region Methods
+
    private static IApplicationBuilder<T> CreateApplication<T>(Action<ICommandLineOptions> configurationAction)
       where T : class
    {
       return ConsoleApplication.WithArguments<T>()
-            .ConfigureCommandLineParser(configurationAction);
+         .ConfigureCommandLineParser(configurationAction);
    }
+
+   #endregion
 
    public class Args
    {
-      [Argument("Name")] 
+      #region Public Properties
+
+      [Argument("Name")]
       public string Name { get; set; }
+
+      #endregion
    }
 }

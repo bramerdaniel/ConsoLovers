@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Run.cs" company="KUKA Deutschland GmbH">
-//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
+// <copyright file="Run.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -9,12 +9,10 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests
    using System;
    using System.Diagnostics.CodeAnalysis;
 
-   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests.Utils;
 
    using FluentAssertions;
 
-   using Microsoft.Extensions.DependencyInjection;
    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
    [TestClass]
@@ -53,6 +51,17 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests
       }
 
       [TestMethod]
+      public void EnsureArgumentImplementingIApplicationLogicAreRegisteredAutomatically()
+      {
+         SomeApplicationLogic.ResetInstances();
+         var executable = ConsoleApplication.WithArguments<SomeApplicationLogic>()
+            .Run();
+
+         executable.Arguments.Executed.Should().BeTrue();
+         SomeApplicationLogic.Instances.Should().Be(1);
+      }
+
+      [TestMethod]
       public void EnsureDefaultCommandIsCalledWhenThereAreArgumentsButNoCommand()
       {
          var executable = ConsoleApplication.WithArguments<ArgumentsWithGenericDefaultCommand>()
@@ -78,17 +87,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ConsoleApplicationWithTests
          executable.Arguments.Execute.EnsureExecuted();
          executable.Arguments.Execute.Arguments.String.Should().Be("someValue");
          executable.Arguments.Execute.Arguments.Int.Should().Be(30);
-      }
-
-      [TestMethod]
-      public void EnsureArgumentImplementingIApplicationLogicAreRegisteredAutomatically()
-      {
-         SomeApplicationLogic.ResetInstances();
-         var executable = ConsoleApplication.WithArguments<SomeApplicationLogic>()
-            .Run();
-
-         executable.Arguments.Executed.Should().BeTrue();
-         SomeApplicationLogic.Instances.Should().Be(1);
       }
 
       #endregion

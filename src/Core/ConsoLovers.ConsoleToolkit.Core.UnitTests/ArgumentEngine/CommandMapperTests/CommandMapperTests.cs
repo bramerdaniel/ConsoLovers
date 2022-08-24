@@ -25,7 +25,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine.CommandMapper
       public void EnsureCommandIsMappedCorrectlyEvenIfNoNameIsSpecified()
       {
          var applicationArgs = new CommandsWithoutName();
-         var dictionary = new Dictionary<string, CommandLineArgument> { { "Execute", new CommandLineArgument { Name = "Execute" } }, };
+         var dictionary = new Dictionary<string, CommandLineArgument> { { "Execute", new CommandLineArgument { Name = "Execute" } } };
          
          var commandMapper = Setup.CommandMapper<CommandsWithoutName>().WithDefaults().Done();
          var result = commandMapper.Map(CommandLineArgumentList.FromDictionary(dictionary), applicationArgs);

@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Class1.cs" company="KUKA Deutschland GmbH">
-//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
+// <copyright file="DefaultApplicationLogic.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -10,18 +10,26 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
-
 using JetBrains.Annotations;
 
 public class DefaultApplicationLogic : IApplicationLogic
 {
+   #region Constants and Fields
+
    private readonly IConsole console;
+
+   #endregion
+
+   #region Constructors and Destructors
 
    public DefaultApplicationLogic([NotNull] IConsole console)
    {
       this.console = console ?? throw new ArgumentNullException(nameof(console));
    }
+
+   #endregion
+
+   #region IApplicationLogic Members
 
    public Task ExecuteAsync<T>(T arguments, CancellationToken cancellationToken)
    {
@@ -37,4 +45,6 @@ public class DefaultApplicationLogic : IApplicationLogic
       console.WriteLine();
       return Task.CompletedTask;
    }
+
+   #endregion
 }

@@ -33,7 +33,7 @@ public partial class MapWithCommands
    {
       #region Public Properties
 
-      [Command("Execute", IsDefaultCommand = true)]
+      [Command("ExecuteAsync", IsDefaultCommand = true)]
       public Command Execute { get; set; }
 
       [Command("ExecuteMany")]
@@ -56,7 +56,7 @@ public partial class MapWithCommands
    {
       #region Public Properties
 
-      [Command("Execute", "e")]
+      [Command("ExecuteAsync", "e")]
       public Command Execute { get; [UsedImplicitly] private set; }
 
       #endregion

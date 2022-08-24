@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="CommandArgumentDependencyInjectionTests.cs" company="KUKA Deutschland GmbH">
-//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
+// <copyright file="CommandArgumentDependencyInjectionTests.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -41,7 +41,8 @@ public class CommandArgumentDependencyInjectionTests
    {
       #region Properties
 
-      [Command("run")] internal RunCommand Command { get; [UsedImplicitly] set; }
+      [Command("run")]
+      internal RunCommand Command { get; [UsedImplicitly] set; }
 
       #endregion
 
@@ -59,7 +60,8 @@ public class CommandArgumentDependencyInjectionTests
 
          #region Public Properties
 
-         [Argument("parameter", Index = 0)] public string Parameter { get; set; }
+         [Argument("parameter", Index = 0)]
+         public string Parameter { get; set; }
 
          #endregion
 

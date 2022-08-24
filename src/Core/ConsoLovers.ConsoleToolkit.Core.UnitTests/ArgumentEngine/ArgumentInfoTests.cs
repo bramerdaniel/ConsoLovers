@@ -85,7 +85,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
          [Command("Help", "?")]
          public HelpCommand HelpCommand { get; set; }
 
-         [Command("Execute", "e")]
+         [Command("ExecuteAsync", "e")]
          public Command Execute { get; set; }
 
          [Argument("Path", "p")]
@@ -100,7 +100,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
          [Command("Default", "d", IsDefaultCommand = true)]
          public Command DefaultCommand { get; set; }
 
-         [Command("Execute", "e")]
+         [Command("ExecuteAsync", "e")]
          public Command Execute { get; set; }
 
          [Argument("Path", "p")]
@@ -115,7 +115,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
          [Command("Default", "d")]
          public Command Run{ get; set; }
 
-         [Command("Execute", "e")]
+         [Command("ExecuteAsync", "e")]
          internal Command Execute { get; set; }
 
          [Command("Add", "a")]

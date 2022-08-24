@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="DefaultServiceRegistrationTests.cs" company="KUKA Deutschland GmbH">
-//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
+// <copyright file="DefaultServiceRegistrationTests.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -9,7 +9,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.IntegrationTests;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
-using ConsoLovers.ConsoleToolkit.Core;
+
 using ConsoLovers.ConsoleToolkit.Core.Builders;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing;
@@ -29,6 +29,21 @@ using Moq;
 public class DefaultServiceRegistrationTests
 {
    #region Public Methods and Operators
+
+   [TestMethod]
+   public void EnsureApplicationCanBeReplaced()
+   {
+      var mock = new Mock<IConsoleApplication<SomeArgs>>();
+      mock.Setup(x => x.RunAsync(It.IsAny<string>(), CancellationToken.None))
+         .Returns(() => Task.FromResult(mock.Object));
+
+      var application = ConsoleApplication.WithArguments<SomeArgs>()
+         .AddService(s => s.AddSingleton(mock.Object))
+         .Run();
+
+      mock.Verify(x => x.RunAsync(It.IsAny<string>(), CancellationToken.None), Times.Once);
+      application.Should().BeSameAs(mock.Object);
+   }
 
    [TestMethod]
    public void EnsureArgumentReflectorServiceIsAddedCorrectly()
@@ -96,21 +111,6 @@ public class DefaultServiceRegistrationTests
       EnsureServiceAndImplementationAvailable<ILocalizationService, DefaultLocalizationService>();
    }
 
-   [TestMethod]
-   public void EnsureApplicationCanBeReplaced()
-   {
-      var mock = new Mock<IConsoleApplication<SomeArgs>>();
-      mock.Setup(x => x.RunAsync(It.IsAny<string>(), CancellationToken.None))
-         .Returns(() => Task.FromResult(mock.Object));
-
-      var application = ConsoleApplication.WithArguments<SomeArgs>()
-         .AddService(s => s.AddSingleton(mock.Object))
-         .Run();
-
-      mock.Verify(x => x.RunAsync(It.IsAny<string>(), CancellationToken.None), Times.Once);
-      application.Should().BeSameAs(mock.Object);
-   }
-
    #endregion
 
    #region Methods
@@ -128,12 +128,12 @@ public class DefaultServiceRegistrationTests
    #endregion
 
    [UsedImplicitly]
-   internal class ApplicationArgs
+   public class SomeArgs
    {
    }
 
    [UsedImplicitly]
-   public class SomeArgs
+   internal class ApplicationArgs
    {
    }
 }

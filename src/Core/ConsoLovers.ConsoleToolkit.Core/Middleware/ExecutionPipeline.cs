@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ExecutionPipeline.cs" company="KUKA Deutschland GmbH">
-//   Copyright (c) KUKA Deutschland GmbH 2006 - 2022
+// <copyright file="ExecutionPipeline.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -12,9 +12,15 @@ using System.Threading;
 using System.Threading.Tasks;
 
 internal class ExecutionPipeline<T> : IExecutionPipeline<T>
-      where T : class
+   where T : class
 {
+   #region Constants and Fields
+
    private readonly IMiddleware<T>[] middlewares;
+
+   #endregion
+
+   #region Constructors and Destructors
 
    public ExecutionPipeline(IEnumerable<IMiddleware<T>> middlewares)
    {
@@ -23,7 +29,11 @@ internal class ExecutionPipeline<T> : IExecutionPipeline<T>
       this.middlewares = middlewares.OrderBy(m => m.ExecutionOrder).ToArray();
    }
 
-   public Task Execute(IExecutionContext<T> context, CancellationToken cancellationToken)
+   #endregion
+
+   #region IExecutionPipeline<T> Members
+
+   public Task ExecuteAsync(IExecutionContext<T> context, CancellationToken cancellationToken)
    {
       var builder = new ExecutionPipelineBuilder<T>();
       foreach (var middleware in middlewares)
@@ -32,4 +42,6 @@ internal class ExecutionPipeline<T> : IExecutionPipeline<T>
       var initialMiddleware = builder.Build();
       return initialMiddleware(context, cancellationToken);
    }
+
+   #endregion
 }
