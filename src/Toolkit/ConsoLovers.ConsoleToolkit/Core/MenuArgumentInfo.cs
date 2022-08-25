@@ -25,6 +25,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       public MenuArgumentInfo([NotNull] ParameterInfo parameterInfo)
       {
          this.parameterInfo = parameterInfo ?? throw new ArgumentNullException(nameof(parameterInfo));
+         Required = (parameterInfo as ArgumentInfo)?.Attribute.Required ?? false;
          DisplayName = parameterInfo.ParameterName;
 
          var menuAttribute = parameterInfo.PropertyInfo.GetAttribute<MenuAttribute>();
@@ -55,10 +56,13 @@ namespace ConsoLovers.ConsoleToolkit.Core
       /// <summary>Gets or sets the display order.</summary>
       public int DisplayOrder { get; set; }
 
-      public bool Visible { get; }
-
       /// <summary>Gets or sets a value indicating whether this argument is a password.</summary>
       public bool IsPassword { get; set; }
+
+      /// <summary>Gets or sets a value indicating whether this argument is required.</summary>
+      public bool Required { get; set; }
+
+      public bool Visible { get; }
 
       #endregion
 

@@ -27,6 +27,7 @@ namespace ConsoLovers.ConsoleToolkit
          bootstrapper.AddService(s => s.AddSingleton<ICommandMenuManager, CommandMenuManager>());
          bootstrapper.AddService(s => s.AddSingleton<IApplicationLogic, ShowMenuApplicationLogic>());
          bootstrapper.AddService(s => s.AddSingleton<IMenuArgumentManager, MenuArgumentManager>());
+         bootstrapper.AddService(s => s.AddSingleton<IMenuExceptionHandler, MenuExceptionHandler>());
 
          if (configureOptions != null)
             ConfigureMenu(bootstrapper, configureOptions);

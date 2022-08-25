@@ -141,8 +141,19 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       public void Execute()
       {
-         execute(this);
+         try
+         {
+            execute(this);
+         }
+         catch (Exception e)
+         {
+            if (HandleException != null && !HandleException.Invoke(e))
+               throw;
+         }
       }
+
+      /// <summary>Gets or sets a function that is called when the execution throws an <see cref="Exception"/>.</summary>
+      public Func<Exception, bool> HandleException { get; set; }
 
       public void Expand(bool recursive)
       {

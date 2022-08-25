@@ -37,6 +37,8 @@ namespace ConsoLovers.ConsoleToolkit.Core
       /// <summary>Gets or sets a value indicating whether this argument is a password.</summary>
       public bool IsPassword { get; set; } = false;
 
+
+
       #endregion
    }
 }

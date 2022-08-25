@@ -14,23 +14,27 @@ using System.Threading.Tasks;
 
 using ConsoLovers.ConsoleToolkit;
 using ConsoLovers.ConsoleToolkit.Core;
+using MenusAndCommands.Model;
 
 public class ShowRolesCommand : IAsyncCommand<ShowRolesCommand.ShowRolesArgs>, IAsyncMenuCommand
 {
+   private readonly IUserManager userManager;
+
+   public ShowRolesCommand(IUserManager userManager, IConsole console)
+   {
+      this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+      this.console = console ?? throw new ArgumentNullException(nameof(console));
+   }
+
    #region Constants and Fields
 
    private readonly IConsole console;
 
-   private List<string> roles = new List<string> { "Admin", "User", "Operator", "Guest" };
 
    #endregion
 
    #region Constructors and Destructors
 
-   public ShowRolesCommand(IConsole console)
-   {
-      this.console = console ?? throw new ArgumentNullException(nameof(console));
-   }
 
    #endregion
 
@@ -40,6 +44,8 @@ public class ShowRolesCommand : IAsyncCommand<ShowRolesCommand.ShowRolesArgs>, I
 
    public Task ExecuteAsync(CancellationToken cancellationToken)
    {
+      var roles = userManager.GetRoles();
+
       console.WriteLine("ROLES");
       if (string.IsNullOrWhiteSpace(Arguments.Name))
       {
@@ -48,7 +54,7 @@ public class ShowRolesCommand : IAsyncCommand<ShowRolesCommand.ShowRolesArgs>, I
       }
       else
       {
-         var specifiedRole = roles.FirstOrDefault(x => x == Arguments.Name);
+         var specifiedRole = roles.FirstOrDefault(x => x.Name == Arguments.Name);
          if (specifiedRole == null)
          {
             console.WriteLine($"Role {Arguments.Name} not found", ConsoleColor.Red);
@@ -68,6 +74,8 @@ public class ShowRolesCommand : IAsyncCommand<ShowRolesCommand.ShowRolesArgs>, I
 
    public async Task ExecuteAsync(IMenuExecutionContext context, CancellationToken cancellationToken)
    {
+      context.InitializeArgument(nameof(Arguments.Name));
+
       await ExecuteAsync(cancellationToken);
       console.ReadLine();
    }

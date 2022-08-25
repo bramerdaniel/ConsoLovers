@@ -10,7 +10,8 @@ using System;
 
 using ConsoLovers.ConsoleToolkit;
 using ConsoLovers.ConsoleToolkit.Core;
-using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
+
+using MenusAndCommands.Model;
 
 public class RemoveRoleCommand : ICommand<RemoveRoleCommand.RemoveRoleArgs>, IMenuCommand
 {
@@ -18,32 +19,28 @@ public class RemoveRoleCommand : ICommand<RemoveRoleCommand.RemoveRoleArgs>, IMe
 
    private readonly IConsole console;
 
+   private readonly IUserManager userManager;
+
    #endregion
 
    #region Constructors and Destructors
 
-   public RemoveRoleCommand(IConsole console)
+   public RemoveRoleCommand(IUserManager userManager, IConsole console)
    {
+      this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
       this.console = console ?? throw new ArgumentNullException(nameof(console));
    }
 
    #endregion
 
-   #region ICommand<AddRoleArgs> Members
+   #region ICommand<RemoveRoleArgs> Members
 
    public RemoveRoleArgs Arguments { get; set; }
 
    public void Execute()
    {
-      if (Arguments == null)
-      {
-         console.WriteLine("Arguments were null", ConsoleColor.Red);
-         console.ReadLine();
-         return;
-      }
-
+      userManager.DeleteRole(Arguments.Name, Arguments.UserName, Arguments.Password);
       console.WriteLine($"Role {Arguments.Name} was removed ({Arguments.Force})");
-      console.ReadLine();
    }
 
    #endregion
@@ -53,6 +50,7 @@ public class RemoveRoleCommand : ICommand<RemoveRoleCommand.RemoveRoleArgs>, IMe
    public void Execute(IMenuExecutionContext context)
    {
       Execute();
+      console.ReadLine();
    }
 
    #endregion
@@ -61,13 +59,14 @@ public class RemoveRoleCommand : ICommand<RemoveRoleCommand.RemoveRoleArgs>, IMe
    {
       #region Public Properties
 
-      [Argument("name")]
-      public string Name { get; set; }
-
       [Argument("force", "f")]
+      [MenuArgument(Visible = false)]
       public bool Force { get; set; }
+
+      [Argument("name", Required = true)]
+      [MenuArgument(DisplayName = "Role name", DisplayOrder = 1)]
+      public string Name { get; set; }
 
       #endregion
    }
-
 }

@@ -7,20 +7,21 @@
 namespace MenusAndCommands.Commands.Role;
 
 using ConsoLovers.ConsoleToolkit.Core;
-using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
 public class RoleCommands
 {
    #region Public Properties
 
    [Command("Show")]
+   [MenuCommand("Show", ArgumentInitializationMode = ArgumentInitializationModes.Custom)]
    public ShowRolesCommand Show { get; set; }
 
    [Command("Add")]
+   [MenuCommand("Add role")]
    public AddRoleCommand Add { get; set; }
 
    [Command("Remove")]
-   [MenuCommand("Remove role", ArgumentInitializationMode = ArgumentInitializationModes.None)]
+   [MenuCommand("Remove role")]
    public RemoveRoleCommand Remove { get; set; }
 
    #endregion

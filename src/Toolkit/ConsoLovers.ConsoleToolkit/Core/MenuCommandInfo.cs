@@ -38,6 +38,12 @@ namespace ConsoLovers.ConsoleToolkit.Core
          return ArgumentInfo == null ? Enumerable.Empty<MenuArgumentInfo>() : CreateMenuInfos().OrderBy(x => x.DisplayOrder);
       }
 
+      public MenuArgumentInfo GetArgumentInfo(string name)
+      {
+         var info = ArgumentInfo.GetParameterInfo(name);
+         return info == null ? null : new MenuArgumentInfo(info);
+      }  
+
       private IEnumerable<MenuArgumentInfo> CreateMenuInfos()
       {
          foreach (var property in ArgumentInfo.Properties)

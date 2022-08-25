@@ -12,18 +12,20 @@ namespace ConsoLovers.ConsoleToolkit
    {
       #region Public Properties
 
-      // TODO Change the name of the IMenuHeader interface to something better (e.g. IMenuHeader)
-
+      /// <summary>Gets the menu item that triggered the execution of the command.</summary>
       ConsoleMenuItem MenuItem { get; }
 
       #endregion
-   }
 
-   internal struct MenuExecutionContext : IMenuExecutionContext
-   {
-      #region IMenuExecutionContext Members
+      #region Public Methods and Operators
 
-      public ConsoleMenuItem MenuItem { get; set; }
+      /// <summary>Initializes the argument with the specified name.</summary>
+      /// <param name="argumentName">Name of the argument to initialize.</param>
+      void InitializeArgument(string argumentName);
+
+
+      /// <summary>Initializes all visible arguments.</summary>
+      void InitializeArguments();
 
       #endregion
    }

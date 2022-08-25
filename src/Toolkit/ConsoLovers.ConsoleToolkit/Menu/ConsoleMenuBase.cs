@@ -488,6 +488,9 @@ namespace ConsoLovers.ConsoleToolkit.Menu
             handler(this, args);
             if (!args.Handled)
                throw;
+
+            if (consoleWasCleared)
+               RefreshMenu();
          }
       }
 

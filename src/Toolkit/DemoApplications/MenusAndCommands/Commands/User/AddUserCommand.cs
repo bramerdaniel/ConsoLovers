@@ -11,9 +11,13 @@ using System;
 using ConsoLovers.ConsoleToolkit;
 using ConsoLovers.ConsoleToolkit.Core;
 
+using MenusAndCommands.Model;
+
 public class AddUserCommand : ICommand<AddUserCommand.AddUserArgs>, IMenuCommand
 {
    #region Constants and Fields
+
+   private readonly IUserManager userManager;
 
    private readonly IConsole console;
 
@@ -21,8 +25,9 @@ public class AddUserCommand : ICommand<AddUserCommand.AddUserArgs>, IMenuCommand
 
    #region Constructors and Destructors
 
-   public AddUserCommand(IConsole console)
+   public AddUserCommand(IUserManager userManager, IConsole console)
    {
+      this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
       this.console = console ?? throw new ArgumentNullException(nameof(console));
    }
 
@@ -34,6 +39,9 @@ public class AddUserCommand : ICommand<AddUserCommand.AddUserArgs>, IMenuCommand
 
    public void Execute()
    {
+      var user = new User{ Name = Arguments.Name, Password = Arguments.Name };
+      userManager.AddUser(user, Arguments.UserName, Arguments.Password);
+
       console.WriteLine($"User {Arguments.Name} was added");
    }
 

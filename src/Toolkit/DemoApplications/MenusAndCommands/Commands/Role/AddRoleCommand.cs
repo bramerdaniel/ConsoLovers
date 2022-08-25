@@ -10,10 +10,13 @@ using System;
 
 using ConsoLovers.ConsoleToolkit;
 using ConsoLovers.ConsoleToolkit.Core;
+using MenusAndCommands.Model;
 
 public class AddRoleCommand : ICommand<AddRoleCommand.AddRoleArgs>, IMenuCommand
 {
    #region Constants and Fields
+
+   private readonly IUserManager userManager;
 
    private readonly IConsole console;
 
@@ -21,8 +24,9 @@ public class AddRoleCommand : ICommand<AddRoleCommand.AddRoleArgs>, IMenuCommand
 
    #region Constructors and Destructors
 
-   public AddRoleCommand(IConsole console)
+   public AddRoleCommand(IUserManager userManager, IConsole console)
    {
+      this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
       this.console = console ?? throw new ArgumentNullException(nameof(console));
    }
 
@@ -34,6 +38,7 @@ public class AddRoleCommand : ICommand<AddRoleCommand.AddRoleArgs>, IMenuCommand
 
    public void Execute()
    {
+      userManager.AddRole(Arguments.Name, Arguments.UserName, Arguments.UserName);
       console.WriteLine($"Role {Arguments.Name} was added successfully");
    }
 
@@ -43,6 +48,7 @@ public class AddRoleCommand : ICommand<AddRoleCommand.AddRoleArgs>, IMenuCommand
 
    public void Execute(IMenuExecutionContext context)
    {
+      console.Clear();
       Execute();
       console.ReadLine();
    }
