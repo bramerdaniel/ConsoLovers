@@ -83,7 +83,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          }
       }
 
-      public void Element(ElementInfo element)
+      public void Element(ElementInfo element, int unifiedLength)
       {
          var foreground = element.IsMouseOver
             ? ConsoleColor.Black
@@ -105,9 +105,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
          if (Options.SelectionMode == SelectionMode.UnifiedLength)
          {
-            //var padding = unifiedLength - console.CursorLeft;
-
-            var padding = console.CursorLeft;
+            var padding = unifiedLength - console.CursorLeft;
             if (padding > 0)
                Print(string.Empty.PadRight(padding), foreground, background);
          }

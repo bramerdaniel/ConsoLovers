@@ -82,8 +82,6 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       {
          this.console = console ?? throw new ArgumentNullException(nameof(console));
          this.options = options ?? throw new ArgumentNullException(nameof(options));
-
-         // renderer = GetMenuRenderer();
       }
 
       #endregion
@@ -264,23 +262,19 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       {
          console.Clear(GetConsoleBackground());
          expanderWidth = root.Items.OfType<ConsoleMenuItem>().Any(i => i.HasChildren) ? Options.Expander.Length : 0;
-
-         var indexWidth = Options.IndexMenuItems ? 3 + (root.Items.Count < 10 ? 1 : 2) : 0;
+         
          indexMap.Clear();
 
          UpdateElements();
+         RenderMenu();
+      }
 
+      private void RenderMenu()
+      {
          renderer.Header(Options.Header);
 
          if (elements.Any())
-         {
-            unifiedLength = elements.Values.Max(m => m.Text.Length + m.Indent.Length)
-                            + Options.Selector.Length
-                            + expanderWidth
-                            + indexWidth;
-
-            PrintElements();
-         }
+            RenderElements();
 
          renderer.Footer(Options.Footer);
       }
@@ -618,13 +612,19 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          }
       }
 
-      private void PrintElements()
+      private void RenderElements()
       {
+         var indexWidth = Options.IndexMenuItems ? 3 + (root.Items.Count < 10 ? 1 : 2) : 0;
+         unifiedLength = elements.Values.Max(m => m.Text.Length + m.Indent.Length)
+                         + Options.Selector.Length
+                         + expanderWidth
+                         + indexWidth;
+
          foreach (var elementInfo in elements.Values)
          {
             elementInfo.Line = console.CursorTop;
 
-            renderer.Element(elementInfo);
+            renderer.Element(elementInfo, unifiedLength);
             elementInfo.Length = console.CursorLeft;
 
             console.WriteLine();
@@ -637,13 +637,19 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          if (itemToUpdate == null)
             return;
 
+         var indexWidth = Options.IndexMenuItems ? 3 + (root.Items.Count < 10 ? 1 : 2) : 0;
+         unifiedLength = elements.Values.Max(m => m.Text.Length + m.Indent.Length)
+                         + Options.Selector.Length
+                         + expanderWidth
+                         + indexWidth;
+
          if (elements.TryGetValue(itemToUpdate, out var elementToUpdate))
          {
             elementToUpdate.IsSelected = isSelected;
             console.CursorTop = elementToUpdate.Line;
             console.CursorLeft = 0;
 
-            renderer.Element(elementToUpdate);
+            renderer.Element(elementToUpdate, unifiedLength);
          }
       }
 

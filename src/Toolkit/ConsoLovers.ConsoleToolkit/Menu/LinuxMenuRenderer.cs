@@ -37,7 +37,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       #region IMenuRenderer Members
 
-      public void Element(ElementInfo element)
+      public void Element(ElementInfo element, int unifiedLength)
       {
          var selectorText = GetSelector(element, Options.Selector);
          var indent = element.Indent;

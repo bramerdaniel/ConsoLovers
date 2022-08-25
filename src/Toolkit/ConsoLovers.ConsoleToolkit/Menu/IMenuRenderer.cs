@@ -12,7 +12,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
    {
       #region Public Methods and Operators
 
-      void Element(ElementInfo element);
+      void Element(ElementInfo element, int unifiedLength);
 
       void Footer(object footer);
 
