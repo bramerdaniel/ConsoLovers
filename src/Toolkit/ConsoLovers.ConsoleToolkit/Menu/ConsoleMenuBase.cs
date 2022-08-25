@@ -83,7 +83,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          this.console = console ?? throw new ArgumentNullException(nameof(console));
          this.options = options ?? throw new ArgumentNullException(nameof(options));
 
-         renderer = GetMenuRenderer(this.console);
+         // renderer = GetMenuRenderer();
       }
 
       #endregion
@@ -245,7 +245,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       public void Show()
       {
-         renderer = GetMenuRenderer(console);
+         renderer = GetMenuRenderer();
 
          RefreshMenu();
 
@@ -518,7 +518,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          }
       }
 
-      private IMenuRenderer GetMenuRenderer(IConsole console)
+      private IMenuRenderer GetMenuRenderer()
       {
          if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             return new DefaultMenuRenderer(console, Options);

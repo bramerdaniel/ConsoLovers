@@ -15,6 +15,7 @@ namespace MenuDemo
    using ConsoLovers.ConsoleToolkit.Contracts;
    using ConsoLovers.ConsoleToolkit.Core;
    using ConsoLovers.ConsoleToolkit.Menu;
+   using ConsoLovers.ConsoleToolkit.PInvoke;
    using ConsoLovers.ConsoleToolkit.Progress;
 
    class Program
@@ -40,7 +41,7 @@ namespace MenuDemo
             if (property.PropertyType == typeof(Color))
             {
                var value = (Color)property.GetValue(null);
-               
+
                console.WriteLine(property.Name, value);
                Thread.Sleep(1000);
             }
@@ -83,7 +84,7 @@ namespace MenuDemo
                x.Text = $"ClearOnExecution = {x.Menu.Options.ClearOnExecution}";
             });
       }
-      
+
       private static ConsoleMenuItem CreateExecuteOnIndexSelectionMenu(ConsoleMenuBase menu)
       {
          return new ConsoleMenuItem(
@@ -188,31 +189,17 @@ namespace MenuDemo
          //Console.CursorSize = 4;
          //Console.WindowHeight = 40;
          //Console.WindowWidth = 120;
-         string header = @"    ___                     _        __ __                  ___           _                     
-   |  _> ___ ._ _  ___ ___ | | ___  |  \  \ ___ ._ _  _ _  | __>__   ___ | | ___  _ _  ___  _ _ 
-   | <__/ . \| ' |<_-</ . \| |/ ._> |     |/ ._>| ' || | | | _> \ \/| . \| |/ . \| '_>/ ._>| '_>
-   `___/\___/|_|_|/__/\___/|_|\___. |_|_|_|\___.|_|_|`___| |___>/\_\|  _/|_|\___/|_|  \___.|_|  
-                                                                    |_|                         ";
 
-         var footer = Environment.NewLine + "THIS COULD BE YOUR FOOTER";
-
-         var options = new ConsoleMenuOptions
-         {
-            Header = header,
-            Footer = footer,
-            CircularSelection = false,
-            Selector = "» ",
-            SelectionMode = SelectionMode.UnifiedLength
-         };
-
+         var options = CreateDefaultOptions();
          var menu = new ConsoleMenu(options);
 
-         // menu.Expander = new ExpanderDescription { Collapsed = "►", Expanded = "▼" };
+
          menu.Add(CreateSelectionStretchMenu());
          menu.Add(CreateCircularSelectionMenu(menu));
          menu.Add(CreateMouseSelectionMenu());
          menu.Add(CreateIndexMenuItemsMenu(menu.Options.IndexMenuItems));
          menu.Add(CreateClearOnExecutionMenu(menu.Options.ClearOnExecution));
+         menu.Add(ResetOptions());
          menu.Add(new ConsoleMenuSeparator());
          menu.Add(CreateSelectorMenu(menu));
          menu.Add(CreateExecuteOnIndexSelectionMenu(menu));
@@ -232,10 +219,37 @@ namespace MenuDemo
          menu.Add(new ConsoleMenuItem("Simulate Crash", DoCrash));
          menu.Add(new ConsoleMenuItem("ColorSimulation", ColorSimulation));
          menu.Add(new ConsoleMenuItem("LazyLoadChildren", LazyLoadChildren, true));
-         menu.Add(new ConsoleMenuSeparator{ Label = "Close stuff" });
+         menu.Add(new ConsoleMenuSeparator { Label = "Close stuff" });
          menu.Add(new ConsoleMenuItem("Close menu", _ => menu.Close()));
-         menu.Add(new ConsoleMenuItem("Exit", _ => Environment.Exit(0)){ Foreground = ConsoleColor.Red });
+         menu.Add(new ConsoleMenuItem("Exit", _ => Environment.Exit(0)) { Foreground = ConsoleColor.Red });
          menu.Show();
+      }
+
+      private static ConsoleMenuOptions CreateDefaultOptions()
+      {
+         string header = @"    ___                     _        __ __                  ___           _                     
+   |  _> ___ ._ _  ___ ___ | | ___  |  \  \ ___ ._ _  _ _  | __>__   ___ | | ___  _ _  ___  _ _ 
+   | <__/ . \| ' |<_-</ . \| |/ ._> |     |/ ._>| ' || | | | _> \ \/| . \| |/ . \| '_>/ ._>| '_>
+   `___/\___/|_|_|/__/\___/|_|\___. |_|_|_|\___.|_|_|`___| |___>/\_\|  _/|_|\___/|_|  \___.|_|  
+                                                                    |_|                         ";
+
+         var footer = Environment.NewLine + "THIS COULD BE YOUR FOOTER";
+
+         var options = new ConsoleMenuOptions
+         {
+            Header = header,
+            Footer = footer,
+            CircularSelection = false,
+            Selector = "» ",
+            SelectionMode = SelectionMode.UnifiedLength,
+            Expander = new ExpanderDescription { Collapsed = "►", Expanded = "▼" }
+         };
+         return options;
+      }
+
+      private static PrintableItem ResetOptions()
+      {
+         return new ConsoleMenuItem("Reset options", m => m.Menu.Options = CreateDefaultOptions());
       }
 
       private static void OnError(object sender, ExceptionEventArgs e)
