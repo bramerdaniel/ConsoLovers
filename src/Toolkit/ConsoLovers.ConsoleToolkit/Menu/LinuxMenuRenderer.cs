@@ -15,6 +15,8 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
    internal sealed class LinuxMenuRenderer : IMenuRenderer
    {
+      public IConsoleMenuOptions Options { get; set; }
+
       #region Constants and Fields
 
       private readonly IConsole console;
@@ -25,8 +27,9 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       #region Constructors and Destructors
 
-      public LinuxMenuRenderer([NotNull] IConsole console)
+      public LinuxMenuRenderer([NotNull] IConsole console, IConsoleMenuOptions options)
       {
+         Options = options;
          this.console = console ?? throw new ArgumentNullException(nameof(console));
       }
 
@@ -34,15 +37,15 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       #region IMenuRenderer Members
 
-      public void Element(ElementInfo element, string selector, SelectionMode selectionMode)
+      public void Element(ElementInfo element)
       {
-         var selectorText = GetSelector(element, selector);
+         var selectorText = GetSelector(element, Options.Selector);
          var indent = element.Indent;
          var expander = GetExpander(element);
 
          var index = IndexMenuItems ? element.IndexString : string.Empty;
          var elementText = element.Text;
-         var padRight = GetPadRight(selectionMode);
+         var padRight = GetPadRight(Options.SelectionMode);
 
          Print($"{selectorText}{indent}{expander}{index}{elementText}{padRight}");
          //Hint(element, selectionMode, false);

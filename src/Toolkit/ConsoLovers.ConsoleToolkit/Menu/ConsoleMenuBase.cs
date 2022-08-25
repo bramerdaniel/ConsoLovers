@@ -34,12 +34,12 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       private readonly ConsoleMenuItem root = new ConsoleMenuItem("rootItem");
 
       private bool attached;
-      
+
 
       private bool closed;
 
       private int expanderWidth = 1;
-      
+
       private ConsoleMenuInputHandler inputHandler;
 
       private ElementInfo lastMouseOver;
@@ -51,8 +51,6 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       private IMenuRenderer renderer;
 
       private ConsoleMenuItem selectedItem;
-
-      private SelectionMode selectionMode;
 
       private int unifiedLength;
 
@@ -83,7 +81,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       protected ConsoleMenuBase([JetBrains.Annotations.NotNull] IConsole console, [JetBrains.Annotations.NotNull] IConsoleMenuOptions options)
       {
          this.console = console ?? throw new ArgumentNullException(nameof(console));
-         Options = options ?? throw new ArgumentNullException(nameof(options));
+         this.options = options ?? throw new ArgumentNullException(nameof(options));
 
          renderer = GetMenuRenderer(this.console);
       }
@@ -102,7 +100,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       #region Public Properties
 
       public int Count => root.Items.Count;
-      
+
       /// <summary>Gets or sets a value indicating whether the mouse selection is enabled.</summary>
       public MouseMode MouseMode
       {
@@ -133,6 +131,10 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
          options = value ?? new ConsoleMenuOptions();
          options.PropertyChanged += OnOptionChanged;
+         if (renderer != null)
+            renderer.Options = options;
+
+         Invalidate();
       }
 
       private void OnOptionChanged(object sender, PropertyChangedEventArgs e)
@@ -327,9 +329,6 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       protected abstract ConsoleColor GetMouseOverBackground();
 
-      //{
-      //   return Theme.MouseOverBackground;
-      //}
 
       protected abstract ConsoleColor GetMouseOverForeground();
 
@@ -523,7 +522,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       {
          if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             return new DefaultMenuRenderer(console, Options);
-         return new LinuxMenuRenderer(console);
+         return new LinuxMenuRenderer(console, Options);
       }
 
       private ElementInfo GetMouseOverElement(MouseEventArgs e)
@@ -532,10 +531,10 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          {
             if (element.Line == e.WindowTop)
             {
-               if (selectionMode == SelectionMode.FullLine)
+               if (Options.SelectionMode == SelectionMode.FullLine)
                   return element;
 
-               if (selectionMode == SelectionMode.UnifiedLength)
+               if (Options.SelectionMode == SelectionMode.UnifiedLength)
                {
                   if (unifiedLength > e.WindowLeft)
                      return element;
@@ -625,7 +624,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          {
             elementInfo.Line = console.CursorTop;
 
-            renderer.Element(elementInfo, Options.Selector, Options.SelectionMode);
+            renderer.Element(elementInfo);
             elementInfo.Length = console.CursorLeft;
 
             console.WriteLine();
@@ -644,7 +643,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
             console.CursorTop = elementToUpdate.Line;
             console.CursorLeft = 0;
 
-            renderer.Element(elementToUpdate, Options.Selector, Options.SelectionMode);
+            renderer.Element(elementToUpdate);
          }
       }
 

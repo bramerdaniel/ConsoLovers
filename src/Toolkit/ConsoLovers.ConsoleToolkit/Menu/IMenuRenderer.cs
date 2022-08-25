@@ -12,11 +12,13 @@ namespace ConsoLovers.ConsoleToolkit.Menu
    {
       #region Public Methods and Operators
 
-      void Element(ElementInfo element, string selector, SelectionMode selectionMode);
+      void Element(ElementInfo element);
 
       void Footer(object footer);
 
       void Header(object header);
+
+      IConsoleMenuOptions Options { get; set; }
 
       #endregion
    }

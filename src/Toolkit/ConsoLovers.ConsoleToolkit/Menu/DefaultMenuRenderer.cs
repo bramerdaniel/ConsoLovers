@@ -15,7 +15,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
    internal class DefaultMenuRenderer : IMenuRenderer
    {
-      internal IConsoleMenuOptions Options { get; }
+      public IConsoleMenuOptions Options { get; set; }
 
       #region Constants and Fields
 
@@ -83,7 +83,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          }
       }
 
-      public void Element(ElementInfo element, string selector, SelectionMode selectionMode)
+      public void Element(ElementInfo element)
       {
          var foreground = element.IsMouseOver
             ? ConsoleColor.Black
@@ -93,7 +93,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
             ? DEFAULT_BACKGROUND_COLOR_MOUSE_OVER
             : element.Background.GetValueOrDefault(element.IsSelected ? ConsoleColor.White : DEFAULT_BACKGROUND_COLOR);
 
-         Selector(element, selector);
+         Selector(element, Options.Selector);
 
          Print(element.Indent, foreground, background);
          PrintExpander(element, foreground, background);
@@ -103,7 +103,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
          Print(element.Text, foreground, background);
 
-         if (selectionMode == SelectionMode.UnifiedLength)
+         if (Options.SelectionMode == SelectionMode.UnifiedLength)
          {
             //var padding = unifiedLength - console.CursorLeft;
 
@@ -112,26 +112,26 @@ namespace ConsoLovers.ConsoleToolkit.Menu
                Print(string.Empty.PadRight(padding), foreground, background);
          }
 
-         if (selectionMode == SelectionMode.FullLine)
+         if (Options.SelectionMode == SelectionMode.FullLine)
          {
             var padding = console.WindowWidth - console.CursorLeft - 1;
             Print(string.Empty.PadRight(padding), foreground, background);
          }
 
-         Hint(element, selectionMode, false);
+         Hint(element, false);
       }
 
       #endregion
 
       #region Public Methods and Operators
 
-      public void Hint(ElementInfo element, SelectionMode selectionMode, bool isVisible)
+      public void Hint(ElementInfo element, bool isVisible)
       {
          if (isVisible)
          {
             var disabledHint = element.Hint;
 
-            if (selectionMode == SelectionMode.FullLine)
+            if (Options.SelectionMode == SelectionMode.FullLine)
             {
                console.SetCursorPosition(console.CursorLeft - disabledHint.Length, console.CursorTop);
                Print(disabledHint, DEFAULT_FOREGROUND_COLOR, DEFAULT_BACKGROUND_COLOR);
