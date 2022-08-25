@@ -262,7 +262,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       {
          console.Clear(GetConsoleBackground());
          expanderWidth = root.Items.OfType<ConsoleMenuItem>().Any(i => i.HasChildren) ? Options.Expander.Length : 0;
-         
+
          indexMap.Clear();
 
          UpdateElements();
@@ -271,12 +271,12 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       private void RenderMenu()
       {
-         renderer.Header(Options.Header);
+         GetMenuRenderer().Header(Options.Header);
 
          if (elements.Any())
             RenderElements();
 
-         renderer.Footer(Options.Footer);
+         GetMenuRenderer().Footer(Options.Footer);
       }
 
       internal void UpdateMouseOver(ElementInfo value)
@@ -514,9 +514,14 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       private IMenuRenderer GetMenuRenderer()
       {
-         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            return new DefaultMenuRenderer(console, Options);
-         return new LinuxMenuRenderer(console, Options);
+         if (renderer == null)
+         {
+            renderer = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) 
+               ? (IMenuRenderer)new DefaultMenuRenderer(console, Options)
+               : new LinuxMenuRenderer(console, Options);
+         }
+
+         return renderer;
       }
 
       private ElementInfo GetMouseOverElement(MouseEventArgs e)
@@ -619,12 +624,12 @@ namespace ConsoLovers.ConsoleToolkit.Menu
                          + Options.Selector.Length
                          + expanderWidth
                          + indexWidth;
-
+         
          foreach (var elementInfo in elements.Values)
          {
             elementInfo.Line = console.CursorTop;
 
-            renderer.Element(elementInfo, unifiedLength);
+            GetMenuRenderer().Element(elementInfo, unifiedLength);
             elementInfo.Length = console.CursorLeft;
 
             console.WriteLine();
@@ -649,7 +654,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
             console.CursorTop = elementToUpdate.Line;
             console.CursorLeft = 0;
 
-            renderer.Element(elementToUpdate, unifiedLength);
+            GetMenuRenderer().Element(elementToUpdate, unifiedLength);
          }
       }
 

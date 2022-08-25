@@ -235,9 +235,16 @@ namespace ConsoLovers.ConsoleToolkit
          {
             // TODO specify some handler that can handle this 
 
-            var value = new InputBox<string>(argument.ParameterName + ": ").ReadLine();
-            argument.PropertyInfo.SetValue(argumentInstance, value, null);
-            menuItem.Text = $"{argument.ParameterName}={value}";
+            try
+            {
+               var value = new InputBox<string>(argument.ParameterName + ": ").ReadLine();
+               argument.PropertyInfo.SetValue(argumentInstance, value, null);
+               menuItem.Text = $"{argument.ParameterName}={value}";
+            }
+            catch (InputCanceledException)
+            {
+               // The user did not want to specify a value
+            }
          }
 
          void ToggleParameter(ConsoleMenuItem menuItem, ArgumentInfo argument)
@@ -309,9 +316,16 @@ namespace ConsoLovers.ConsoleToolkit
          if (menuInfo.ArgumentInitializationMode != ArgumentInitializationModes.WhileExecution)
             return command;
 
+         if (InitializeCommand(menuInfo, command))
+            return null;
+         return command;
+      }
+
+      private bool InitializeCommand(MenuCommandInfo menuInfo, object command)
+      {
          var argumentsProperty = command.GetType().GetProperty(nameof(ICommandArguments<Type>.Arguments));
          if (argumentsProperty == null)
-            return null;
+            return true;
 
          var args = ArgumentManager.GetOrCreate(menuInfo.ArgumentInfo.ArgumentType);
          foreach (var argumentInfo in menuInfo.GetArgumentInfos())
@@ -320,9 +334,9 @@ namespace ConsoLovers.ConsoleToolkit
             var parameterValue = new InputBox<object>($"{argumentInfo.DisplayName}: ", initialValue).ReadLine();
             argumentInfo.SetValue(args, parameterValue);
          }
-         
+
          argumentsProperty.SetValue(command, args);
-         return command;
+         return false;
       }
 
       #endregion
