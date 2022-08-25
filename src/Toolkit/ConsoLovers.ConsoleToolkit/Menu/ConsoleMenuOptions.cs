@@ -142,7 +142,8 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          {
             if (value == selector)
                return;
-            selector = value;
+
+            selector = value ?? string.Empty;
             RaisePropertyChanged();
          }
       }

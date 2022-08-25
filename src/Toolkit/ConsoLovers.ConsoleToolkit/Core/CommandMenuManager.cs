@@ -64,20 +64,7 @@ namespace ConsoLovers.ConsoleToolkit
 
       public Task ShowAsync<T>(CancellationToken cancellationToken)
       {
-         var menu = new ConsoleMenu
-         {
-            Header = ConsoleMenuOptions.Header,
-            Footer = ConsoleMenuOptions.Footer,
-            SelectionMode = ConsoleMenuOptions.SelectionMode,
-            CircularSelection = ConsoleMenuOptions.CircularSelection,
-            Selector = ConsoleMenuOptions.Selector,
-            ClearOnExecution = ConsoleMenuOptions.ClearOnExecution,
-            ExecuteOnIndexSelection = ConsoleMenuOptions.ExecuteOnIndexSelection,
-            Expander = ConsoleMenuOptions.Expander,
-            IndentSize = ConsoleMenuOptions.IndentSize,
-            IndexMenuItems = ConsoleMenuOptions.IndexMenuItems,
-            CloseKeys = ConsoleMenuOptions.CloseKeys
-         };
+         var menu = new ConsoleMenu(ConsoleMenuOptions);
 
          foreach (var item in CreateMenuItems<T>())
             menu.Add(item);
@@ -203,7 +190,7 @@ namespace ConsoLovers.ConsoleToolkit
       {
          var menuAttribute = menuInfo.CommandInfo.PropertyInfo.GetAttribute<MenuCommandAttribute>();
          if (menuAttribute == null || menuAttribute.ArgumentInitializationMode == ArgumentInitializationModes.AsMenu)
-            return new ConsoleMenuItem(menuInfo.DisplayName, () => CreateArgumentItems(menuInfo.CommandInfo, argumentInfo), true);
+            return new ConsoleMenuItem(menuInfo.DisplayName, () => CreateMenuItemsForArguments(menuInfo.CommandInfo, argumentInfo), true);
          return new ConsoleMenuItem(menuInfo.DisplayName, x => Execute(x, menuInfo));
       }
 
@@ -220,7 +207,7 @@ namespace ConsoLovers.ConsoleToolkit
          return new ConsoleMenuItem(menuCommandAttribute.DisplayName, items.ToArray());
       }
 
-      private IEnumerable<ConsoleMenuItem> CreateArgumentItems(CommandInfo commandInfo, ArgumentClassInfo argumentInfo)
+      private IEnumerable<ConsoleMenuItem> CreateMenuItemsForArguments(CommandInfo commandInfo, ArgumentClassInfo argumentInfo)
       {
          var argumentInstance = ArgumentManager.GetOrCreate(argumentInfo.ArgumentType);
 

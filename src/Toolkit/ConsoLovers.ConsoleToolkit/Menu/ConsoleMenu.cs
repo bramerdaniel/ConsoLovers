@@ -25,8 +25,14 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       #region Constructors and Destructors
 
       /// <summary>Initializes a new instance of the <see cref="ConsoleMenu"/> class.</summary>
+      public ConsoleMenu(IConsoleMenuOptions options)
+      :base(options)
+      {
+      }
+
+      /// <summary>Initializes a new instance of the <see cref="ConsoleMenu"/> class.</summary>
       public ConsoleMenu()
-      : base()
+         : this(new ConsoleMenuOptions())
       {
       }
 

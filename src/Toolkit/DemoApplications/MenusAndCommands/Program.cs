@@ -12,6 +12,9 @@ namespace MenusAndCommands
 
    using ConsoLovers.ConsoleToolkit;
    using ConsoLovers.ConsoleToolkit.Core;
+   using ConsoLovers.ConsoleToolkit.Menu;
+
+   using Microsoft.VisualBasic;
 
    public static class Program
    {
@@ -25,6 +28,11 @@ namespace MenusAndCommands
                options.Menu.Header = "Hello Menu";
                options.Menu.CloseKeys = new[] { ConsoleKey.Escape };
                options.MenuBehaviour = MenuBuilderBehaviour.ShowAllCommand;
+
+               options.Menu.Expander = new ExpanderDescription { Collapsed = "++", Expanded = "--" };
+               options.Menu.CircularSelection = false;
+               options.Menu.Selector = "►";
+               options.Menu.IndexMenuItems = true;
             })
             .ConfigureCommandLineParser(o => o.CaseSensitive =true)
             .RunAsync(CancellationToken.None);

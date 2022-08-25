@@ -15,6 +15,9 @@ namespace ConsoLovers.ConsoleToolkit.Core
       /// <summary>Clears all cached argument values.</summary>
       void Clear();
 
+      /// <summary>Gets the or creates the instance of the specified argument type.</summary>
+      /// <param name="argumentType">Type of the argument.</param>
+      /// <returns>The argument instance</returns>
       object GetOrCreate(Type argumentType);
 
       #endregion

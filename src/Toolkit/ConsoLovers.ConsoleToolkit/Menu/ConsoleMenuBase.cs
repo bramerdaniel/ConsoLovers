@@ -9,6 +9,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
    using System;
    using System.Collections.Generic;
    using System.ComponentModel;
+   using System.Diagnostics.CodeAnalysis;
    using System.Linq;
    using System.Runtime.CompilerServices;
    using System.Runtime.InteropServices;
@@ -19,7 +20,8 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
    using JetBrains.Annotations;
 
-   public abstract class ConsoleMenuBase : IConsoleMenuOptions
+   [SuppressMessage("ReSharper", "UnusedMember.Global")]
+   public abstract class ConsoleMenuBase
    {
       #region Constants and Fields
 
@@ -32,34 +34,25 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       private readonly ConsoleMenuItem root = new ConsoleMenuItem("rootItem");
 
       private bool attached;
-
-      private bool circularSelection = true;
-
-      private bool clearOnExecution = true;
+      
 
       private bool closed;
 
-      private ExpanderDescription expander = new ExpanderDescription();
-
       private int expanderWidth = 1;
-
-      private int indentSize = 2;
-
-      private bool indexMenuItems = true;
-
+      
       private ConsoleMenuInputHandler inputHandler;
 
       private ElementInfo lastMouseOver;
 
       private MouseMode mouseMode = MouseMode.Hover;
 
+      private IConsoleMenuOptions options;
+
       private IMenuRenderer renderer;
 
       private ConsoleMenuItem selectedItem;
 
       private SelectionMode selectionMode;
-
-      private string selector = ">> ";
 
       private int unifiedLength;
 
@@ -69,15 +62,28 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       /// <summary>Initializes a new instance of the <see cref="ConsoleMenuBase"/> class.</summary>
       protected ConsoleMenuBase()
-         : this(new ConsoleProxy())
+         : this(new ConsoleProxy(), new ConsoleMenuOptions())
+      {
+      }
+
+      protected ConsoleMenuBase([JetBrains.Annotations.NotNull] IConsole console)
+         : this(console, new ConsoleMenuOptions())
+      {
+      }
+
+      protected ConsoleMenuBase([JetBrains.Annotations.NotNull] IConsoleMenuOptions menuOptions)
+         : this(new ConsoleProxy(), menuOptions)
       {
       }
 
       /// <summary>Initializes a new instance of the <see cref="ConsoleMenuBase"/> class.</summary>
       /// <param name="console">The <see cref="IConsole"/> proxy.</param>
-      protected ConsoleMenuBase([NotNull] IConsole console)
+      /// <param name="options">The options.</param>
+      /// <exception cref="System.ArgumentNullException">console</exception>
+      protected ConsoleMenuBase([JetBrains.Annotations.NotNull] IConsole console, [JetBrains.Annotations.NotNull] IConsoleMenuOptions options)
       {
          this.console = console ?? throw new ArgumentNullException(nameof(console));
+         Options = options ?? throw new ArgumentNullException(nameof(options));
 
          renderer = GetMenuRenderer(this.console);
       }
@@ -93,120 +99,10 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       #endregion
 
-      #region IConsoleMenuOptions Members
-
-      /// <summary>Gets or sets a value indicating whether the circular selection is enabled or not.</summary>
-      public bool CircularSelection
-      {
-         get => circularSelection;
-         set
-         {
-            if (circularSelection == value)
-               return;
-
-            circularSelection = value;
-            Invalidate();
-         }
-      }
-
-      public bool ClearOnExecution
-      {
-         get => clearOnExecution;
-         set
-         {
-            if (clearOnExecution == value)
-               return;
-
-            clearOnExecution = value;
-            Invalidate();
-         }
-      }
-
-      public ConsoleKey[] CloseKeys { get; set; } = Array.Empty<ConsoleKey>();
-
-      public bool ExecuteOnIndexSelection { get; set; }
-
-      public ExpanderDescription Expander
-      {
-         get => expander;
-         set
-         {
-            if (expander == value)
-               return;
-
-            expander = value;
-            RefreshMenu();
-         }
-      }
-
-      /// <summary>Gets or sets the footer that is displayed below the menu.</summary>
-      public object Footer { get; set; }
-
-      /// <summary>Gets or sets the header that is displayed.</summary>
-      public object Header { get; set; }
-
-      /// <summary>Gets or sets the size of the indent that is used to indent child menu items.</summary>
-      public int IndentSize
-      {
-         get => indentSize;
-         set
-         {
-            if (indentSize == value)
-               return;
-
-            indentSize = value;
-            Invalidate();
-         }
-      }
-
-      /// <summary>Gets or sets a value indicating whether the <see cref="ConsoleMenuItem"/>s should be displayed and be accessible with an index.</summary>
-      public bool IndexMenuItems
-      {
-         get => indexMenuItems;
-         set
-         {
-            if (indexMenuItems == value)
-               return;
-
-            indexMenuItems = value;
-            Invalidate();
-         }
-      }
-
-      /// <summary>Gets or sets the selection strech mode that is used for displaying the selection.</summary>
-      public SelectionMode SelectionMode
-      {
-         get => selectionMode;
-         set
-         {
-            if (selectionMode == value)
-               return;
-
-            selectionMode = value;
-            Invalidate();
-         }
-      }
-
-      /// <summary>Gets or sets the selector that is used for displaying the selection.</summary>
-      public string Selector
-      {
-         get => selector;
-         set
-         {
-            if (selector == value)
-               return;
-
-            selector = value;
-            Invalidate();
-         }
-      }
-
-      #endregion
-
       #region Public Properties
 
       public int Count => root.Items.Count;
-
+      
       /// <summary>Gets or sets a value indicating whether the mouse selection is enabled.</summary>
       public MouseMode MouseMode
       {
@@ -219,6 +115,35 @@ namespace ConsoLovers.ConsoleToolkit.Menu
             lastMouseOver = null;
             mouseMode = value;
             AttachMouseEvents(value != MouseMode.Disabled);
+            Invalidate();
+         }
+      }
+
+      /// <summary>Gets or sets the options the menu will use.</summary>
+      public IConsoleMenuOptions Options
+      {
+         get => options;
+         set => ExchangeOptions(value);
+      }
+
+      private void ExchangeOptions(IConsoleMenuOptions value)
+      {
+         if (options != null)
+            options.PropertyChanged -= OnOptionChanged;
+
+         options = value ?? new ConsoleMenuOptions();
+         options.PropertyChanged += OnOptionChanged;
+      }
+
+      private void OnOptionChanged(object sender, PropertyChangedEventArgs e)
+      {
+         if (e.PropertyName == nameof(Options.Expander))
+         {
+            RefreshMenu();
+         }
+         else
+         {
+
             Invalidate();
          }
       }
@@ -243,16 +168,6 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       #endregion
 
       #region Public Methods and Operators
-
-      public static IFluentMenu WithHeader(string text)
-      {
-         return new ConsoleMenuBuilder(text);
-      }
-
-      public static IFluentMenu WithoutHeader()
-      {
-         return new ConsoleMenuBuilder(null);
-      }
 
       public void Add(PrintableItem item)
       {
@@ -346,26 +261,26 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       internal void RefreshMenu()
       {
          console.Clear(GetConsoleBackground());
-         expanderWidth = root.Items.OfType<ConsoleMenuItem>().Any(i => i.HasChildren) ? Expander.Length : 0;
+         expanderWidth = root.Items.OfType<ConsoleMenuItem>().Any(i => i.HasChildren) ? Options.Expander.Length : 0;
 
-         var indexWidth = IndexMenuItems ? 3 + (root.Items.Count < 10 ? 1 : 2) : 0;
+         var indexWidth = Options.IndexMenuItems ? 3 + (root.Items.Count < 10 ? 1 : 2) : 0;
          indexMap.Clear();
 
          UpdateElements();
 
-         renderer.Header(Header);
+         renderer.Header(Options.Header);
 
          if (elements.Any())
          {
             unifiedLength = elements.Values.Max(m => m.Text.Length + m.Indent.Length)
-                            + Selector.Length
+                            + Options.Selector.Length
                             + expanderWidth
                             + indexWidth;
 
             PrintElements();
          }
 
-         renderer.Footer(Footer);
+         renderer.Footer(Options.Footer);
       }
 
       internal void UpdateMouseOver(ElementInfo value)
@@ -487,7 +402,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
                return;
 
             if (selectParentWhenCollapsed)
-               SelectedItem = (ConsoleMenuItem) SelectedItem.Parent;
+               SelectedItem = (ConsoleMenuItem)SelectedItem.Parent;
          }
          else
          {
@@ -503,7 +418,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
             if (menuItem == null)
             {
                var separator = menuItems[i] as ConsoleMenuSeparator;
-               var seperatorElement = new ElementInfo
+               var separatorElement = new ElementInfo
                {
                   Text = GetText(separator),
                   Foreground = separator?.Foreground,
@@ -512,16 +427,16 @@ namespace ConsoLovers.ConsoleToolkit.Menu
                   IsSelected = false,
                   Disabled = true,
                   Hint = null,
-                  Indent = string.Empty.PadRight(indent * IndentSize),
+                  Indent = string.Empty.PadRight(indent * Options.IndentSize),
                   IsExpanded = null,
-                  Expander = Expander
+                  Expander = Options.Expander
                };
 
-               yield return seperatorElement;
+               yield return separatorElement;
                continue;
             }
 
-            var identifier = useNumbers ? (i + 1).ToString() : ((char) (97 + i)).ToString();
+            var identifier = useNumbers ? (i + 1).ToString() : ((char)(97 + i)).ToString();
             var elementInfo = new ElementInfo
             {
                Identifier = identifier,
@@ -534,10 +449,10 @@ namespace ConsoLovers.ConsoleToolkit.Menu
                IsSelected = IsSelected(menuItem),
                Disabled = !CanExecute(menuItem),
                Hint = DisabledHint(menuItem),
-               Indent = string.Empty.PadRight(indent * IndentSize),
-               IsExpanded = menuItem.HasChildren ? (bool?) menuItem.IsExpanded : null,
+               Indent = string.Empty.PadRight(indent * Options.IndentSize),
+               IsExpanded = menuItem.HasChildren ? (bool?)menuItem.IsExpanded : null,
                IsSelectable = true,
-               Expander = Expander
+               Expander = Options.Expander
             };
 
             indexMap.Add(parent == null ? identifier : parent.Path + identifier, elementInfo);
@@ -559,7 +474,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
             return;
          }
 
-         var consoleWasCleared = ClearOnExecution;
+         var consoleWasCleared = Options.ClearOnExecution;
          if (consoleWasCleared)
             console.Clear();
 
@@ -646,7 +561,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       private void OnInputChanged(object sender, ConsoleInputEventArgs e)
       {
-         if (CloseKeys.Contains(e.KeyInfo.Key))
+         if (Options.CloseKeys.Contains(e.KeyInfo.Key))
             Close();
 
          if (closed)
@@ -711,7 +626,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          {
             elementInfo.Line = console.CursorTop;
 
-            renderer.Element(elementInfo, Selector, SelectionMode);
+            renderer.Element(elementInfo, Options.Selector, Options.SelectionMode);
             elementInfo.Length = console.CursorLeft;
 
             console.WriteLine();
@@ -730,7 +645,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
             console.CursorTop = elementToUpdate.Line;
             console.CursorLeft = 0;
 
-            renderer.Element(elementToUpdate, Selector, SelectionMode);
+            renderer.Element(elementToUpdate, Options.Selector, Options.SelectionMode);
          }
       }
 
@@ -749,7 +664,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
             }
             else
             {
-               if (CircularSelection)
+               if (Options.CircularSelection)
                   SelectedItem = root.Items.OfType<ConsoleMenuItem>().FirstOrDefault();
             }
          }
@@ -768,7 +683,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
             {
                if (previousItem == root)
                {
-                  if (CircularSelection)
+                  if (Options.CircularSelection)
                      SelectedItem = root.Items.OfType<ConsoleMenuItem>().LastOrDefault();
                }
                else
@@ -819,7 +734,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
                if (SelectedItem == null || SelectedItem.Parent == root)
                   return;
 
-               SelectedItem = (ConsoleMenuItem) SelectedItem.Parent;
+               SelectedItem = (ConsoleMenuItem)SelectedItem.Parent;
                break;
             case ConsoleKey.Home:
                SelectedItem = root.Items.OfType<ConsoleMenuItem>().FirstOrDefault();
@@ -829,13 +744,13 @@ namespace ConsoLovers.ConsoleToolkit.Menu
                return;
          }
 
-         if (!IndexMenuItems)
+         if (!Options.IndexMenuItems)
             return;
 
          if (indexMap.TryGetValue(input, out var element))
          {
             SelectedItem = element.MenuItem as ConsoleMenuItem;
-            if (ExecuteOnIndexSelection && SelectedItem != null)
+            if (Options.ExecuteOnIndexSelection && SelectedItem != null)
             {
                if (SelectedItem.IsExpanded)
                   SelectedItem.Collapse();

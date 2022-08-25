@@ -65,11 +65,11 @@ namespace MenuDemo
       private static ConsoleMenuItem CreateCircularSelectionMenu(ConsoleMenuBase menu)
       {
          return new ConsoleMenuItem(
-            $"CircularSelection = {menu.CircularSelection}",
+            $"CircularSelection = {menu.Options.CircularSelection}",
             x =>
             {
-               x.Menu.CircularSelection = !x.Menu.CircularSelection;
-               x.Text = $"CircularSelection = {x.Menu.CircularSelection}";
+               x.Menu.Options.CircularSelection = !x.Menu.Options.CircularSelection;
+               x.Text = $"CircularSelection = {x.Menu.Options.CircularSelection}";
             });
       }
 
@@ -79,19 +79,19 @@ namespace MenuDemo
             $"ClearOnExecution = {initialValue}",
             x =>
             {
-               x.Menu.ClearOnExecution = !x.Menu.ClearOnExecution;
-               x.Text = $"ClearOnExecution = {x.Menu.ClearOnExecution}";
+               x.Menu.Options.ClearOnExecution = !x.Menu.Options.ClearOnExecution;
+               x.Text = $"ClearOnExecution = {x.Menu.Options.ClearOnExecution}";
             });
       }
       
       private static ConsoleMenuItem CreateExecuteOnIndexSelectionMenu(ConsoleMenuBase menu)
       {
          return new ConsoleMenuItem(
-            $"ExecuteOnIndexSelection = {menu.ExecuteOnIndexSelection}",
+            $"ExecuteOnIndexSelection = {menu.Options.ExecuteOnIndexSelection}",
             x =>
             {
-               x.Menu.ExecuteOnIndexSelection = !x.Menu.ExecuteOnIndexSelection;
-               x.Text = $"ExecuteOnIndexSelection = {x.Menu.ExecuteOnIndexSelection}";
+               x.Menu.Options.ExecuteOnIndexSelection = !x.Menu.Options.ExecuteOnIndexSelection;
+               x.Text = $"ExecuteOnIndexSelection = {x.Menu.Options.ExecuteOnIndexSelection}";
             });
       }
 
@@ -101,8 +101,8 @@ namespace MenuDemo
             $"IndexMenuItems = {initialValue}",
             x =>
             {
-               x.Menu.IndexMenuItems = !x.Menu.IndexMenuItems;
-               x.Text = $"IndexMenuItems = {x.Menu.IndexMenuItems}";
+               x.Menu.Options.IndexMenuItems = !x.Menu.Options.IndexMenuItems;
+               x.Text = $"IndexMenuItems = {x.Menu.Options.IndexMenuItems}";
             });
       }
 
@@ -115,36 +115,36 @@ namespace MenuDemo
             new ConsoleMenuItem("Hover", x => x.Menu.MouseMode = MouseMode.Hover));
       }
 
-      private static ConsoleMenuItem CreateSelectionStrechMenu()
+      private static ConsoleMenuItem CreateSelectionStretchMenu()
       {
          return new ConsoleMenuItem(
             "Change selection strech",
-            new ConsoleMenuItem("Disabled", x => x.Menu.SelectionMode = SelectionMode.None),
-            new ConsoleMenuItem("UnifiedLength", x => x.Menu.SelectionMode = SelectionMode.UnifiedLength),
-            new ConsoleMenuItem("FullLine", x => x.Menu.SelectionMode = SelectionMode.FullLine));
+            new ConsoleMenuItem("Disabled", x => x.Menu.Options.SelectionMode = SelectionMode.None),
+            new ConsoleMenuItem("UnifiedLength", x => x.Menu.Options.SelectionMode = SelectionMode.UnifiedLength),
+            new ConsoleMenuItem("FullLine", x => x.Menu.Options.SelectionMode = SelectionMode.FullLine));
       }
 
       private static ConsoleMenuItem CreateSelectorMenu(ConsoleMenuBase menu)
       {
          return new ConsoleMenuItem(
             "Change selector",
-            new ConsoleMenuItem("Disabled", x => x.Menu.Selector = string.Empty),
-            new ConsoleMenuItem("Arrow ( => )", x => x.Menu.Selector = "=>"),
-            new ConsoleMenuItem("Star ( * )", x => x.Menu.Selector = "*"),
-            new ConsoleMenuItem("Big Double ( >> )", x => x.Menu.Selector = ">>"),
-            new ConsoleMenuItem("Small Double ( » )", x => x.Menu.Selector = "»"),
+            new ConsoleMenuItem("Disabled", x => x.Menu.Options.Selector = string.Empty),
+            new ConsoleMenuItem("Arrow ( => )", x => x.Menu.Options.Selector = "=>"),
+            new ConsoleMenuItem("Star ( * )", x => x.Menu.Options.Selector = "*"),
+            new ConsoleMenuItem("Big Double ( >> )", x => x.Menu.Options.Selector = ">>"),
+            new ConsoleMenuItem("Small Double ( » )", x => x.Menu.Options.Selector = "»"),
             new ConsoleMenuItem(
                "Enter custom selector",
                x =>
                {
                   Console.WriteLine("Enter selector");
-                  menu.Selector = Console.ReadLine();
+                  menu.Options.Selector = Console.ReadLine();
                }));
       }
 
       private static void DoCrash(ConsoleMenuItem sender)
       {
-         throw new InvalidOperationException("Some invalid operartion was performed");
+         throw new InvalidOperationException("Some invalid operation was performed");
       }
 
       private static void HandleCrash(ConsoleMenuBase menu)
@@ -164,15 +164,15 @@ namespace MenuDemo
 
       private static IEnumerable<ConsoleMenuItem> LazyLoadChildren()
       {
-         yield return new ConsoleMenuItem("Child 1", x => { });
+         yield return new ConsoleMenuItem("Child 1", _ => { });
          Thread.Sleep(500);
-         yield return new ConsoleMenuItem("Child 2", x => { });
+         yield return new ConsoleMenuItem("Child 2", _ => { });
          Thread.Sleep(500);
-         yield return new ConsoleMenuItem("Child 3", x => { });
+         yield return new ConsoleMenuItem("Child 3", _ => { });
          Thread.Sleep(500);
-         yield return new ConsoleMenuItem("Child 4", x => { });
+         yield return new ConsoleMenuItem("Child 4", _ => { });
          Thread.Sleep(400);
-         yield return new ConsoleMenuItem("Child 5", x => { });
+         yield return new ConsoleMenuItem("Child 5", _ => { });
       }
 
       static void Main(string[] args)
@@ -196,7 +196,7 @@ namespace MenuDemo
 
          var footer = Environment.NewLine + "THIS COULD BE YOUR FOOTER";
 
-         var menu = new ConsoleMenu
+         var options = new ConsoleMenuOptions
          {
             Header = header,
             Footer = footer,
@@ -205,12 +205,14 @@ namespace MenuDemo
             SelectionMode = SelectionMode.UnifiedLength
          };
 
+         var menu = new ConsoleMenu(options);
+
          // menu.Expander = new ExpanderDescription { Collapsed = "►", Expanded = "▼" };
-         menu.Add(CreateSelectionStrechMenu());
+         menu.Add(CreateSelectionStretchMenu());
          menu.Add(CreateCircularSelectionMenu(menu));
          menu.Add(CreateMouseSelectionMenu());
-         menu.Add(CreateIndexMenuItemsMenu(menu.IndexMenuItems));
-         menu.Add(CreateClearOnExecutionMenu(menu.ClearOnExecution));
+         menu.Add(CreateIndexMenuItemsMenu(menu.Options.IndexMenuItems));
+         menu.Add(CreateClearOnExecutionMenu(menu.Options.ClearOnExecution));
          menu.Add(new ConsoleMenuSeparator());
          menu.Add(CreateSelectorMenu(menu));
          menu.Add(CreateExecuteOnIndexSelectionMenu(menu));
@@ -218,7 +220,7 @@ namespace MenuDemo
          menu.Add(
             new ConsoleMenuItem(
                "Remove until 9 remain",
-               x =>
+               _ =>
                {
                   while (menu.Count >= 10)
                      menu.RemoveAt(menu.Count - 1);
@@ -226,13 +228,13 @@ namespace MenuDemo
          menu.Add(new ConsoleMenuItem("Show Progress", ShowProgress));
          menu.Add(new ConsoleMenuItem("Set user name", InsertName));
          menu.Add(new ConsoleMenuItem("Connect to server", ConnectToServer, CanConnectToServer) { DisabledHint = "Set username first" });
-         menu.Add(new ConsoleMenuItem("Register crash event handler", x => HandleCrash(menu)));
+         menu.Add(new ConsoleMenuItem("Register crash event handler", _ => HandleCrash(menu)));
          menu.Add(new ConsoleMenuItem("Simulate Crash", DoCrash));
          menu.Add(new ConsoleMenuItem("ColorSimulation", ColorSimulation));
          menu.Add(new ConsoleMenuItem("LazyLoadChildren", LazyLoadChildren, true));
          menu.Add(new ConsoleMenuSeparator{ Label = "Close stuff" });
-         menu.Add(new ConsoleMenuItem("Close menu", x => menu.Close()));
-         menu.Add(new ConsoleMenuItem("Exit", x => Environment.Exit(0)){ Foreground = ConsoleColor.Red });
+         menu.Add(new ConsoleMenuItem("Close menu", _ => menu.Close()));
+         menu.Add(new ConsoleMenuItem("Exit", _ => Environment.Exit(0)){ Foreground = ConsoleColor.Red });
          menu.Show();
       }
 

@@ -25,7 +25,8 @@ namespace ConsoLovers.UnitTests.Menu
          var header = "Some test header";
 
          var consoleMock = new Mock<IConsole>();
-         var target = new ConsoleMenu(consoleMock.Object) { Header = header };
+         var target = new ConsoleMenu(consoleMock.Object);
+         target.Options.Header = header;
 
          target.RefreshMenu();
 
@@ -39,7 +40,8 @@ namespace ConsoLovers.UnitTests.Menu
          var footer = "Some test footer";
 
          var consoleMock = new Mock<IConsole>();
-         var target = new ConsoleMenu(consoleMock.Object) { Footer = footer };
+         var target = new ConsoleMenu(consoleMock.Object);
+         target.Options.Footer = footer;
 
          target.RefreshMenu();
 
@@ -56,7 +58,7 @@ namespace ConsoLovers.UnitTests.Menu
 
          target.RefreshMenu();
 
-         consoleMock.Verify(x => x.Write(target.Selector), Times.Once());
+         consoleMock.Verify(x => x.Write(target.Options.Selector), Times.Once());
          consoleMock.Verify(x => x.Write("Item 1"), Times.Once());
          consoleMock.Verify(x => x.WriteLine(), Times.Once());
       }
