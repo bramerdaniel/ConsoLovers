@@ -6,6 +6,7 @@
 
 namespace ConsoLovers.ConsoleToolkit
 {
+   using ConsoLovers.ConsoleToolkit.Core;
    using ConsoLovers.ConsoleToolkit.Menu;
 
    public interface ICommandMenuOptions
@@ -15,6 +16,8 @@ namespace ConsoLovers.ConsoleToolkit
       IConsoleMenuOptions Menu { get; }
 
       MenuBuilderBehaviour MenuBehaviour { get; set; }
+
+      ArgumentInitializationModes DefaultArgumentInitializationMode { get; set; }
 
       #endregion
    }

@@ -8,11 +8,11 @@ namespace MenusAndCommands;
 
 using ConsoLovers.ConsoleToolkit.Core;
 using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
-using MenusAndCommands.Commands;
-using MenusAndCommands.Commands.Controllers;
-using MenusAndCommands.Commands.Permission;
-using MenusAndCommands.Commands.Role;
-using MenusAndCommands.Commands.User;
+using global::MenusAndCommands.Commands;
+using global::MenusAndCommands.Commands.Controllers;
+using global::MenusAndCommands.Commands.Permission;
+using global::MenusAndCommands.Commands.Role;
+using global::MenusAndCommands.Commands.User;
 
 public class AppArguments
 {

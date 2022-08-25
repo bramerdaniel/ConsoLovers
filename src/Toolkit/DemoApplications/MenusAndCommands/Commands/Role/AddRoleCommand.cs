@@ -34,6 +34,7 @@ public class AddRoleCommand : ICommand<AddRoleCommand.AddRoleArgs>, IMenuCommand
 
    public void Execute()
    {
+      console.WriteLine($"Role {Arguments.Name} was added successfully");
    }
 
    #endregion
@@ -42,7 +43,7 @@ public class AddRoleCommand : ICommand<AddRoleCommand.AddRoleArgs>, IMenuCommand
 
    public void Execute(IMenuExecutionContext context)
    {
-      console.WriteLine("Role added");
+      Execute();
       console.ReadLine();
    }
 
@@ -52,7 +53,9 @@ public class AddRoleCommand : ICommand<AddRoleCommand.AddRoleArgs>, IMenuCommand
    {
       #region Public Properties
 
-      [Argument("name")] public string Name { get; set; }
+      [Argument("name")]
+      [MenuArgument("Role to delete")]
+      public string Name { get; set; }
 
       #endregion
    }

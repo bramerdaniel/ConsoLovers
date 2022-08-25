@@ -34,6 +34,7 @@ public class DeleteUserCommand : ICommand<DeleteUserCommand.DeleteUserArgs>, IMe
 
    public void Execute()
    {
+      console.WriteLine($"User {Arguments.Name} was deleted");
    }
 
    #endregion
@@ -42,7 +43,7 @@ public class DeleteUserCommand : ICommand<DeleteUserCommand.DeleteUserArgs>, IMe
 
    public void Execute(IMenuExecutionContext context)
    {
-      console.WriteLine("User deleted");
+      Execute();
       console.ReadLine();
       context.MenuItem.Remove();
    }
@@ -53,7 +54,9 @@ public class DeleteUserCommand : ICommand<DeleteUserCommand.DeleteUserArgs>, IMe
    {
       #region Public Properties
 
-      [Argument("name")] public string Name { get; set; }
+      [Argument("name")]
+      [MenuArgument("User to delete")]
+      public string Name { get; set; }
 
       #endregion
    }

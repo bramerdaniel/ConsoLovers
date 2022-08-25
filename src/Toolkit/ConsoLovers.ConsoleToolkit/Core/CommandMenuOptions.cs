@@ -6,6 +6,7 @@
 
 namespace ConsoLovers.ConsoleToolkit
 {
+   using ConsoLovers.ConsoleToolkit.Core;
    using ConsoLovers.ConsoleToolkit.Menu;
 
    internal class CommandMenuOptions : ICommandMenuOptions
@@ -24,6 +25,8 @@ namespace ConsoLovers.ConsoleToolkit
       public IConsoleMenuOptions Menu { get; }
 
       public MenuBuilderBehaviour MenuBehaviour { get; set; }
+
+      public ArgumentInitializationModes DefaultArgumentInitializationMode { get; set; }
 
       #endregion
    }

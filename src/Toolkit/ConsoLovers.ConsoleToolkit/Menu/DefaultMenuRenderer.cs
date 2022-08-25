@@ -48,9 +48,9 @@ namespace ConsoLovers.ConsoleToolkit.Menu
             Print(textHeader, DEFAULT_FOREGROUND_COLOR, DEFAULT_BACKGROUND_COLOR);
             console.WriteLine();
          }
-         else if (header is ICustomHeader customHeader)
+         else if (header is IMenuHeader customHeader)
          {
-            customHeader.PrintHeader();
+            customHeader.PrintHeader(console);
          }
          else if (header != null)
          {
@@ -69,9 +69,9 @@ namespace ConsoLovers.ConsoleToolkit.Menu
             Print(textFooter, DEFAULT_FOREGROUND_COLOR, DEFAULT_BACKGROUND_COLOR);
             console.WriteLine();
          }
-         else if (footer is ICustomFooter customFooter)
+         else if (footer is IMenuFooter customFooter)
          {
-            customFooter.PrintFooter();
+            customFooter.PrintFooter(console);
          }
          else if (footer != null)
          {

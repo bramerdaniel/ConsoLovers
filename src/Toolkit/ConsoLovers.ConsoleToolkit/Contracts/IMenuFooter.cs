@@ -1,18 +1,20 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ICustomHeader.cs" company="ConsoLovers">
+// <copyright file="IMenuFooter.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2017
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace ConsoLovers.ConsoleToolkit.Contracts
 {
-   /// <summary>Interface for customizing the menus header.</summary>
-   public interface ICustomHeader
+   using ConsoLovers.ConsoleToolkit.Core;
+
+   /// <summary>Interface for customizing the menus footer</summary>
+   public interface IMenuFooter
    {
       #region Public Methods and Operators
 
-      /// <summary>Prints the header of the menu.</summary>
-      void PrintHeader();
+      /// <summary>Prints the footer of the menu.</summary>
+      void PrintFooter(IConsole console);
 
       #endregion
    }

@@ -8,8 +8,8 @@ namespace MenusAndCommands.Commands;
 
 using ConsoLovers.ConsoleToolkit.Core;
 
-using MenusAndCommands.Commands.Permission;
-using MenusAndCommands.Commands.Role;
+using global::MenusAndCommands.Commands.Permission;
+using global::MenusAndCommands.Commands.Role;
 
 [MenuCommand(Visible = false)]
 public class HiddenCommands

@@ -1,55 +1,66 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="DeleteControllerCommand.cs" company="ConsoLovers">
+// <copyright file="ShowRolesCommand.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace MenusAndCommands.Commands.Controllers;
+namespace MenusAndCommands.Commands.Role;
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 using ConsoLovers.ConsoleToolkit;
 using ConsoLovers.ConsoleToolkit.Core;
 
-internal class DeleteControllerCommand : IAsyncCommand<DeleteControllerCommand.Args>, IAsyncMenuCommand
+public class ShowRolesCommand : IAsyncCommand<ShowRolesCommand.ShowRolesArgs>, IAsyncMenuCommand
 {
    #region Constants and Fields
 
    private readonly IConsole console;
 
+   private List<string> roles = new List<string> { "Admin", "User", "Operator", "Guest" };
+
    #endregion
 
    #region Constructors and Destructors
 
-   public DeleteControllerCommand(IConsole console)
+   public ShowRolesCommand(IConsole console)
    {
       this.console = console ?? throw new ArgumentNullException(nameof(console));
    }
 
    #endregion
 
-   #region IAsyncCommand<Args> Members
+   #region IAsyncCommand<ShowRolesArgs> Members
+
+   public ShowRolesArgs Arguments { get; set; }
 
    public Task ExecuteAsync(CancellationToken cancellationToken)
    {
-      if (Arguments == null)
+      console.WriteLine("ROLES");
+      if (string.IsNullOrWhiteSpace(Arguments.Name))
       {
-         console.WriteLine("Arguments were null", ConsoleColor.Red);
-         console.ReadLine();
-         return Task.CompletedTask;
+         foreach (var role in roles)
+            console.WriteLine($"- {role}");
       }
-
-      for (int i = 0; i < Arguments.Retries; i++)
-         console.WriteLine($"Trying to delete {Arguments.Name}");
-
-      console.WriteLine($"Deleting controller with name {Arguments.Name}");
+      else
+      {
+         var specifiedRole = roles.FirstOrDefault(x => x == Arguments.Name);
+         if (specifiedRole == null)
+         {
+            console.WriteLine($"Role {Arguments.Name} not found", ConsoleColor.Red);
+         }
+         else
+         {
+            console.WriteLine($"Role {specifiedRole} found", ConsoleColor.Green);
+         }
+      }
 
       return Task.CompletedTask;
    }
-
-   public Args Arguments { get; set; }
 
    #endregion
 
@@ -63,19 +74,13 @@ internal class DeleteControllerCommand : IAsyncCommand<DeleteControllerCommand.A
 
    #endregion
 
-   internal class Args
+   public class ShowRolesArgs : SharedArgs
    {
       #region Public Properties
 
-      [Argument("force")]
-      [MenuArgument(Visible = false)]
-      public bool Force { get; set; } = false;
-
       [Argument("name")]
+      [MenuArgument("Role to show")]
       public string Name { get; set; }
-
-      [Argument("retries")]
-      public int Retries { get; set; } = 5;
 
       #endregion
    }

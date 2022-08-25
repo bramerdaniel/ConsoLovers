@@ -34,6 +34,7 @@ public class AddUserCommand : ICommand<AddUserCommand.AddUserArgs>, IMenuCommand
 
    public void Execute()
    {
+      console.WriteLine($"User {Arguments.Name} was added");
    }
 
    #endregion
@@ -42,7 +43,7 @@ public class AddUserCommand : ICommand<AddUserCommand.AddUserArgs>, IMenuCommand
 
    public void Execute(IMenuExecutionContext context)
    {
-      console.WriteLine("User added");
+      Execute();
       console.ReadLine();
    }
 
@@ -52,7 +53,9 @@ public class AddUserCommand : ICommand<AddUserCommand.AddUserArgs>, IMenuCommand
    {
       #region Public Properties
 
-      [Argument("name")] public string Name { get; set; }
+      [Argument("name")]
+      [MenuArgument("Name to add", DisplayOrder = 1)]
+      public string Name { get; set; }
 
       #endregion
    }

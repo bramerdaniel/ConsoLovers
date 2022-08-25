@@ -12,7 +12,7 @@ namespace ConsoLovers.ConsoleToolkit
    {
       #region Public Properties
 
-      // TODO Change the name of the ICustomHeader interface to something better (e.g. IMenuHeader)
+      // TODO Change the name of the IMenuHeader interface to something better (e.g. IMenuHeader)
 
       ConsoleMenuItem MenuItem { get; }
 

@@ -108,25 +108,6 @@ namespace ConsoLovers.ConsoleToolkit
 
       #region Methods
 
-      private MenuCommandAttribute GetOrCreateMenuAttribute(CommandInfo commandInfo)
-      {
-         // TODO join these attribute queries
-         var visibleAttribute = commandInfo.PropertyInfo.GetAttribute<MenuAttribute>();
-         if (visibleAttribute != null && !visibleAttribute.Visible)
-            return null;
-
-         var menuAttribute = commandInfo.PropertyInfo.GetAttribute<MenuCommandAttribute>();
-         if (menuAttribute == null)
-         {
-            if (commandMenuOptions.MenuBehaviour == MenuBuilderBehaviour.WithAttributesOnly)
-               return null;
-
-            menuAttribute = new MenuCommandAttribute(commandInfo.ParameterName);
-         }
-
-         return menuAttribute;
-      }
-
       private ConsoleMenuItem CreateMenuItem(CommandInfo commandInfo)
       {
          var menuInfo = CreateMenuCommandInfo(commandInfo);
@@ -146,7 +127,7 @@ namespace ConsoLovers.ConsoleToolkit
          if (argumentInfo.HasCommands)
             return CreateChildMenu(argumentInfo, menuInfo);
 
-         if (argumentInfo.Properties.Any())
+         if (menuInfo.ArgumentInitializationMode == ArgumentInitializationModes.AsMenu && argumentInfo.Properties.Any())
             return CreateArgumentsMenu(menuInfo, argumentInfo);
 
          return new ConsoleMenuItem(menuInfo.DisplayName, x => Execute(x, menuInfo));
@@ -163,9 +144,10 @@ namespace ConsoLovers.ConsoleToolkit
          {
             return new MenuCommandInfo(commandInfo)
             {
+               ArgumentInfo = argumentInfo,
                Visible = commandMenuOptions.MenuBehaviour == MenuBuilderBehaviour.ShowAllCommand,
                DisplayName = commandInfo.ParameterName,
-               ArgumentInfo = argumentInfo
+               ArgumentInitializationMode = commandMenuOptions.DefaultArgumentInitializationMode
             };
          }
 
@@ -211,6 +193,7 @@ namespace ConsoLovers.ConsoleToolkit
       {
          var argumentInstance = ArgumentManager.GetOrCreate(argumentInfo.ArgumentType);
 
+         // TODO sort by order
          foreach (var property in argumentInfo.Properties)
          {
             if (property is ArgumentInfo argument)
@@ -265,26 +248,6 @@ namespace ConsoLovers.ConsoleToolkit
          return $"{property.ParameterName}={value}";
       }
 
-      private void Execute(ConsoleMenuItem menuItem, CommandInfo commandInfo, object arguments)
-      {
-         var command = serviceProvider.GetService(commandInfo.ParameterType);
-         SetArguments(command, arguments);
-         if (command is IMenuCommand menuCommand)
-         {
-            var executionContext = new MenuExecutionContext { MenuItem = menuItem };
-            menuCommand.Execute(executionContext);
-         }
-         if (command is IAsyncMenuCommand asyncMenuCommand)
-         {
-            var executionContext = new MenuExecutionContext { MenuItem = menuItem };
-            asyncMenuCommand.ExecuteAsync(executionContext, currentCancellationToken.GetValueOrDefault(CancellationToken.None));
-         }
-         else if (command is ICommandBase commandBase)
-         {
-            var executionEngine = serviceProvider.GetRequiredService<IExecutionEngine>();
-            executionEngine.ExecuteCommand(commandBase, CancellationToken.None);
-         }
-      }
 
       private void SetArguments(object command, object arguments)
       {
@@ -296,16 +259,33 @@ namespace ConsoLovers.ConsoleToolkit
       private void Execute(ConsoleMenuItem menuItem, MenuCommandInfo menuInfo)
       {
          var command = CreateCommand(menuInfo);
+         ExecuteInternal(menuItem, command);
+      }
+
+
+      private void Execute(ConsoleMenuItem menuItem, CommandInfo commandInfo, object arguments)
+      {
+         var command = serviceProvider.GetService(commandInfo.ParameterType);
+         SetArguments(command, arguments);
+         ExecuteInternal(menuItem, command);
+      }
+
+      private void ExecuteInternal(ConsoleMenuItem menuItem, object command)
+      {
          if (command is IMenuCommand menuCommand)
          {
             var executionContext = new MenuExecutionContext { MenuItem = menuItem };
             menuCommand.Execute(executionContext);
          }
+         else if (command is IAsyncMenuCommand asyncMenuCommand)
+         {
+            var executionContext = new MenuExecutionContext { MenuItem = menuItem };
+            asyncMenuCommand.ExecuteAsync(executionContext, currentCancellationToken.GetValueOrDefault(CancellationToken.None));
+         }
          else if (command is ICommandBase commandBase)
          {
             var executionEngine = serviceProvider.GetRequiredService<IExecutionEngine>();
-            executionEngine.ExecuteCommandAsync(commandBase, CancellationToken.None)
-               .GetAwaiter().GetResult();
+            executionEngine.ExecuteCommand(commandBase, CancellationToken.None);
          }
       }
 
@@ -313,30 +293,37 @@ namespace ConsoLovers.ConsoleToolkit
       {
          var command = serviceProvider.GetRequiredService(menuInfo.CommandInfo.ParameterType);
 
-         if (menuInfo.ArgumentInitializationMode != ArgumentInitializationModes.WhileExecution)
-            return command;
+         if (menuInfo.ArgumentInitializationMode == ArgumentInitializationModes.WhileExecution)
+            InitializeCommandArguments(menuInfo, command);
 
-         if (InitializeCommand(menuInfo, command))
-            return null;
          return command;
       }
 
-      private bool InitializeCommand(MenuCommandInfo menuInfo, object command)
+      private void InitializeCommandArguments(MenuCommandInfo menuInfo, object command)
       {
          var argumentsProperty = command.GetType().GetProperty(nameof(ICommandArguments<Type>.Arguments));
          if (argumentsProperty == null)
-            return true;
+            return;
 
          var args = ArgumentManager.GetOrCreate(menuInfo.ArgumentInfo.ArgumentType);
          foreach (var argumentInfo in menuInfo.GetArgumentInfos())
          {
-            var initialValue = argumentInfo.GetValue(args);
-            var parameterValue = new InputBox<object>($"{argumentInfo.DisplayName}: ", initialValue).ReadLine();
-            argumentInfo.SetValue(args, parameterValue);
+            try
+            {
+               var initialValue = argumentInfo.GetValue(args);
+               var parameterValue = new InputBox<object>($"{argumentInfo.DisplayName}: ", initialValue)
+               {
+                  IsPassword = argumentInfo.IsPassword
+               }.ReadLine();
+               argumentInfo.SetValue(args, parameterValue);
+            }
+            catch (InputCanceledException)
+            {
+               // The user did not want to specify a value
+            }
          }
 
          argumentsProperty.SetValue(command, args);
-         return false;
       }
 
       #endregion

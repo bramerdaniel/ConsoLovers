@@ -13,6 +13,9 @@ public class RoleCommands
 {
    #region Public Properties
 
+   [Command("Show")]
+   public ShowRolesCommand Show { get; set; }
+
    [Command("Add")]
    public AddRoleCommand Add { get; set; }
 

@@ -12,9 +12,13 @@ public class SharedArgs
 {
    #region Public Properties
 
-   [Argument("password")] public string Password { get; set; }
+   [Argument("password")]
+   [MenuArgument("Password", DisplayOrder = int.MaxValue, IsPassword = true)]
+   public string Password { get; set; }
 
-   [Argument("userName")] public string UserName { get; set; }
+   [Argument("userName")]
+   [MenuArgument("UserName", DisplayOrder = int.MaxValue - 1)]
+   public string UserName { get; set; }
 
    #endregion
 }

@@ -28,7 +28,14 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       #region Public Properties
 
+      /// <summary>Gets or sets the display name that is used for the menu.</summary>
       public string DisplayName { get; set; }
+
+      /// <summary>Gets or sets the sort order for displaying the attribute in the menu.</summary>
+      public int DisplayOrder { get; set; } = int.MaxValue / 2;
+
+      /// <summary>Gets or sets a value indicating whether this argument is a password.</summary>
+      public bool IsPassword { get; set; } = false;
 
       #endregion
    }
