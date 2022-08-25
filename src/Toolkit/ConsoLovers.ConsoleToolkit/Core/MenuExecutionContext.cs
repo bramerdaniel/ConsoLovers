@@ -43,6 +43,9 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       public void InitializeArgument(string argumentName)
       {
+         if (!HasMenuInfo())
+            return;
+
          EnsureArgumentInstance();
 
          var argumentInfo = menuInfo.GetArgumentInfo(argumentName);
@@ -50,6 +53,11 @@ namespace ConsoLovers.ConsoleToolkit.Core
             throw new ArgumentException($"Argument {argumentName} could not be found", nameof(argumentName));
 
          InitializeArgumentInternal(argumentInfo);
+      }
+
+      private bool HasMenuInfo()
+      {
+         return menuInfo != null && menuInfo.ArgumentInfo != null;
       }
 
       #endregion
@@ -72,7 +80,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       public void InitializeArguments()
       {
-         if (menuInfo.ArgumentInfo == null)
+         if (!HasMenuInfo())
             return;
 
          EnsureArgumentInstance();
@@ -99,8 +107,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
          try
          {
             var initialValue = argumentInfo.GetValue(Arguments);
-            var parameterValue =
-               new InputBox<object>($"{argumentInfo.DisplayName}: ", initialValue) { IsPassword = argumentInfo.IsPassword }.ReadLine();
+            var parameterValue = ReadValueFromConsole(argumentInfo, initialValue);
 
             argumentInfo.SetValue(Arguments, parameterValue);
          }
@@ -110,6 +117,27 @@ namespace ConsoLovers.ConsoleToolkit.Core
             if (argumentInfo.Required)
                throw;
          }
+      }
+
+      private static object ReadValueFromConsole(MenuArgumentInfo argumentInfo, object initialValue)
+      {
+         if (argumentInfo.ArgumentType == typeof(int))
+         {
+            if (initialValue is int intValue)
+               return new InputBox<int>($"{argumentInfo.DisplayName}: ", intValue).ReadLine();
+            return new InputBox<int>($"{argumentInfo.DisplayName}: ").ReadLine();
+         }
+
+         if (argumentInfo.ArgumentType == typeof(bool))
+            return new InputBox<bool>($"{argumentInfo.DisplayName}: ", initialValue is bool boolValue && boolValue).ReadLine();
+
+         if (argumentInfo.ArgumentType == typeof(string))
+         {
+            var stringValue = initialValue as string ?? string.Empty;
+            return new InputBox<string>($"{argumentInfo.DisplayName}: ", stringValue) { IsPassword = argumentInfo.IsPassword }.ReadLine();
+         }
+
+         return new InputBox<object>($"{argumentInfo.DisplayName}: ", initialValue) { IsPassword = argumentInfo.IsPassword }.ReadLine();
       }
 
       private void SetArgumentsToCommand()

@@ -26,6 +26,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       {
          this.parameterInfo = parameterInfo ?? throw new ArgumentNullException(nameof(parameterInfo));
          Required = (parameterInfo as ArgumentInfo)?.Attribute.Required ?? false;
+         ArgumentType = parameterInfo.ParameterType;
          DisplayName = parameterInfo.ParameterName;
 
          var menuAttribute = parameterInfo.PropertyInfo.GetAttribute<MenuAttribute>();
@@ -63,6 +64,8 @@ namespace ConsoLovers.ConsoleToolkit.Core
       public bool Required { get; set; }
 
       public bool Visible { get; }
+
+      public Type ArgumentType { get; set; }
 
       #endregion
 
