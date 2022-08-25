@@ -522,8 +522,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
       private IMenuRenderer GetMenuRenderer(IConsole console)
       {
          if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            return new DefaultMenuRenderer(console);
-
+            return new DefaultMenuRenderer(console, Options);
          return new LinuxMenuRenderer(console);
       }
 

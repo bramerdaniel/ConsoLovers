@@ -15,6 +15,8 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
    internal class DefaultMenuRenderer : IMenuRenderer
    {
+      internal IConsoleMenuOptions Options { get; }
+
       #region Constants and Fields
 
       private const ConsoleColor DEFAULT_BACKGROUND_COLOR = ConsoleColor.Black;
@@ -29,8 +31,9 @@ namespace ConsoLovers.ConsoleToolkit.Menu
 
       #region Constructors and Destructors
 
-      public DefaultMenuRenderer([NotNull] IConsole console)
+      public DefaultMenuRenderer([NotNull] IConsole console, [NotNull] IConsoleMenuOptions options)
       {
+         Options = options ?? throw new ArgumentNullException(nameof(options));
          this.console = console ?? throw new ArgumentNullException(nameof(console));
       }
 
@@ -95,8 +98,7 @@ namespace ConsoLovers.ConsoleToolkit.Menu
          Print(element.Indent, foreground, background);
          PrintExpander(element, foreground, background);
 
-         //if (IndexMenuItems)
-         if (true)
+         if (Options.IndexMenuItems)
             Print(element.IndexString, foreground, background);
 
          Print(element.Text, foreground, background);
