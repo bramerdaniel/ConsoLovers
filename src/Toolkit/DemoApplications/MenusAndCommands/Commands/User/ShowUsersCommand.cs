@@ -30,6 +30,9 @@ public class ShowUsersCommand : IAsyncMenuCommand
 
    public Task ExecuteAsync(IMenuExecutionContext context, CancellationToken cancellationToken)
    {
+      console.WriteLine("This command is only available in the menu, but not from command line args.", ConsoleColor.DarkYellow);
+      console.WriteLine();
+
       var username = new InputBox<string>("Username: ").ReadLine();
       var password = new InputBox<string>("Username: ") { IsPassword = true }.ReadLine();
 
@@ -39,6 +42,7 @@ public class ShowUsersCommand : IAsyncMenuCommand
       console.WriteLine();
       foreach (var user in users)
          console.WriteLine($" - {user.Name}");
+      console.ReadLine();
 
 
       return Task.CompletedTask;

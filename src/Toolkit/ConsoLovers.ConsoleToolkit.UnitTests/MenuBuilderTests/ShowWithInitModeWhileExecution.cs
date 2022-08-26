@@ -30,7 +30,7 @@ public class ShowWithInitModeWhileExecution : MenuBuilderBase
       Assert.IsNotNull(commandNode);
       commandNode.DisplayName.Should().Be("run");
       commandNode.Nodes.Should().HaveCount(2);
-      commandNode.Nodes.Where(n => n.IsVisible).Should().HaveCount(0);
+      commandNode.Nodes.Where(n => n.VisibleInMenu).Should().HaveCount(0);
    }
 
    [TestMethod]
@@ -43,13 +43,13 @@ public class ShowWithInitModeWhileExecution : MenuBuilderBase
       Assert.IsNotNull(commandNode);
       commandNode.DisplayName.Should().Be("Run it");
       commandNode.Nodes.Should().HaveCount(2);
-      commandNode.Nodes.Where(n => n.IsVisible).Should().HaveCount(0);
+      commandNode.Nodes.Where(n => n.VisibleInMenu).Should().HaveCount(0);
 
       commandNode = nodes[1] as ICommandNode;
       Assert.IsNotNull(commandNode);
       commandNode.DisplayName.Should().Be("Close it");
       commandNode.Nodes.Should().HaveCount(3);
-      commandNode.Nodes.Where(n => n.IsVisible).Should().HaveCount(0);
+      commandNode.Nodes.Where(n => n.VisibleInMenu).Should().HaveCount(0);
    }
 
    #endregion

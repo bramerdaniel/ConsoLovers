@@ -60,7 +60,7 @@ public class AddRoleCommand : ICommand<AddRoleCommand.AddRoleArgs>, IMenuCommand
       #region Public Properties
 
       [Argument("name")]
-      [MenuArgument("Role to delete")]
+      [MenuArgument("Role to add")]
       public string Name { get; set; }
 
       #endregion

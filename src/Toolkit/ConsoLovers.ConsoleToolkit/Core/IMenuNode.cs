@@ -13,6 +13,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
    {
       #region Public Properties
 
+      /// <summary>Gets the display name of the node.</summary>
       string DisplayName { get; }
 
       /// <summary>Gets the display order.</summary>
@@ -20,7 +21,8 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       ArgumentInitializationModes InitializationMode { get; }
 
-      bool IsVisible { get; }
+      /// <summary>Gets a value indicating whether this node should be visible in a menu.</summary>
+      bool VisibleInMenu { get; }
 
       PropertyInfo PropertyInfo { get; }
 

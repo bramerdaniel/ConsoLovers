@@ -10,7 +10,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
    /// <summary>Attribute for a consolovers command that is displayed in a consolovers menu</summary>
    /// <seealso cref="MenuAttribute"/>
-   [AttributeUsage(AttributeTargets.Class | AttributeTargets.Property)]
+   [AttributeUsage(AttributeTargets.Property)]
    public class MenuCommandAttribute : MenuAttribute
    {
       #region Constructors and Destructors

@@ -34,6 +34,7 @@ public class AppArguments
    public CommandGroup<PermissionCommands> Permissions { get; set; }
 
    [Command("Hidden")]
+   [MenuCommand(Visible = false)]
    public CommandGroup<HiddenCommands> Hidden { get; set; }
 
    [Command("Clear")]

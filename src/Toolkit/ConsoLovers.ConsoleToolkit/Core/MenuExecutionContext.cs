@@ -50,12 +50,13 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
          CreateArguments();
 
-         //var argumentInfo = commandNode.GetArgumentInfo(argumentName);
-         //if (argumentInfo == null)
-         //   throw new ArgumentException($"Argument {argumentName} could not be found", nameof(argumentName));
+         var argumentNode = commandNode.FindArgument(argumentName);
+         if (argumentNode == null)
+            throw new ArgumentException($"Argument {argumentName} could not be found", nameof(argumentName));
 
-         //InitializeArgumentInternal(argumentInfo);
+         InitializeArgumentInternal(argumentNode);
       }
+
 
       private bool HasMenuInfo()
       {

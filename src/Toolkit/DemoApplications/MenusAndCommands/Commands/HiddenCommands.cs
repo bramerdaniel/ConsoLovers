@@ -11,14 +11,15 @@ using ConsoLovers.ConsoleToolkit.Core;
 using global::MenusAndCommands.Commands.Permission;
 using global::MenusAndCommands.Commands.Role;
 
-[MenuCommand(Visible = false)]
 public class HiddenCommands
 {
    #region Public Properties
 
-   [Command("Add")] public AddRoleCommand Add { get; set; }
+   [Command("Add")] 
+   public AddRoleCommand Add { get; set; }
 
-   [Command("Remove")] public RemovePermissionCommand Remove { get; set; }
+   [Command("Remove")] 
+   public RemovePermissionCommand Remove { get; set; }
 
    #endregion
 }

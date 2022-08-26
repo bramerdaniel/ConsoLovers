@@ -26,7 +26,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       public ArgumentInitializationModes InitializationMode { get; set; }
 
-      public bool IsVisible { get; set; }
+      public bool VisibleInMenu { get; set; }
 
       public bool IsPassword { get; set;}
 

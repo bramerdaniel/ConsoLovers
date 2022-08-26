@@ -14,5 +14,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.MenuBuilding
       Type ArgumentType{ get; }
 
       ICollection<IMenuNode> Nodes { get; }
+
+      IArgumentNode FindArgument(string name);
    }
 }

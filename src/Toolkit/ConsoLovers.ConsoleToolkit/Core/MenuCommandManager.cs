@@ -57,7 +57,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
          var menu = new ConsoleMenu(ConsoleMenuOptions);
          foreach (var itemNode in new MenuBuilder(commandMenuOptions.BuilderOptions).Build<T>())
          {
-            if (itemNode.IsVisible)
+            if (itemNode.VisibleInMenu)
             {
                var menuItem = CreateMenuItem(itemNode);
                if (menuItem != null)
@@ -127,9 +127,9 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       private ConsoleMenuItem CreateCommandNode(ICommandNode node)
       {
-         if (node.Nodes.Where(n => n.IsVisible).Any())
+         if (node.Nodes.Where(n => n.VisibleInMenu).Any())
          {
-            var children = node.Nodes.Where(n => n.IsVisible)
+            var children = node.Nodes.Where(n => n.VisibleInMenu)
                .Select(CreateMenuItem).Where(child => child != null)
                .ToArray();
 

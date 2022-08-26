@@ -6,12 +6,12 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.MenuBuilding
 {
-   using System.Reflection;
-
    interface IArgumentNode : IMenuNode
    {
+      /// <summary>Gets a value indicating whether this argument is a password.</summary>
       bool IsPassword { get; }
 
+      /// <summary>Gets a value indicating whether this <see cref="IArgumentNode"/> was specified as required.</summary>
       bool Required { get; }
    }
 }

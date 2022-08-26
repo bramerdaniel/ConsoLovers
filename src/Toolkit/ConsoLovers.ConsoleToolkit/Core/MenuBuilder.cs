@@ -68,7 +68,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
                DisplayOrder = itemInfo.DisplayOrder,
                Type = itemInfo.PropertyInfo.PropertyType,
                InitializationMode = itemInfo.InitializationMode,
-               IsVisible = itemInfo.IsVisible,
+               VisibleInMenu = itemInfo.IsVisible,
                ArgumentType = itemInfo.ArgumentType,
                Nodes = CreateMenuNodes(itemInfo.ChildInfos).ToArray()
             };
@@ -82,7 +82,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
             IsPassword = itemInfo.IsPassword,
             Required = itemInfo.IsRequired,
             Type = itemInfo.PropertyInfo.PropertyType,
-            IsVisible = itemInfo.IsVisible,
+            VisibleInMenu = itemInfo.IsVisible,
             InitializationMode = itemInfo.InitializationMode,
          };
       }
