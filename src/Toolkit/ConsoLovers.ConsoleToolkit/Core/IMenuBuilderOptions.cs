@@ -1,25 +1,15 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ICommandMenuOptions.cs" company="ConsoLovers">
+// <copyright file="IMenuBuilderOptions.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace ConsoLovers.ConsoleToolkit.Core
 {
-   using ConsoLovers.ConsoleToolkit.Menu;
-
-   public interface ICommandMenuOptions
+   public interface IMenuBuilderOptions
    {
-      #region Public Properties
+      ArgumentInitializationModes DefaultArgumentInitializationMode { get; set; }
 
-      IConsoleMenuOptions MenuOptions { get; }
-
-      IMenuBuilderOptions BuilderOptions { get; }
-
-
-
-
-
-      #endregion
+      MenuBuilderBehaviour MenuBehaviour { get; set; }
    }
 }

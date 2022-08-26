@@ -27,16 +27,16 @@ namespace MenusAndCommands
             .AddService(s => s.AddSingleton<IUserManager, UserManager>())
             .UseMenuWithoutArguments(options =>
             {
-               options.Menu.Header = new MenusAndCommands();
-               options.Menu.CloseKeys = new[] { ConsoleKey.Escape };
-               options.MenuBehaviour = MenuBuilderBehaviour.ShowAllCommand;
+               options.MenuOptions.Header = new MenusAndCommands();
+               options.MenuOptions.CloseKeys = new[] { ConsoleKey.Escape };
+               options.BuilderOptions.MenuBehaviour = MenuBuilderBehaviour.ShowAllCommand;
 
-               options.Menu.Expander = new ExpanderDescription { Collapsed = " +", Expanded = " -" };
-               options.Menu.CircularSelection = false;
-               options.Menu.Selector = "  ";// "►";
-               options.Menu.IndexMenuItems = true;
-               options.Menu.IndentSize = 3;
-               options.DefaultArgumentInitializationMode = ArgumentInitializationModes.WhileExecution;
+               options.MenuOptions.Expander = new ExpanderDescription { Collapsed = " +", Expanded = " -" };
+               options.MenuOptions.CircularSelection = false;
+               options.MenuOptions.Selector = "  ";// "►";
+               options.MenuOptions.IndexMenuItems = true;
+               options.MenuOptions.IndentSize = 3;
+               options.BuilderOptions.DefaultArgumentInitializationMode = ArgumentInitializationModes.WhileExecution;
             })
             .ConfigureCommandLineParser(o => o.CaseSensitive = true)
             .UseExceptionHandler(typeof(AllExceptionsHandler))

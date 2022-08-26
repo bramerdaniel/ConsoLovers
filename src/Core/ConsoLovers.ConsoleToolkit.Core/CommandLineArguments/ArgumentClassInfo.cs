@@ -90,23 +90,20 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          commandInfos = new List<CommandInfo>();
          properties = new List<ParameterInfo>();
 
-         foreach (var kvp in ArgumentType.GetPropertiesWithAttributes<Attribute>())
+         foreach (var kvp in ArgumentType.GetPropertiesWithAttributes())
          {
             var propertyInfo = kvp.Key;
             var attribute = kvp.Value;
 
-            if (attribute is CommandLineAttribute commandLineAttribute)
+            var parameterInfo = CreateInfo(propertyInfo, attribute);
+            properties.Add(parameterInfo);
+
+            if (parameterInfo is CommandInfo commandInfo)
             {
-               var parameterInfo = CreateInfo(propertyInfo, commandLineAttribute);
-               properties.Add(parameterInfo);
+               commandInfos.Add(commandInfo);
 
-               if (parameterInfo is CommandInfo commandInfo)
-               {
-                  commandInfos.Add(commandInfo);
-
-                  SetAsHelpCommandWhenRequired(propertyInfo, commandInfo);
-                  SetAsDefaultCommandWhenSpecified(commandInfo);
-               }
+               SetAsHelpCommandWhenRequired(propertyInfo, commandInfo);
+               SetAsDefaultCommandWhenSpecified(commandInfo);
             }
          }
       }

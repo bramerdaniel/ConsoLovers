@@ -10,6 +10,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
    using System.Linq;
 
    using ConsoLovers.ConsoleToolkit.Core.Input;
+   using ConsoLovers.ConsoleToolkit.Core.MenuBuilding;
    using ConsoLovers.ConsoleToolkit.Menu;
 
    using JetBrains.Annotations;
@@ -18,20 +19,21 @@ namespace ConsoLovers.ConsoleToolkit.Core
    {
       #region Constants and Fields
 
-      private readonly MenuCommandInfo menuInfo;
+      private readonly ICommandNode commandNode;
 
       #endregion
 
       #region Constructors and Destructors
 
+      [Obsolete]
       public MenuExecutionContext([NotNull] IMenuArgumentManager argumentManager)
          : this(argumentManager, null)
       {
       }
 
-      public MenuExecutionContext([NotNull] IMenuArgumentManager argumentManager, MenuCommandInfo menuInfo)
+      public MenuExecutionContext([NotNull] IMenuArgumentManager argumentManager, ICommandNode node)
       {
-         this.menuInfo = menuInfo;
+         commandNode = node;
          ArgumentManager = argumentManager ?? throw new ArgumentNullException(nameof(argumentManager));
       }
 
@@ -48,16 +50,16 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
          CreateArguments();
 
-         var argumentInfo = menuInfo.GetArgumentInfo(argumentName);
-         if (argumentInfo == null)
-            throw new ArgumentException($"Argument {argumentName} could not be found", nameof(argumentName));
+         //var argumentInfo = commandNode.GetArgumentInfo(argumentName);
+         //if (argumentInfo == null)
+         //   throw new ArgumentException($"Argument {argumentName} could not be found", nameof(argumentName));
 
-         InitializeArgumentInternal(argumentInfo);
+         //InitializeArgumentInternal(argumentInfo);
       }
 
       private bool HasMenuInfo()
       {
-         return menuInfo != null && menuInfo.ArgumentInfo != null;
+         return commandNode != null && commandNode.ArgumentType != null;
       }
 
       #endregion
@@ -85,7 +87,12 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
          CreateArguments();
 
-         foreach (var argumentInfo in menuInfo.GetArgumentInfos().Where(x => x.Visible))
+         var argumentsToInitialize = commandNode.Nodes
+            .OfType<IArgumentNode>()
+            .OrderBy(x => x.DisplayOrder);
+
+         // TODO filter not needed/invisible arguments
+         foreach (var argumentInfo in argumentsToInitialize)
             InitializeArgumentInternal(argumentInfo);
       }
 
@@ -99,46 +106,46 @@ namespace ConsoLovers.ConsoleToolkit.Core
          if (Arguments != null)
             return;
 
-         Arguments = ArgumentManager.GetOrCreate(menuInfo.ArgumentInfo.ArgumentType);
+         Arguments = ArgumentManager.GetOrCreate(commandNode.ArgumentType);
          SetArgumentsToCommand();
       }
 
-      private void InitializeArgumentInternal(MenuArgumentInfo argumentInfo)
+      private void InitializeArgumentInternal(IArgumentNode argumentNode)
       {
          try
          {
-            var initialValue = argumentInfo.GetValue(Arguments);
-            var parameterValue = ReadValueFromConsole(argumentInfo, initialValue);
+            var initialValue = argumentNode.PropertyInfo.GetValue(Arguments);
+            var parameterValue = ReadValueFromConsole(argumentNode, initialValue);
 
-            argumentInfo.SetValue(Arguments, parameterValue);
+            argumentNode.PropertyInfo.SetValue(Arguments, parameterValue);
          }
          catch (InputCanceledException)
          {
             // The user did not want to specify a value but for required parameters we can not continue !
-            if (argumentInfo.Required)
+            if (argumentNode.Required)
                throw;
          }
       }
 
-      private static object ReadValueFromConsole(MenuArgumentInfo argumentInfo, object initialValue)
+      private static object ReadValueFromConsole(IArgumentNode argumentNode, object initialValue)
       {
-         if (argumentInfo.ArgumentType == typeof(int))
+         if (argumentNode.Type == typeof(int))
          {
             if (initialValue is int intValue)
-               return new InputBox<int>($"{argumentInfo.DisplayName}: ", intValue).ReadLine();
-            return new InputBox<int>($"{argumentInfo.DisplayName}: ").ReadLine();
+               return new InputBox<int>($"{argumentNode.DisplayName}: ", intValue).ReadLine();
+            return new InputBox<int>($"{argumentNode.DisplayName}: ").ReadLine();
          }
 
-         if (argumentInfo.ArgumentType == typeof(bool))
-            return new InputBox<bool>($"{argumentInfo.DisplayName}: ", initialValue is bool boolValue && boolValue).ReadLine();
+         if (argumentNode.Type == typeof(bool))
+            return new InputBox<bool>($"{argumentNode.DisplayName}: ", initialValue is bool boolValue && boolValue).ReadLine();
 
-         if (argumentInfo.ArgumentType == typeof(string))
+         if (argumentNode.Type == typeof(string))
          {
             var stringValue = initialValue as string ?? string.Empty;
-            return new InputBox<string>($"{argumentInfo.DisplayName}: ", stringValue) { IsPassword = argumentInfo.IsPassword }.ReadLine();
+            return new InputBox<string>($"{argumentNode.DisplayName}: ", stringValue) { IsPassword = argumentNode.IsPassword }.ReadLine();
          }
 
-         return new InputBox<object>($"{argumentInfo.DisplayName}: ", initialValue) { IsPassword = argumentInfo.IsPassword }.ReadLine();
+         return new InputBox<object>($"{argumentNode.DisplayName}: ", initialValue) { IsPassword = argumentNode.IsPassword }.ReadLine();
       }
 
       private void SetArgumentsToCommand()

@@ -14,18 +14,17 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       public CommandMenuOptions()
       {
-         Menu = new ConsoleMenuOptions();
+         MenuOptions = new ConsoleMenuOptions();
+         BuilderOptions = new MenuBuilderOptions();
       }
 
       #endregion
 
       #region ICommandMenuOptions Members
 
-      public IConsoleMenuOptions Menu { get; }
+      public IConsoleMenuOptions MenuOptions { get; }
 
-      public MenuBuilderBehaviour MenuBehaviour { get; set; }
-
-      public ArgumentInitializationModes DefaultArgumentInitializationMode { get; set; }
+      public IMenuBuilderOptions BuilderOptions { get; }
 
       #endregion
    }

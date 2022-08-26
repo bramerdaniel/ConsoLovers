@@ -40,7 +40,7 @@ public class AppArguments
    public ClearCommand Clear { get; set; }
 
    [Command("help", "?")]
-   [Menu(Visible = false)]
+   [MenuCommand(Visible = false)]
    public HelpCommand Help{ get; set; }
 
    #endregion

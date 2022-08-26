@@ -8,9 +8,7 @@ namespace MenusAndCommands.Commands.Controllers;
 
 using System;
 
-using ConsoLovers.ConsoleToolkit;
 using ConsoLovers.ConsoleToolkit.Core;
-using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
 public class ShowControllersCommand : ICommand<ShowControllerArgs>, IMenuCommand
 {

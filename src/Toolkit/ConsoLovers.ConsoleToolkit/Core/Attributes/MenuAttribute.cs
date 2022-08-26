@@ -9,19 +9,19 @@ namespace ConsoLovers.ConsoleToolkit.Core
    using System;
 
    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Property)]
-   public class MenuAttribute : Attribute
+   public abstract class MenuAttribute : Attribute
    {
       #region Constructors and Destructors
 
       /// <summary>Initializes a new instance of the <see cref="MenuAttribute"/> class.</summary>
       /// <param name="visible">if set to <c>true</c> [visible].</param>
-      public MenuAttribute(bool visible)
+      protected MenuAttribute(bool visible)
       {
          Visible = visible;
       }
 
       /// <summary>Initializes a new instance of the <see cref="MenuAttribute"/> class.</summary>
-      public MenuAttribute()
+      protected MenuAttribute()
          : this(true)
       {
       }

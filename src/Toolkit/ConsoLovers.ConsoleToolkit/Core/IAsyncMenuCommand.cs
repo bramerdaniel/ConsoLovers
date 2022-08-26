@@ -9,7 +9,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
    using System.Threading;
    using System.Threading.Tasks;
 
-   public interface IAsyncMenuCommand
+   public interface IAsyncMenuCommand : ICommandBase
    {
       #region Public Methods and Operators
 

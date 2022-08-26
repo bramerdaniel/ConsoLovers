@@ -29,6 +29,8 @@ namespace ConsoLovers.ConsoleToolkit.Core
       #region Public Properties
 
       public string DisplayName { get; set; }
+      
+      public int DisplayOrder{ get; set; }
 
       /// <summary>Gets or sets the edit mode of the argument in the menu.</summary>
       public ArgumentInitializationModes ArgumentInitializationMode { get; set; }

@@ -45,7 +45,6 @@ public class DeleteUserCommand : ICommand<DeleteUserCommand.DeleteUserArgs>, IMe
    {
       Execute();
       console.ReadLine();
-      context.MenuItem.Remove();
    }
 
    #endregion

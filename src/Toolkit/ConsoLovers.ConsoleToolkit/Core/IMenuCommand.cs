@@ -6,9 +6,7 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core
 {
-   // TODO Add IAsyncMenuCommand
-
-   public interface IMenuCommand
+   public interface IMenuCommand : ICommandBase
    {
       #region Public Methods and Operators
 
