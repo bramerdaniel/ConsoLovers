@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit
+namespace ConsoLovers.ConsoleToolkit.Core
 {
    // TODO Add IAsyncMenuCommand
 

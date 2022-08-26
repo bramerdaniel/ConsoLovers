@@ -46,7 +46,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
          if (!HasMenuInfo())
             return;
 
-         EnsureArgumentInstance();
+         CreateArguments();
 
          var argumentInfo = menuInfo.GetArgumentInfo(argumentName);
          if (argumentInfo == null)
@@ -83,17 +83,18 @@ namespace ConsoLovers.ConsoleToolkit.Core
          if (!HasMenuInfo())
             return;
 
-         EnsureArgumentInstance();
+         CreateArguments();
 
          foreach (var argumentInfo in menuInfo.GetArgumentInfos().Where(x => x.Visible))
             InitializeArgumentInternal(argumentInfo);
       }
 
+
       #endregion
 
       #region Methods
 
-      private void EnsureArgumentInstance()
+      public void CreateArguments()
       {
          if (Arguments != null)
             return;

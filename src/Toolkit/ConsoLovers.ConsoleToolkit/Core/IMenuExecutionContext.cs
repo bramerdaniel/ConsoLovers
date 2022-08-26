@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit
+namespace ConsoLovers.ConsoleToolkit.Core
 {
    using ConsoLovers.ConsoleToolkit.Menu;
 
@@ -19,10 +19,12 @@ namespace ConsoLovers.ConsoleToolkit
 
       #region Public Methods and Operators
 
+      /// <summary>Creates the arguments instance for the current command.</summary>
+      void CreateArguments();
+
       /// <summary>Initializes the argument with the specified name.</summary>
       /// <param name="argumentName">Name of the argument to initialize.</param>
       void InitializeArgument(string argumentName);
-
 
       /// <summary>Initializes all visible arguments.</summary>
       void InitializeArguments();

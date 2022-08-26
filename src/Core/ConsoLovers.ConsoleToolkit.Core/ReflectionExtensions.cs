@@ -152,6 +152,18 @@ public static class ReflectionExtensions
       }
    }
 
+   [SuppressMessage("sonar", "S3011:Reflection should not be used to increase accessibility of classes, methods, or fields")]
+   internal static IEnumerable<KeyValuePair<PropertyInfo, T>> GetPropertiesWithAttributes<T>(this Type type)
+   where T : Attribute
+   {
+      foreach (var property in type.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
+      {
+         var attribute = property.GetAttribute<T>(true);
+         if (attribute != null)
+            yield return new KeyValuePair<PropertyInfo, T>(property, attribute);
+      }
+   }
+
    private static IServiceCollection AddArgumentTypesInternal([JetBrains.Annotations.NotNull] this IServiceCollection serviceCollection,
       Type argumentType, HashSet<Type> addedTypes)
    {

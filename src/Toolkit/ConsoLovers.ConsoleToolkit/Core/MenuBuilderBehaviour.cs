@@ -4,10 +4,8 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit
+namespace ConsoLovers.ConsoleToolkit.Core
 {
-   using ConsoLovers.ConsoleToolkit.Core;
-
    public enum MenuBuilderBehaviour
    {
       /// <summary>All commands will be show as menu items, and only those that are marked as not visible will be hidden</summary>

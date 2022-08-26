@@ -4,13 +4,11 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit
+namespace ConsoLovers.ConsoleToolkit.Core
 {
    using System;
    using System.Threading;
    using System.Threading.Tasks;
-
-   using ConsoLovers.ConsoleToolkit.Core;
 
    using JetBrains.Annotations;
 
@@ -20,13 +18,13 @@ namespace ConsoLovers.ConsoleToolkit
    {
       #region Constants and Fields
 
-      private readonly ICommandMenuManager commandMenuManager;
+      private readonly IMenuCommandManager commandMenuManager;
 
       #endregion
 
       #region Constructors and Destructors
 
-      public ShowMenuApplicationLogic([NotNull] ICommandMenuManager commandMenuManager)
+      public ShowMenuApplicationLogic([NotNull] IMenuCommandManager commandMenuManager)
       {
          this.commandMenuManager = commandMenuManager ?? throw new ArgumentNullException(nameof(commandMenuManager));
       }

@@ -4,11 +4,10 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit
+namespace ConsoLovers.ConsoleToolkit.Core
 {
    using System;
 
-   using ConsoLovers.ConsoleToolkit.Core;
    using ConsoLovers.ConsoleToolkit.Core.Builders;
 
    using JetBrains.Annotations;
@@ -24,7 +23,7 @@ namespace ConsoLovers.ConsoleToolkit
          Action<ICommandMenuOptions> configureOptions)
          where T : class
       {
-         bootstrapper.AddService(s => s.AddSingleton<ICommandMenuManager, CommandMenuManager>());
+         bootstrapper.AddService(s => s.AddSingleton<IMenuCommandManager, MenuCommandManager>());
          bootstrapper.AddService(s => s.AddSingleton<IApplicationLogic, ShowMenuApplicationLogic>());
          bootstrapper.AddService(s => s.AddSingleton<IMenuArgumentManager, MenuArgumentManager>());
          bootstrapper.AddService(s => s.AddSingleton<IMenuExceptionHandler, MenuExceptionHandler>());
@@ -51,7 +50,7 @@ namespace ConsoLovers.ConsoleToolkit
       {
          if (bootstrapper is IServiceConfigurationHandler handler)
          {
-            handler.ConfigureRequiredService<ICommandMenuManager>(menuManager =>
+            handler.ConfigureRequiredService<IMenuCommandManager>(menuManager =>
             {
                var consoleMenuOptions = new CommandMenuOptions();
                configureOptions(consoleMenuOptions);

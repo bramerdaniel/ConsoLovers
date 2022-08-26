@@ -4,9 +4,8 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit
+namespace ConsoLovers.ConsoleToolkit.Core
 {
-   using ConsoLovers.ConsoleToolkit.Core;
    using ConsoLovers.ConsoleToolkit.Menu;
 
    internal class CommandMenuOptions : ICommandMenuOptions

@@ -8,7 +8,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
 {
    public enum ArgumentInitializationModes
    {
-      /// <summary>Behaviour is specified by the default behaviour of the <see cref="ICommandMenuManager"/></summary>
+      /// <summary>Behaviour is specified by the default behaviour of the <see cref="IMenuCommandManager"/></summary>
       Default,
 
       /// <summary>The arguments will be displayed as menu and can be changed there</summary>

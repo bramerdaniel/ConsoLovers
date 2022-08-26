@@ -90,33 +90,42 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          commandInfos = new List<CommandInfo>();
          properties = new List<ParameterInfo>();
 
-         foreach (var kvp in ArgumentType.GetPropertiesWithAttributes())
+         foreach (var kvp in ArgumentType.GetPropertiesWithAttributes<Attribute>())
          {
             var propertyInfo = kvp.Key;
             var attribute = kvp.Value;
 
-            var parameterInfo = CreateInfo(propertyInfo, attribute);
-            properties.Add(parameterInfo);
-
-            if (parameterInfo is CommandInfo commandInfo)
+            if (attribute is CommandLineAttribute commandLineAttribute)
             {
-               commandInfos.Add(commandInfo);
-               if (IsHelpCommand(propertyInfo))
-                  HelpCommand = commandInfo;
-               if (commandInfo.IsDefault)
-               {
-                  if (DefaultCommand != null)
-                     throw new InvalidOperationException("Default command was defined twice.");
+               var parameterInfo = CreateInfo(propertyInfo, commandLineAttribute);
+               properties.Add(parameterInfo);
 
-                  DefaultCommand = commandInfo;
+               if (parameterInfo is CommandInfo commandInfo)
+               {
+                  commandInfos.Add(commandInfo);
+
+                  SetAsHelpCommandWhenRequired(propertyInfo, commandInfo);
+                  SetAsDefaultCommandWhenSpecified(commandInfo);
                }
             }
          }
       }
 
-      private bool IsHelpCommand(PropertyInfo propertyInfo)
+      private void SetAsHelpCommandWhenRequired(PropertyInfo propertyInfo, CommandInfo commandInfo)
       {
-         return propertyInfo.PropertyType == typeof(HelpCommand);
+         if (propertyInfo.PropertyType == typeof(HelpCommand))
+            HelpCommand = commandInfo;
+      }
+
+      private void SetAsDefaultCommandWhenSpecified(CommandInfo commandInfo)
+      {
+         if (commandInfo.IsDefault)
+         {
+            if (DefaultCommand != null)
+               throw new InvalidOperationException("Default command was defined twice.");
+
+            DefaultCommand = commandInfo;
+         }
       }
 
       #endregion
