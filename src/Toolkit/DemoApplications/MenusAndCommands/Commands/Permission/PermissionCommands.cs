@@ -17,7 +17,7 @@ public class PermissionCommands
    public AddPermissionCommand Add { get; set; }
 
    [Command("Remove")]
-   [MenuCommand(Visible = false)]
+   [MenuCommand(VisibleInMenu = false)]
    public RemovePermissionCommand Remove { get; set; }
 
    #endregion

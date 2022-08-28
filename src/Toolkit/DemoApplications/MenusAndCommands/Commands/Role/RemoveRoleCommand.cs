@@ -60,7 +60,7 @@ public class RemoveRoleCommand : ICommand<RemoveRoleCommand.RemoveRoleArgs>, IMe
       #region Public Properties
 
       [Argument("force", "f")]
-      [MenuArgument(Visible = false)]
+      [MenuArgument(VisibleInMenu = false)]
       public bool Force { get; set; }
 
       [Argument("name", Required = true)]

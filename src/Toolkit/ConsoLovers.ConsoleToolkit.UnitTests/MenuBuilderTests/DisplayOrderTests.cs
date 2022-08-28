@@ -65,9 +65,76 @@ public class DisplayOrderTests : MenuBuilderBase
       nodes[2].DisplayName.Should().Be("Last");
    }
 
+   [TestMethod]
+   public void EnsureOneCommandCanBeSortedToTheTop()
+   {
+      var nodes = BuildMenu<OneShouldGoFirst>().ToArray();
+      nodes.Should().HaveCount(3);
+
+      nodes[0].DisplayName.Should().Be("First");
+      nodes[1].DisplayName.Should().Be("Second");
+      nodes[2].DisplayName.Should().Be("Third");
+   }
+
+   [TestMethod]
+   public void EnsureOneCommandCanBeSortedToTheBottom()
+   {
+      var nodes = BuildMenu<OneShouldGoLast>().ToArray();
+      nodes.Should().HaveCount(3);
+
+      nodes[0].DisplayName.Should().Be("First");
+      nodes[1].DisplayName.Should().Be("Second");
+      nodes[2].DisplayName.Should().Be("Last");
+   }
+
    #endregion
 
    #region Methods
+
+   public class OneShouldGoLast
+   {
+      #region Properties
+
+      [Command("Last")]
+      [MenuCommand("Last", DisplayOrder = int.MaxValue - 100)]
+      [UsedImplicitly]
+      internal Command Last { get; set; }
+
+      [Command("first")]
+      [MenuCommand("First")]
+      [UsedImplicitly]
+      internal Command First { get; set; }
+
+      [Command("second")]
+      [MenuCommand("Second")]
+      [UsedImplicitly]
+      internal Command Second { get; set; }
+
+      #endregion
+   }
+
+   public class OneShouldGoFirst
+   {
+      #region Properties
+
+
+      [Command("second")]
+      [MenuCommand("Second")]
+      [UsedImplicitly]
+      internal Command Second { get; set; }
+
+      [Command("third")]
+      [MenuCommand("Third")]
+      [UsedImplicitly]
+      internal Command Third { get; set; }
+
+      [Command("first")]
+      [MenuCommand("First", DisplayOrder = 1)]
+      [UsedImplicitly]
+      internal Command First { get; set; }
+
+      #endregion
+   }
 
    private IMenuNode[] BuildMenu<T>()
       where T : class

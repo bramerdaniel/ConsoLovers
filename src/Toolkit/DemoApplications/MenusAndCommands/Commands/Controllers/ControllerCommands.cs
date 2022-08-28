@@ -10,19 +10,19 @@ using ConsoLovers.ConsoleToolkit.Core;
 
 public class ControllerCommands
 {
-   #region Public Properties
+   #region Properties
 
    [Command("Show")]
    [MenuCommand("Show controllers")]
-   public ShowControllersCommand Show { get; set; }
-
-   #endregion
-
-   #region Properties
+   internal ShowControllersCommand Show { get; set; }
 
    [Command("delete")]
    [MenuCommand("Delete controller", ArgumentInitializationMode = ArgumentInitializationModes.WhileExecution)]
    internal DeleteControllerCommand Delete { get; set; }
 
+   [Command("deleteMenu")]
+   [MenuCommand("Delete with menu", DisplayOrder = 1, ArgumentInitializationMode = ArgumentInitializationModes.AsMenu)]
+   internal DeleteControllerCommand DeleteMenu { get; set; }
+   
    #endregion
 }

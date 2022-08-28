@@ -154,7 +154,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
          private bool ComputeIsVisible()
          {
-            if (MenuCommandAttribute != null && !MenuCommandAttribute.Visible)
+            if (MenuCommandAttribute != null && !MenuCommandAttribute.VisibleInMenu)
                return false;
 
             if (IsArgument())

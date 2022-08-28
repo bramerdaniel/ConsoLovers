@@ -22,27 +22,27 @@ public class AppArguments
    [MenuCommand("Manage controllers")]
    public CommandGroup<ControllerCommands> Controller{ get; set; }
 
-   [Command("User")]
-   [MenuCommand("Manage users")]
-   public CommandGroup<UserCommands> User { get; set; }
+   //[Command("User")]
+   //[MenuCommand("Manage users")]
+   //public CommandGroup<UserCommands> User { get; set; }
 
-   [Command("Roles")]
-   [MenuCommand("Manage roles")]
-   public CommandGroup<RoleCommands> Role { get; set; }
+   //[Command("Roles")]
+   //[MenuCommand("Manage roles")]
+   //public CommandGroup<RoleCommands> Role { get; set; }
 
-   [Command("Permissions")]
-   public CommandGroup<PermissionCommands> Permissions { get; set; }
+   //[Command("Permissions")]
+   //public CommandGroup<PermissionCommands> Permissions { get; set; }
 
-   [Command("Hidden")]
-   [MenuCommand(Visible = false)]
-   public CommandGroup<HiddenCommands> Hidden { get; set; }
+   //[Command("Hidden")]
+   //[MenuCommand(VisibleInMenu = false)]
+   //public CommandGroup<HiddenCommands> Hidden { get; set; }
 
-   [Command("Clear")]
-   public ClearCommand Clear { get; set; }
+   //[Command("Clear")]
+   //public ClearCommand Clear { get; set; }
 
-   [Command("help", "?")]
-   [MenuCommand(Visible = false)]
-   public HelpCommand Help{ get; set; }
+   //[Command("help", "?")]
+   //[MenuCommand(VisibleInMenu = false)]
+   //public HelpCommand Help{ get; set; }
 
    #endregion
 }

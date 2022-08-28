@@ -61,15 +61,15 @@ public class ShowControllerArgs
    #region Public Properties
 
    [Argument("address", Required = true)]
-   [MenuArgument(Visible = true)]
+   [MenuArgument(VisibleInMenu = true)]
    public string Address { get; set; } = "Huber";
 
    [Argument("force")]
-   [MenuArgument(Visible = true)]
+   [MenuArgument(VisibleInMenu = true)]
    public bool Force { get; set; }
 
    [Argument("hidden")]
-   [MenuArgument(Visible = false)]
+   [MenuArgument(VisibleInMenu = false)]
    public bool Hidden { get; set; }
 
    #endregion

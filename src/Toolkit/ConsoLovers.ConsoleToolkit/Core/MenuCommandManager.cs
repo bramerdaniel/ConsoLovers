@@ -54,16 +54,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       public Task ShowAsync<T>(CancellationToken cancellationToken)
       {
-         var menu = new ConsoleMenu(ConsoleMenuOptions);
-         foreach (var itemNode in new MenuBuilder(commandMenuOptions.BuilderOptions).Build<T>())
-         {
-            if (itemNode.VisibleInMenu)
-            {
-               var menuItem = CreateMenuItem(itemNode);
-               if (menuItem != null)
-                  menu.Add(menuItem);
-            }
-         }
+         var menu = CreateConsoleMenu<T>();
 
          try
          {
@@ -76,6 +67,24 @@ namespace ConsoLovers.ConsoleToolkit.Core
          }
 
          return Task.CompletedTask;
+      }
+
+      private ConsoleMenu CreateConsoleMenu<T>()
+      {
+         var menu = new ConsoleMenu(ConsoleMenuOptions);
+         var menuBuilder = new MenuBuilder(commandMenuOptions.BuilderOptions);
+
+         foreach (var itemNode in menuBuilder.Build<T>())
+         {
+            if (itemNode.VisibleInMenu)
+            {
+               var menuItem = CreateMenuItem(itemNode);
+               if (menuItem != null)
+                  menu.Add(menuItem);
+            }
+         }
+
+         return menu;
       }
 
       private PrintableItem CreateMenuItem(IMenuNode node)
