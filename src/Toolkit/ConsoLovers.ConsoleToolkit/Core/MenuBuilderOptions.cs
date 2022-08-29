@@ -10,8 +10,8 @@ namespace ConsoLovers.ConsoleToolkit.Core
    /// <seealso cref="ConsoLovers.ConsoleToolkit.Core.IMenuBuilderOptions" />
    internal class MenuBuilderOptions : IMenuBuilderOptions
    {
-      public ArgumentInitializationModes DefaultArgumentInitializationMode { get; set; }
+      public ArgumentInitializationModes ArgumentInitializationMode { get; set; } = ArgumentInitializationModes.WhileExecution;
 
-      public MenuBuilderBehaviour MenuBehaviour { get; set; }
+      public MenuBuilderBehaviour MenuBehaviour { get; set; } = MenuBuilderBehaviour.ShowAllCommand;
    }
 }

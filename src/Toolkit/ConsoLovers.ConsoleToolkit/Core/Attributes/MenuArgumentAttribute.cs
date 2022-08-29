@@ -37,8 +37,20 @@ namespace ConsoLovers.ConsoleToolkit.Core
       /// <summary>Gets or sets a value indicating whether this argument is a password.</summary>
       public bool IsPassword { get; set; } = false;
 
+      /// <summary>Gets or sets the visibility of the argument.</summary>
+      public ArgumentVisibility Visibility { get; set; } = ArgumentVisibility.NotSpecified;
+
 
 
       #endregion
+   }
+
+   [Flags]
+   public enum ArgumentVisibility
+   {
+      Hidden = 0,
+      NotSpecified = 0x1,
+      InMenu = 0x2,
+      InInitialization = 0x4
    }
 }

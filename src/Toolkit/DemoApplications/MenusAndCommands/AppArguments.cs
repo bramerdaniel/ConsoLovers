@@ -7,20 +7,20 @@
 namespace MenusAndCommands;
 
 using ConsoLovers.ConsoleToolkit.Core;
-using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
-using global::MenusAndCommands.Commands;
+
 using global::MenusAndCommands.Commands.Controllers;
-using global::MenusAndCommands.Commands.Permission;
-using global::MenusAndCommands.Commands.Role;
-using global::MenusAndCommands.Commands.User;
 
 public class AppArguments
 {
    #region Public Properties
 
-   [Command("Controller")]
-   [MenuCommand("Manage controllers")]
-   public CommandGroup<ControllerCommands> Controller{ get; set; }
+   [Command("Show")]
+   [MenuCommand("Show controllers", ArgumentInitializationMode = ArgumentInitializationModes.AsMenu)]
+   internal ShowControllersCommand Show { get; set; }
+
+   //[Command("Controller")]
+   //[MenuCommand("Manage controllers")]
+   //public CommandGroup<ControllerCommands> Controller { get; set; }
 
    //[Command("User")]
    //[MenuCommand("Manage users")]

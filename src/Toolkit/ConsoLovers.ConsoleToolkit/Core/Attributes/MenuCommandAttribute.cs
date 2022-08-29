@@ -29,6 +29,8 @@ namespace ConsoLovers.ConsoleToolkit.Core
       #region Public Properties
 
       public string DisplayName { get; set; }
+
+      public CommandVisibility Visibility { get; set; } = CommandVisibility.NotSpecified;
       
       public int DisplayOrder{ get; set; } = int.MaxValue / 2;
 
@@ -36,5 +38,14 @@ namespace ConsoLovers.ConsoleToolkit.Core
       public ArgumentInitializationModes ArgumentInitializationMode { get; set; }
 
       #endregion
+   }
+
+   public enum CommandVisibility
+   {
+      /// <summary>The default value when the value was not specified in the <see cref="MenuCommandAttribute"/></summary>
+      NotSpecified,
+
+      Visible,
+      Hidden,
    }
 }

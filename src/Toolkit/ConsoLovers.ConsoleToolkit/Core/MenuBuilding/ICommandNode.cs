@@ -13,8 +13,13 @@ namespace ConsoLovers.ConsoleToolkit.Core.MenuBuilding
    {
       Type ArgumentType{ get; }
 
-      ICollection<IMenuNode> Nodes { get; }
+      ArgumentInitializationModes InitializationMode { get; }
+
+      IReadOnlyList<IMenuNode> Nodes { get; }
 
       IArgumentNode FindArgument(string name);
+
+      bool IsVisible { get; }
+
    }
 }

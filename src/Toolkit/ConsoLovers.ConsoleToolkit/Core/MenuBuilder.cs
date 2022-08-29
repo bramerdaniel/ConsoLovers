@@ -68,7 +68,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
                DisplayOrder = itemInfo.DisplayOrder,
                Type = itemInfo.PropertyInfo.PropertyType,
                InitializationMode = itemInfo.InitializationMode,
-               VisibleInMenu = itemInfo.IsVisible,
+               IsVisible = ComputeIsVisible(itemInfo),
                ArgumentType = itemInfo.ArgumentType,
                Nodes = CreateMenuNodes(itemInfo.ChildInfos).ToArray()
             };
@@ -82,9 +82,61 @@ namespace ConsoLovers.ConsoleToolkit.Core
             IsPassword = itemInfo.IsPassword,
             Required = itemInfo.IsRequired,
             Type = itemInfo.PropertyInfo.PropertyType,
-            VisibleInMenu = itemInfo.IsVisible,
-            InitializationMode = itemInfo.InitializationMode,
+            ShowAsMenu = ComputeShowAsMenu(itemInfo),
+            ShowInInitialization = ComputeShowInInitialization(itemInfo)
          };
+      }
+
+      private bool ComputeIsVisible(NodeInfo itemInfo)
+      {
+         if (itemInfo.MenuCommandAttribute != null)
+         {
+            if (itemInfo.MenuCommandAttribute.Visibility == CommandVisibility.Visible)
+               return true;
+            if (itemInfo.MenuCommandAttribute.Visibility == CommandVisibility.Hidden)
+               return false;
+
+            return true;
+         }
+
+         if (Options.MenuBehaviour == MenuBuilderBehaviour.ShowAllCommand)
+            return true;
+         return false;
+      }
+
+      private bool ComputeShowAsMenu(NodeInfo itemInfo)
+      {
+         if (itemInfo.MenuArgumentAttribute != null)
+         {
+            if (itemInfo.MenuArgumentAttribute.Visibility.HasFlag(ArgumentVisibility.InMenu))
+               return true;
+
+            if (itemInfo.MenuArgumentAttribute.Visibility != ArgumentVisibility.NotSpecified)
+               return false;
+         }
+
+         if (Options.ArgumentInitializationMode == ArgumentInitializationModes.AsMenu)
+            return true;
+
+         return false;
+      }
+
+      private bool ComputeShowInInitialization(NodeInfo itemInfo)
+      {
+         if (itemInfo.MenuArgumentAttribute != null)
+         {
+            if (itemInfo.MenuArgumentAttribute.Visibility.HasFlag(ArgumentVisibility.InInitialization))
+               return true;
+
+            if (itemInfo.MenuArgumentAttribute.Visibility != ArgumentVisibility.NotSpecified)
+               return false;
+         }
+
+         if (Options.ArgumentInitializationMode == ArgumentInitializationModes.WhileExecution)
+            return true;
+
+         return false;
+
       }
 
       #endregion
@@ -154,7 +206,8 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
          private bool ComputeIsVisible()
          {
-            if (MenuCommandAttribute != null && !MenuCommandAttribute.VisibleInMenu)
+            // TODO 
+            if (MenuCommandAttribute != null)
                return false;
 
             if (IsArgument())
@@ -253,7 +306,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
          {
             if (MenuCommandAttribute != null)
                return MenuCommandAttribute.DisplayOrder;
-            
+
             if (MenuArgumentAttribute != null)
                return MenuArgumentAttribute.DisplayOrder;
 
@@ -264,7 +317,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
          {
             var initMode = MenuCommandAttribute?.ArgumentInitializationMode ?? ArgumentInitializationModes.Default;
             if (initMode == ArgumentInitializationModes.Default)
-               return options.DefaultArgumentInitializationMode;
+               return options.ArgumentInitializationMode;
             return initMode;
          }
 

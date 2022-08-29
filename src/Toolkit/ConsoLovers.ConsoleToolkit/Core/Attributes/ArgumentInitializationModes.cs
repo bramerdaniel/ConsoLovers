@@ -19,6 +19,5 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       /// <summary>The arguments are not initialized at all</summary>
       Custom,
-
    }
 }

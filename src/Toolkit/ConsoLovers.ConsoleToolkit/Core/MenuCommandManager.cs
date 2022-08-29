@@ -76,12 +76,11 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
          foreach (var itemNode in menuBuilder.Build<T>())
          {
-            if (itemNode.VisibleInMenu)
-            {
-               var menuItem = CreateMenuItem(itemNode);
-               if (menuItem != null)
-                  menu.Add(menuItem);
-            }
+
+            var menuItem = CreateMenuItem(itemNode);
+            if (menuItem != null)
+               menu.Add(menuItem);
+
          }
 
          return menu;
@@ -89,7 +88,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       private PrintableItem CreateMenuItem(IMenuNode node)
       {
-         if (node is ICommandNode command)
+         if (node is ICommandNode command && command.IsVisible)
             return CreateCommandNode(command);
 
          if (node is IArgumentNode argumentNode)
@@ -136,14 +135,26 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       private ConsoleMenuItem CreateCommandNode(ICommandNode node)
       {
-         if (node.Nodes.Where(n => n.VisibleInMenu).Any())
+         var subCommands = node.Nodes.OfType<ICommandNode>().ToArray();
+         if (subCommands.Any())
          {
-            var children = node.Nodes.Where(n => n.VisibleInMenu)
+            var children = subCommands
                .Select(CreateMenuItem).Where(child => child != null)
                .ToArray();
 
             return new ConsoleMenuItem(node.DisplayName, children);
          }
+
+         if (node.InitializationMode == ArgumentInitializationModes.AsMenu)
+         {
+            var children = node.Nodes.OfType<IArgumentNode>()
+               .Where(x => x.ShowAsMenu)
+               .Select(CreateMenuItem).Where(child => child != null)
+               .ToArray();
+
+            return new ConsoleMenuItem(node.DisplayName, children);
+         }
+
 
          return new ConsoleMenuItem(node.DisplayName, x => ExecuteNode(node, x)) { HandleException = OnExecuteException };
       }

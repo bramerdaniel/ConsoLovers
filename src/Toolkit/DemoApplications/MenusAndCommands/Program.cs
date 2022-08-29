@@ -36,7 +36,7 @@ namespace MenusAndCommands
                options.MenuOptions.Selector = "  ";// "►";
                options.MenuOptions.IndexMenuItems = true;
                options.MenuOptions.IndentSize = 3;
-               options.BuilderOptions.DefaultArgumentInitializationMode = ArgumentInitializationModes.WhileExecution;
+               // options.BuilderOptions.DefaultArgumentInitializationMode = ArgumentInitializationModes.AsMenu;
             })
             .ConfigureCommandLineParser(o => o.CaseSensitive = true)
             .UseExceptionHandler(typeof(AllExceptionsHandler))

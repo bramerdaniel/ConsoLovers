@@ -23,13 +23,14 @@ namespace ConsoLovers.ConsoleToolkit.Core
       public Type Type { get; set; }
 
       public PropertyInfo PropertyInfo { get; set; }
-
-      public ArgumentInitializationModes InitializationMode { get; set; }
-
-      public bool VisibleInMenu { get; set; }
+      
+      public bool ShowAsMenu { get; set; }
 
       public bool IsPassword { get; set;}
 
       public bool Required { get; set; }
+
+      /// <summary>Gets a value indicating whether this argument should be visible during the initialization.</summary>
+      public bool ShowInInitialization { get; set; }
    }
 }

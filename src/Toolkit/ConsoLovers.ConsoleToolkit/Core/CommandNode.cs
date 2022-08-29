@@ -27,7 +27,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       public Type ArgumentType { get; set; }
 
-      public ICollection<IMenuNode> Nodes { get; set; }
+      public IReadOnlyList<IMenuNode> Nodes { get; set; }
 
       public IArgumentNode FindArgument(string name)
       {
@@ -41,7 +41,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       public ArgumentInitializationModes InitializationMode { get; set; }
 
-      public bool VisibleInMenu { get; set; }
+      public bool IsVisible { get; set; }
 
       #endregion
 

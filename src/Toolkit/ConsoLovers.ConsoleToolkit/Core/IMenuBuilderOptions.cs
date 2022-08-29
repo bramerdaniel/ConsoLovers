@@ -8,7 +8,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
 {
    public interface IMenuBuilderOptions
    {
-      ArgumentInitializationModes DefaultArgumentInitializationMode { get; set; }
+      ArgumentInitializationModes ArgumentInitializationMode { get; set; }
 
       MenuBuilderBehaviour MenuBehaviour { get; set; }
    }

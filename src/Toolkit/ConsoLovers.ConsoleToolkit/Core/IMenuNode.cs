@@ -19,10 +19,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       /// <summary>Gets the display order.</summary>
       int DisplayOrder { get; }
 
-      ArgumentInitializationModes InitializationMode { get; }
 
-      /// <summary>Gets a value indicating whether this node should be visible in a menu.</summary>
-      bool VisibleInMenu { get; }
 
       PropertyInfo PropertyInfo { get; }
 

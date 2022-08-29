@@ -29,12 +29,12 @@ public class ShowWithInitModeMenu : MenuBuilderBase
       var commandNode = nodes[0] as ICommandNode;
       Assert.IsNotNull(commandNode);
       commandNode.DisplayName.Should().Be("run");
-      commandNode.Nodes.Where(n => n.VisibleInMenu).Should().HaveCount(2);
+      commandNode.Nodes.OfType<IArgumentNode>().Where(n => n.ShowAsMenu).Should().HaveCount(2);
 
       commandNode = nodes[1] as ICommandNode;
       Assert.IsNotNull(commandNode);
       commandNode.DisplayName.Should().Be("exit");
-      commandNode.Nodes.Where(n => n.VisibleInMenu).Should().HaveCount(1);
+      commandNode.Nodes.OfType<IArgumentNode>().Where(n => n.ShowAsMenu).Should().HaveCount(1);
    }
 
    [TestMethod]
@@ -46,12 +46,12 @@ public class ShowWithInitModeMenu : MenuBuilderBase
       var commandNode = nodes[0] as ICommandNode;
       Assert.IsNotNull(commandNode);
       commandNode.DisplayName.Should().Be("Run it");
-      commandNode.Nodes.Where(n => n.VisibleInMenu).Should().HaveCount(2);
+      commandNode.Nodes.OfType<IArgumentNode>().Where(n => n.ShowAsMenu).Should().HaveCount(2);
 
       commandNode = nodes[1] as ICommandNode;
       Assert.IsNotNull(commandNode);
       commandNode.DisplayName.Should().Be("Close it");
-      commandNode.Nodes.Where(n => n.VisibleInMenu).Should().HaveCount(3);
+      commandNode.Nodes.OfType<IArgumentNode>().Where(n => n.ShowAsMenu).Should().HaveCount(3);
    }
 
    #endregion
@@ -61,7 +61,7 @@ public class ShowWithInitModeMenu : MenuBuilderBase
    private IMenuNode[] BuildMenu<T>()
       where T : class
    {
-      var options = new MenuBuilderOptions { DefaultArgumentInitializationMode = ArgumentInitializationModes.AsMenu };
+      var options = new MenuBuilderOptions { ArgumentInitializationMode = ArgumentInitializationModes.AsMenu };
       return BuildMenu<T>(options);
    }
 

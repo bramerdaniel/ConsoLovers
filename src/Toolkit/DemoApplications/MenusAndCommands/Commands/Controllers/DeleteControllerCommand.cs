@@ -68,7 +68,7 @@ internal class DeleteControllerCommand : IAsyncCommand<DeleteControllerCommand.A
       #region Public Properties
 
       [Argument("force")]
-      [MenuArgument(VisibleInMenu = false)]
+      [MenuArgument(Visibility = ArgumentVisibility.Hidden)]
       public bool Force { get; set; } = false;
 
       [Argument("name")]

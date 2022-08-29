@@ -36,7 +36,6 @@ namespace ConsoLovers.ConsoleToolkit.Core
          }
          else
          {
-            Visible = menuAttribute.VisibleInMenu;
             if (menuAttribute is MenuArgumentAttribute argumentAttribute)
             {
                DisplayName = argumentAttribute.DisplayName ?? parameterInfo.ParameterName;

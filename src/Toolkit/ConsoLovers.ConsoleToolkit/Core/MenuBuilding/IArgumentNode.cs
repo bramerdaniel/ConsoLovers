@@ -13,5 +13,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.MenuBuilding
 
       /// <summary>Gets a value indicating whether this <see cref="IArgumentNode"/> was specified as required.</summary>
       bool Required { get; }
+
+      /// <summary>Gets a value indicating whether this node should be visible during the initialization.</summary>
+      bool ShowInInitialization { get; }
+
+      /// <summary>Gets a value indicating whether this node should be visible in a menu.</summary>
+      bool ShowAsMenu { get; }
    }
 }
