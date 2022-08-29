@@ -35,7 +35,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       public int DisplayOrder{ get; set; } = int.MaxValue / 2;
 
       /// <summary>Gets or sets the edit mode of the argument in the menu.</summary>
-      public ArgumentInitializationModes ArgumentInitializationMode { get; set; }
+      public ArgumentInitializationModes ArgumentInitialization { get; set; }
 
       #endregion
    }

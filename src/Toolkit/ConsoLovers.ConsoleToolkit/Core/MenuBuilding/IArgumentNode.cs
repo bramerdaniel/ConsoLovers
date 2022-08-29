@@ -18,6 +18,6 @@ namespace ConsoLovers.ConsoleToolkit.Core.MenuBuilding
       bool ShowInInitialization { get; }
 
       /// <summary>Gets a value indicating whether this node should be visible in a menu.</summary>
-      bool ShowAsMenu { get; }
+      bool ShowInMenu { get; }
    }
 }

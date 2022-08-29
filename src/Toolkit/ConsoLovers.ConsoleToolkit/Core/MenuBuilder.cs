@@ -82,7 +82,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
             IsPassword = itemInfo.IsPassword,
             Required = itemInfo.IsRequired,
             Type = itemInfo.PropertyInfo.PropertyType,
-            ShowAsMenu = ComputeShowAsMenu(itemInfo),
+            ShowInMenu = ComputeShowInMenu(itemInfo),
             ShowInInitialization = ComputeShowInInitialization(itemInfo)
          };
       }
@@ -104,21 +104,20 @@ namespace ConsoLovers.ConsoleToolkit.Core
          return false;
       }
 
-      private bool ComputeShowAsMenu(NodeInfo itemInfo)
+      private bool ComputeShowInMenu(NodeInfo itemInfo)
       {
          if (itemInfo.MenuArgumentAttribute != null)
          {
             if (itemInfo.MenuArgumentAttribute.Visibility.HasFlag(ArgumentVisibility.InMenu))
                return true;
 
-            if (itemInfo.MenuArgumentAttribute.Visibility != ArgumentVisibility.NotSpecified)
-               return false;
+            if (itemInfo.MenuArgumentAttribute.Visibility == ArgumentVisibility.NotSpecified)
+               return true;
+
+            return false;
          }
 
-         if (Options.ArgumentInitializationMode == ArgumentInitializationModes.AsMenu)
-            return true;
-
-         return false;
+         return true;
       }
 
       private bool ComputeShowInInitialization(NodeInfo itemInfo)
@@ -128,15 +127,13 @@ namespace ConsoLovers.ConsoleToolkit.Core
             if (itemInfo.MenuArgumentAttribute.Visibility.HasFlag(ArgumentVisibility.InInitialization))
                return true;
 
-            if (itemInfo.MenuArgumentAttribute.Visibility != ArgumentVisibility.NotSpecified)
-               return false;
+            if (itemInfo.MenuArgumentAttribute.Visibility == ArgumentVisibility.NotSpecified)
+               return true;
+
+            return false;
          }
 
-         if (Options.ArgumentInitializationMode == ArgumentInitializationModes.WhileExecution)
-            return true;
-
-         return false;
-
+         return true;
       }
 
       #endregion
@@ -315,8 +312,8 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
          private ArgumentInitializationModes ComputeInitializationMode()
          {
-            var initMode = MenuCommandAttribute?.ArgumentInitializationMode ?? ArgumentInitializationModes.Default;
-            if (initMode == ArgumentInitializationModes.Default)
+            var initMode = MenuCommandAttribute?.ArgumentInitialization ?? ArgumentInitializationModes.NotSpecified;
+            if (initMode == ArgumentInitializationModes.NotSpecified)
                return options.ArgumentInitializationMode;
             return initMode;
          }

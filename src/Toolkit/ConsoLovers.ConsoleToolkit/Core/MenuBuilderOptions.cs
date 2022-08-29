@@ -6,7 +6,7 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core
 {
-   /// <summary>Default implementation of the <see cref="IMenuBuilderOptions"/> interface</summary>
+   /// <summary>NotSpecified implementation of the <see cref="IMenuBuilderOptions"/> interface</summary>
    /// <seealso cref="ConsoLovers.ConsoleToolkit.Core.IMenuBuilderOptions" />
    internal class MenuBuilderOptions : IMenuBuilderOptions
    {

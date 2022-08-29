@@ -10,17 +10,18 @@ using ConsoLovers.ConsoleToolkit.Core;
 
 using global::MenusAndCommands.Commands.Controllers;
 
+using MenusAndCommands.Commands;
+using MenusAndCommands.Commands.Permission;
+using MenusAndCommands.Commands.Role;
+using MenusAndCommands.Commands.User;
+
 public class AppArguments
 {
    #region Public Properties
 
-   [Command("Show")]
-   [MenuCommand("Show controllers", ArgumentInitializationMode = ArgumentInitializationModes.AsMenu)]
-   internal ShowControllersCommand Show { get; set; }
-
-   //[Command("Controller")]
-   //[MenuCommand("Manage controllers")]
-   //public CommandGroup<ControllerCommands> Controller { get; set; }
+   [Command("Controller")]
+   [MenuCommand("Manage controllers")]
+   public CommandGroup<ControllerCommands> Controller { get; set; }
 
    //[Command("User")]
    //[MenuCommand("Manage users")]
@@ -34,15 +35,15 @@ public class AppArguments
    //public CommandGroup<PermissionCommands> Permissions { get; set; }
 
    //[Command("Hidden")]
-   //[MenuCommand(VisibleInMenu = false)]
+   //[MenuCommand(Visibility = CommandVisibility.Hidden)]
    //public CommandGroup<HiddenCommands> Hidden { get; set; }
 
    //[Command("Clear")]
    //public ClearCommand Clear { get; set; }
 
    //[Command("help", "?")]
-   //[MenuCommand(VisibleInMenu = false)]
-   //public HelpCommand Help{ get; set; }
+   //[MenuCommand(Visibility = CommandVisibility.Hidden)]
+   //public HelpCommand Help { get; set; }
 
    #endregion
 }

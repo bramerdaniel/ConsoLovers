@@ -26,19 +26,19 @@ public class CommandVisibilityTests : MenuBuilderBase
    {
       var menuBehaviour = MenuBuilderBehaviour.ShowAllCommand;
 
-      var node = GetCommandNode<Root>(menuBehaviour, "WithAttribute");
+      var node = GetCommandNode<VisibilityRoot>(menuBehaviour, "WithAttribute");
       node.IsVisible.Should().BeTrue();
 
-      node = GetCommandNode<Root>(menuBehaviour, "WithoutAttribute");
+      node = GetCommandNode<VisibilityRoot>(menuBehaviour, "WithoutAttribute");
       node.IsVisible.Should().BeTrue();
       
-      node = GetCommandNode<Root>(menuBehaviour, "Visible");
+      node = GetCommandNode<VisibilityRoot>(menuBehaviour, "Visible");
       node.IsVisible.Should().BeTrue();
 
-      node = GetCommandNode<Root>(menuBehaviour, "NotSpecified");
+      node = GetCommandNode<VisibilityRoot>(menuBehaviour, "NotSpecified");
       node.IsVisible.Should().BeTrue();
       
-      node = GetCommandNode<Root>(menuBehaviour, "Hidden");
+      node = GetCommandNode<VisibilityRoot>(menuBehaviour, "Hidden");
       node.IsVisible.Should().BeFalse();
    }
 
@@ -47,22 +47,85 @@ public class CommandVisibilityTests : MenuBuilderBase
    {
       var menuBehaviour = MenuBuilderBehaviour.WithAttributesOnly;
       
-      var node = GetCommandNode<Root>(menuBehaviour, "WithoutAttribute");
+      var node = GetCommandNode<VisibilityRoot>(menuBehaviour, "WithoutAttribute");
       node.IsVisible.Should().BeFalse();
 
-      node = GetCommandNode<Root>(menuBehaviour, "Hidden");
+      node = GetCommandNode<VisibilityRoot>(menuBehaviour, "Hidden");
       node.IsVisible.Should().BeFalse();
 
-      node = GetCommandNode<Root>(menuBehaviour, "NotSpecified");
+      node = GetCommandNode<VisibilityRoot>(menuBehaviour, "NotSpecified");
       node.IsVisible.Should().BeTrue();
       
-      node = GetCommandNode<Root>(menuBehaviour, "WithAttribute");
+      node = GetCommandNode<VisibilityRoot>(menuBehaviour, "WithAttribute");
       node.IsVisible.Should().BeTrue();
 
-      node = GetCommandNode<Root>(menuBehaviour, "Visible");
+      node = GetCommandNode<VisibilityRoot>(menuBehaviour, "Visible");
       node.IsVisible.Should().BeTrue();
    }
-   
+
+   [TestMethod]
+   public void EnsureDefaultValueWhileExecutionWorksCorrectly()
+   {
+      var initMode = ArgumentInitializationModes.WhileExecution;
+
+      var node = GetCommandNode<ArgumentsRoot>(initMode, "WhileExecution");
+      node.InitializationMode.Should().Be(ArgumentInitializationModes.WhileExecution);
+
+      node = GetCommandNode<ArgumentsRoot>(initMode, "AsMenu");
+      node.InitializationMode.Should().Be(ArgumentInitializationModes.AsMenu);
+
+      node = GetCommandNode<ArgumentsRoot>(initMode, "NotSpecified");
+      node.InitializationMode.Should().Be(ArgumentInitializationModes.WhileExecution);
+
+      node = GetCommandNode<ArgumentsRoot>(initMode, "WithoutValue");
+      node.InitializationMode.Should().Be(ArgumentInitializationModes.WhileExecution);
+
+      node = GetCommandNode<ArgumentsRoot>(initMode, "WithoutAttribute");
+      node.InitializationMode.Should().Be(ArgumentInitializationModes.WhileExecution);
+   }
+
+   [TestMethod]
+   public void EnsureDefaultValueCustomWorksCorrectly()
+   {
+      var initMode = ArgumentInitializationModes.Custom;
+
+      var node = GetCommandNode<ArgumentsRoot>(initMode, "WhileExecution");
+      node.InitializationMode.Should().Be(ArgumentInitializationModes.WhileExecution);
+
+      node = GetCommandNode<ArgumentsRoot>(initMode, "AsMenu");
+      node.InitializationMode.Should().Be(ArgumentInitializationModes.AsMenu);
+
+      node = GetCommandNode<ArgumentsRoot>(initMode, "NotSpecified");
+      node.InitializationMode.Should().Be(ArgumentInitializationModes.Custom);
+
+      node = GetCommandNode<ArgumentsRoot>(initMode, "WithoutValue");
+      node.InitializationMode.Should().Be(ArgumentInitializationModes.Custom);
+
+      node = GetCommandNode<ArgumentsRoot>(initMode, "WithoutAttribute");
+      node.InitializationMode.Should().Be(ArgumentInitializationModes.Custom);
+   }
+
+   [TestMethod]
+   public void EnsureDefaultValueAsMenuWorksCorrectly()
+   {
+      var initMode = ArgumentInitializationModes.AsMenu;
+
+      var node = GetCommandNode<ArgumentsRoot>(initMode, "WhileExecution");
+      node.InitializationMode.Should().Be(ArgumentInitializationModes.WhileExecution);
+
+      node = GetCommandNode<ArgumentsRoot>(initMode, "AsMenu");
+      node.InitializationMode.Should().Be(ArgumentInitializationModes.AsMenu);
+
+      node = GetCommandNode<ArgumentsRoot>(initMode, "NotSpecified");
+      node.InitializationMode.Should().Be(ArgumentInitializationModes.AsMenu);
+
+      node = GetCommandNode<ArgumentsRoot>(initMode, "WithoutValue");
+      node.InitializationMode.Should().Be(ArgumentInitializationModes.AsMenu);
+
+      node = GetCommandNode<ArgumentsRoot>(initMode, "WithoutAttribute");
+      node.InitializationMode.Should().Be(ArgumentInitializationModes.AsMenu);
+   }
+
    #endregion
 
    #region Methods
@@ -76,9 +139,49 @@ public class CommandVisibilityTests : MenuBuilderBase
       return node;
    }
 
+   CommandNode GetCommandNode<T>(ArgumentInitializationModes initMode, string displayName)
+      where T : class
+   {
+      var nodes = BuildMenu<T>(new MenuBuilderOptions { ArgumentInitializationMode = initMode }).ToArray();
+      var node = nodes.OfType<CommandNode>().FirstOrDefault(x => x.DisplayName == displayName);
+      Assert.IsNotNull(node);
+      return node;
+   }
+
    #endregion
 
-   public class Root
+   public class ArgumentsRoot
+   {
+      #region Properties
+
+      [Command("WhileExecution")]
+      [MenuCommand("WhileExecution", ArgumentInitialization = ArgumentInitializationModes.WhileExecution)]
+      [UsedImplicitly]
+      internal RunCommand WhileExecution { get; set; }
+
+      [Command("AsMenu")]
+      [MenuCommand("AsMenu", ArgumentInitialization = ArgumentInitializationModes.AsMenu)]
+      [UsedImplicitly]
+      internal RunCommand AsMenu { get; set; }
+
+      [Command("NotSpecified")]
+      [MenuCommand("NotSpecified", ArgumentInitialization = ArgumentInitializationModes.NotSpecified)]
+      [UsedImplicitly]
+      internal RunCommand NotSpecified { get; set; }
+
+      [Command("WithoutValue")]
+      [MenuCommand("WithoutValue")]
+      [UsedImplicitly]
+      internal RunCommand WithoutValue { get; set; }
+
+      [Command("WithoutAttribute")]
+      [UsedImplicitly]
+      internal RunCommand WithoutAttribute { get; set; }
+
+      #endregion
+   }
+
+   public class VisibilityRoot
    {
       #region Properties
 

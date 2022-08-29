@@ -10,7 +10,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
    using JetBrains.Annotations;
 
-   /// <summary>Default implementation of the <see cref="IMenuExceptionHandler"/></summary>
+   /// <summary>NotSpecified implementation of the <see cref="IMenuExceptionHandler"/></summary>
    /// <seealso cref="ConsoLovers.ConsoleToolkit.Core.IMenuExceptionHandler"/>
    public class MenuExceptionHandler : IMenuExceptionHandler
    {

@@ -24,7 +24,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       public PropertyInfo PropertyInfo { get; set; }
       
-      public bool ShowAsMenu { get; set; }
+      public bool ShowInMenu { get; set; }
 
       public bool IsPassword { get; set;}
 

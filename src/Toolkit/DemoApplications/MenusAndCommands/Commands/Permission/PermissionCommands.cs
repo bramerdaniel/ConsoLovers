@@ -17,7 +17,7 @@ public class PermissionCommands
    public AddPermissionCommand Add { get; set; }
 
    [Command("Remove")]
-   [MenuCommand(ArgumentInitializationMode = ArgumentInitializationModes.Custom)]
+   [MenuCommand(ArgumentInitialization = ArgumentInitializationModes.Custom)]
    public RemovePermissionCommand Remove { get; set; }
 
    #endregion

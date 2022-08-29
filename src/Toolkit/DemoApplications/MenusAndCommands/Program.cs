@@ -29,7 +29,7 @@ namespace MenusAndCommands
             {
                options.MenuOptions.Header = new MenusAndCommands();
                options.MenuOptions.CloseKeys = new[] { ConsoleKey.Escape };
-               options.BuilderOptions.MenuBehaviour = MenuBuilderBehaviour.ShowAllCommand;
+               // options.BuilderOptions.MenuBehaviour = MenuBuilderBehaviour.ShowAllCommand;
 
                options.MenuOptions.Expander = new ExpanderDescription { Collapsed = " +", Expanded = " -" };
                options.MenuOptions.CircularSelection = false;

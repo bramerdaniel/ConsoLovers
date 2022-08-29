@@ -13,7 +13,7 @@ public class RoleCommands
    #region Public Properties
 
    [Command("Show")]
-   [MenuCommand("Show", ArgumentInitializationMode = ArgumentInitializationModes.Custom)]
+   [MenuCommand("Show", ArgumentInitialization = ArgumentInitializationModes.Custom)]
    public ShowRolesCommand Show { get; set; }
 
    [Command("Add")]

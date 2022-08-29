@@ -12,17 +12,17 @@ public class ControllerCommands
 {
    #region Properties
 
+   [Command("delete")]
+   [MenuCommand("Delete controller", ArgumentInitialization = ArgumentInitializationModes.WhileExecution)]
+   internal DeleteControllerCommand Delete { get; set; }
+
+   [Command("deleteMenu")]
+   [MenuCommand("Delete with menu", DisplayOrder = 1, ArgumentInitialization = ArgumentInitializationModes.AsMenu)]
+   internal DeleteControllerCommand DeleteMenu { get; set; }
+
    [Command("Show")]
    [MenuCommand("Show controllers")]
    internal ShowControllersCommand Show { get; set; }
 
-   [Command("delete")]
-   [MenuCommand("Delete controller", ArgumentInitializationMode = ArgumentInitializationModes.WhileExecution)]
-   internal DeleteControllerCommand Delete { get; set; }
-
-   [Command("deleteMenu")]
-   [MenuCommand("Delete with menu", DisplayOrder = 1, ArgumentInitializationMode = ArgumentInitializationModes.AsMenu)]
-   internal DeleteControllerCommand DeleteMenu { get; set; }
-   
    #endregion
 }

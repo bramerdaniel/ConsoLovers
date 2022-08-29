@@ -76,11 +76,9 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
          foreach (var itemNode in menuBuilder.Build<T>())
          {
-
             var menuItem = CreateMenuItem(itemNode);
             if (menuItem != null)
                menu.Add(menuItem);
-
          }
 
          return menu;
@@ -89,7 +87,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       private PrintableItem CreateMenuItem(IMenuNode node)
       {
          if (node is ICommandNode command && command.IsVisible)
-            return CreateCommandNode(command);
+            return CreateCommandMenuItem(command);
 
          if (node is IArgumentNode argumentNode)
             return CreateArgumentNode(argumentNode);
@@ -114,7 +112,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
             try
             {
                var value = new InputBox<string>($"{node.DisplayName}: ").ReadLine();
-               // node.PropertyInfo.SetValue(argumentInstance, value, null);
+               // commandNode.PropertyInfo.SetValue(argumentInstance, value, null);
                menuItem.Text = $"{node.DisplayName}={value}";
             }
             catch (InputCanceledException)
@@ -133,30 +131,31 @@ namespace ConsoLovers.ConsoleToolkit.Core
          }
       }
 
-      private ConsoleMenuItem CreateCommandNode(ICommandNode node)
+      private ConsoleMenuItem CreateCommandMenuItem(ICommandNode commandNode)
       {
-         var subCommands = node.Nodes.OfType<ICommandNode>().ToArray();
+         var subCommands = commandNode.Nodes.OfType<ICommandNode>().ToArray();
          if (subCommands.Any())
          {
             var children = subCommands
                .Select(CreateMenuItem).Where(child => child != null)
                .ToArray();
 
-            return new ConsoleMenuItem(node.DisplayName, children);
+            return new ConsoleMenuItem(commandNode.DisplayName, children);
          }
 
-         if (node.InitializationMode == ArgumentInitializationModes.AsMenu)
+         if (commandNode.InitializationMode == ArgumentInitializationModes.AsMenu)
          {
-            var children = node.Nodes.OfType<IArgumentNode>()
-               .Where(x => x.ShowAsMenu)
+            var children = commandNode.Nodes.OfType<IArgumentNode>()
+               .Where(x => x.ShowInMenu)
                .Select(CreateMenuItem).Where(child => child != null)
-               .ToArray();
+               .ToList();
 
-            return new ConsoleMenuItem(node.DisplayName, children);
+            children.Add(new ConsoleMenuItem("Execute", x => ExecuteNode(commandNode, x)) { HandleException = OnExecuteException });
+            return new ConsoleMenuItem(commandNode.DisplayName, children.ToArray());
          }
 
 
-         return new ConsoleMenuItem(node.DisplayName, x => ExecuteNode(node, x)) { HandleException = OnExecuteException };
+         return new ConsoleMenuItem(commandNode.DisplayName, x => ExecuteNode(commandNode, x)) { HandleException = OnExecuteException };
       }
 
       private void ExecuteNode(ICommandNode node, ConsoleMenuItem menuItem)
