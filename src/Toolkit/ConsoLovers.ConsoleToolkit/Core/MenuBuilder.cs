@@ -12,6 +12,8 @@ namespace ConsoLovers.ConsoleToolkit.Core
    using System.Linq;
    using System.Reflection;
 
+   using ConsoLovers.ConsoleToolkit.Core.MenuBuilding;
+
    using JetBrains.Annotations;
 
    internal class MenuBuilder
@@ -41,27 +43,27 @@ namespace ConsoLovers.ConsoleToolkit.Core
       private IEnumerable<IMenuNode> Build(Type argumentType)
       {
          var itemInfos = NodeInfo.CreateMenuInfos(argumentType, Options);
-         return CreateMenuNodes(itemInfos);
+         return CreateMenuNodes(itemInfos, null);
       }
 
-      private IEnumerable<IMenuNode> CreateMenuNodes(IEnumerable<NodeInfo> itemInfos)
+      private IEnumerable<IMenuNode> CreateMenuNodes(IEnumerable<NodeInfo> itemInfos, ICommandNode parent)
       {
          var nodeInfos = itemInfos.OrderBy(x => x.DisplayOrder)
             .ToArray();
 
          foreach (var itemInfo in nodeInfos)
          {
-            var menuNode = CreateMenuItemNode(itemInfo);
+            var menuNode = CreateMenuItemNode(itemInfo, parent);
             if (menuNode != null)
                yield return menuNode;
          }
       }
 
-      private IMenuNode CreateMenuItemNode(NodeInfo itemInfo)
+      private IMenuNode CreateMenuItemNode(NodeInfo itemInfo, ICommandNode parent)
       {
          if (itemInfo.IsCommand())
          {
-            return new CommandNode
+            var commandNode = new CommandNode(parent)
             {
                PropertyInfo = itemInfo.PropertyInfo,
                DisplayName = itemInfo.DisplayName,
@@ -70,11 +72,13 @@ namespace ConsoLovers.ConsoleToolkit.Core
                InitializationMode = itemInfo.InitializationMode,
                IsVisible = ComputeIsVisible(itemInfo),
                ArgumentType = itemInfo.ArgumentType,
-               Nodes = CreateMenuNodes(itemInfo.ChildInfos).ToArray()
             };
+
+            commandNode.Nodes = CreateMenuNodes(itemInfo.ChildInfos, commandNode).ToArray();
+            return commandNode;
          }
 
-         return new ArgumentNode
+         return new ArgumentNode(parent)
          {
             PropertyInfo = itemInfo.PropertyInfo,
             DisplayName = itemInfo.DisplayName,

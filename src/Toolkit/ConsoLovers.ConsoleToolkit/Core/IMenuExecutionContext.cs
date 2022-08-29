@@ -6,7 +6,10 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core
 {
+   using ConsoLovers.ConsoleToolkit.Core.MenuBuilding;
    using ConsoLovers.ConsoleToolkit.Menu;
+
+   using JetBrains.Annotations;
 
    public interface IMenuExecutionContext
    {
@@ -28,7 +31,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       /// <summary>Initializes all visible arguments.</summary>
       void InitializeArguments();
-
+      
       #endregion
    }
 }

@@ -57,6 +57,14 @@ namespace ConsoLovers.ConsoleToolkit.Core
          InitializeArgumentInternal(argumentNode);
       }
 
+      public void InitializeArgument([NotNull] IArgumentNode argumentNode)
+      {
+         if (argumentNode == null)
+            throw new ArgumentNullException(nameof(argumentNode));
+
+         InitializeArgumentInternal(argumentNode);
+      }
+
 
       private bool HasMenuInfo()
       {
@@ -115,6 +123,8 @@ namespace ConsoLovers.ConsoleToolkit.Core
       {
          try
          {
+            CreateArguments();
+
             var initialValue = argumentNode.PropertyInfo.GetValue(Arguments);
             var parameterValue = ReadValueFromConsole(argumentNode, initialValue);
 
@@ -151,6 +161,9 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       private void SetArgumentsToCommand()
       {
+         if (Command == null)
+            return;
+
          var argumentsProperty = Command.GetType().GetProperty(nameof(ICommandArguments<Type>.Arguments));
          if (argumentsProperty == null)
             return;

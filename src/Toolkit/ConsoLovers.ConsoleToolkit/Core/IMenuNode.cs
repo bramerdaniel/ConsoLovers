@@ -9,6 +9,8 @@ namespace ConsoLovers.ConsoleToolkit.Core
    using System;
    using System.Reflection;
 
+   using ConsoLovers.ConsoleToolkit.Core.MenuBuilding;
+
    internal interface IMenuNode
    {
       #region Public Properties
@@ -19,7 +21,8 @@ namespace ConsoLovers.ConsoleToolkit.Core
       /// <summary>Gets the display order.</summary>
       int DisplayOrder { get; }
 
-
+      /// <summary>Gets the parent node of the current node.</summary>
+      ICommandNode Parent { get; }
 
       PropertyInfo PropertyInfo { get; }
 

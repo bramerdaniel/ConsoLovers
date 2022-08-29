@@ -19,6 +19,13 @@ namespace ConsoLovers.ConsoleToolkit.Core
    [DebuggerDisplay("{DisplayName} Children:{Nodes.Count}")]
    internal class CommandNode : ICommandNode
    {
+      public ICommandNode Parent { get; }
+
+      public CommandNode(ICommandNode parent)
+      {
+         Parent = parent;
+      }
+
       #region ICommandNode Members
 
       public string DisplayName { get; set; }
