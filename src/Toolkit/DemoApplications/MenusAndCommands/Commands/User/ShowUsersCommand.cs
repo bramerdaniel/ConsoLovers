@@ -7,7 +7,6 @@
 namespace MenusAndCommands.Commands.User;
 
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -34,7 +33,7 @@ public class ShowUsersCommand : IAsyncMenuCommand
       console.WriteLine();
 
       var username = new InputBox<string>("Username: ").ReadLine();
-      var password = new InputBox<string>("Username: ") { IsPassword = true }.ReadLine();
+      var password = new InputBox<string>("Password: ") { IsPassword = true }.ReadLine();
 
       var users = userManager.GetUsers(username, password);
 

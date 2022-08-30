@@ -23,11 +23,11 @@ namespace ConsoLovers.ConsoleToolkit.Core
       #region Public Methods and Operators
 
       /// <summary>Creates the arguments instance for the current command.</summary>
-      void CreateArguments();
+      object GetOrCreateArguments();
 
       /// <summary>Initializes the argument with the specified name.</summary>
       /// <param name="argumentName">Name of the argument to initialize.</param>
-      void InitializeArgument(string argumentName);
+      object InitializeArgument(string argumentName);
 
       /// <summary>Initializes all visible arguments.</summary>
       void InitializeArguments();

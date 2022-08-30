@@ -25,12 +25,6 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       #region Constructors and Destructors
 
-      [Obsolete]
-      public MenuExecutionContext([NotNull] IMenuArgumentManager argumentManager)
-         : this(argumentManager, null)
-      {
-      }
-
       public MenuExecutionContext([NotNull] IMenuArgumentManager argumentManager, ICommandNode node)
       {
          commandNode = node;
@@ -43,26 +37,26 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       public ConsoleMenuItem MenuItem { get; set; }
 
-      public void InitializeArgument(string argumentName)
+      public object InitializeArgument(string argumentName)
       {
          if (!HasMenuInfo())
-            return;
+            return null;
 
-         CreateArguments();
+         GetOrCreateArguments();
 
          var argumentNode = commandNode.FindArgument(argumentName);
          if (argumentNode == null)
             throw new ArgumentException($"Argument {argumentName} could not be found", nameof(argumentName));
 
-         InitializeArgumentInternal(argumentNode);
+         return InitializeArgumentInternal(argumentNode);
       }
 
-      public void InitializeArgument([NotNull] IArgumentNode argumentNode)
+      public object InitializeArgument([NotNull] IArgumentNode argumentNode)
       {
          if (argumentNode == null)
             throw new ArgumentNullException(nameof(argumentNode));
 
-         InitializeArgumentInternal(argumentNode);
+         return InitializeArgumentInternal(argumentNode);
       }
 
 
@@ -93,9 +87,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       {
          if (!HasMenuInfo())
             return;
-
-         CreateArguments();
-
+         
          var argumentsToInitialize = commandNode.Nodes
             .OfType<IArgumentNode>()
             .OrderBy(x => x.DisplayOrder);
@@ -110,31 +102,37 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       #region Methods
 
-      public void CreateArguments()
+      public object GetOrCreateArguments()
       {
-         if (Arguments != null)
-            return;
+         if (Arguments == null && commandNode?.ArgumentType != null)
+         {
+            Arguments = ArgumentManager.GetOrCreate(commandNode.ArgumentType);
+            SetArgumentsToCommand();
+         }
 
-         Arguments = ArgumentManager.GetOrCreate(commandNode.ArgumentType);
-         SetArgumentsToCommand();
+         return Arguments;
       }
 
-      private void InitializeArgumentInternal(IArgumentNode argumentNode)
+      private object InitializeArgumentInternal(IArgumentNode argumentNode)
       {
+         object initialValue = null;
          try
          {
-            CreateArguments();
+            GetOrCreateArguments();
 
-            var initialValue = argumentNode.PropertyInfo.GetValue(Arguments);
+            initialValue = argumentNode.PropertyInfo.GetValue(Arguments);
             var parameterValue = ReadValueFromConsole(argumentNode, initialValue);
-
             argumentNode.PropertyInfo.SetValue(Arguments, parameterValue);
+
+            return parameterValue;
          }
          catch (InputCanceledException)
          {
             // The user did not want to specify a value but for required parameters we can not continue !
             if (argumentNode.Required)
                throw;
+
+            return initialValue;
          }
       }
 

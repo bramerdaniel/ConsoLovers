@@ -11,7 +11,6 @@ namespace ConsoLovers.ConsoleToolkit.Core
    using System.Threading;
    using System.Threading.Tasks;
 
-   using ConsoLovers.ConsoleToolkit.Core.Input;
    using ConsoLovers.ConsoleToolkit.Core.MenuBuilding;
    using ConsoLovers.ConsoleToolkit.Menu;
 
@@ -65,44 +64,68 @@ namespace ConsoLovers.ConsoleToolkit.Core
          return Task.CompletedTask;
       }
 
-      private ConsoleMenu CreateConsoleMenu<T>()
+      public void UseOptions([NotNull] ICommandMenuOptions options)
       {
-         var menu = new ConsoleMenu(ConsoleMenuOptions);
-         var menuBuilder = new MenuBuilder(commandMenuOptions.BuilderOptions);
-
-         foreach (var itemNode in menuBuilder.Build<T>())
-         {
-            var menuItem = CreateMenuItem(itemNode);
-            if (menuItem != null)
-               menu.Add(menuItem);
-         }
-
-         return menu;
+         commandMenuOptions = options ?? throw new ArgumentNullException(nameof(options));
       }
 
-      private PrintableItem CreateMenuItem(IMenuNode node)
+      #endregion
+
+      #region Public Properties
+
+      public IMenuArgumentManager ArgumentManager { get; }
+
+      #endregion
+
+      #region Properties
+
+      private IConsoleMenuOptions ConsoleMenuOptions => commandMenuOptions.MenuOptions;
+
+      #endregion
+
+      #region Methods
+
+      private string ComputeDisplayName(IArgumentNode argumentNode)
       {
-         if (node is ICommandNode command && command.IsVisible)
-            return CreateCommandMenuItem(command);
+         var argumentType = argumentNode.Parent?.ArgumentType;
+         if (argumentType == null)
+            return argumentNode.DisplayName;
 
-         if (node is IArgumentNode argumentNode)
-            return CreateArgumentNode(argumentNode);
+         var argument = ArgumentManager.GetOrCreate(argumentType);
+         if (argument == null)
+            return argumentNode.DisplayName;
 
-         // TODO support option nodes
-         return null;
+         return ComputeDisplayName(argumentNode, argumentNode.PropertyInfo.GetValue(argument));
+      }
+
+      private string ComputeDisplayName(IArgumentNode argumentNode, object value)
+      {
+         if (value == null)
+            return $"{argumentNode.DisplayName}=<not specified>";
+
+         if (argumentNode.IsPassword)
+         {
+            var password = "*".PadRight(value.ToString()?.Length ?? 1, '*');
+            return $"{argumentNode.DisplayName}={password}";
+         }
+
+         return $"{argumentNode.DisplayName}={value}";
       }
 
       private PrintableItem CreateArgumentNode(IArgumentNode argumentNode)
       {
-         if (argumentNode.Type == typeof(bool))
-            return new ConsoleMenuItem(argumentNode.DisplayName, x => ToggleParameter(x, argumentNode));
+         var displayName = ComputeDisplayName(argumentNode);
 
-         return new ConsoleMenuItem(argumentNode.DisplayName, x => SetParameter(x, argumentNode));
+         if (argumentNode.Type == typeof(bool))
+            return new ConsoleMenuItem(displayName, x => ToggleParameter(x, argumentNode));
+         return new ConsoleMenuItem(displayName, x => SetParameter(x, argumentNode));
 
          void SetParameter(ConsoleMenuItem menuItem, IArgumentNode node)
          {
-            var context = new MenuExecutionContext(ArgumentManager, node.Parent);
-            context.InitializeArgument(node);
+            var context = new MenuExecutionContext(ArgumentManager, node.Parent) { MenuItem = menuItem };
+
+            var value = context.InitializeArgument(node);
+            menuItem.Text = ComputeDisplayName(argumentNode, value);
 
             //try
             //{
@@ -146,6 +169,33 @@ namespace ConsoLovers.ConsoleToolkit.Core
          return new ConsoleMenuItem(commandNode.DisplayName, x => ExecuteNode(commandNode, x)) { HandleException = OnExecuteException };
       }
 
+      private ConsoleMenu CreateConsoleMenu<T>()
+      {
+         var menu = new ConsoleMenu(ConsoleMenuOptions);
+         var menuBuilder = new MenuBuilder(commandMenuOptions.BuilderOptions);
+
+         foreach (var itemNode in menuBuilder.Build<T>())
+         {
+            var menuItem = CreateMenuItem(itemNode);
+            if (menuItem != null)
+               menu.Add(menuItem);
+         }
+
+         return menu;
+      }
+
+      private PrintableItem CreateMenuItem(IMenuNode node)
+      {
+         if (node is ICommandNode command && command.IsVisible)
+            return CreateCommandMenuItem(command);
+
+         if (node is IArgumentNode argumentNode)
+            return CreateArgumentNode(argumentNode);
+
+         // TODO support option nodes
+         return null;
+      }
+
       private ConsoleMenuItem CreateMenuItemWithArgumentMenu(ICommandNode commandNode)
       {
          var children = commandNode.Nodes.OfType<IArgumentNode>()
@@ -157,51 +207,6 @@ namespace ConsoLovers.ConsoleToolkit.Core
          children.Add(new ConsoleMenuItem("Execute", x => ExecuteNode(commandNode, x)) { HandleException = OnExecuteException });
          return new ConsoleMenuItem(commandNode.DisplayName, children.ToArray());
       }
-
-      private void ExecuteNode(ICommandNode node, ConsoleMenuItem menuItem)
-      {
-         var executionContext = new MenuExecutionContext(ArgumentManager, node)
-         {
-            Command = serviceProvider.GetService(node.Type) ?? ActivatorUtilities.CreateInstance(serviceProvider, node.Type),
-            MenuItem = menuItem
-         };
-
-         if (node.InitializationMode == ArgumentInitializationModes.WhileExecution)
-         {
-            executionContext.InitializeArguments();
-         }
-         else if (node.InitializationMode == ArgumentInitializationModes.AsMenu)
-         {
-            executionContext.CreateArguments();
-         }
-         else
-         {
-            // Nothing to do for custom initialization
-         }
-
-         ExecuteInternal(executionContext);
-      }
-
-      public void UseOptions([NotNull] ICommandMenuOptions options)
-      {
-         commandMenuOptions = options ?? throw new ArgumentNullException(nameof(options));
-      }
-
-      #endregion
-
-      #region Public Properties
-
-      public IMenuArgumentManager ArgumentManager { get; }
-
-      #endregion
-
-      #region Properties
-
-      private IConsoleMenuOptions ConsoleMenuOptions => commandMenuOptions.MenuOptions;
-
-      #endregion
-
-      #region Methods
 
       private void ExecuteInternal(MenuExecutionContext executionContext)
       {
@@ -219,6 +224,24 @@ namespace ConsoLovers.ConsoleToolkit.Core
             var executionEngine = serviceProvider.GetRequiredService<IExecutionEngine>();
             executionEngine.ExecuteCommand(commandBase, CancellationToken.None);
          }
+      }
+
+      private void ExecuteNode(ICommandNode node, ConsoleMenuItem menuItem)
+      {
+         var executionContext = new MenuExecutionContext(ArgumentManager, node)
+         {
+            Command = serviceProvider.GetService(node.Type) ?? ActivatorUtilities.CreateInstance(serviceProvider, node.Type), MenuItem = menuItem
+         };
+
+         // Unless the use has specified that he wants to have custom argument initialization, 
+         // we initialize the argument class for the command
+         if (node.InitializationMode != ArgumentInitializationModes.Custom)
+            executionContext.GetOrCreateArguments();
+
+         if (node.InitializationMode == ArgumentInitializationModes.WhileExecution)
+            executionContext.InitializeArguments();
+
+         ExecuteInternal(executionContext);
       }
 
       private bool OnExecuteException(Exception exception)

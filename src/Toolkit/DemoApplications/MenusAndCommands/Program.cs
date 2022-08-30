@@ -29,14 +29,15 @@ namespace MenusAndCommands
             {
                options.MenuOptions.Header = new MenusAndCommands();
                options.MenuOptions.CloseKeys = new[] { ConsoleKey.Escape };
-               // options.BuilderOptions.MenuBehaviour = MenuBuilderBehaviour.ShowAllCommand;
+               
+               options.BuilderOptions.MenuBehaviour = MenuBuilderBehaviour.ShowAllCommand;
+               options.BuilderOptions.ArgumentInitializationMode = ArgumentInitializationModes.WhileExecution;
 
                options.MenuOptions.Expander = new ExpanderDescription { Collapsed = " +", Expanded = " -" };
                options.MenuOptions.CircularSelection = false;
                options.MenuOptions.Selector = "  ";// "►";
                options.MenuOptions.IndexMenuItems = true;
                options.MenuOptions.IndentSize = 3;
-               // options.BuilderOptions.DefaultArgumentInitializationMode = ArgumentInitializationModes.AsMenu;
             })
             .ConfigureCommandLineParser(o => o.CaseSensitive = true)
             .UseExceptionHandler(typeof(AllExceptionsHandler))

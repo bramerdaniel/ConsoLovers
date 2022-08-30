@@ -38,6 +38,7 @@ internal class UserManager : IUserManager
 
    public IEnumerable<User> GetUsers(string userName, string password)
    {
+      Authenticate(userName, password);
       return users;
    }
 

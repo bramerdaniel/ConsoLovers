@@ -74,6 +74,7 @@ public class ShowRolesCommand : IAsyncCommand<ShowRolesCommand.ShowRolesArgs>, I
 
    public async Task ExecuteAsync(IMenuExecutionContext context, CancellationToken cancellationToken)
    {
+      Arguments = (ShowRolesArgs)context.GetOrCreateArguments();
       console.WriteLine("Specify the name of the role to show, or press ESC to show all roles", ConsoleColor.DarkYellow);
       console.WriteLine();
       context.InitializeArgument(nameof(Arguments.Name));
