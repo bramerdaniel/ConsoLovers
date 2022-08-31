@@ -11,6 +11,8 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
    using JetBrains.Annotations;
 
+   using Microsoft.Extensions.DependencyInjection;
+
    internal class MenuArgumentManager : IMenuArgumentManager
    {
       #region Constants and Fields
@@ -32,15 +34,41 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       #region IMenuArgumentManager Members
 
+      /// <summary>Removes the specified argument type from the cache.</summary>
+      /// <typeparam name="T"></typeparam>
+      public void Remove<T>()
+      {
+         Remove(typeof(T));
+      }
+
+      /// <summary>Removes the specified argument type from the cache.</summary>
+      /// <param name="argumentType">Type of the argument.</param>
+      public void Remove(Type argumentType)
+      {
+         if (argumentType != null)
+            argumentCache.Remove(argumentType);
+      }
+
+      /// <summary>Gets the or creates the instance of the specified argument type.</summary>
+      /// <param name="argumentType">Type of the argument.</param>
+      /// <returns>The argument instance</returns>
       public object GetOrCreate(Type argumentType)
       {
          if (!argumentCache.TryGetValue(argumentType, out var argument))
          {
-            argument = serviceProvider.GetService(argumentType);
+            argument = serviceProvider.GetService(argumentType) ?? ActivatorUtilities.CreateInstance(serviceProvider, argumentType);
             argumentCache[argumentType] = argument;
          }
 
          return argument;
+      }
+
+      /// <summary>Gets the or creates the instance of the specified argument type <see cref="T"/>.</summary>
+      /// <typeparam name="T"></typeparam>
+      /// <returns>The argument instance</returns>
+      public T GetOrCreate<T>()
+      {
+         return (T)GetOrCreate(typeof(T));
       }
 
       /// <summary>Clears all cached argument values.</summary>

@@ -255,6 +255,6 @@ namespace ConsoLovers.ConsoleToolkit.Core
       // TODO support for ignoring groups
       // TODO support for additional description
       // TODO support for additional localization
-      // TODO support for Arguments and ConsoleMenuOptions
+      // TODO Use HelpText.Priority as default sort order
    }
 }
