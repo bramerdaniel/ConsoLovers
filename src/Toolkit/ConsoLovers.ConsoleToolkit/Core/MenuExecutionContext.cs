@@ -90,9 +90,9 @@ namespace ConsoLovers.ConsoleToolkit.Core
          
          var argumentsToInitialize = commandNode.Nodes
             .OfType<IArgumentNode>()
+            .Where(x => x.ShowInInitialization)
             .OrderBy(x => x.DisplayOrder);
-
-         // TODO filter not needed/invisible arguments
+         
          foreach (var argumentInfo in argumentsToInitialize)
             InitializeArgumentInternal(argumentInfo);
       }

@@ -20,5 +20,9 @@ public class SharedArgs
    [MenuArgument("UserName", DisplayOrder = int.MaxValue - 1)]
    public string UserName { get; set; }
 
+   [Argument("logfile")]
+   [MenuArgument(Visibility = ArgumentVisibility.Hidden)]
+   public string Logfile { get; set; }
+
    #endregion
 }
