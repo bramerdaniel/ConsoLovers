@@ -13,6 +13,7 @@ using global::MenusAndCommands.Commands.Controllers;
 using MenusAndCommands.Commands;
 using MenusAndCommands.Commands.Permission;
 using MenusAndCommands.Commands.Role;
+using MenusAndCommands.Commands.Settings;
 using MenusAndCommands.Commands.User;
 
 public class AppArguments
@@ -20,7 +21,7 @@ public class AppArguments
    #region Public Properties
 
    [Command("Controller")]
-   [MenuCommand("Manage controllers")]
+   [MenuCommand("Manage controller")]
    public CommandGroup<ControllerCommands> Controller { get; set; }
 
    [Command("User")]
@@ -32,13 +33,18 @@ public class AppArguments
    public CommandGroup<RoleCommands> Role { get; set; }
 
    [Command("Permissions")]
+   [MenuCommand("Manage permissions")]
    public CommandGroup<PermissionCommands> Permissions { get; set; }
 
    [Command("Hidden")]
    [MenuCommand(Visibility = CommandVisibility.Hidden)]
    public CommandGroup<HiddenCommands> Hidden { get; set; }
 
+   [MenuCommand("Settings")]
+   internal CommandGroup<SettingsGroup> Settings { get; set; }
+
    [Command("Clear")]
+   [MenuCommand("Clear")]
    public ClearCommand Clear { get; set; }
 
    [Command("help", "?")]

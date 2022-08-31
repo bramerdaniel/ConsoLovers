@@ -25,11 +25,13 @@ namespace MenusAndCommands
       {
          await ConsoleApplication.WithArguments<AppArguments>()
             .AddService(s => s.AddSingleton<IUserManager, UserManager>())
+            .ConfigureCommandLineParser(o => o.CaseSensitive = true)
+            .UseExceptionHandler(typeof(AllExceptionsHandler))
             .UseMenuWithoutArguments(options =>
             {
                options.MenuOptions.Header = new MenusAndCommands();
                options.MenuOptions.CloseKeys = new[] { ConsoleKey.Escape };
-               
+
                options.BuilderOptions.MenuBehaviour = MenuBuilderBehaviour.ShowAllCommand;
                options.BuilderOptions.ArgumentInitializationMode = ArgumentInitializationModes.WhileExecution;
 
@@ -39,8 +41,6 @@ namespace MenusAndCommands
                options.MenuOptions.IndexMenuItems = true;
                options.MenuOptions.IndentSize = 3;
             })
-            .ConfigureCommandLineParser(o => o.CaseSensitive = true)
-            .UseExceptionHandler(typeof(AllExceptionsHandler))
             .RunAsync(CancellationToken.None);
       }
 
