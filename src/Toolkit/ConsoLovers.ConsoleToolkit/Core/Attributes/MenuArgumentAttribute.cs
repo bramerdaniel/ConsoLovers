@@ -40,7 +40,8 @@ namespace ConsoLovers.ConsoleToolkit.Core
       /// <summary>Gets or sets the visibility of the argument.</summary>
       public ArgumentVisibility Visibility { get; set; } = ArgumentVisibility.NotSpecified;
 
-
+      /// <summary>Gets or sets the description of the argument that is displayed during initialization.</summary>
+      public string Description { get; set; }
 
       #endregion
    }

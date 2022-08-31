@@ -8,6 +8,9 @@ namespace ConsoLovers.ConsoleToolkit.Core.MenuBuilding
 {
    interface IArgumentNode : IMenuNode
    {
+      /// <summary>Gets the description.</summary>
+      string Description { get; }
+
       /// <summary>Gets a value indicating whether this argument is a password.</summary>
       bool IsPassword { get; }
 

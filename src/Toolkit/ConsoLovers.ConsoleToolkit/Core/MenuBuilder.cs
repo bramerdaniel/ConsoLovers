@@ -125,11 +125,21 @@ namespace ConsoLovers.ConsoleToolkit.Core
             DisplayName = itemInfo.DisplayName,
             DisplayOrder = itemInfo.DisplayOrder,
             IsPassword = ComputeIsPassword(itemInfo),
+            Description = ComputeDescription(itemInfo),
             Required = itemInfo.IsRequired,
             Type = itemInfo.PropertyInfo.PropertyType,
             ShowInMenu = ComputeShowInMenu(itemInfo),
             ShowInInitialization = ComputeShowInInitialization(itemInfo)
          };
+      }
+
+      private string ComputeDescription(NodeInfo itemInfo)
+      {
+         if (itemInfo.MenuArgumentAttribute == null)
+            return null;
+
+         return itemInfo.MenuArgumentAttribute.Description;
+
       }
 
       private IEnumerable<IMenuNode> CreateMenuNodes(IEnumerable<NodeInfo> itemInfos, ICommandNode parent)

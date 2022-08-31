@@ -36,6 +36,8 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       public bool ShowInMenu { get; set; }
 
+      public string Description { get; set; }
+
       public bool IsPassword { get; set; }
 
       public bool Required { get; set; }

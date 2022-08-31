@@ -256,5 +256,6 @@ namespace ConsoLovers.ConsoleToolkit.Core
       // TODO support for additional description
       // TODO support for additional localization
       // TODO Use HelpText.Priority as default sort order
+      // TODO Add support for shared initialization for argument base classes (Shared address and username for all commands)
    }
 }

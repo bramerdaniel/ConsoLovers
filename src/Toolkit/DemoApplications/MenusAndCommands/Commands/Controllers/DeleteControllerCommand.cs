@@ -72,9 +72,11 @@ internal class DeleteControllerCommand : IAsyncCommand<DeleteControllerCommand.A
       public bool Force { get; set; } = false;
 
       [Argument("name")]
+      [MenuArgument("Name", Description = "The name of the controller to delete")]
       public string Name { get; set; }
 
       [Argument("retries")]
+      [MenuArgument("Retries", Description = "The number of retries that should be performed")]
       public int Retries { get; set; } = 5;
 
       #endregion
