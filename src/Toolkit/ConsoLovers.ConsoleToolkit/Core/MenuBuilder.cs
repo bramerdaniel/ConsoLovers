@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="BuilderOptions.cs" company="ConsoLovers">
+// <copyright file="MenuBuilder.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -46,17 +46,58 @@ namespace ConsoLovers.ConsoleToolkit.Core
          return CreateMenuNodes(itemInfos, null);
       }
 
-      private IEnumerable<IMenuNode> CreateMenuNodes(IEnumerable<NodeInfo> itemInfos, ICommandNode parent)
+      private bool ComputeIsPassword(NodeInfo itemInfo)
       {
-         var nodeInfos = itemInfos.OrderBy(x => x.DisplayOrder)
-            .ToArray();
+         return itemInfo.MenuArgumentAttribute?.IsPassword ?? false;
+      }
 
-         foreach (var itemInfo in nodeInfos)
+      private bool ComputeIsVisible(NodeInfo itemInfo)
+      {
+         if (itemInfo.MenuCommandAttribute != null)
          {
-            var menuNode = CreateMenuItemNode(itemInfo, parent);
-            if (menuNode != null)
-               yield return menuNode;
+            if (itemInfo.MenuCommandAttribute.Visibility == CommandVisibility.Visible)
+               return true;
+            if (itemInfo.MenuCommandAttribute.Visibility == CommandVisibility.Hidden)
+               return false;
+
+            return true;
          }
+
+         if (Options.MenuBehaviour == MenuBuilderBehaviour.ShowAllCommand)
+            return true;
+         return false;
+      }
+
+      private bool ComputeShowInInitialization(NodeInfo itemInfo)
+      {
+         if (itemInfo.MenuArgumentAttribute != null)
+         {
+            if (itemInfo.MenuArgumentAttribute.Visibility.HasFlag(ArgumentVisibility.InInitialization))
+               return true;
+
+            if (itemInfo.MenuArgumentAttribute.Visibility == ArgumentVisibility.NotSpecified)
+               return true;
+
+            return false;
+         }
+
+         return true;
+      }
+
+      private bool ComputeShowInMenu(NodeInfo itemInfo)
+      {
+         if (itemInfo.MenuArgumentAttribute != null)
+         {
+            if (itemInfo.MenuArgumentAttribute.Visibility.HasFlag(ArgumentVisibility.InMenu))
+               return true;
+
+            if (itemInfo.MenuArgumentAttribute.Visibility == ArgumentVisibility.NotSpecified)
+               return true;
+
+            return false;
+         }
+
+         return true;
       }
 
       private IMenuNode CreateMenuItemNode(NodeInfo itemInfo, ICommandNode parent)
@@ -83,7 +124,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
             PropertyInfo = itemInfo.PropertyInfo,
             DisplayName = itemInfo.DisplayName,
             DisplayOrder = itemInfo.DisplayOrder,
-            IsPassword = itemInfo.IsPassword,
+            IsPassword = ComputeIsPassword(itemInfo),
             Required = itemInfo.IsRequired,
             Type = itemInfo.PropertyInfo.PropertyType,
             ShowInMenu = ComputeShowInMenu(itemInfo),
@@ -91,53 +132,17 @@ namespace ConsoLovers.ConsoleToolkit.Core
          };
       }
 
-      private bool ComputeIsVisible(NodeInfo itemInfo)
+      private IEnumerable<IMenuNode> CreateMenuNodes(IEnumerable<NodeInfo> itemInfos, ICommandNode parent)
       {
-         if (itemInfo.MenuCommandAttribute != null)
+         var nodeInfos = itemInfos.OrderBy(x => x.DisplayOrder)
+            .ToArray();
+
+         foreach (var itemInfo in nodeInfos)
          {
-            if (itemInfo.MenuCommandAttribute.Visibility == CommandVisibility.Visible)
-               return true;
-            if (itemInfo.MenuCommandAttribute.Visibility == CommandVisibility.Hidden)
-               return false;
-
-            return true;
+            var menuNode = CreateMenuItemNode(itemInfo, parent);
+            if (menuNode != null)
+               yield return menuNode;
          }
-
-         if (Options.MenuBehaviour == MenuBuilderBehaviour.ShowAllCommand)
-            return true;
-         return false;
-      }
-
-      private bool ComputeShowInMenu(NodeInfo itemInfo)
-      {
-         if (itemInfo.MenuArgumentAttribute != null)
-         {
-            if (itemInfo.MenuArgumentAttribute.Visibility.HasFlag(ArgumentVisibility.InMenu))
-               return true;
-
-            if (itemInfo.MenuArgumentAttribute.Visibility == ArgumentVisibility.NotSpecified)
-               return true;
-
-            return false;
-         }
-
-         return true;
-      }
-
-      private bool ComputeShowInInitialization(NodeInfo itemInfo)
-      {
-         if (itemInfo.MenuArgumentAttribute != null)
-         {
-            if (itemInfo.MenuArgumentAttribute.Visibility.HasFlag(ArgumentVisibility.InInitialization))
-               return true;
-
-            if (itemInfo.MenuArgumentAttribute.Visibility == ArgumentVisibility.NotSpecified)
-               return true;
-
-            return false;
-         }
-
-         return true;
       }
 
       #endregion
@@ -177,17 +182,13 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
          public ArgumentInitializationModes InitializationMode { get; private set; }
 
-         public MenuCommandAttribute MenuCommandAttribute { get; set; }
+         public bool IsRequired { get; private set; }
 
          public MenuArgumentAttribute MenuArgumentAttribute { get; set; }
 
+         public MenuCommandAttribute MenuCommandAttribute { get; set; }
+
          public PropertyInfo PropertyInfo { get; }
-
-         public bool IsVisible { get; private set; }
-
-         public bool IsPassword { get; private set; }
-
-         public bool IsRequired { get; private set; }
 
          #endregion
 
@@ -197,32 +198,10 @@ namespace ConsoLovers.ConsoleToolkit.Core
          {
             ArgumentType = ComputeArgumentType();
             InitializationMode = ComputeInitializationMode();
-            IsVisible = ComputeIsVisible();
             ChildInfos = CreateChildren().ToArray();
-            IsPassword = MenuArgumentAttribute?.IsPassword ?? false;
             IsRequired = ArgumentAttribute?.Required ?? false;
 
             return this;
-         }
-
-         private bool ComputeIsVisible()
-         {
-            // TODO 
-            if (MenuCommandAttribute != null)
-               return false;
-
-            if (IsArgument())
-               return ComputeArgumentVisibility();
-
-            // TODO ComputeIsVisible
-            return true;
-         }
-
-         private bool ComputeArgumentVisibility()
-         {
-            if (InitializationMode == ArgumentInitializationModes.AsMenu)
-               return true;
-            return false;
          }
 
          public bool IsCommand()
@@ -259,18 +238,6 @@ namespace ConsoLovers.ConsoleToolkit.Core
                if (menuInfo.IsValid())
                   yield return menuInfo.Initialize();
             }
-         }
-
-
-
-         private bool IsValid()
-         {
-            return IsCommand() || IsArgument();
-         }
-
-         private bool IsArgument()
-         {
-            return ArgumentAttribute != null || MenuArgumentAttribute != null;
          }
 
          private Type ComputeArgumentType()
@@ -328,6 +295,16 @@ namespace ConsoLovers.ConsoleToolkit.Core
                return CreateMenuInfos(ArgumentType, options);
 
             return Enumerable.Empty<NodeInfo>();
+         }
+
+         private bool IsArgument()
+         {
+            return ArgumentAttribute != null || MenuArgumentAttribute != null;
+         }
+
+         private bool IsValid()
+         {
+            return IsCommand() || IsArgument();
          }
 
          #endregion
