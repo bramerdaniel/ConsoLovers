@@ -34,7 +34,7 @@ public class AppArguments
 
    [Command("Permissions")]
    [MenuCommand("Manage permissions")]
-   public CommandGroup<PermissionCommands> Permissions { get; set; }
+   internal CommandGroup<PermissionCommands> Permissions { get; set; }
 
    [Command("Hidden")]
    [MenuCommand(Visibility = CommandVisibility.Hidden)]

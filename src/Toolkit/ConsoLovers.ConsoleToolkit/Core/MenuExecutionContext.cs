@@ -15,7 +15,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
    using JetBrains.Annotations;
 
-   internal class MenuExecutionContext : IMenuExecutionContext
+   internal class MenuExecutionContext : IArgumentInitializationContext, IMenuExecutionContext
    {
       #region Constants and Fields
 
@@ -36,6 +36,8 @@ namespace ConsoLovers.ConsoleToolkit.Core
       #region IMenuExecutionContext Members
 
       public ConsoleMenuItem MenuItem { get; set; }
+
+
 
       public object InitializeArgument(string argumentName)
       {
@@ -87,12 +89,12 @@ namespace ConsoLovers.ConsoleToolkit.Core
       {
          if (!HasMenuInfo())
             return;
-         
+
          var argumentsToInitialize = commandNode.Nodes
             .OfType<IArgumentNode>()
             .Where(x => x.ShowInInitialization)
             .OrderBy(x => x.DisplayOrder);
-         
+
          foreach (var argumentInfo in argumentsToInitialize)
             InitializeArgumentInternal(argumentInfo);
       }
@@ -120,9 +122,9 @@ namespace ConsoLovers.ConsoleToolkit.Core
          {
             GetOrCreateArguments();
 
-            initialValue = argumentNode.PropertyInfo.GetValue(Arguments);
+            initialValue = GetInitialValue(argumentNode);
             var parameterValue = ReadValueFromConsole(argumentNode, initialValue);
-            argumentNode.PropertyInfo.SetValue(Arguments, parameterValue);
+            SetValue(argumentNode, parameterValue);
 
             return parameterValue;
          }
@@ -134,6 +136,31 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
             return initialValue;
          }
+      }
+
+      private void SetValue(IArgumentNode argumentNode, object parameterValue)
+      {
+         var propertyInfo = argumentNode.PropertyInfo;
+         if (propertyInfo.ReflectedType != propertyInfo.DeclaringType)
+         {
+            var baseInstance = ArgumentManager.GetOrCreate(propertyInfo.DeclaringType);
+            propertyInfo.SetValue(baseInstance, parameterValue);
+         }
+
+         argumentNode.PropertyInfo.SetValue(Arguments, parameterValue);
+      }
+
+      private object GetInitialValue(IArgumentNode argumentNode)
+      {
+         var propertyInfo = argumentNode.PropertyInfo;
+         // TODO check for attribute to ignore base type properties
+         if (propertyInfo.ReflectedType != propertyInfo.DeclaringType)
+         {
+            var baseInstance = ArgumentManager.GetOrCreate(propertyInfo.DeclaringType);
+            return propertyInfo.GetValue(baseInstance);
+         }
+
+         return propertyInfo.GetValue(Arguments);
       }
 
       private static object ReadValueFromConsole(IArgumentNode argumentNode, object initialValue)
@@ -174,5 +201,10 @@ namespace ConsoLovers.ConsoleToolkit.Core
       }
 
       #endregion
+
+      public T GetOrCreate<T>()
+      {
+         return ArgumentManager.GetOrCreate<T>();
+      }
    }
 }

@@ -17,7 +17,10 @@ namespace ConsoLovers.ConsoleToolkit.Core
       /// <summary>Before the command is executed, the arguments are requested from the user</summary>
       WhileExecution,
 
-      /// <summary>The arguments are not initialized at all</summary>
+      /// <summary>The command must be an argumr</summary>
       Custom,
+
+      /// <summary>The arguments are not initialized at all</summary>
+      None
    }
 }

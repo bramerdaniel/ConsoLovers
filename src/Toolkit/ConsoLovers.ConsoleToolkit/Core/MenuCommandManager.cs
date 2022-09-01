@@ -8,6 +8,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
 {
    using System;
    using System.Linq;
+   using System.Text;
    using System.Threading;
    using System.Threading.Tasks;
 
@@ -230,18 +231,46 @@ namespace ConsoLovers.ConsoleToolkit.Core
       {
          var executionContext = new MenuExecutionContext(ArgumentManager, node)
          {
-            Command = serviceProvider.GetService(node.Type) ?? ActivatorUtilities.CreateInstance(serviceProvider, node.Type), MenuItem = menuItem
+            Command = serviceProvider.GetService(node.Type) ?? ActivatorUtilities.CreateInstance(serviceProvider, node.Type),
+            MenuItem = menuItem
          };
 
-         // Unless the use has specified that he wants to have custom argument initialization, 
-         // we initialize the argument class for the command
-         if (node.InitializationMode != ArgumentInitializationModes.Custom)
-            executionContext.GetOrCreateArguments();
-
-         if (node.InitializationMode == ArgumentInitializationModes.WhileExecution)
-            executionContext.InitializeArguments();
-
+         InitializeArguments(node, executionContext);
          ExecuteInternal(executionContext);
+      }
+
+      private static void InitializeArguments(ICommandNode node, MenuExecutionContext executionContext)
+      {
+         if (node.InitializationMode == ArgumentInitializationModes.None)
+            return;
+
+         // Unless the user has specified that he wants to have no argument initialization, 
+         // we create the argument class for the command
+         executionContext.GetOrCreateArguments();
+
+         if (node.InitializationMode == ArgumentInitializationModes.AsMenu)
+            return;
+         
+         if (node.InitializationMode == ArgumentInitializationModes.WhileExecution)
+         {
+            executionContext.InitializeArguments();
+            return;
+         }
+
+         if (node.InitializationMode == ArgumentInitializationModes.Custom)
+         {
+            var command = executionContext.Command;
+            if (command is IArgumentInitializer initializer)
+            {
+               initializer.InitializeArguments(executionContext);
+               return;
+            }
+
+            var message = new StringBuilder();
+            message.AppendLine($"The command {command?.GetType().Name} does not implement the {nameof(IArgumentInitializer)} interface.");
+            message.AppendLine($"Either implement the interface in the command, or change the {nameof(MenuCommandAttribute.ArgumentInitialization)} of the command to e.g. {nameof(ArgumentInitializationModes.None)}.");
+            throw new InvalidOperationException(message.ToString());
+         }
       }
 
       private bool OnExecuteException(Exception exception)

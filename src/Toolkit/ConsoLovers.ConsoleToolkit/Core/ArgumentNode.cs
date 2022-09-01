@@ -7,12 +7,14 @@
 namespace ConsoLovers.ConsoleToolkit.Core
 {
    using System;
+   using System.Diagnostics;
    using System.Reflection;
 
    using ConsoLovers.ConsoleToolkit.Core.MenuBuilding;
 
    /// <summary>Node that represents a command</summary>
    /// <seealso cref="ICommandNode"/>
+   [DebuggerDisplay("{DisplayName}")]
    internal class ArgumentNode : IArgumentNode
    {
       #region Constructors and Destructors

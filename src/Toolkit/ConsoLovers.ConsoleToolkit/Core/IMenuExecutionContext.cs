@@ -6,10 +6,7 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core
 {
-   using ConsoLovers.ConsoleToolkit.Core.MenuBuilding;
    using ConsoLovers.ConsoleToolkit.Menu;
-
-   using JetBrains.Annotations;
 
    public interface IMenuExecutionContext
    {
@@ -22,16 +19,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       #region Public Methods and Operators
 
-      /// <summary>Creates the arguments instance for the current command.</summary>
-      object GetOrCreateArguments();
 
-      /// <summary>Initializes the argument with the specified name.</summary>
-      /// <param name="argumentName">Name of the argument to initialize.</param>
-      object InitializeArgument(string argumentName);
-
-      /// <summary>Initializes all visible arguments.</summary>
-      void InitializeArguments();
-      
       #endregion
    }
 }

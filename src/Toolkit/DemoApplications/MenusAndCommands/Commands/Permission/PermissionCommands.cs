@@ -8,17 +8,25 @@ namespace MenusAndCommands.Commands.Permission;
 
 using ConsoLovers.ConsoleToolkit.Core;
 
-public class PermissionCommands
+internal class PermissionCommands
 {
    #region Public Properties
 
+   [Command("Show")]
+   [MenuCommand("Show permissions", ArgumentInitialization = ArgumentInitializationModes.Custom)]
+   internal ShowPermissionCommand Show { get; set; }
+
    [Command("Add")]
    [MenuCommand("Add permission")]
-   public AddPermissionCommand Add { get; set; }
+   internal AddPermissionCommand Add { get; set; }
 
    [Command("Remove")]
-   [MenuCommand(ArgumentInitialization = ArgumentInitializationModes.Custom)]
-   public RemovePermissionCommand Remove { get; set; }
+   [MenuCommand("Remove permission", ArgumentInitialization = ArgumentInitializationModes.None)]
+   internal RemovePermissionCommand Remove { get; set; }
+
+   [Command("Remove")]
+   [MenuCommand("Crash without initializer", ArgumentInitialization = ArgumentInitializationModes.Custom)]
+   internal NoInitializerCommand Crash { get; set; }
 
    #endregion
 }

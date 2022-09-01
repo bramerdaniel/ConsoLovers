@@ -4,7 +4,7 @@
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<AssemblyTitle>ConsoLovers.ConsoleToolkit</AssemblyTitle>
 		<PackageId>ConsoLovers.ConsoleToolkit</PackageId>
-		<Version>6.0.0-rc12</Version>
+		<Version>6.0.0-rc13</Version>
 		<AssemblyVersion>6.0.0.0</AssemblyVersion>
 		<FileVersion>6.0.0.0</FileVersion>
 		<PackageReleaseNotes>

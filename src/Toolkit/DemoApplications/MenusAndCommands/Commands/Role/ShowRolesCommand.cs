@@ -16,7 +16,7 @@ using ConsoLovers.ConsoleToolkit;
 using ConsoLovers.ConsoleToolkit.Core;
 using MenusAndCommands.Model;
 
-public class ShowRolesCommand : IAsyncCommand<ShowRolesCommand.ShowRolesArgs>, IAsyncMenuCommand
+public class ShowRolesCommand : IAsyncCommand<ShowRolesCommand.ShowRolesArgs>, IAsyncMenuCommand, IArgumentInitializer
 {
    private readonly IUserManager userManager;
 
@@ -74,10 +74,7 @@ public class ShowRolesCommand : IAsyncCommand<ShowRolesCommand.ShowRolesArgs>, I
 
    public async Task ExecuteAsync(IMenuExecutionContext context, CancellationToken cancellationToken)
    {
-      Arguments = (ShowRolesArgs)context.GetOrCreateArguments();
-      console.WriteLine("Specify the name of the role to show, or press ESC to show all roles", ConsoleColor.DarkYellow);
-      console.WriteLine();
-      context.InitializeArgument(nameof(Arguments.Name));
+
 
       await ExecuteAsync(cancellationToken);
       console.ReadLine();
@@ -94,5 +91,13 @@ public class ShowRolesCommand : IAsyncCommand<ShowRolesCommand.ShowRolesArgs>, I
       public string Name { get; set; }
 
       #endregion
+   }
+
+   public void InitializeArguments(IArgumentInitializationContext context)
+   {
+      Arguments = (ShowRolesArgs)context.GetOrCreateArguments();
+      console.WriteLine("Specify the name of the role to show, or press ESC to show all roles", ConsoleColor.DarkYellow);
+      console.WriteLine();
+      context.InitializeArgument(nameof(Arguments.Name));
    }
 }
