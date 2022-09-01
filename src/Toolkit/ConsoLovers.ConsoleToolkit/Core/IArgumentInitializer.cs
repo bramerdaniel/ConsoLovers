@@ -6,6 +6,7 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core
 {
+   /// <summary>Can be implemented by a command to perform custom argument initialization</summary>
    public interface IArgumentInitializer
    {
       /// <summary>Initializes the arguments of the command.</summary>

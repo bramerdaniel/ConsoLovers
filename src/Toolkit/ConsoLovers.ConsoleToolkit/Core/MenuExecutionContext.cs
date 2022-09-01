@@ -143,21 +143,31 @@ namespace ConsoLovers.ConsoleToolkit.Core
          var propertyInfo = argumentNode.PropertyInfo;
          if (propertyInfo.ReflectedType != propertyInfo.DeclaringType)
          {
-            var baseInstance = ArgumentManager.GetOrCreate(propertyInfo.DeclaringType);
-            propertyInfo.SetValue(baseInstance, parameterValue);
+            if (UsesSharedInitialization(propertyInfo.DeclaringType))
+            {
+               var baseInstance = ArgumentManager.GetOrCreate(propertyInfo.DeclaringType);
+               propertyInfo.SetValue(baseInstance, parameterValue);
+            }
          }
 
          argumentNode.PropertyInfo.SetValue(Arguments, parameterValue);
       }
 
+      private static bool UsesSharedInitialization(Type type)
+      {
+         return type.GetAttribute<ArgumentInitializationScopeAttribute>()?.Shared ?? true;
+      }
+
       private object GetInitialValue(IArgumentNode argumentNode)
       {
          var propertyInfo = argumentNode.PropertyInfo;
-         // TODO check for attribute to ignore base type properties
          if (propertyInfo.ReflectedType != propertyInfo.DeclaringType)
          {
-            var baseInstance = ArgumentManager.GetOrCreate(propertyInfo.DeclaringType);
-            return propertyInfo.GetValue(baseInstance);
+            if (UsesSharedInitialization(propertyInfo.DeclaringType))
+            {
+               var baseInstance = ArgumentManager.GetOrCreate(propertyInfo.DeclaringType);
+               return propertyInfo.GetValue(baseInstance);
+            }
          }
 
          return propertyInfo.GetValue(Arguments);

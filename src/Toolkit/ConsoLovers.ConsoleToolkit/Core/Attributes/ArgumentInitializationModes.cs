@@ -6,6 +6,7 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core
 {
+   /// <summary>Enum describing how the arguments of a command are initialized when the command is executed from the menu</summary>
    public enum ArgumentInitializationModes
    {
       /// <summary>Behaviour is specified by the default behaviour of the <see cref="IMenuCommandManager"/></summary>
@@ -17,7 +18,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       /// <summary>Before the command is executed, the arguments are requested from the user</summary>
       WhileExecution,
 
-      /// <summary>The command must be an argumr</summary>
+      /// <summary>The command must implement the <see cref="IArgumentInitializer"/> interface and perform a custom initialization</summary>
       Custom,
 
       /// <summary>The arguments are not initialized at all</summary>
