@@ -1,6 +1,6 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="ConsoleProxy.cs" company="ConsoLovers">
-//    Copyright (c) ConsoLovers  2015 - 2018
+//    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -9,8 +9,8 @@ namespace ConsoLovers.ConsoleToolkit.Core
    using System;
 
    /// <summary>
-   ///    The most simple implementation of the <see cref="IConsole"/> interface that is forwarding all calls directly to the <see cref="Console"/>, and provides some extra
-   ///    features
+   ///    The most simple implementation of the <see cref="IConsole"/> interface that is forwarding all calls directly to the <see cref="Console"/>,
+   ///    and provides some extra features
    /// </summary>
    /// <seealso cref="IConsole"/>
    public class ConsoleProxy : IConsole
@@ -137,7 +137,6 @@ namespace ConsoLovers.ConsoleToolkit.Core
       {
          Console.Write(value);
       }
-
       public void WriteLine()
       {
          Console.WriteLine();
@@ -147,7 +146,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       {
          Console.WriteLine(value);
       }
-
+      
       public void WriteLine(string value, ConsoleColor foreground)
       {
          var foregroundColor = Console.ForegroundColor;
@@ -180,6 +179,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       {
          while (ReadKey(true).Key != key)
          {
+            // Just wait here
          }
       }
 
