@@ -18,6 +18,7 @@ internal class SharedArgsInitializer : IMenuInitializer
    {
       var argumentManager = context.ServiceProvider.GetRequiredService<IMenuArgumentManager>();
       var sharedArgs = argumentManager.GetOrCreate<SharedArgs>();
+      
       sharedArgs.UserName = "Admin";
       sharedArgs.Password = "Admin";
    }
