@@ -177,8 +177,8 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       private static object ReadValueFromConsole(IArgumentNode argumentNode, object initialValue)
       {
-         if (!string.IsNullOrWhiteSpace(argumentNode.Description))
-            Console.WriteLine(argumentNode.Description);
+         if (!string.IsNullOrWhiteSpace(argumentNode.InitializationHint))
+            Console.WriteLine(argumentNode.InitializationHint);
 
          if (argumentNode.Type == typeof(int))
          {

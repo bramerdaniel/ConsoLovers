@@ -21,10 +21,13 @@ public class ShowUsersCommand : IAsyncMenuCommand
 
    private readonly IConsole console;
 
-   public ShowUsersCommand(IUserManager userManager, IConsole console)
+   private readonly IMenuArgumentManager argumentManager;
+
+   public ShowUsersCommand(IUserManager userManager, IConsole console, IMenuArgumentManager argumentManager) 
    {
       this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
       this.console = console ?? throw new ArgumentNullException(nameof(console));
+      this.argumentManager = argumentManager ?? throw new ArgumentNullException(nameof(argumentManager));
    }
 
    public Task ExecuteAsync(IMenuExecutionContext context, CancellationToken cancellationToken)
@@ -32,8 +35,10 @@ public class ShowUsersCommand : IAsyncMenuCommand
       console.WriteLine("This command is only available in the menu, but not from command line args.", ConsoleColor.DarkYellow);
       console.WriteLine();
 
-      var username = new InputBox<string>("Username: ").ReadLine();
-      var password = new InputBox<string>("Password: ") { IsPassword = true }.ReadLine();
+      var sharedArgs = argumentManager.GetOrCreate<SharedArgs>();
+
+      var username = new InputBox<string>("Username: ", sharedArgs.UserName).ReadLine();
+      var password = new InputBox<string>("Password: ", sharedArgs.Password) { IsPassword = true }.ReadLine();
 
       var users = userManager.GetUsers(username, password);
 

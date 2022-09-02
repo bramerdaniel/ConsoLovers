@@ -87,6 +87,13 @@ internal class UserManager : IUserManager
       users.Add(user);
    }
 
+   public void DeleteUser(User user, string userName, string password)
+   {
+      var authenticatedUser = Authenticate(userName, password);
+      Authorize(authenticatedUser, "Admin");
+      users.Remove(user);
+   }
+
    #endregion
 
    #region Public Methods and Operators

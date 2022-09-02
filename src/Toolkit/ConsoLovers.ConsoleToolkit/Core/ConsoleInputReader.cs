@@ -20,8 +20,8 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       public object ReadValue(IArgumentNode argumentNode, object initialValue)
       {
-         if (!string.IsNullOrWhiteSpace(argumentNode.Description))
-            console.WriteLine(argumentNode.Description);
+         if (!string.IsNullOrWhiteSpace(argumentNode.InitializationHint))
+            console.WriteLine(argumentNode.InitializationHint);
 
          if (argumentNode.Type == typeof(int))
          {

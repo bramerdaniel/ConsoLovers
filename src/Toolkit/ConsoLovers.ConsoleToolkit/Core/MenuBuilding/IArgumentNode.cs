@@ -6,10 +6,10 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.MenuBuilding
 {
-   interface IArgumentNode : IMenuNode
+   internal interface IArgumentNode : IMenuNode
    {
-      /// <summary>Gets the description.</summary>
-      string Description { get; }
+      /// <summary>Gets a hint text that is displayed during initialization of the argument.</summary>
+      string InitializationHint { get; }
 
       /// <summary>Gets a value indicating whether this argument is a password.</summary>
       bool IsPassword { get; }

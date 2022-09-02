@@ -19,4 +19,6 @@ public interface IUserManager
    void DeleteRole(string roleName, string userName, string password);
 
    void AddUser(User user, string userName, string password);
+
+   void DeleteUser(User user, string userName, string password);
 }

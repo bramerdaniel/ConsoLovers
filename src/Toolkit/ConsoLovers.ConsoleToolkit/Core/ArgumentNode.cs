@@ -37,8 +37,8 @@ namespace ConsoLovers.ConsoleToolkit.Core
       public PropertyInfo PropertyInfo { get; set; }
 
       public bool ShowInMenu { get; set; }
-
-      public string Description { get; set; }
+      
+      public string InitializationHint { get; set; }
 
       public bool IsPassword { get; set; }
 

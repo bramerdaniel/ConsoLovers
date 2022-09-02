@@ -7,9 +7,11 @@
 namespace MenusAndCommands.Commands.User;
 
 using System;
+using System.Linq;
 
-using ConsoLovers.ConsoleToolkit;
 using ConsoLovers.ConsoleToolkit.Core;
+
+using MenusAndCommands.Model;
 
 public class DeleteUserCommand : ICommand<DeleteUserCommand.DeleteUserArgs>, IMenuCommand
 {
@@ -17,13 +19,16 @@ public class DeleteUserCommand : ICommand<DeleteUserCommand.DeleteUserArgs>, IMe
 
    private readonly IConsole console;
 
+   private readonly IUserManager userManager;
+
    #endregion
 
    #region Constructors and Destructors
 
-   public DeleteUserCommand(IConsole console)
+   public DeleteUserCommand(IConsole console, IUserManager userManager)
    {
       this.console = console ?? throw new ArgumentNullException(nameof(console));
+      this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
    }
 
    #endregion
@@ -34,6 +39,13 @@ public class DeleteUserCommand : ICommand<DeleteUserCommand.DeleteUserArgs>, IMe
 
    public void Execute()
    {
+      var user = userManager.GetUsers(Arguments.UserName, Arguments.Password)
+         .FirstOrDefault(x => x.Name == Arguments.Name);
+
+      if (user == null)
+         throw new InvalidOperationException($"User {Arguments.Name} does not exist.");
+
+      userManager.DeleteUser(user, Arguments.UserName, Arguments.Password);
       console.WriteLine($"User {Arguments.Name} was deleted");
    }
 
