@@ -13,6 +13,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
    using JetBrains.Annotations;
 
    using Microsoft.Extensions.DependencyInjection;
+   using Microsoft.Extensions.DependencyInjection.Extensions;
 
    [UsedImplicitly]
    public static class CommandMenuExtensions
@@ -27,6 +28,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
          bootstrapper.AddService(s => s.AddSingleton<IApplicationLogic, ShowMenuApplicationLogic>());
          bootstrapper.AddService(s => s.AddSingleton<IMenuArgumentManager, MenuArgumentManager>());
          bootstrapper.AddService(s => s.AddSingleton<IMenuExceptionHandler, MenuExceptionHandler>());
+         bootstrapper.AddService(s => s.TryAddSingleton<IInputReader, ConsoleInputReader>());
 
          if (configureOptions != null)
             ConfigureMenu(bootstrapper, configureOptions);

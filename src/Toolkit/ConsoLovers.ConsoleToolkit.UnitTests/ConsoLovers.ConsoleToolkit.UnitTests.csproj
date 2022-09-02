@@ -23,8 +23,4 @@
 		<ProjectReference Include="..\ConsoLovers.ConsoleToolkit\ConsoLovers.ConsoleToolkit.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Setups\" />
-	</ItemGroup>
-
 </Project>

@@ -7,6 +7,7 @@
 namespace ConsoLovers.ConsoleToolkit.Core
 {
    using System;
+   using System.Collections.Generic;
    using System.Linq;
    using System.Text;
    using System.Threading;
@@ -123,7 +124,11 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
          void SetParameter(ConsoleMenuItem menuItem, IArgumentNode node)
          {
-            var context = new MenuExecutionContext(ArgumentManager, node.Parent) { MenuItem = menuItem };
+            var context = new MenuExecutionContext(ArgumentManager, node.Parent)
+            {
+               MenuItem = menuItem,
+               InputReader = serviceProvider.GetRequiredService<IInputReader>()
+            };
 
             var value = context.InitializeArgument(node);
             menuItem.Text = ComputeDisplayName(argumentNode, value);
@@ -173,9 +178,9 @@ namespace ConsoLovers.ConsoleToolkit.Core
       private ConsoleMenu CreateConsoleMenu<T>()
       {
          var menu = new ConsoleMenu(ConsoleMenuOptions);
-         var menuBuilder = new MenuBuilder(commandMenuOptions.BuilderOptions);
+         
 
-         foreach (var itemNode in menuBuilder.Build<T>())
+         foreach (var itemNode in CreateNodes<T>())
          {
             var menuItem = CreateMenuItem(itemNode);
             if (menuItem != null)
@@ -183,6 +188,12 @@ namespace ConsoLovers.ConsoleToolkit.Core
          }
 
          return menu;
+      }
+
+      internal IEnumerable<IMenuNode> CreateNodes<T>()
+      {
+         var menuBuilder = new MenuBuilder(commandMenuOptions.BuilderOptions);
+         return menuBuilder.Build<T>();
       }
 
       private PrintableItem CreateMenuItem(IMenuNode node)
@@ -227,19 +238,27 @@ namespace ConsoLovers.ConsoleToolkit.Core
          }
       }
 
-      private void ExecuteNode(ICommandNode node, ConsoleMenuItem menuItem)
+      internal MenuExecutionContext ExecuteNode(ICommandNode node, ConsoleMenuItem menuItem)
+      {
+         var context = InitializeArguments(node, menuItem);
+         ExecuteInternal(context);
+         return context;
+      }
+
+      internal MenuExecutionContext InitializeArguments(ICommandNode node, ConsoleMenuItem menuItem)
       {
          var executionContext = new MenuExecutionContext(ArgumentManager, node)
          {
             Command = serviceProvider.GetService(node.Type) ?? ActivatorUtilities.CreateInstance(serviceProvider, node.Type),
-            MenuItem = menuItem
+            MenuItem = menuItem,
+            InputReader = serviceProvider.GetRequiredService<IInputReader>()
          };
 
          InitializeArguments(node, executionContext);
-         ExecuteInternal(executionContext);
+         return executionContext;
       }
 
-      private static void InitializeArguments(ICommandNode node, MenuExecutionContext executionContext)
+      private void InitializeArguments(ICommandNode node, MenuExecutionContext executionContext)
       {
          if (node.InitializationMode == ArgumentInitializationModes.None)
             return;

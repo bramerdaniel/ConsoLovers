@@ -14,9 +14,16 @@ public class Command<T> : ICommand<T>
 
    public void Execute()
    {
+      WasExecuted = true;
    }
 
    public T Arguments { get; set; }
+
+   #endregion
+
+   #region Public Properties
+
+   public bool WasExecuted { get; private set; }
 
    #endregion
 }

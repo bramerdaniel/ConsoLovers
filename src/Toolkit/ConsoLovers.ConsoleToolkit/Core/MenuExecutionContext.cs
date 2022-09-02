@@ -81,6 +81,8 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       internal IMenuArgumentManager ArgumentManager { get; }
 
+      public IInputReader InputReader { get; internal set; }
+
       #endregion
 
       #region Public Methods and Operators
@@ -123,7 +125,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
             GetOrCreateArguments();
 
             initialValue = GetInitialValue(argumentNode);
-            var parameterValue = ReadValueFromConsole(argumentNode, initialValue);
+            var parameterValue = InputReader.ReadValue(argumentNode, initialValue);//  ReadValueFromConsole(argumentNode, initialValue);
             SetValue(argumentNode, parameterValue);
 
             return parameterValue;
@@ -177,7 +179,6 @@ namespace ConsoLovers.ConsoleToolkit.Core
       {
          if (!string.IsNullOrWhiteSpace(argumentNode.Description))
             Console.WriteLine(argumentNode.Description);
-
 
          if (argumentNode.Type == typeof(int))
          {
