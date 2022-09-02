@@ -103,7 +103,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
                   PropertyName = GetArgumentName(propertyInfo, commandLineAttribute),
                   Aliases = GetAliases(commandLineAttribute),
                   UnlocalizedDescription = helpText.Description,
-                  LocalizedDescription = CommandLineEngine.GetLocalizedDescription(localizationService, helpText.ResourceKey),
+                  LocalizedDescription = helpText.ResourceKey != null ? localizationService.GetLocalizedSting(helpText.ResourceKey) : null,
                   Priority = helpText.Priority,
                   Required = IsRequired(commandLineAttribute)
                };
@@ -215,7 +215,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       {
          if (localizationService != null && !string.IsNullOrEmpty(resourceKey))
          {
-            var helpTextString = CommandLineEngine.GetLocalizedDescription(localizationService, resourceKey);
+            var helpTextString = localizationService.GetLocalizedSting(resourceKey);
             Console.WriteLine($"- {helpTextString}");
          }
          else

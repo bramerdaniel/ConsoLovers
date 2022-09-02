@@ -23,6 +23,8 @@ namespace CommandLineEngineDemo
 
          PrintArgs(program.Arguments);
 
+         Console.ReadLine();
+
          if (program.Arguments != null && program.Arguments.Wait)
          {
             Console.WriteLine();

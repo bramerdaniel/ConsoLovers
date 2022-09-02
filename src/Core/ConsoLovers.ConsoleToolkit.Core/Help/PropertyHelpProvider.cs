@@ -9,7 +9,6 @@ namespace ConsoLovers.ConsoleToolkit.Core
    using System;
    using System.Reflection;
 
-   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
    using ConsoLovers.ConsoleToolkit.Core.DIContainer;
 
    /// <summary><see cref="IHelpProvider"/> implementation for properties</summary>
@@ -74,7 +73,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       #region Properties
 
       /// <summary>Gets the console that should be used.</summary>
-      protected IConsole Console => console ?? (console = CreateConsole());
+      protected IConsole Console => console ??= CreateConsole();
 
       #endregion
 
@@ -130,7 +129,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       {
          if (localizationService != null && !string.IsNullOrEmpty(resourceKey))
          {
-            var helpTextString = CommandLineEngine.GetLocalizedDescription(localizationService, resourceKey);
+            var helpTextString = localizationService.GetLocalizedSting(resourceKey);
             Console.WriteLine($"- {helpTextString}");
          }
          else

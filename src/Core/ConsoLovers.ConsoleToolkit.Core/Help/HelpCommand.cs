@@ -83,7 +83,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
             if (commandInfo.ArgumentType == null)
             {
                // TODO: Forward to help provider ???
-               Console.WriteLine("The command does not take any parameters. So no help could be found");
+               Console.WriteLine($"The command {commandInfo.ParameterName} does not take any parameters. So no help could be found");
                return;
             }
 

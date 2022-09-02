@@ -48,6 +48,7 @@
     <Compile Include="Commands\AddCommand.cs" />
     <Compile Include="ApplicationArguments.cs" />
     <Compile Include="CommandBase.cs" />
+    <Compile Include="Commands\RunCommand.cs" />
     <Compile Include="CrashCommand.cs" />
     <Compile Include="CustomHelpCommand.cs" />
     <Compile Include="CustomizedArgumentsHelpCommand.cs" />

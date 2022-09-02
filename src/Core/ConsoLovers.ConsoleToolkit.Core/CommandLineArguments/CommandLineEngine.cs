@@ -168,7 +168,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       /// <param name="argumentType">Type of the argument class to print the help for</param>
       public void PrintHelp([NotNull] Type argumentType)
       {
-         var helpTextProvider = GetHelpTextProvider(argumentType, LocalizationService);
+         var helpTextProvider = GetHelpTextProvider(argumentType);
          helpTextProvider.PrintTypeHelp(argumentType);
       }
 
@@ -176,7 +176,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       /// <param name="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> to print the help for</param>
       public void PrintHelp(PropertyInfo propertyInfo)
       {
-         var helpTextProvider = GetHelpTextProvider(propertyInfo, LocalizationService);
+         var helpTextProvider = GetHelpTextProvider(propertyInfo);
          helpTextProvider.PrintPropertyHelp(propertyInfo);
       }
 
@@ -198,33 +198,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       /// <summary>Gets the service provider.</summary>
       internal IServiceProvider ServiceProvider { get; }
 
-      private ILocalizationService LocalizationService { get; set; }
+      private ILocalizationService LocalizationService { get; }
 
       #endregion
 
       #region Public Methods and Operators
-
-      public string GetHelpForClass([NotNull] Type argumentType, ILocalizationService localizationService)
-      {
-         if (argumentType == null)
-            throw new ArgumentNullException(nameof(argumentType));
-
-         var helpText = argumentType.GetCustomAttribute<HelpTextAttribute>(true);
-         if (helpText != null)
-         {
-            if (localizationService == null)
-            {
-               if (string.IsNullOrEmpty(helpText.Description))
-                  return helpText.ResourceKey ?? "NoResourceKeyOrDescription";
-
-               return helpText.Description;
-            }
-
-            GetLocalizedDescription(localizationService, helpText.ResourceKey);
-         }
-
-         return null;
-      }
 
       /// <summary>Gets the help information for the class of the given type.</summary>
       /// <param name="argumentType">The argument class for creating the help for</param>
@@ -249,24 +227,18 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
                   PropertyName = GetArgumentName(info, argumentAttribute, optionAttribute, commandAttribute),
                   Aliases = GetAliases(argumentAttribute, optionAttribute, commandAttribute),
                   UnlocalizedDescription = helpText.Description,
-                  LocalizedDescription = GetLocalizedDescription(localizationService, helpText.ResourceKey)
+                  LocalizedDescription = helpText.ResourceKey != null ? localizationService.GetLocalizedSting(helpText.ResourceKey) : null
                };
             }
+
+            
          }
       }
 
       #endregion
 
       #region Methods
-
-      internal static string GetLocalizedDescription(ILocalizationService resourceManager, string resourceKey)
-      {
-         if (resourceManager == null || resourceKey == null)
-            return null;
-
-         return resourceManager.GetLocalizedSting(resourceKey);
-      }
-
+      
       private static string[] GetAliases(ArgumentAttribute argumentAttribute, OptionAttribute optionAttribute, CommandAttribute commandAttribute)
       {
          if (argumentAttribute != null)
@@ -278,7 +250,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          if (commandAttribute != null)
             return commandAttribute.Aliases;
 
-         return new string[0];
+         return Array.Empty<string>();
       }
 
       private static string GetArgumentName(PropertyInfo info, ArgumentAttribute argumentAttribute, OptionAttribute optionAttribute,
@@ -305,7 +277,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
             yield break;
          }
 
-         StringBuilder builder = new StringBuilder();
+         var builder = new StringBuilder();
          foreach (var word in text.Split(' '))
          {
             var candidate = builder.ToString();
@@ -334,23 +306,22 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
             : ActivatorUtilities.GetServiceOrCreateInstance<ArgumentMapper<T>>(ServiceProvider);
       }
 
-      private IHelpProvider GetHelpTextProvider(Type argumentType, ILocalizationService resourceManager)
+      private IHelpProvider GetHelpTextProvider(Type argumentType)
       {
          var providerType = argumentType.GetCustomAttribute<HelpTextProviderAttribute>()?.Type;
          if (providerType != null && ServiceProvider.GetService(providerType) is IHelpProvider provider)
             return provider;
 
-         return new TypeHelpProvider(ServiceProvider, resourceManager);
+         return new TypeHelpProvider(ServiceProvider, LocalizationService);
       }
 
-      private IHelpProvider GetHelpTextProvider(PropertyInfo propertyInfo, ILocalizationService localizationService)
+      private IHelpProvider GetHelpTextProvider(PropertyInfo propertyInfo)
       {
          var propertyDeclaringType = propertyInfo.DeclaringType?.GetCustomAttribute<HelpTextProviderAttribute>()?.Type;
-         if (propertyDeclaringType != null
-             && ServiceProviderServiceExtensions.GetRequiredService(ServiceProvider, propertyDeclaringType) is IHelpProvider provider)
+         if (propertyDeclaringType != null && ServiceProvider.GetRequiredService(propertyDeclaringType) is IHelpProvider provider)
             return provider;
 
-         return new PropertyHelpProvider(localizationService);
+         return new PropertyHelpProvider(LocalizationService);
       }
 
       private void OnMappedCommandLineArgument(object sender, MapperEventArgs e)

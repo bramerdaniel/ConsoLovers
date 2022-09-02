@@ -1,9 +1,6 @@
 ﻿namespace CommandLineEngineDemo.Commands
 {
-   using System;
    using System.IO;
-
-   using ConsoLovers.ConsoleToolkit.Core.CommandLineArguments;
 
    internal class AddCommand : CommandBase<AddArguments>
    {
