@@ -308,11 +308,14 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       private void MapHelpOnly(T instance, ArgumentClassInfo argumentInfo, ICommandLineArguments arguments, CommandLineArgument helpRequest)
       {
          var helpCommand = serviceProvider.GetRequiredService<HelpCommand>();
-         helpCommand.Arguments = new HelpCommandArguments { ArgumentInfos = argumentInfo, CommandLineArguments = arguments };
-         argumentInfo.HelpCommand.PropertyInfo.SetValue(instance, helpCommand);
+         helpCommand.Arguments = new HelpCommandArguments
+         {
+            ArgumentInfos = argumentInfo, 
+            CommandLineArguments = arguments
+         };
 
-         MappedCommandLineArgument?.Invoke(this,
-            new MapperEventArgs(helpRequest ?? new CommandLineArgument(), argumentInfo.HelpCommand.PropertyInfo, instance));
+         argumentInfo.HelpCommand.PropertyInfo.SetValue(instance, helpCommand);
+         MappedCommandLineArgument?.Invoke(this, new MapperEventArgs(helpRequest ?? new CommandLineArgument(), argumentInfo.HelpCommand.PropertyInfo, instance));
       }
 
       private void OnMappedCommandLineArgument(object sender, MapperEventArgs e)

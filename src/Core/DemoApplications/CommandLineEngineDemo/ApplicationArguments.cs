@@ -6,7 +6,10 @@
 
 namespace CommandLineEngineDemo
 {
+   using System.Xml.Schema;
+
    using CommandLineEngineDemo.Commands;
+   using CommandLineEngineDemo.Commands.Remove;
 
    using ConsoLovers.ConsoleToolkit.Core;
 
@@ -37,6 +40,10 @@ namespace CommandLineEngineDemo
       [Command("Add", "a")]
       [HelpText("Just anotherCommand.", "None", Priority = 30)]
       public AddCommand Add{ get; set; }
+
+      [Command("Remove", "r")]
+      [HelpText("Just anotherCommand.", "None", Priority = 35)]
+      public CommandGroup<RemoveGroup> Remove{ get; set; }
 
       [Command("Help", "?")]
       [HelpText("Displays the help you are watching at the moment.", "None")]

@@ -49,6 +49,7 @@
     <Compile Include="ApplicationArguments.cs" />
     <Compile Include="CommandBase.cs" />
     <Compile Include="Commands\RunCommand.cs" />
+    <Compile Include="Commands\Remove\ComplexCommand.cs" />
     <Compile Include="CrashCommand.cs" />
     <Compile Include="CustomHelpCommand.cs" />
     <Compile Include="CustomizedArgumentsHelpCommand.cs" />
@@ -62,6 +63,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Commands\Remove\SimpleCommand.cs" />
+    <Compile Include="Commands\Remove\RemoveGroup.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -84,6 +87,7 @@
       <Name>ConsoLovers.ConsoleToolkit.Core</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -7,6 +7,7 @@
 namespace CommandLineEngineDemo
 {
    using System;
+   using System.Diagnostics;
    using System.Reflection;
 
    using ConsoLovers.ConsoleToolkit.Core;
@@ -14,16 +15,17 @@ namespace CommandLineEngineDemo
    class Program
    {
       #region Methods
-      
+
       static void Main()
       {
          var program = ConsoleApplication.WithArguments<ApplicationArguments>()
             .AddResourceManager(Properties.Resources.ResourceManager)
             .Run();
 
-         PrintArgs(program.Arguments);
+         // PrintArgs(program.Arguments);
 
-         Console.ReadLine();
+         if (Debugger.IsAttached)
+            Console.ReadLine();
 
          if (program.Arguments != null && program.Arguments.Wait)
          {
@@ -56,7 +58,7 @@ namespace CommandLineEngineDemo
          }
       }
 
-      
+
       #endregion
 
    }
