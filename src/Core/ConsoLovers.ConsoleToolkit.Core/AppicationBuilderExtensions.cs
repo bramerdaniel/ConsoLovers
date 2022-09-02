@@ -102,7 +102,7 @@ public static class ApplicationBuilderExtensions
    /// <typeparam name="TService">The type of the service to configure.</typeparam>
    /// <param name="builder">The builder that is creating the application.</param>
    /// <param name="configurationAction">The service to configure.</param>
-   /// <returns></returns>
+   /// <returns>A reference to this instance for more fluent configuration.</returns>
    /// <exception cref="System.InvalidOperationException">The builder does not support service configuration</exception>
    public static IApplicationBuilder<T> ConfigureRequiredService<T, TService>(this IApplicationBuilder<T> builder,
       Action<TService> configurationAction)
@@ -120,9 +120,25 @@ public static class ApplicationBuilderExtensions
    /// <typeparam name="TService">The type of the service to configure.</typeparam>
    /// <param name="builder">The builder that is creating the application.</param>
    /// <param name="configurationAction">The service to configure.</param>
-   /// <returns></returns>
+   /// <returns>A reference to this instance for more fluent configuration.</returns>
    /// <exception cref="System.InvalidOperationException">The builder does not support service configuration</exception>
    public static IApplicationBuilder<T> ConfigureService<T, TService>(this IApplicationBuilder<T> builder, Action<TService> configurationAction)
+      where T : class
+   {
+      if (builder is not IServiceConfigurationHandler configurationHandler)
+         throw new InvalidOperationException("The builder does not support service configuration");
+
+      configurationHandler.ConfigureService(configurationAction);
+      return builder;
+   }
+
+   /// <summary>Configures the <see cref="IServiceProvider"/> after it was created by the dependency injection framework.</summary>
+   /// <typeparam name="T">The type of the application arguments</typeparam>
+   /// <param name="builder">The builder that is creating the application.</param>
+   /// <param name="configurationAction">The service to configure.</param>
+   /// <returns>A reference to this instance for more fluent configuration.</returns>
+   /// <exception cref="System.InvalidOperationException">The builder does not support service configuration</exception>
+   public static IApplicationBuilder<T> ConfigureService<T>(this IApplicationBuilder<T> builder, Action<IServiceProvider> configurationAction)
       where T : class
    {
       if (builder is not IServiceConfigurationHandler configurationHandler)
