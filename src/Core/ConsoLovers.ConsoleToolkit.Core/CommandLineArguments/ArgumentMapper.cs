@@ -118,7 +118,11 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       private void ValidateProperty(T arguments, PropertyInfo propertyInfo)
       {
-         foreach (var attribute in propertyInfo.GetCustomAttributes<ArgumentValidatorAttribute>(true))
+         var propertiesToValidate = propertyInfo.GetCustomAttributes<ArgumentValidatorAttribute>(true).ToArray();
+         if (!propertiesToValidate.Any())
+            return;
+
+         foreach (var attribute in propertiesToValidate)
          {
             var instance = serviceProvider.GetService(attribute.Type);
             if (instance != null)

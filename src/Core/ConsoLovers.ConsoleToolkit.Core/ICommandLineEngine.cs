@@ -51,18 +51,14 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       /// <summary>Prints the help to the <see cref="Console"/>.</summary>
       /// <typeparam name="T">Type of the argument class to print the help for</typeparam>
-      /// <param name="resourceManager">The <see cref="ILocalizationService"/> that will be used for localization.</param>
       /// <param name="consoleWidth">Width of the console.</param>
       /// <returns>A <see cref="StringBuilder"/> containing the formatted help text.</returns>
-      // TODO Remove ILocalizationService from signature
-      StringBuilder FormatHelp<T>(ILocalizationService resourceManager, int consoleWidth);
+      StringBuilder FormatHelp<T>( int consoleWidth);
 
       /// <summary>Gets the help information for the class of the given type.</summary>
       /// <typeparam name="T">The argument class for creating the help for</typeparam>
-      /// <param name="resourceManager">The <see cref="ILocalizationService"/> that will be used for localization</param>
       /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ArgumentHelp"/></returns>
-      // TODO Remove ILocalizationService from signature
-      IEnumerable<ArgumentHelp> GetHelp<T>(ILocalizationService resourceManager);
+      IEnumerable<ArgumentHelp> GetHelp<T>();
 
       /// <summary>Maps the specified arguments to a class of the given type.</summary>
       /// <typeparam name="T">The type of the class to map the argument to.</typeparam>
@@ -89,21 +85,15 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       /// <summary>Prints the help to the <see cref="Console"/>.</summary>
       /// <typeparam name="T">Type of the argument class to print the help for </typeparam>
-      /// <param name="localizationService">The <see cref="ILocalizationService"/> that will be used for localization.</param>
-      // TODO Remove ILocalizationService from signature
-      void PrintHelp<T>(ILocalizationService localizationService);
+      void PrintHelp<T>();
 
       /// <summary>Prints the help to the <see cref="Console"/>.</summary>
       /// <param name="argumentType">Type of the argument class to print the help for</param>
-      /// <param name="localizationService">The <see cref="ILocalizationService"/> that will be used for localization.</param>
-      // TODO Remove ILocalizationService from signature
-      void PrintHelp(Type argumentType, ILocalizationService localizationService);
+      void PrintHelp(Type argumentType);
 
       /// <summary>Prints the help for the given <see cref="propertyInfo"/> to the <see cref="Console"/>.</summary>
       /// <param name="propertyInfo">The <see cref="PropertyInfo"/> to print the help for</param>
-      /// <param name="localizationService">The <see cref="ILocalizationService"/> that will be used for localization.</param>
-      // TODO Remove ILocalizationService from signature
-      void PrintHelp(PropertyInfo propertyInfo, ILocalizationService localizationService);
+      void PrintHelp(PropertyInfo propertyInfo);
 
       #endregion
    }

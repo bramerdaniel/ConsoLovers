@@ -20,7 +20,6 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       private readonly ICommandLineEngine engine;
 
-      private readonly ILocalizationService localizationService;
 
       #endregion
 
@@ -29,15 +28,12 @@ namespace ConsoLovers.ConsoleToolkit.Core
       /// <summary>Initializes a new instance of the <see cref="HelpCommand"/> class.</summary>
       /// <param name="engine">The <see cref="ICommandLineEngine"/> that should be used.</param>
       /// <param name="console">The console that should be used by the command.</param>
-      /// <param name="localizationService">The <see cref="ILocalizationService"/> that is used for translating resources.</param>
       /// <param name="argumentReflector"></param>
       /// <exception cref="ArgumentNullException">engine</exception>
       [InjectionConstructor]
-      public HelpCommand([NotNull] ICommandLineEngine engine, [NotNull] ILocalizationService localizationService,
-         [NotNull] IConsole console, [NotNull] IArgumentReflector argumentReflector)
+      public HelpCommand([NotNull] ICommandLineEngine engine, [NotNull] IConsole console, [NotNull] IArgumentReflector argumentReflector)
       {
          this.engine = engine ?? throw new ArgumentNullException(nameof(engine));
-         this.localizationService = localizationService ?? throw new ArgumentNullException(nameof(localizationService));
          Console = console ?? throw new ArgumentNullException(nameof(console));
          ArgumentReflector = argumentReflector ?? throw new ArgumentNullException(nameof(argumentReflector));
       }
@@ -71,11 +67,11 @@ namespace ConsoLovers.ConsoleToolkit.Core
       {
          if (parameterInfo.ParameterType.IsPrimitive)
          {
-            engine.PrintHelp(parameterInfo.PropertyInfo, localizationService);
+            engine.PrintHelp(parameterInfo.PropertyInfo);
          }
          else
          {
-            engine.PrintHelp(parameterInfo.ParameterType, localizationService);
+            engine.PrintHelp(parameterInfo.ParameterType);
          }
       }
 
@@ -103,7 +99,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
                }
                else
                {
-                  engine.PrintHelp(parameterInfo.PropertyInfo, localizationService);
+                  engine.PrintHelp(parameterInfo.PropertyInfo);
                }
 
                return;
@@ -112,11 +108,11 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
          if (commandInfo.ArgumentType != null)
          {
-            engine.PrintHelp(commandInfo.ArgumentType, localizationService);
+            engine.PrintHelp(commandInfo.ArgumentType);
          }
          else
          {
-            engine.PrintHelp(commandInfo.PropertyInfo.PropertyType, localizationService);
+            engine.PrintHelp(commandInfo.PropertyInfo.PropertyType);
          }
       }
 
@@ -124,7 +120,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       {
          if (helpRequest == null || helpRequest.Length <= 0)
          {
-            engine.PrintHelp(Arguments.ArgumentInfos.ArgumentType, localizationService);
+            engine.PrintHelp(Arguments.ArgumentInfos.ArgumentType);
             return;
          }
 

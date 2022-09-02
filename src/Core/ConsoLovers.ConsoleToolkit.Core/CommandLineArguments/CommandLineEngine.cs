@@ -28,6 +28,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
          [NotNull] IArgumentReflector argumentReflector)
       {
          ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+         LocalizationService = ServiceProvider.GetRequiredService<ILocalizationService>();
          ArgumentParser = argumentParser ?? throw new ArgumentNullException(nameof(argumentParser));
          ArgumentReflector = argumentReflector ?? throw new ArgumentNullException(nameof(argumentReflector));
       }
@@ -51,13 +52,12 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       /// <summary>Prints the help to the <see cref="Console"/>.</summary>
       /// <typeparam name="T">Type of the argument class to print the help for</typeparam>
-      /// <param name="localizationService">The <see cref="ILocalizationService"/> that will be used for localization.</param>
       /// <param name="consoleWidth">Width of the console.</param>
       /// <returns>A <see cref="StringBuilder"/> containing the formatted help text.</returns>
-      public StringBuilder FormatHelp<T>(ILocalizationService localizationService, int consoleWidth)
+      public StringBuilder FormatHelp<T>(int consoleWidth)
       {
          var stringBuilder = new StringBuilder();
-         var argumentHelps = GetHelp<T>(localizationService).ToList();
+         var argumentHelps = GetHelp<T>().ToList();
          int longestNameWidth = argumentHelps.Select(a => a.PropertyName.Length).Max() + 2;
          int longestAliasWidth = argumentHelps.Select(a => a.AliasString.Length).Max() + 4;
 
@@ -85,11 +85,10 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       /// <summary>Gets the help information for the class of the given type.</summary>
       /// <typeparam name="T">The argument class for creating the help for</typeparam>
-      /// <param name="localizationService">The <see cref="ILocalizationService"/> that will be used for localization</param>
       /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ArgumentHelp"/></returns>
-      public IEnumerable<ArgumentHelp> GetHelp<T>(ILocalizationService localizationService)
+      public IEnumerable<ArgumentHelp> GetHelp<T>()
       {
-         return GetHelpForProperties(typeof(T), localizationService);
+         return GetHelpForProperties(typeof(T), LocalizationService);
       }
 
       /// <summary>Maps the specified arguments to given object of the given type.</summary>
@@ -160,27 +159,24 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       /// <summary>Prints the help to the <see cref="Console"/>.</summary>
       /// <typeparam name="T">Type of the argument class to print the help for </typeparam>
-      /// <param name="localizationService">The <see cref="ILocalizationService"/> that will be used for localization.</param>
-      public void PrintHelp<T>(ILocalizationService localizationService)
+      public void PrintHelp<T>()
       {
-         PrintHelp(typeof(T), localizationService);
+         PrintHelp(typeof(T));
       }
 
       /// <summary>Prints the help to the <see cref="Console"/>.</summary>
       /// <param name="argumentType">Type of the argument class to print the help for</param>
-      /// <param name="localizationService">The <see cref="ILocalizationService"/> that will be used for localization.</param>
-      public void PrintHelp([NotNull] Type argumentType, ILocalizationService localizationService)
+      public void PrintHelp([NotNull] Type argumentType)
       {
-         var helpTextProvider = GetHelpTextProvider(argumentType, localizationService);
+         var helpTextProvider = GetHelpTextProvider(argumentType, LocalizationService);
          helpTextProvider.PrintTypeHelp(argumentType);
       }
 
       /// <summary>Prints the help for the given <see cref="!:propertyInfo"/> to the <see cref="T:System.Console"/>.</summary>
       /// <param name="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> to print the help for</param>
-      /// <param name="localizationService">The <see cref="ILocalizationService"/> that will be used for localization.</param>
-      public void PrintHelp(PropertyInfo propertyInfo, ILocalizationService localizationService)
+      public void PrintHelp(PropertyInfo propertyInfo)
       {
-         var helpTextProvider = GetHelpTextProvider(propertyInfo, localizationService);
+         var helpTextProvider = GetHelpTextProvider(propertyInfo, LocalizationService);
          helpTextProvider.PrintPropertyHelp(propertyInfo);
       }
 
@@ -201,6 +197,8 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
 
       /// <summary>Gets the service provider.</summary>
       internal IServiceProvider ServiceProvider { get; }
+
+      private ILocalizationService LocalizationService { get; set; }
 
       #endregion
 

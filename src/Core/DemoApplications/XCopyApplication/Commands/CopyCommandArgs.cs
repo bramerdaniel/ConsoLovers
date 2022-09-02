@@ -17,11 +17,13 @@ namespace XCopyApplication.Commands
       [Argument("DestinationFile", "d", Required = true)]
       [HelpText("The path to the destination the file should be copied to.", nameof(Properties.Resources.DestinationFileHelpText), Priority = 100)]
       [DetailedHelpText("The path to the destination file.\r\n  This must include the file name and may not point to a folder only.")]
+      [NotNullOrWhitespace]
       public string DestinationFile { get; set; }
 
       [Argument("SourceFile", "s", Required = true)]
       [HelpText("The path to the file that should be copied", nameof(Properties.Resources.SourceFileFileHelpText), Priority = 10)]
       [ArgumentValidator(typeof(PathIsRootedValidator))]
+      [NotNullOrWhitespace]
       public string SourceFile { get; set; }
 
       [Option("OverwriteExisting" ,"o")]

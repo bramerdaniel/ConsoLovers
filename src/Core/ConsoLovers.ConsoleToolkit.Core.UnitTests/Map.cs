@@ -30,6 +30,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests
       public void EnsureOnlyPropertiesWithAttributesGetMapped()
       {
          var target = Setup.CommandLineEngine()
+            .WithDefaults()
             .AddTransient<UglyArgs>()
             .Done();
 

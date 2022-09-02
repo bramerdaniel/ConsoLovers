@@ -32,7 +32,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups
          if (console == null)
             console = new Mock<IConsole>().Object;
 
-         return new HelpCommand(commandLineEngine, localizationService ?? new Mock<ILocalizationService>().Object, console, new ArgumentReflector());
+         return new HelpCommand(commandLineEngine, console, new ArgumentReflector());
       }
 
       public HelpCommandSetup WithEngineMock(out Mock<ICommandLineEngine> engineMock)
