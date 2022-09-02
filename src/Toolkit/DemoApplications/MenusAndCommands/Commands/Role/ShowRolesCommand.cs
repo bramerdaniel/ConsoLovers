@@ -16,7 +16,7 @@ using ConsoLovers.ConsoleToolkit;
 using ConsoLovers.ConsoleToolkit.Core;
 using MenusAndCommands.Model;
 
-public class ShowRolesCommand : IAsyncCommand<ShowRolesCommand.ShowRolesArgs>, IAsyncMenuCommand, IArgumentInitializer
+public class ShowRolesCommand : IAsyncCommand<ShowRolesCommand.ShowRolesArgs>, IAsyncMenuCommand, IMenuArgumentInitializer
 {
    private readonly IUserManager userManager;
 

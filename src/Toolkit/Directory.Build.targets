@@ -6,7 +6,7 @@
 		<PackageReference Include="MSTest.TestAdapter" Version="2.2.7" />
 		<PackageReference Include="MSTest.TestFramework" Version="2.2.7" />
 		<PackageReference Include="coverlet.collector" Version="3.1.0" />-->
-		<PackageReference Update="ConsoLovers.ConsoleToolkit.Core" Version="5.0.0-rc14"  />
+		<PackageReference Update="ConsoLovers.ConsoleToolkit.Core" Version="5.0.0-rc15"  />
 		<PackageReference Update="Castle.Core" Version="4.2.1" />
 		<PackageReference Update="FluentAssertions" Version="5.2.0" />
 		<PackageReference Update="Moq" Version="4.8.2" />

@@ -18,7 +18,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       /// <summary>Before the command is executed, the arguments are requested from the user</summary>
       WhileExecution,
 
-      /// <summary>The command must implement the <see cref="IArgumentInitializer"/> interface and perform a custom initialization</summary>
+      /// <summary>The command must implement the <see cref="IMenuArgumentInitializer"/> interface and perform a custom initialization</summary>
       Custom,
 
       /// <summary>The arguments are not initialized at all</summary>

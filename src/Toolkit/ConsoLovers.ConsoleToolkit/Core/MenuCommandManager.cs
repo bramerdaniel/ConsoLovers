@@ -132,19 +132,6 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
             var value = context.InitializeArgument(node);
             menuItem.Text = ComputeDisplayName(argumentNode, value);
-
-            //try
-            //{
-            //   var value = new InputBox<string>($"{node.DisplayName}: ").ReadLine();
-
-            //   var argumentInstance = ArgumentManager.GetOrCreate(argumentNode.Parent.ArgumentType);
-            //   argumentNode.PropertyInfo.SetValue(argumentInstance, value, null);
-            //   menuItem.Text = $"{node.DisplayName}={value}";
-            //}
-            //catch (InputCanceledException)
-            //{
-            //   // The user did not want to specify a value
-            //}
          }
 
          void ToggleParameter(ConsoleMenuItem menuItem, IArgumentNode argument)
@@ -178,8 +165,6 @@ namespace ConsoLovers.ConsoleToolkit.Core
       private ConsoleMenu CreateConsoleMenu<T>()
       {
          var menu = new ConsoleMenu(ConsoleMenuOptions);
-         
-
          foreach (var itemNode in CreateNodes<T>())
          {
             var menuItem = CreateMenuItem(itemNode);
@@ -187,7 +172,17 @@ namespace ConsoLovers.ConsoleToolkit.Core
                menu.Add(menuItem);
          }
 
+         InitializeMenu(menu);
          return menu;
+      }
+
+      private void InitializeMenu(ConsoleMenu menu)
+      {
+         var initializer = serviceProvider.GetService<IMenuInitializer>();
+         if (initializer == null)
+            return;
+
+         initializer.Initialize(new MenuInitializationContext(menu, serviceProvider));
       }
 
       internal IEnumerable<IMenuNode> CreateNodes<T>()
@@ -279,14 +274,14 @@ namespace ConsoLovers.ConsoleToolkit.Core
          if (node.InitializationMode == ArgumentInitializationModes.Custom)
          {
             var command = executionContext.Command;
-            if (command is IArgumentInitializer initializer)
+            if (command is IMenuArgumentInitializer initializer)
             {
                initializer.InitializeArguments(executionContext);
                return;
             }
 
             var message = new StringBuilder();
-            message.AppendLine($"The command {command?.GetType().Name} does not implement the {nameof(IArgumentInitializer)} interface.");
+            message.AppendLine($"The command {command?.GetType().Name} does not implement the {nameof(IMenuArgumentInitializer)} interface.");
             message.AppendLine($"Either implement the interface in the command, or change the {nameof(MenuCommandAttribute.ArgumentInitialization)} of the command to e.g. {nameof(ArgumentInitializationModes.None)}.");
             throw new InvalidOperationException(message.ToString());
          }

@@ -8,9 +8,9 @@ namespace ConsoLovers.ConsoleToolkit.UnitTests;
 
 using ConsoLovers.ConsoleToolkit.Core;
 
-public class InitializerCommand<T> : ICommand<T>, IMenuCommand, IArgumentInitializer
+public class InitializerCommand<T> : ICommand<T>, IMenuCommand, IMenuArgumentInitializer
 {
-   #region IArgumentInitializer Members
+   #region IMenuArgumentInitializer Members
 
    public void InitializeArguments(IArgumentInitializationContext context)
    {

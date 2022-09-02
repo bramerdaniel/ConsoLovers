@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 using ConsoLovers.ConsoleToolkit.Core;
 
-internal class ShowPermissionCommand : IAsyncCommand<ShowPermissionCommand.ShowPermissionArgs>, IAsyncMenuCommand, IArgumentInitializer
+internal class ShowPermissionCommand : IAsyncCommand<ShowPermissionCommand.ShowPermissionArgs>, IAsyncMenuCommand, IMenuArgumentInitializer
 {
    private readonly IConsole console;
 
@@ -39,7 +39,7 @@ internal class ShowPermissionCommand : IAsyncCommand<ShowPermissionCommand.ShowP
 
    public void InitializeArguments(IArgumentInitializationContext context)
    {
-      console.WriteLine($"The argument count is initialized by a custom {nameof(IArgumentInitializer)}", ConsoleColor.DarkYellow);
+      console.WriteLine($"The argument count is initialized by a custom {nameof(IMenuArgumentInitializer)}", ConsoleColor.DarkYellow);
 
       context.InitializeArgument(nameof(ShowPermissionArgs.Count));
    }

@@ -14,6 +14,8 @@ namespace MenusAndCommands
    using ConsoLovers.ConsoleToolkit.Contracts;
    using ConsoLovers.ConsoleToolkit.Core;
    using ConsoLovers.ConsoleToolkit.Menu;
+
+   using MenusAndCommands.Commands;
    using MenusAndCommands.Model;
    using Microsoft.Extensions.DependencyInjection;
 
@@ -27,6 +29,7 @@ namespace MenusAndCommands
             .AddService(s => s.AddSingleton<IUserManager, UserManager>())
             .ConfigureCommandLineParser(o => o.CaseSensitive = true)
             .UseExceptionHandler(typeof(AllExceptionsHandler))
+            .AddSingleton(typeof(IMenuInitializer), typeof(SharedArgsInitializer))
             .UseMenuWithoutArguments(options =>
             {
                options.MenuOptions.Header = new MenusAndCommands();

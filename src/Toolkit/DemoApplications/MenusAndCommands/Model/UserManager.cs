@@ -44,7 +44,7 @@ internal class UserManager : IUserManager
 
    public void AddRole(string roleName, string userName, string password)
    {
-      if (roleName == null)
+      if (string.IsNullOrWhiteSpace(roleName))
          throw new ArgumentNullException(nameof(roleName));
 
       var user = Authenticate(userName, password);
