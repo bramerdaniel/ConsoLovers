@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ApplicationBuilderExtensions.cs" company="ConsoLovers">
+// <copyright file="AppicationBuilderExtensions.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -14,6 +14,8 @@ using System.Threading.Tasks;
 using ConsoLovers.ConsoleToolkit.Core.Builders;
 using ConsoLovers.ConsoleToolkit.Core.Middleware;
 using ConsoLovers.ConsoleToolkit.Core.Services;
+
+using JetBrains.Annotations;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -148,19 +150,19 @@ public static class ApplicationBuilderExtensions
       return builder;
    }
 
-   public static IConsoleApplication<T> Run<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder)
+   public static IConsoleApplication<T> Run<T>([NotNull] this IApplicationBuilder<T> builder)
       where T : class
    {
       return builder.Run(Environment.CommandLine);
    }
 
-   public static IConsoleApplication<T> Run<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder, Action<T> applicationLogic)
+   public static IConsoleApplication<T> Run<T>([NotNull] this IApplicationBuilder<T> builder, Action<T> applicationLogic)
       where T : class
    {
       return builder.Run(applicationLogic, Environment.CommandLine);
    }
 
-   public static IConsoleApplication<T> Run<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder, Action<T> applicationLogic,
+   public static IConsoleApplication<T> Run<T>([NotNull] this IApplicationBuilder<T> builder, Action<T> applicationLogic,
       string args)
       where T : class
    {
@@ -173,8 +175,8 @@ public static class ApplicationBuilderExtensions
       return builder.Run(args);
    }
 
-   public static IConsoleApplication<T> Run<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder,
-      [JetBrains.Annotations.NotNull] string[] args)
+   public static IConsoleApplication<T> Run<T>([NotNull] this IApplicationBuilder<T> builder,
+      [NotNull] string[] args)
       where T : class
    {
       if (builder == null)
@@ -188,7 +190,7 @@ public static class ApplicationBuilderExtensions
          .GetResult();
    }
 
-   public static IConsoleApplication<T> Run<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder, string args)
+   public static IConsoleApplication<T> Run<T>([NotNull] this IApplicationBuilder<T> builder, string args)
       where T : class
    {
       if (builder == null)
@@ -199,7 +201,7 @@ public static class ApplicationBuilderExtensions
          .GetResult();
    }
 
-   public static Task<IConsoleApplication<T>> RunAsync<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder,
+   public static Task<IConsoleApplication<T>> RunAsync<T>([NotNull] this IApplicationBuilder<T> builder,
       CancellationToken cancellationToken)
       where T : class
    {
@@ -209,7 +211,7 @@ public static class ApplicationBuilderExtensions
       return builder.RunAsync(Environment.CommandLine, cancellationToken);
    }
 
-   public static Task<IConsoleApplication<T>> RunAsync<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder, string args,
+   public static Task<IConsoleApplication<T>> RunAsync<T>([NotNull] this IApplicationBuilder<T> builder, string args,
       CancellationToken cancellationToken)
       where T : class
    {
@@ -219,7 +221,7 @@ public static class ApplicationBuilderExtensions
       return builder.Build().RunAsync(args, cancellationToken);
    }
 
-   public static Task<IConsoleApplication<T>> RunAsync<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder, string[] args,
+   public static Task<IConsoleApplication<T>> RunAsync<T>([NotNull] this IApplicationBuilder<T> builder, string[] args,
       CancellationToken cancellationToken)
       where T : class
    {
@@ -229,13 +231,13 @@ public static class ApplicationBuilderExtensions
       return builder.Build().RunAsync(args, cancellationToken);
    }
 
-   public static Task<IConsoleApplication<T>> RunAsync<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder)
+   public static Task<IConsoleApplication<T>> RunAsync<T>([NotNull] this IApplicationBuilder<T> builder)
       where T : class
    {
       return builder.RunAsync(CancellationToken.None);
    }
 
-   public static IApplicationBuilder<T> ShowHelpWithoutArguments<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder)
+   public static IApplicationBuilder<T> ShowHelpWithoutArguments<T>([NotNull] this IApplicationBuilder<T> builder)
       where T : class
    {
       if (builder == null)
@@ -244,8 +246,8 @@ public static class ApplicationBuilderExtensions
       return builder.AddService(x => x.AddTransient<IApplicationLogic, ShowHelpLogic>());
    }
 
-   public static IApplicationBuilder<T> UseApplicationLogic<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder,
-      [JetBrains.Annotations.NotNull] IApplicationLogic applicationLogic)
+   public static IApplicationBuilder<T> UseApplicationLogic<T>([NotNull] this IApplicationBuilder<T> builder,
+      [NotNull] IApplicationLogic applicationLogic)
       where T : class
    {
       if (builder == null)
@@ -256,8 +258,8 @@ public static class ApplicationBuilderExtensions
       return builder.AddService(x => x.AddSingleton(applicationLogic));
    }
 
-   public static IApplicationBuilder<T> UseApplicationLogic<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder,
-      [JetBrains.Annotations.NotNull] IApplicationLogic<T> applicationLogic)
+   public static IApplicationBuilder<T> UseApplicationLogic<T>([NotNull] this IApplicationBuilder<T> builder,
+      [NotNull] IApplicationLogic<T> applicationLogic)
       where T : class
    {
       if (builder == null)
@@ -268,8 +270,8 @@ public static class ApplicationBuilderExtensions
       return builder.AddService(x => x.AddSingleton(applicationLogic));
    }
 
-   public static IApplicationBuilder<T> UseApplicationLogic<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder,
-      [JetBrains.Annotations.NotNull] Func<T, CancellationToken, Task> applicationLogic)
+   public static IApplicationBuilder<T> UseApplicationLogic<T>([NotNull] this IApplicationBuilder<T> builder,
+      [NotNull] Func<T, CancellationToken, Task> applicationLogic)
       where T : class
    {
       if (builder == null)
@@ -280,15 +282,36 @@ public static class ApplicationBuilderExtensions
       return builder.AddService(x => x.AddSingleton<IApplicationLogic>(new DelegateLogic<T>(applicationLogic)));
    }
 
-   public static IApplicationBuilder<T> UseApplicationLogic<T, TLogic>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder)
+   public static IApplicationBuilder<T> UseApplicationLogic<T, TLogic>([NotNull] this IApplicationBuilder<T> builder)
       where T : class
-      where TLogic : class, IApplicationLogic
+      where TLogic : class, IApplicationLogic<T>
 
    {
       if (builder == null)
          throw new ArgumentNullException(nameof(builder));
 
-      return builder.AddService(x => x.AddTransient<IApplicationLogic, TLogic>());
+      return builder.AddService(x => x.AddTransient<IApplicationLogic<T>, TLogic>());
+   }
+
+   /// <summary>Makes the application use the application logic of the specified type.</summary>
+   /// <typeparam name="T">The type of the application logic</typeparam>
+   /// <param name="builder">The builder.</param>
+   /// <param name="applicationLogicType">Type of the application logic.</param>
+   /// <returns>A reference to this instance for more fluent configuration.</returns>
+   /// <exception cref="System.ArgumentNullException">builder</exception>
+   public static IApplicationBuilder<T> UseApplicationLogic<T>([NotNull] this IApplicationBuilder<T> builder, [NotNull] Type applicationLogicType)
+      where T : class
+   {
+      if (builder == null)
+         throw new ArgumentNullException(nameof(builder));
+      if (applicationLogicType == null)
+         throw new ArgumentNullException(nameof(applicationLogicType));
+
+      var serviceType = typeof(IApplicationLogic<T>);
+      if (serviceType.IsAssignableFrom(applicationLogicType))
+         return builder.AddService(x => x.AddTransient(serviceType, applicationLogicType));
+
+      return builder.AddService(x => x.AddTransient(typeof(IApplicationLogic), applicationLogicType));
    }
 
    #endregion
