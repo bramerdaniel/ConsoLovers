@@ -1,10 +1,6 @@
 ﻿namespace Playground;
 
-using System.Security.Cryptography.X509Certificates;
-
 using ConsoLovers.ConsoleToolkit.Core;
-
-using Microsoft.Extensions.DependencyInjection;
 
 public static class Program
 {
