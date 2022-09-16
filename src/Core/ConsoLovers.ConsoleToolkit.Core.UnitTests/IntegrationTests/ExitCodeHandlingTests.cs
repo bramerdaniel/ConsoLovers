@@ -32,11 +32,11 @@ public class ExitCodeHandlingTests
       var customHandlerMock = new Mock<IExitCodeHandler>();
       customHandlerMock.Setup(x => x.HandleError(It.IsAny<IExecutionResult>(), It.IsAny<Exception>()))
          .Callback<IExecutionResult, Exception>((r, e) => r.ExitCode = int.Parse(e.Message));
-         
+
       var application = ConsoleApplication.WithArguments<Args>()
          .UseExitCodeHandler(customHandlerMock.Object)
-         .RunTest(_ => throw new InvalidOperationException("1234"), out _);
-      
+         .RunTest(_ => throw new InvalidOperationException("1234"), "number=1", out _);
+
       application.Result.ExitCode.Should().Be(1234);
    }
 
@@ -46,17 +46,35 @@ public class ExitCodeHandlingTests
       var application = ConsoleApplication.WithArguments<Args>()
          .Run("Number=NoInteger");
 
+      application.Result.ExitCode.Should().Be(-6);
+   }
+
+   [TestMethod]
+   public void EnsureDefaultExitCodeIsMinusOneForMissingRequiredArguments()
+   {
+      var application = ConsoleApplication.WithArguments<Args>()
+         .Run("");
+
       application.Result.ExitCode.Should().Be(-1);
+   }
+
+   [TestMethod]
+   public void EnsureCorrectExitCodeForInvalidValidatorType()
+   {
+      var application = ConsoleApplication.WithArguments<Args>()
+         .Run("Name=Value Number=1");
+
+      application.Result.ExitCode.Should().Be(-5);
    }
 
    [TestMethod]
    public void EnsureDefaultExitCodeIsOneForOtherErrors()
    {
       var application = ConsoleApplication.WithArguments<Args>()
-         .RunTest(_ => throw new InvalidOperationException("1234"), out var serviceProvider);
+         .RunTest(_ => throw new InvalidOperationException("1234"), "number=1", out var serviceProvider);
 
       var exitCodeHandler = serviceProvider.GetService<IExitCodeHandler>();
-      exitCodeHandler.Should().BeOfType<ExitCodeHandler>();
+      exitCodeHandler.Should().BeOfType<DefaultExitCodeHandler>();
 
       application.Result.ExitCode.Should().Be(1);
    }
@@ -75,7 +93,7 @@ public class ExitCodeHandlingTests
    {
       var application = ConsoleApplication.WithArguments<Args>()
          .UseExitCodeHandler(typeof(CustomExitCodeHandler))
-         .RunTest(_ => throw new InvalidOperationException("Failed"), out var serviceProvider);
+         .RunTest(_ => throw new InvalidOperationException("Failed"), "number=1", out var serviceProvider);
 
       var customHandler = (CustomExitCodeHandler)serviceProvider.GetRequiredService<IExitCodeHandler>();
       customHandler.Should().NotBeNull();
@@ -88,7 +106,7 @@ public class ExitCodeHandlingTests
    {
       var application = ConsoleApplication.WithArguments<Args>()
          .UseExitCodeHandler(typeof(CustomExitCodeHandler))
-         .RunTest(_ =>{ } , out var serviceProvider);
+         .RunTest(_ => { }, "number=1", out var serviceProvider);
 
       var customHandler = (CustomExitCodeHandler)serviceProvider.GetRequiredService<IExitCodeHandler>();
       customHandler.Should().NotBeNull();
@@ -100,9 +118,13 @@ public class ExitCodeHandlingTests
 
    internal class Args
    {
-      [Argument("number")]
+      [Argument("number", Required = true)]
       [UsedImplicitly]
       public int Number { get; set; }
+
+      [Argument("name")]
+      [ArgumentValidator(typeof(Args))]
+      public string Name { get; set; }
    }
 
    internal class CustomExitCodeHandler : IExitCodeHandler

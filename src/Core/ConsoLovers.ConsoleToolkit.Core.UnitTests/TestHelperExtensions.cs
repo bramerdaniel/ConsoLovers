@@ -43,7 +43,7 @@ public static class TestHelperExtensions
          serviceProvider = null;
       }
       
-      return builder.Run(applicationLogic);
+      return builder.Run(applicationLogic, args);
    }
 
 
