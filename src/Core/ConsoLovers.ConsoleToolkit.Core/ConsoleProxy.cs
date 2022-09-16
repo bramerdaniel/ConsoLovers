@@ -40,21 +40,18 @@ namespace ConsoLovers.ConsoleToolkit.Core
       public ConsoleColor ForegroundColor
       {
          get => Console.ForegroundColor;
-
          set => Console.ForegroundColor = value;
       }
 
       public int WindowWidth
       {
          get => Console.WindowWidth;
-
          set => Console.WindowWidth = value;
       }
 
       public int WindowHeight
       {
          get => Console.WindowHeight;
-
          set => Console.WindowHeight = value;
       }
 

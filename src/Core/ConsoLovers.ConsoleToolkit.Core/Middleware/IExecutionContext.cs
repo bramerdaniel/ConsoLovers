@@ -20,5 +20,8 @@ public interface IExecutionContext<T>
    /// <summary>Gets or sets the parsed arguments (normally set by the parser middleware).</summary>
    ICommandLineArguments ParsedArguments { get; set; }
 
+   /// <summary>Gets the result of the execution.</summary>
+   IExecutionResult Result { get; }
+
    #endregion
 }

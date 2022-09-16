@@ -10,6 +10,10 @@ public enum MiddlewareLocation
 {
    AtTheStart = 100,
 
+   BeforeExceptionHandling = KnownLocations.ExceptionHandlingMiddleware - 100,
+   
+   AfterExceptionHandling = KnownLocations.ExceptionHandlingMiddleware + 100,
+
    BeforeParser = KnownLocations.ParserMiddleware - 100,
 
    AfterParser = KnownLocations.ParserMiddleware + 100,
@@ -30,12 +34,12 @@ static class KnownLocations
    #region Constants and Fields
 
    internal const int ExceptionHandlingMiddleware = 1000;
-
-   internal const int ExecutionMiddleware = 4000;
+   
+   internal const int ParserMiddleware = 2000;
 
    internal const int MapperMiddleware = 3000;
 
-   internal const int ParserMiddleware = 2000;
-
+   internal const int ExecutionMiddleware = 4000;
+   
    #endregion
 }

@@ -53,8 +53,8 @@ internal class ConsoleApplication<T> : IConsoleApplication<T>
 
    public ConsoleApplication([NotNull] IExecutionPipeline<T> executionPipeline)
    {
-      // Arguments = arguments;
       this.executionPipeline = executionPipeline ?? throw new ArgumentNullException(nameof(executionPipeline));
+      Result = new ExecutionResult();
    }
 
    #endregion
@@ -64,15 +64,18 @@ internal class ConsoleApplication<T> : IConsoleApplication<T>
    /// <summary>Gets the arguments.</summary>
    public T Arguments => context?.ApplicationArguments;
 
+   /// <summary>Gets the result of the execution.</summary>
+   public IExecutionResult Result { get; }
+
    public async Task<IConsoleApplication<T>> RunAsync(string args, CancellationToken cancellationToken)
    {
-      await ExecutePipelineAnsyc(args, cancellationToken);
+      await ExecutePipelineAsync(args, cancellationToken);
       return this;
    }
 
    public async Task<IConsoleApplication<T>> RunAsync(string[] args, CancellationToken cancellationToken)
    {
-      await ExecutePipelineAnsyc(args, cancellationToken);
+      await ExecutePipelineAsync(args, cancellationToken);
       return this;
    }
 
@@ -80,13 +83,18 @@ internal class ConsoleApplication<T> : IConsoleApplication<T>
 
    #region Methods
 
-   private async Task ExecutePipelineAnsyc([NotNull] object args, CancellationToken cancellationToken)
+   private async Task ExecuteInternalAsync(object args, CancellationToken cancellationToken)
+   {
+      context = new ExecutionContext<T>(args, Result);
+      await executionPipeline.ExecuteAsync(context, cancellationToken);
+   }
+
+   private Task ExecutePipelineAsync([NotNull] object args, CancellationToken cancellationToken)
    {
       if (args == null)
          throw new ArgumentNullException(nameof(args));
 
-      context = new ExecutionContext<T>(args);
-      await executionPipeline.ExecuteAsync(context, cancellationToken);
+      return ExecuteInternalAsync(args, cancellationToken);
    }
 
    #endregion

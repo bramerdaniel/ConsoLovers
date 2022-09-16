@@ -19,6 +19,9 @@ public interface IConsoleApplication<T>
    /// <summary>Gets the arguments of the application.</summary>
    T Arguments { get; }
 
+   /// <summary>Gets the result of the execution.</summary>
+   IExecutionResult Result { get; }
+
    #endregion
 
    #region Public Methods and Operators

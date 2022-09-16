@@ -10,6 +10,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
+using JetBrains.Annotations;
+
 public class ExceptionHandlingMiddleware<T> : Middleware<T>
    where T : class
 {
@@ -17,13 +19,16 @@ public class ExceptionHandlingMiddleware<T> : Middleware<T>
 
    private readonly IExceptionHandler exceptionHandler;
 
+   private readonly IExitCodeHandler exitCodeHandler;
+
    #endregion
 
    #region Constructors and Destructors
 
-   public ExceptionHandlingMiddleware(IExceptionHandler exceptionHandler)
+   public ExceptionHandlingMiddleware([CanBeNull] IExceptionHandler exceptionHandler, [CanBeNull] IExitCodeHandler exitCodeHandler)
    {
       this.exceptionHandler = exceptionHandler;
+      this.exitCodeHandler = exitCodeHandler;
    }
 
    #endregion
@@ -41,14 +46,27 @@ public class ExceptionHandlingMiddleware<T> : Middleware<T>
       try
       {
          await Next(context, cancellationToken);
+         HandleExitCode(context);
       }
       catch (Exception e)
       {
+         HandleExitCode(context, e);
+
          if (exceptionHandler?.Handle(e) ?? false)
             return;
 
          throw;
       }
+   }
+
+   private void HandleExitCode(IExecutionContext<T> context)
+   {
+      exitCodeHandler?.HandleSuccess(context.Result);
+   }
+
+   private void HandleExitCode(IExecutionContext<T> context, Exception e)
+   {
+      exitCodeHandler?.HandleError(context.Result, e);
    }
 
    #endregion

@@ -87,7 +87,7 @@ public class SortMiddlewareTests
 
    private static void Execute(ExecutionPipeline<PipelineArgs> target)
    {
-      var context = new ExecutionContext<PipelineArgs>(string.Empty);
+      var context = new ExecutionContext<PipelineArgs>(string.Empty, new ExecutionResult());
 
       target.ExecuteAsync(context, CancellationToken.None)
          .GetAwaiter().GetResult();
