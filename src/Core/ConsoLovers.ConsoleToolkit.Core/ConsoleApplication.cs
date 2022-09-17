@@ -51,10 +51,10 @@ internal class ConsoleApplication<T> : IConsoleApplication<T>
 
    #region Constructors and Destructors
 
-   public ConsoleApplication([NotNull] IExecutionPipeline<T> executionPipeline)
+   public ConsoleApplication([NotNull] IExecutionPipeline<T> executionPipeline, IExecutionResult result)
    {
       this.executionPipeline = executionPipeline ?? throw new ArgumentNullException(nameof(executionPipeline));
-      Result = new ExecutionResult();
+      Result = result;
    }
 
    #endregion

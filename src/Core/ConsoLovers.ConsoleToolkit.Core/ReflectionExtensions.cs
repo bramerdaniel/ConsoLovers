@@ -122,6 +122,7 @@ public static class ReflectionExtensions
       EnsureSingleton<ICommandLineArgumentParser, CommandLineArgumentParser>(serviceCollection);
       EnsureSingleton<ICommandLineEngine, CommandLineEngine>(serviceCollection);
       EnsureSingleton<IExecutionEngine, ExecutionEngine>(serviceCollection);
+      EnsureSingleton<IExecutionResult, ExecutionResult>(serviceCollection);
       EnsureSingleton<IExceptionHandler, ExceptionHandler>(serviceCollection);
       EnsureSingleton<IExitCodeHandler, DefaultExitCodeHandler>(serviceCollection);
       EnsureSingleton<ILocalizationService, DefaultLocalizationService>(serviceCollection);

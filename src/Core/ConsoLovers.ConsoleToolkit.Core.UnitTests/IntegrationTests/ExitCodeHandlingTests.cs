@@ -114,6 +114,18 @@ public class ExitCodeHandlingTests
       customHandler.Mock.Verify(x => x.HandleSuccess(application.Result), Times.Once);
    }
 
+   [TestMethod]
+   public void EnsureExecutionResultCanBeReplaced()
+   {
+      var resultMock = new Mock<IExecutionResult>();
+
+      var application = ConsoleApplication.WithArguments<Args>()
+         .AddSingleton(typeof(IExecutionResult), resultMock.Object)
+         .Run("number=1");
+
+      application.Result.Should().BeSameAs(resultMock.Object);
+   }
+
    #endregion
 
    internal class Args
