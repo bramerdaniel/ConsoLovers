@@ -19,8 +19,6 @@ using ConsoLovers.ConsoleToolkit.Core.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-using ParameterInfo = ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.ParameterInfo;
-
 public static class ReflectionExtensions
 {
    #region Public Methods and Operators
@@ -96,7 +94,7 @@ public static class ReflectionExtensions
    {
       if (serviceCollection == null)
          throw new ArgumentNullException(nameof(serviceCollection));
-
+      
       if (argumentType != null)
       {
          var addedTypes = new HashSet<Type>();
@@ -182,7 +180,6 @@ public static class ReflectionExtensions
       var argumentInfo = argumentReflector.GetTypeInfo(argumentType);
 
       AddCommandTypes(serviceCollection, argumentInfo, addedTypes);
-      AddValidatorTypes(serviceCollection, argumentInfo, addedTypes);
 
       return serviceCollection;
    }
@@ -198,22 +195,6 @@ public static class ReflectionExtensions
 
             if (commandInfo.ArgumentType != null)
                serviceCollection.AddArgumentTypesInternal(commandInfo.ArgumentType, addedTypes);
-         }
-      }
-   }
-
-   private static void AddValidatorTypes(IServiceCollection serviceCollection, ArgumentClassInfo argumentInfo, HashSet<Type> registeredTypes)
-   {
-      foreach (ParameterInfo property in argumentInfo.Properties)
-      {
-         if (property is ArgumentInfo argument)
-         {
-            var validatorAttribute = argument.ValidatorAttribute;
-            if (validatorAttribute != null && !registeredTypes.Contains(validatorAttribute.Type))
-            {
-               serviceCollection.AddTransient(validatorAttribute.Type);
-               registeredTypes.Add(validatorAttribute.Type);
-            }
          }
       }
    }

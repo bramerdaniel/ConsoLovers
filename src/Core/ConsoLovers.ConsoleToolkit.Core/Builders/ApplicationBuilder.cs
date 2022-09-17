@@ -30,18 +30,18 @@ internal class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigura
 
    private IServiceProvider serviceProvider;
 
-   private readonly List<Action<IServiceCollection>> removeActions = new List<Action<IServiceCollection>>();
+   private readonly List<Action<IServiceCollection>> removeActions = new();
 
    #endregion
 
    #region IApplicationBuilder<T> Members
 
-   public IApplicationBuilder<T> RemoveService([NotNull] Action<IServiceCollection> removeAction)
+   public IApplicationBuilder<T> RemoveService([NotNull] Action<IServiceCollection> serviceSetup)
    {
-      if (removeAction == null)
-         throw new ArgumentNullException(nameof(removeAction));
+      if (serviceSetup == null)
+         throw new ArgumentNullException(nameof(serviceSetup));
 
-      removeActions.Add(removeAction);
+      removeActions.Add(serviceSetup);
       return this;
    }
 
@@ -108,10 +108,7 @@ internal class ApplicationBuilder<T> : IApplicationBuilder<T>, IServiceConfigura
 
    #region Properties
 
-   protected IServiceCollection ServiceCollection
-   {
-      get => serviceCollection ??= new ServiceCollection();
-   }
+   protected IServiceCollection ServiceCollection => serviceCollection ??= new ServiceCollection();
 
    #endregion
 

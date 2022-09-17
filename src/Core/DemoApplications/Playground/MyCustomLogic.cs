@@ -12,7 +12,6 @@ public class MyCustomLogic : IApplicationLogic
 {
    public Task ExecuteAsync<T>(T arguments, CancellationToken cancellationToken)
    {
-      throw new InvalidOperationException();
       return Task.CompletedTask;
    }
 }

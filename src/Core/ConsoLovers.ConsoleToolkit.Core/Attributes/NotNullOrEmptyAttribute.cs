@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="NotNullOrWhitespaceAttribute.cs" company="ConsoLovers">
+// <copyright file="NotNullOrEmptyAttribute.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -8,12 +8,12 @@ namespace ConsoLovers.ConsoleToolkit.Core;
 
 using ConsoLovers.ConsoleToolkit.Core.Exceptions;
 
-public class NotNullOrWhitespaceAttribute : ArgumentValidatorAttribute, IArgumentValidator<string>
+public class NotNullOrEmptyAttribute : ArgumentValidatorAttribute, IArgumentValidator<string>
 {
    #region Constructors and Destructors
 
-   public NotNullOrWhitespaceAttribute()
-      : base(typeof(NotNullOrWhitespaceAttribute))
+   public NotNullOrEmptyAttribute()
+      : base(typeof(NotNullOrEmptyAttribute))
    {
    }
 
@@ -24,10 +24,9 @@ public class NotNullOrWhitespaceAttribute : ArgumentValidatorAttribute, IArgumen
    public void Validate(IValidationContext context, string value)
    {
       if (value == null)
-         throw new CommandLineArgumentValidationException($"Argument {context.ArgumentName} must not be null.");
-
-      if (string.IsNullOrWhiteSpace(value))
-         throw new CommandLineArgumentValidationException($"Argument {context.ArgumentName} must not be empty.");
+         throw new CommandLineArgumentValidationException($"Argument {context.ArgumentName} must not be null");
+      if (string.IsNullOrEmpty(value))
+         throw new CommandLineArgumentValidationException($"Argument {context.ArgumentName} must not be empty");
    }
 
    #endregion

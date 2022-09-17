@@ -67,7 +67,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
                if (wasSet)
                {
                   sharedArguments.Add(mapping.CommandLineArgument);
-                  ValidateProperty(instance, mapping.PropertyInfo);
+                  ValidateProperty(instance, mapping);
 
                   MappedCommandLineArgument?.Invoke(this, new MapperEventArgs(mapping.CommandLineArgument, mapping.PropertyInfo, instance));
                }
@@ -78,7 +78,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
                if (wasSet)
                {
                   sharedArguments.Add(mapping.CommandLineArgument);
-                  ValidateProperty(instance, mapping.PropertyInfo);
+                  ValidateProperty(instance, mapping);
 
                   MappedCommandLineArgument?.Invoke(this, new MapperEventArgs(mapping.CommandLineArgument, mapping.PropertyInfo, instance));
                }
@@ -97,14 +97,20 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
       {
          foreach (var methodInfo in attribute.Type.GetMethods().Where(x => x.Name == "Validate"))
          {
-            var firstParameter = methodInfo.GetParameters().FirstOrDefault();
-            if (firstParameter != null && firstParameter.ParameterType == type)
-            {
+            var parameters = methodInfo.GetParameters();
+            if (HasCorrectSignature(parameters, type))
                return methodInfo;
-            }
          }
 
          return null;
+      }
+
+      private static bool HasCorrectSignature(System.Reflection.ParameterInfo[] parameters, Type type)
+      {
+         if (parameters.Length != 2)
+            return false;
+
+         return parameters[0].ParameterType == typeof(IValidationContext) && parameters[1].ParameterType == type;
       }
 
       private void CheckForUnmappedArguments(ICommandLineArguments arguments, HashSet<CommandLineArgument> sharedArguments, T instance)
@@ -116,38 +122,25 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
             UnmappedCommandLineArgument?.Invoke(this, new MapperEventArgs(argument, null, instance));
       }
 
-      private void ValidateProperty(T arguments, PropertyInfo propertyInfo)
+      private void ValidateProperty(T arguments, MappingInfo mappingInfo)
       {
+         var propertyInfo = mappingInfo.PropertyInfo;
+
          var propertiesToValidate = propertyInfo.GetCustomAttributes<ArgumentValidatorAttribute>(true).ToArray();
          if (!propertiesToValidate.Any())
             return;
 
          foreach (var attribute in propertiesToValidate)
          {
-            var instance = serviceProvider.GetService(attribute.Type);
+            var instance = GetOrCreateValidator(attribute);
             if (instance != null)
             {
-               var validatorName = typeof(IArgumentValidator<T>).Name;
-               var validatorInterfaces = attribute.Type.GetInterfaces().Where(i => i.Name == validatorName).ToArray();
-               if (validatorInterfaces.Length == 0)
-                  throw new InvalidValidatorUsageException($"The validator {attribute.Type} does not implement the {validatorName} interface.")
-                  {
-                     Reason = ErrorReason.NoValidatorImplementation
-                  };
-
-               Type type = validatorInterfaces.FirstOrDefault(i => i.GenericTypeArguments.FirstOrDefault() == propertyInfo.PropertyType);
-               if (type == null)
-                  throw new InvalidValidatorUsageException(
-                     $"The specified validator '{attribute.Type.FullName}' does not support the validation of the type '{propertyInfo.PropertyType}'.")
-                  {
-                     Reason = ErrorReason.InvalidValidatorImplementation
-                  };
-
-               MethodInfo validationMethod = GetValidationMethod(attribute, propertyInfo.PropertyType);
+               var validationMethod = GetValidationMethod(attribute, propertyInfo);
 
                try
                {
-                  validationMethod.Invoke(instance, new[] { propertyInfo.GetValue(arguments, null) });
+                  var context = new ValidationContext(mappingInfo.Name, propertyInfo, mappingInfo.CommandLineAttribute);
+                  validationMethod.Invoke(instance, new[] { context , propertyInfo.GetValue(arguments, null) });
                }
                catch (TargetInvocationException e)
                {
@@ -155,6 +148,44 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments
                }
             }
          }
+      }
+
+      private static MethodInfo GetValidationMethod(ArgumentValidatorAttribute attribute, PropertyInfo propertyInfo)
+      {
+         var validatorName = typeof(IArgumentValidator<T>).Name;
+
+         var validatorInterfaces = attribute.Type.GetInterfaces().Where(i => i.Name == validatorName).ToArray();
+         if (validatorInterfaces.Length == 0)
+            throw new InvalidValidatorUsageException($"The validator {attribute.Type} does not implement the {validatorName} interface.")
+            {
+               Reason = ErrorReason.NoValidatorImplementation
+            };
+
+         Type type = validatorInterfaces.FirstOrDefault(i => i.GenericTypeArguments.FirstOrDefault() == propertyInfo.PropertyType);
+         if (type == null)
+            throw new InvalidValidatorUsageException(
+               $"The specified validator '{attribute.Type.FullName}' does not support the validation of the type '{propertyInfo.PropertyType}'.")
+            {
+               Reason = ErrorReason.InvalidValidatorImplementation
+            };
+
+         var validationMethod = GetValidationMethod(attribute, propertyInfo.PropertyType);
+         if(validationMethod == null)
+            throw new InvalidValidatorUsageException(
+               $"The specified validator '{attribute.Type.FullName}' does not define a validate method with the matching signature.")
+            {
+               Reason = ErrorReason.Unknown
+            };
+
+         return validationMethod;
+      }
+
+      private object GetOrCreateValidator(ArgumentValidatorAttribute attribute)
+      {
+         if (attribute.Type == attribute.GetType())
+            return attribute;
+
+         return ActivatorUtilities.CreateInstance(serviceProvider, attribute.Type);
       }
 
       #endregion

@@ -56,7 +56,7 @@ public class DefaultApplicationLogic : IApplicationLogic
       console.WriteLine("      .ShowHelpWithoutArguments()", ConsoleColor.Cyan);
       console.WriteLine("      .Run();", ConsoleColor.Cyan);
       console.WriteLine();
-      console.WriteLine("4. Use the ConsoLoversToolkit");
+      console.WriteLine("4. Use the ConsoLovers.Toolkit extension");
       console.WriteLine("   ConsoleApplication.WithArguments<Args>()", ConsoleColor.Cyan);
       console.WriteLine("      .UseMenuWithoutArguments()", ConsoleColor.Cyan);
       console.WriteLine("      .Run();", ConsoleColor.Cyan);
