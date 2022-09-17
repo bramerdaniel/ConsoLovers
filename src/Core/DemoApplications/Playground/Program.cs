@@ -7,7 +7,7 @@ public static class Program
    public static void Main()
    {
       var executable = ConsoleApplication.WithArguments<ApplicationArgs>()
-         .UseApplicationLogic(typeof(NormalLogic))
+         //.UseApplicationLogic(typeof(MyCustomLogic))
          .Run();
          //.UseServiceProviderFactory(new DefaultServiceProviderFactory())
          // .UseApplicationLogic(Execute) 
