@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AllowedRange.cs" company="ConsoLovers">
+// <copyright file="ValidateNotNullOrWhitespaceAttribute.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -8,39 +8,18 @@ namespace ConsoLovers.ConsoleToolkit.Core;
 
 using ConsoLovers.ConsoleToolkit.Core.Exceptions;
 
-public class AllowedRange : ArgumentValidatorAttribute, IArgumentValidator<int>
+public class ValidateNotNullOrWhitespaceAttribute : ArgumentValidatorAttribute, IArgumentValidator<string>
 {
    #region Constructors and Destructors
 
-   public AllowedRange()
-      : base(typeof(AllowedRange))
+   public ValidateNotNullOrWhitespaceAttribute()
+      : base(typeof(ValidateNotNullOrWhitespaceAttribute))
    {
    }
 
    #endregion
 
-   #region IArgumentValidator<int> Members
-
-   public void Validate(IValidationContext context, int value)
-   {
-      if (value < Min)
-         throw new CommandLineArgumentValidationException($"Argument {context.ArgumentName} must be have at least a value of {Min}.");
-
-      if (value > Max)
-         throw new CommandLineArgumentValidationException($"Argument {context.ArgumentName} has a defined maximum of {Max}.");
-   }
-
-   #endregion
-
-   #region Public Properties
-
-   public int Max { get; set; } = int.MaxValue;
-
-   public int Min { get; set; } = int.MinValue;
-
-   #endregion
-
-   #region Public Methods and Operators
+   #region IArgumentValidator<string> Members
 
    public void Validate(IValidationContext context, string value)
    {

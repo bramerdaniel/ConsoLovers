@@ -6,6 +6,8 @@
 
 namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.IntegrationTests;
 
+using System;
+
 using FluentAssertions;
 
 using JetBrains.Annotations;
@@ -26,6 +28,15 @@ public class ValidatorLogicTests
          .Run("Name=Hello");
 
       Args.Mock.Verify(x => x.Validate(It.IsAny<IValidationContext>(), It.IsAny<string>()), Times.Once);
+   }
+
+   [TestMethod]
+   public void EnsureValidatorsWorkWithDependencyInjection()
+   {
+      var application = ConsoleApplication.WithArguments<Args>()
+         .Run("Range=1234");
+
+      application.Result["Value"].Should().Be(1234);
    }
 
    [TestMethod]
@@ -74,8 +85,12 @@ public class ValidatorLogicTests
       public string Name { get; set; }
 
       [Argument("number")]
-      [AllowedRange(Min = 5, Max = 10)]
+      [ValidateIsInRange(Min = 5, Max = 10)]
       public int Number { get; set; }
+
+      [Argument("range")]
+      [ArgumentValidator(typeof(CustomValidator))]
+      public int Range { get; set; }
 
       #endregion
 
@@ -84,5 +99,20 @@ public class ValidatorLogicTests
       internal static Mock<IArgumentValidator<string>> Mock { get; } = new();
 
       #endregion
+   }
+
+   internal class CustomValidator : IArgumentValidator<int>
+   {
+      private readonly IExecutionResult result;
+
+      public CustomValidator([NotNull] IExecutionResult result)
+      {
+         this.result = result ?? throw new ArgumentNullException(nameof(result));
+      }
+
+      public void Validate(IValidationContext context, int value)
+      {
+         result.Add("Value", value);
+      }
    }
 }
