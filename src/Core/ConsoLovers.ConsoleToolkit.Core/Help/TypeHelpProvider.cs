@@ -31,10 +31,6 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       #region Constructors and Destructors
 
-      public TypeHelpProvider()
-      {
-      }
-
       [InjectionConstructor]
       public TypeHelpProvider([NotNull] IServiceProvider serviceProvider, [NotNull] ILocalizationService localizationService)
       {
@@ -103,7 +99,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
                   PropertyName = GetArgumentName(propertyInfo, commandLineAttribute),
                   Aliases = GetAliases(commandLineAttribute),
                   UnlocalizedDescription = helpText.Description,
-                  LocalizedDescription = helpText.ResourceKey != null ? localizationService.GetLocalizedSting(helpText.ResourceKey) : null,
+                  LocalizedDescription = helpText.ResourceKey != null ? localizationService?.GetLocalizedSting(helpText.ResourceKey) : null,
                   Priority = helpText.Priority,
                   Required = IsRequired(commandLineAttribute)
                };

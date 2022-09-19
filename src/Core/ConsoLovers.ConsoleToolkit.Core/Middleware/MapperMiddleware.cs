@@ -66,10 +66,10 @@ internal class MapperMiddleware<T> : Middleware<T>
       if (cancellationToken.IsCancellationRequested)
          return Task.FromCanceled(cancellationToken);
 
-      // Normally the mapper should create the arguments,
-      // but if another middleware would decide to create and initialize them e.g. with default values,
+      // Normally the mapper middleware should create the arguments here,
+      // but if another middleware would decide to create and initialize them e.g. with default values before the mapping middleware,
       // we are ok with that here
-      context.ApplicationArguments ??= serviceProvider.GetRequiredService<T>();
+      context.ApplicationArguments ??= GetOrCreateArguments();
 
       cancelExecution = false;
       Map(context.ParsedArguments, context.ApplicationArguments);
@@ -82,6 +82,47 @@ internal class MapperMiddleware<T> : Middleware<T>
          return Task.FromCanceled(cancellationToken);
 
       return Next(context, cancellationToken);
+   }
+
+   #endregion
+
+   #region Methods
+
+   private static bool MapWithHandler(IExecutionContext<T> context, IMappingHandler<T>[] mappingHandlers, CommandLineArgument argument)
+   {
+      return mappingHandlers.Any(mappingHandler => mappingHandler.TryMap(context.ApplicationArguments, argument));
+   }
+
+   private IArgumentMapper<T> CreateMapper()
+   {
+      var info = argumentReflector.GetTypeInfo<T>();
+      return info.HasCommands
+         ? ActivatorUtilities.GetServiceOrCreateInstance<CommandMapper<T>>(serviceProvider)
+         : ActivatorUtilities.GetServiceOrCreateInstance<ArgumentMapper<T>>(serviceProvider);
+   }
+
+   private IMappingHandler<T>[] GetMappingHandlers()
+   {
+      var handlers = serviceProvider.GetService<IEnumerable<IMappingHandler<T>>>();
+      return handlers == null ? Array.Empty<IMappingHandler<T>>() : handlers.ToArray();
+   }
+
+   private T GetOrCreateArguments()
+   {
+      return serviceProvider.GetService<T>() ?? ActivatorUtilities.CreateInstance<T>(serviceProvider);
+   }
+
+   private bool HandledByCustomHandler(MapperEventArgs args)
+   {
+      // TODO create the correct infrastructure to forward these arguments directly to the current command
+
+      if (args.Instance is IArgumentSink handler)
+      {
+         if (handler.TakeArgument(args.Argument))
+            return true;
+      }
+
+      return false;
    }
 
    private void InvokeMappingHandlers(IExecutionContext<T> context)
@@ -102,45 +143,6 @@ internal class MapperMiddleware<T> : Middleware<T>
          if (MapWithHandler(context, mappingHandlers, argument))
             context.ParsedArguments.Remove(argument);
       }
-   }
-
-   private static bool MapWithHandler(IExecutionContext<T> context, IMappingHandler<T>[] mappingHandlers, CommandLineArgument argument)
-   {
-      return mappingHandlers.Any(mappingHandler => mappingHandler.TryMap(context.ApplicationArguments, argument));
-   }
-
-   private IMappingHandler<T>[] GetMappingHandlers()
-   {
-      var handlers = serviceProvider.GetService<IEnumerable<IMappingHandler<T>>>();
-      return handlers == null ? Array.Empty<IMappingHandler<T>>() : handlers.ToArray();
-   }
-
-   #endregion
-
-   #region Methods
-
-   private IArgumentMapper<T> CreateMapper()
-   {
-      var info = argumentReflector.GetTypeInfo<T>();
-      return info.HasCommands
-         ? ActivatorUtilities.GetServiceOrCreateInstance<CommandMapper<T>>(serviceProvider)
-         : ActivatorUtilities.GetServiceOrCreateInstance<ArgumentMapper<T>>(serviceProvider);
-   }
-
-   private bool HandledByCustomHandler(MapperEventArgs args)
-   {
-      // TODO create the correct infrastructure to forward these arguments directly to the current command
-
-
-      if (args.Instance is IArgumentSink handler)
-      {
-         if (handler.TakeArgument(args.Argument))
-            return true;
-      }
-
-
-      return false;
-
    }
 
    private void Map(ICommandLineArguments args, T instance)
