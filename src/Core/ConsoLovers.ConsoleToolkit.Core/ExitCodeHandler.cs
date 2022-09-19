@@ -4,14 +4,14 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Core.Services;
+namespace ConsoLovers.ConsoleToolkit.Core;
 
 using System;
 
 using ConsoLovers.ConsoleToolkit.Core.Exceptions;
 
 /// <summary>Base class for <see cref="IExitCodeHandler"/> implementations</summary>
-/// <seealso cref="ConsoLovers.ConsoleToolkit.Core.IExitCodeHandler"/>
+/// <seealso cref="IExitCodeHandler"/>
 public abstract class ExitCodeHandler : IExitCodeHandler
 {
    #region IExitCodeHandler Members
@@ -22,7 +22,7 @@ public abstract class ExitCodeHandler : IExitCodeHandler
    public virtual void HandleError(IExecutionResult result, Exception exception)
    {
       result.ExitCode = ComputeExitCode(exception);
-      SetEnvironmentExitCode(result, result.ExitCode);
+      SetEnvironmentExitCode(result);
    }
 
    /// <summary>Called when the execution did not throw any exception</summary>
@@ -30,7 +30,7 @@ public abstract class ExitCodeHandler : IExitCodeHandler
    public virtual void HandleSuccess(IExecutionResult result)
    {
       result.ExitCode = 0;
-      SetEnvironmentExitCode(result, result.ExitCode);
+      SetEnvironmentExitCode(result);
    }
 
    #endregion
@@ -41,15 +41,15 @@ public abstract class ExitCodeHandler : IExitCodeHandler
    {
       return exception switch
       {
-         CommandLineArgumentException commandLineArgumentException => HandleCommandLineArgumentExceptions(commandLineArgumentException),
-         _ => HandleOtherExceptions(exception)
+         CommandLineArgumentException commandLineArgumentException => ComputeExitCodeForCommandLineArgumentExceptions(commandLineArgumentException),
+         _ => ComputeExitCodeForOtherExceptions(exception)
       };
    }
 
    /// <summary>Handles all exit codes for <see cref="CommandLineArgumentException"/>s and derived exception classes.</summary>
    /// <param name="exception">The command line argument exception.</param>
-   /// <returns></returns>
-   protected virtual int HandleCommandLineArgumentExceptions(CommandLineArgumentException exception)
+   /// <returns>The exit code for the application</returns>
+   protected virtual int ComputeExitCodeForCommandLineArgumentExceptions(CommandLineArgumentException exception)
    {
       return exception switch
       {
@@ -65,19 +65,15 @@ public abstract class ExitCodeHandler : IExitCodeHandler
 
    /// <summary>Handles all other exceptions than <see cref="CommandLineArgumentException"/>s.</summary>
    /// <param name="exception">The exception.</param>
-   /// <returns></returns>
-   protected virtual int HandleOtherExceptions(Exception exception)
-   {
-      return 1;
-   }
+   /// <returns>The exit code for the application</returns>
+   protected abstract int ComputeExitCodeForOtherExceptions(Exception exception);
 
    /// <summary>Sets the exit code to the <see cref="Environment"/>.ExitCode property if it has a value.</summary>
-   /// <param name="result">The result.</param>
-   /// <param name="exitCode">The exit code.</param>
-   protected virtual void SetEnvironmentExitCode(IExecutionResult result, int? exitCode)
+   /// <param name="result">The result the exit code was set on.</param>
+   protected virtual void SetEnvironmentExitCode(IExecutionResult result)
    {
-      if (exitCode.HasValue)
-         Environment.ExitCode = exitCode.Value;
+      if (result.ExitCode.HasValue)
+         Environment.ExitCode = result.ExitCode.Value;
    }
 
    #endregion
