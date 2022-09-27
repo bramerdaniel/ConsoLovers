@@ -1,4 +1,4 @@
-## The ConsoLovers.ConsoleToolkit
+## The ConsoLovers.ConsoleToolkit ![GitHub](https://img.shields.io/github/license/bramerdaniel/ConsoLovers?style=plastic)
 The ConsoLovers.ConsoleToolkit(.Core) is a collection of several independant tools that can be used to write console applications (better and faster).
 
 Check out he [Wiki](https://github.com/bramerdaniel/ConsoLovers/wiki) for detailed support of the most features.   
