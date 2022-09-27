@@ -5,11 +5,14 @@ Check out he [Wiki](https://github.com/bramerdaniel/ConsoLovers/wiki) for detail
 To get an idea of the newest features and chages, have a look at the [latest changes](LatestChanges.md)
 
 ### Main features are:
+* Commandline parser and execution engine
+* Customizable execution pipeline with many build in features like, exception and exit code handling  
+* Customizable dependency injection
 * A [ConsoleMenu](https://github.com/bramerdaniel/ConsoLovers/wiki/ConsoleMenu) that supports Keyboard and Mouse selection.
   The menu is extremely customizable, supports color themes, index navigation and much more...
 * A CommandLineEngine that offers parsing of command line arguments and mapping them to properties of a class 
 * A [InputBox](https://github.com/bramerdaniel/ConsoLovers/wiki/InputBox) class that can be used for password scenarios.
-* The [ConsoleApplicationManager](https://github.com/bramerdaniel/ConsoLovers/wiki/ConsoleApplicationManager) and the [ConsoleApplication](https://github.com/bramerdaniel/ConsoLovers/wiki/ConsoleApplication). A base class for console applications to get rid of the static context, normal console application is runnin in.
+
 
 ### Usage
 The ConsoleToolkit is also available on nuget 
