@@ -16,6 +16,8 @@ To get an idea of the newest features and chages, have a look at the [latest cha
 
 ### Usage
 The ConsoleToolkit is also available on nuget 
+![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/ConsoLovers.ConsoleToolkit.Core?style=plastic)
+![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/ConsoLovers.ConsoleToolkit?style=plastic)
 
 [![ConsoLovers.Toolkit.Core](https://github.com/bramerdaniel/ConsoLovers/actions/workflows/build-Toolkit.Core.yml/badge.svg)](https://github.com/bramerdaniel/ConsoLovers/actions/workflows/build-Toolkit.Core.yml)
 
