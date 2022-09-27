@@ -14,14 +14,14 @@ To get an idea of the newest features and chages, have a look at the [latest cha
 * A [InputBox](https://github.com/bramerdaniel/ConsoLovers/wiki/InputBox) class that can be used for password scenarios.
 
 
+
+
 ### Usage
-The ConsoleToolkit is also available on nuget 
-![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/ConsoLovers.ConsoleToolkit.Core?style=plastic)
-![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/ConsoLovers.ConsoleToolkit?style=plastic)
 
-[![ConsoLovers.Toolkit.Core](https://github.com/bramerdaniel/ConsoLovers/actions/workflows/build-Toolkit.Core.yml/badge.svg)](https://github.com/bramerdaniel/ConsoLovers/actions/workflows/build-Toolkit.Core.yml)
-
-[![Consolovers.Toolkit](https://github.com/bramerdaniel/ConsoLovers/actions/workflows/build-Toolkit.yml/badge.svg)](https://github.com/bramerdaniel/ConsoLovers/actions/workflows/build-Toolkit.yml)
+Package  | Current version | Build
+-------- | -------- | --------
+ConsoLovers.Toolkit.Core   | ![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/ConsoLovers.ConsoleToolkit.Core?style=plastic) | [![ConsoLovers.Toolkit.Core](https://github.com/bramerdaniel/ConsoLovers/actions/workflows/build-Toolkit.Core.yml/badge.svg)](https://github.com/bramerdaniel/ConsoLovers/actions/workflows/build-Toolkit.Core.yml)
+ConsoLovers.Toolkit   | ![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/ConsoLovers.ConsoleToolkit?style=plastic) | [![Consolovers.Toolkit](https://github.com/bramerdaniel/ConsoLovers/actions/workflows/build-Toolkit.yml/badge.svg)](https://github.com/bramerdaniel/ConsoLovers/actions/workflows/build-Toolkit.yml)
 
 If a third party reference is not possible in your project, feel free to download the sources 
 and just pick the classes you need (this should work in the most cases without any problems). 
