@@ -8,7 +8,7 @@ using ConsoLovers.ConsoleToolkit.Core;
 
 using Playground.Commands.Delete;
 
-public class ApplicationArgs 
+public class ApplicationArgs : TypeHelpProvider
 {
    [Command("create")]
    [HelpText("Root command for nested command")]
@@ -32,4 +32,8 @@ public class ApplicationArgs
    [Command("Fail")]
    public bool Fails{ get; set; } = false;
 
+   public ApplicationArgs(IServiceProvider serviceProvider, ILocalizationService localizationService)
+      : base(serviceProvider, localizationService)
+   {
+   }
 }

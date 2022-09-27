@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Debugger": {
+      "commandName": "Project"
+    },
+    "Profile 1": {
+      "commandName": "Executable",
+      "executablePath": "D:\\_git\\kdm\\_Solutions\\Debug\\net6.0\\kdm.exe",
+      "commandLineArgs": "?"
+    }
+  }
+}

@@ -24,6 +24,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCopyApplication", "..\Core
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InputBoxDemo", "..\Core\DemoApplications\InputBoxDemo\InputBoxDemo.csproj", "{58701FB8-1CFA-408B-9673-7C459EE1CED3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Debugger", "Debugger\Debugger.csproj", "{AAED1E3D-08DF-4274-9CBF-29EB298DEB7F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,6 +60,10 @@ Global
 		{58701FB8-1CFA-408B-9673-7C459EE1CED3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{58701FB8-1CFA-408B-9673-7C459EE1CED3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{58701FB8-1CFA-408B-9673-7C459EE1CED3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AAED1E3D-08DF-4274-9CBF-29EB298DEB7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAED1E3D-08DF-4274-9CBF-29EB298DEB7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAED1E3D-08DF-4274-9CBF-29EB298DEB7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAED1E3D-08DF-4274-9CBF-29EB298DEB7F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
