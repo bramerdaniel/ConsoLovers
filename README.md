@@ -12,8 +12,9 @@ To get an idea of the newest features and chages, have a look at the [latest cha
 * The [ConsoleApplicationManager](https://github.com/bramerdaniel/ConsoLovers/wiki/ConsoleApplicationManager) and the [ConsoleApplication](https://github.com/bramerdaniel/ConsoLovers/wiki/ConsoleApplication). A base class for console applications to get rid of the static context, normal console application is runnin in.
 
 ### Usage
-The ConsoleToolkit is also available on nuget [here](https://www.nuget.org/packages/ConsoLovers.ConsoleToolkit)
-or simply search for 'ConsoleToolkit'.
+The ConsoleToolkit is also available on nuget 
+
+[![ConsoLovers.Toolkit.Core](https://github.com/bramerdaniel/ConsoLovers/actions/workflows/build-Toolkit.Core.yml/badge.svg)](https://github.com/bramerdaniel/ConsoLovers/actions/workflows/build-Toolkit.Core.yml)
 
 If a third party reference is not possible in your project, feel free to download the sources 
 and just pick the classes you need (this should work in the most cases without any problems). 
