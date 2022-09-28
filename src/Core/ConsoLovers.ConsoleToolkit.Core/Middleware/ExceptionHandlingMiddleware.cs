@@ -21,14 +21,17 @@ public class ExceptionHandlingMiddleware<T> : Middleware<T>
 
    private readonly IExitCodeHandler exitCodeHandler;
 
+   private readonly IShutdownNotifier shutdownNotifier;
+
    #endregion
 
    #region Constructors and Destructors
 
-   public ExceptionHandlingMiddleware([CanBeNull] IExceptionHandler exceptionHandler, [CanBeNull] IExitCodeHandler exitCodeHandler)
+   public ExceptionHandlingMiddleware([CanBeNull] IExceptionHandler exceptionHandler, [CanBeNull] IExitCodeHandler exitCodeHandler, [CanBeNull] IShutdownNotifier shutdownNotifier)
    {
       this.exceptionHandler = exceptionHandler;
       this.exitCodeHandler = exitCodeHandler;
+      this.shutdownNotifier = shutdownNotifier;
    }
 
    #endregion
@@ -56,6 +59,10 @@ public class ExceptionHandlingMiddleware<T> : Middleware<T>
             return;
 
          throw;
+      }
+      finally
+      {
+         await shutdownNotifier.NotifyShutdownAsync(context.Result);
       }
    }
 

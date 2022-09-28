@@ -2,25 +2,35 @@
 
 using ConsoLovers.ConsoleToolkit.Core;
 
+using Microsoft.Extensions.DependencyInjection;
+
 public static class Program
 {
    public static void Main()
    {
       var executable = ConsoleApplication.WithArguments<ApplicationArgs>()
-         //.UseApplicationLogic(typeof(MyCustomLogic))
+         .AddService(s => s.AddTransient<IAsyncShutdownHandler, ShutdownHandler>())
          .Run();
-         //.UseServiceProviderFactory(new DefaultServiceProviderFactory())
-         // .UseApplicationLogic(Execute) 
-         //.AddMiddleware(typeof(TryCatchMiddleware))
-         //.AddMiddleware<ApplicationArgs, RepeatMiddleware>()
-         // .Run();
-         //.ConfigureMapping(o =>
-         //{
-         //   o.UnhandledArgumentsBehavior = UnhandledArgumentsBehaviors.UseCustomHandler | UnhandledArgumentsBehaviors.LogToConsole;
-         //})
-         //.AddService(x => x.AddSingleton<IMappingHandler<ApplicationArgs>>(new Handler()))
-         //.Run(t => throw new InvalidOperationException("No command could be was executed"));
-
+ 
       Console.ReadLine();
+   }
+}
+
+public class ShutdownHandler : IAsyncShutdownHandler
+{
+   public ShutdownHandler()
+   {
+      
+   }
+
+   public void NotifyShutdown(IExecutionResult executionResult)
+   {
+      
+
+   }
+
+   public Task NotifyShutdownAsync(IExecutionResult executionResult)
+   {
+      return Task.CompletedTask;
    }
 }

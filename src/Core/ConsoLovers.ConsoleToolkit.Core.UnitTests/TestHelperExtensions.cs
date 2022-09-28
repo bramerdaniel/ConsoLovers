@@ -68,4 +68,17 @@ public static class TestHelperExtensions
 
       return builder.Run();
    }
+   
+   internal static IConsoleApplication<T> RunTest<T>([JetBrains.Annotations.NotNull] this IApplicationBuilder<T> builder,
+      Action<T> applicationLogic)
+      where T : class
+   {
+      builder.UseApplicationLogic((t, _) =>
+      {
+         applicationLogic(t);
+         return Task.CompletedTask;
+      });
+
+      return builder.Run();
+   }
 }

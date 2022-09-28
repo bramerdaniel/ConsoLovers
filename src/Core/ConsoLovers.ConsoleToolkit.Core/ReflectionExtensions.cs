@@ -123,6 +123,7 @@ public static class ReflectionExtensions
       EnsureSingleton<IExecutionResult, ExecutionResult>(serviceCollection);
       EnsureSingleton<IExceptionHandler, ExceptionHandler>(serviceCollection);
       EnsureSingleton<IExitCodeHandler, DefaultExitCodeHandler>(serviceCollection);
+      EnsureSingleton<IShutdownNotifier, ShutdownNotifier>(serviceCollection);
       EnsureSingleton<ILocalizationService, DefaultLocalizationService>(serviceCollection);
       EnsureSingleton<IConsole, ConsoleProxy>(serviceCollection);
       serviceCollection.TryAddSingleton(serviceCollection);

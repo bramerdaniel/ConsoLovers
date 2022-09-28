@@ -23,6 +23,48 @@ public static class ApplicationBuilderExtensions
 {
    #region Public Methods and Operators
 
+   /// <summary>Adds the specified <see cref="IShutdownHandler"/> as singleton to the services.</summary>
+   /// <param name="builder">The <see cref="IApplicationBuilder{T}"/> the <see cref="IShutdownHandler"/> will be added to.</param>
+   /// <param name="shutdownHandler">The shutdown handler.</param>
+   /// <returns>A reference to this instance for more fluent configuration.</returns>
+   /// <exception cref="System.ArgumentNullException">
+   /// builder
+   /// or
+   /// shutdownHandler
+   /// </exception>
+   public static IApplicationBuilder<T> AddShutdownHandler<T>([NotNull] this IApplicationBuilder<T> builder, [NotNull] IShutdownHandler shutdownHandler)
+      where T : class
+   {
+      if (builder == null)
+         throw new ArgumentNullException(nameof(builder));
+      if (shutdownHandler == null)
+         throw new ArgumentNullException(nameof(shutdownHandler));
+
+      builder.AddService(services => services.AddSingleton(shutdownHandler));
+      return builder;
+   }
+
+   /// <summary>Adds the specified <see cref="IAsyncShutdownHandler"/> as singleton to the services.</summary>
+   /// <param name="builder">The <see cref="IApplicationBuilder{T}"/> the <see cref="IAsyncShutdownHandler"/> will be added to.</param>
+   /// <param name="shutdownHandler">The async shutdown handler.</param>
+   /// <returns>A reference to this instance for more fluent configuration.</returns>
+   /// <exception cref="System.ArgumentNullException">
+   /// builder
+   /// or
+   /// shutdownHandler
+   /// </exception>
+   public static IApplicationBuilder<T> AddShutdownHandler<T>([NotNull] this IApplicationBuilder<T> builder, [NotNull] IAsyncShutdownHandler shutdownHandler)
+      where T : class
+   {
+      if (builder == null)
+         throw new ArgumentNullException(nameof(builder));
+      if (shutdownHandler == null)
+         throw new ArgumentNullException(nameof(shutdownHandler));
+
+      builder.AddService(services => services.AddSingleton(shutdownHandler));
+      return builder;
+   }
+
    public static IApplicationBuilder<T> AddResourceManager<T>(this IApplicationBuilder<T> builder, ResourceManager resourceManager)
       where T : class
    {
