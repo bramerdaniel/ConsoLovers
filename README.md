@@ -34,12 +34,9 @@ ConsoLovers.Ipc.Client   | [![NuGet version (ConsoLovers.Ipc.Client)](https://im
 ConsoLovers.Ipc.ProcessMonitoring.Server   | [![NuGet version (ConsoLovers.Ipc.ProcessMonitoring.Server)](https://img.shields.io/nuget/v/ConsoLovers.Ipc.ProcessMonitoring.Server.svg?style=flat)](https://www.nuget.org/packages/ConsoLovers.Ipc.ProcessMonitoring.Server/) | Server package for a process that should be monitored
 ConsoLovers.Ipc.ProcessMonitoring.Client   | [![NuGet version (ConsoLovers.Ipc.ProcessMonitoring.Client)](https://img.shields.io/nuget/v/ConsoLovers.Ipc.ProcessMonitoring.Client.svg?style=flat)](https://www.nuget.org/packages/ConsoLovers.Ipc.ProcessMonitoring.Client/)  | Client package for applications that want to monitor processes hosting the ConsoLovers.Ipc.ProcessMonitoring.Server package services
 
-If a third party reference is not possible in your project, feel free to download the sources 
-and just pick the classes you need (this should work in the most cases without any problems). 
-
 ### Contribution
 Feel free to create a pull request to include new features. 
-For development Visual Studio 2017 is required. (or any tool for compiling C#7)
+For development Visual Studio 2022 is required. (or any tool for compiling C#10)
 
 ### License
 The software is licensed under the [MIT](LICENSE) license.
