@@ -18,6 +18,8 @@ To get an idea of the newest features and chages, have a look at the [latest cha
 
 ### Usage
 
+The toolkit is also available as nuget package. Eee the links below.
+
 Package  | Current version | Build
 -------- | -------- | --------
 ConsoLovers.Toolkit.Core   | ![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/ConsoLovers.ConsoleToolkit.Core?style=plastic) | [![ConsoLovers.Toolkit.Core](https://github.com/bramerdaniel/ConsoLovers/actions/workflows/build-Toolkit.Core.yml/badge.svg)](https://github.com/bramerdaniel/ConsoLovers/actions/workflows/build-Toolkit.Core.yml)
