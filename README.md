@@ -1,5 +1,6 @@
-## The ConsoLovers.ConsoleToolkit ![GitHub](https://img.shields.io/github/license/bramerdaniel/ConsoLovers?style=plastic)
+## The ConsoLovers.ConsoleToolkit ![GitHub](https://img.shields.io/github/license/bramerdaniel/ConsoLovers?style=plastic) ![Nuget](https://img.shields.io/nuget/dt/ConsoLovers.ConsoleToolkit?style=plastic)
 The ConsoLovers.ConsoleToolkit(.Core) is a collection of several independant tools that can be used to write console applications (better and faster).
+
 
 Check out he [Wiki](https://github.com/bramerdaniel/ConsoLovers/wiki) for detailed support of the most features.   
 To get an idea of the newest features and chages, have a look at the [latest changes](LatestChanges.md)
