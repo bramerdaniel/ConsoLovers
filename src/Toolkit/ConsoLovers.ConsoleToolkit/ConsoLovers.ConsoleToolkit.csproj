@@ -4,7 +4,7 @@
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<AssemblyTitle>ConsoLovers.ConsoleToolkit</AssemblyTitle>
 		<PackageId>ConsoLovers.ConsoleToolkit</PackageId>
-		<Version>6.0.0-rc22</Version>
+		<Version>6.0.0</Version>
 		<AssemblyVersion>6.0.0.0</AssemblyVersion>
 		<FileVersion>6.0.0.0</FileVersion>
 		<PackageReleaseNotes>
@@ -22,7 +22,6 @@
 			Most important classes are:
 			- ConsoleMenu
 			- ColoredConsoleMenu
-			- InputBox
 			- ConsoleBuffer
 		</PackageReleaseNotes>
 		<PackageTags>Console Shell Menu ConsoleMenu ConsoleToolkit .Net Password InputBox</PackageTags>
