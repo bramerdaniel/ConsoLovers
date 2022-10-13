@@ -24,5 +24,9 @@ public interface ICommandLineArguments : IList<CommandLineArgument>
 
    bool TryGetValue(string name, out CommandLineArgument argument);
 
+   /// <summary>Clones the list instance by copying all <see cref="CommandLineArgument"/>s to a new list.</summary>
+   /// <returns></returns>
+   ICommandLineArguments Clone();
+
    #endregion
 }

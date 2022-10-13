@@ -74,5 +74,12 @@ public class CommandLineArgumentList : List<CommandLineArgument>, ICommandLineAr
       return argument != null;
    }
 
+   public ICommandLineArguments Clone()
+   {
+      var clone = new CommandLineArgumentList(Comparer);
+      clone.AddRange(this);
+      return clone;
+   }
+
    #endregion
 }
