@@ -254,3 +254,5 @@ paket-files/
 .idea/
 *.sln.iml
 /certificate
+
+/_private
