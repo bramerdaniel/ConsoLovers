@@ -8,6 +8,8 @@ namespace ConsoLovers.ConsoleToolkit.Core
 {
    using System;
 
+   using ConsoLovers.ConsoleToolkit.Core.Input;
+
    using JetBrains.Annotations;
 
    /// <summary>NotSpecified implementation of the <see cref="IMenuExceptionHandler"/></summary>
@@ -18,13 +20,16 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       private readonly IConsole console;
 
+      private readonly ICommandMenuOptions menuBuilderOptions;
+
       #endregion
 
       #region Constructors and Destructors
 
-      public MenuExceptionHandler([NotNull] IConsole console)
+      public MenuExceptionHandler([NotNull] IConsole console, [NotNull] ICommandMenuOptions menuBuilderOptions)
       {
          this.console = console ?? throw new ArgumentNullException(nameof(console));
+         this.menuBuilderOptions = menuBuilderOptions ?? throw new ArgumentNullException(nameof(menuBuilderOptions));
       }
 
       #endregion
@@ -33,8 +38,11 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       public bool Handle(Exception exception)
       {
-         console.WriteLine(exception.Message, ConsoleColor.Red);
+         if (exception is InputCanceledException && menuBuilderOptions.BuilderOptions.ArgumentInitializationCancellation == InitializationCancellationMode.CancelSilent)
+            return true;
 
+         console.WriteLine(exception.Message, ConsoleColor.Red);
+         
          // When an error occurred during the execution of a menu item,
          // the user must be able to read it, that's why we need to wait here
          console.ReadLine();

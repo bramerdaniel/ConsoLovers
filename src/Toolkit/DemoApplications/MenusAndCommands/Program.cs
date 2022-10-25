@@ -43,6 +43,8 @@ namespace MenusAndCommands
                options.MenuOptions.Selector = "  ";// "►";
                options.MenuOptions.IndexMenuItems = true;
                options.MenuOptions.IndentSize = 3;
+
+               options.BuilderOptions.ArgumentInitializationCancellation = InitializationCancellationMode.CancelSilent;
             })
             .RunAsync(CancellationToken.None);
       }

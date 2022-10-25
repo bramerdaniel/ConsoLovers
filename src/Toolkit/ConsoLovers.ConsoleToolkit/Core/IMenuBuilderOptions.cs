@@ -11,5 +11,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       ArgumentInitializationModes ArgumentInitializationMode { get; set; }
 
       MenuBuilderBehaviour MenuBehaviour { get; set; }
+
+      InitializationCancellationMode ArgumentInitializationCancellation { get; set; }
    }
 }

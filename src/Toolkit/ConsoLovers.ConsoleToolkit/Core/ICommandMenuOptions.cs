@@ -16,10 +16,6 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       IMenuBuilderOptions BuilderOptions { get; }
 
-
-
-
-
       #endregion
    }
 }

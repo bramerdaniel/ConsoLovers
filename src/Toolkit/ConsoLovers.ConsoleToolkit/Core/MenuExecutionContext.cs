@@ -83,6 +83,8 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       public IInputReader InputReader { get; internal set; }
 
+      public IMenuBuilderOptions MenuBuilderOptions { get; internal set; }
+
       #endregion
 
       #region Public Methods and Operators
@@ -125,15 +127,15 @@ namespace ConsoLovers.ConsoleToolkit.Core
             GetOrCreateArguments();
 
             initialValue = GetInitialValue(argumentNode);
-            var parameterValue = InputReader.ReadValue(argumentNode, initialValue);//  ReadValueFromConsole(argumentNode, initialValue);
+            var parameterValue = InputReader.ReadValue(argumentNode, initialValue);
             SetValue(argumentNode, parameterValue);
-
+               
             return parameterValue;
          }
          catch (InputCanceledException)
          {
             // The user did not want to specify a value but for required parameters we can not continue !
-            if (argumentNode.Required)
+            if (argumentNode.Required || MenuBuilderOptions.ArgumentInitializationCancellation != InitializationCancellationMode.Continue)
                throw;
 
             return initialValue;

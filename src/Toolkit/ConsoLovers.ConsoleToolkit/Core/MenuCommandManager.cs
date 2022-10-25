@@ -127,6 +127,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
             var context = new MenuExecutionContext(ArgumentManager, node.Parent)
             {
                MenuItem = menuItem,
+               MenuBuilderOptions = commandMenuOptions.BuilderOptions,
                InputReader = serviceProvider.GetRequiredService<IInputReader>()
             };
 
@@ -246,6 +247,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
          {
             Command = serviceProvider.GetService(node.Type) ?? ActivatorUtilities.CreateInstance(serviceProvider, node.Type),
             MenuItem = menuItem,
+            MenuBuilderOptions = commandMenuOptions.BuilderOptions,
             InputReader = serviceProvider.GetRequiredService<IInputReader>()
          };
 

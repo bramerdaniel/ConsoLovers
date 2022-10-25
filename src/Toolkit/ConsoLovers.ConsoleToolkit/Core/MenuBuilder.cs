@@ -139,7 +139,6 @@ namespace ConsoLovers.ConsoleToolkit.Core
             return null;
 
          return itemInfo.MenuArgumentAttribute.InitializationHint;
-
       }
 
       private IEnumerable<IMenuNode> CreateMenuNodes(IEnumerable<NodeInfo> itemInfos, ICommandNode parent)

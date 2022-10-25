@@ -52,9 +52,11 @@ namespace ConsoLovers.ConsoleToolkit.Core
       {
          if (bootstrapper is IServiceConfigurationHandler handler)
          {
+            var consoleMenuOptions = new CommandMenuOptions();
+            bootstrapper.AddService(s => s.AddSingleton<ICommandMenuOptions>(consoleMenuOptions));
+
             handler.ConfigureRequiredService<IMenuCommandManager>(menuManager =>
             {
-               var consoleMenuOptions = new CommandMenuOptions();
                configureOptions(consoleMenuOptions);
                menuManager.UseOptions(consoleMenuOptions);
             });
