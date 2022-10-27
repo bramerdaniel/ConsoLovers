@@ -1,12 +1,20 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="RenderContext.cs" company="ConsoLovers">
+// <copyright file="MeasuredSize.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace ConsoLovers.ConsoleToolkit.Prompts;
 
-public class RenderContext : IRenderContext
+public struct MeasuredSize
 {
-   public int AvailableWidth { get; set; }
+   #region Public Properties
+
+   public int Height { get; set; }
+   
+
+   /// <summary>Gets the minimum width.</summary>
+   public int MinWidth { get; set; }
+
+   #endregion
 }

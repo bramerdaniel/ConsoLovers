@@ -27,8 +27,8 @@ public sealed class RenderingStyle
    /// <param name="background">The background color.</param>
    public RenderingStyle(ConsoleColor? foreground = null, ConsoleColor? background = null)
    {
-      Foreground = foreground ?? Console.ForegroundColor;
-      Background = background ?? Console.ForegroundColor;
+      Foreground = foreground ?? Default.Foreground;
+      Background = background ?? Default.Background;
    }
 
    public static void InitializeDefaultStyle(IConsole console)

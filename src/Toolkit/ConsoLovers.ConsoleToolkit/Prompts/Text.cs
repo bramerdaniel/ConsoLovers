@@ -7,10 +7,16 @@
 namespace ConsoLovers.ConsoleToolkit.Prompts;
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 public class Text : Renderable
 {
    private int? minWidth;
+
+   private string value;
+
+   private string[] lines;
 
    #region Constructors and Destructors
 
@@ -37,34 +43,62 @@ public class Text : Renderable
 
    #region Public Properties
 
-   public string Value { get; set; }
+   public string Value
+   {
+      get => value;
+      set
+      {
+         this.value = value;
+         lines = Split(value);
+      }
+   }
 
-   internal int Length => Value.Length; 
+   private static string[] Split(string value)
+   {
+#if NETFRAMEWORK
+
+      return value.Split(new string[]{ Environment.NewLine }, StringSplitOptions.None);
+#else
+      return value.Split(Environment.NewLine, StringSplitOptions.None);
+#endif
+   }
+
+   internal int Length => Value.Length;
 
    #endregion
 
    #region Public Methods and Operators
 
-   public override Measurement Measure(int maxWidth)
+   public override MeasuredSize Measure(int availableWidth)
    {
-      return new Measurement(MinWidth, Value.Length);
+      return new MeasuredSize
+      {
+         Height = lines.Length,
+         MinWidth = lines.Max(x => x.Length),
+      };
    }
 
-   public override void Render(IRenderContext context)
+   public override IEnumerable<Segment> RenderLine(IRenderContext context, int lineIndex)
    {
-      context.Console.Write(AddPadding(), Style.Foreground, Style.Background);
+      if (lineIndex >= lines.Length)
+         throw new ArgumentOutOfRangeException(nameof(lineIndex), $"Only can render lines between {0} and {lines.Length - 1}");
+
+      var textWithPadding = PadLine(lineIndex, context.AvailableWidth);
+      yield return new Segment(textWithPadding, Style);
    }
 
-   private string AddPadding()
+   private string PadLine(int line, int available)
    {
+      var lineValue = lines[line];
+
       if (Alignment == Alignment.Left)
-         return Value.PadRight(MinWidth);
+         return lineValue.PadRight(available);
       if (Alignment == Alignment.Right)
-         return Value.PadLeft(MinWidth);
+         return lineValue.PadLeft(available);
 
-      var missing = MinWidth - Value.Length;
-      var left = missing / 2 ;
-      return Value.PadLeft(left + Length).PadRight(MinWidth);
+      var missing = available - lineValue.Length;
+      var left = missing / 2;
+      return lineValue.PadLeft(left + Length).PadRight(available);
    }
 
    #endregion

@@ -7,6 +7,7 @@
 namespace ConsoLovers.ConsoleToolkit.Prompts
 {
    using System;
+   using System.Collections.Generic;
 
    using JetBrains.Annotations;
 
@@ -34,9 +35,10 @@ namespace ConsoLovers.ConsoleToolkit.Prompts
 
       #region IRenderable Members
 
-      public abstract Measurement Measure(int maxWidth);
+      public abstract MeasuredSize Measure(int availableWidth);
 
-      public abstract void Render(IRenderContext context);
+      public abstract IEnumerable<Segment> RenderLine(IRenderContext context, int lineIndex);
+      
 
       public RenderingStyle Style
       {
@@ -44,6 +46,7 @@ namespace ConsoLovers.ConsoleToolkit.Prompts
          set => style = value;
       }
 
+      
       #endregion
    }
 }

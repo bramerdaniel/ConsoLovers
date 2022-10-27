@@ -15,28 +15,62 @@ using ConsoLovers.ConsoleToolkit.Prompts;
 
 internal class PromptsLogic : IApplicationLogic<PromptsDemoArgs>
 {
-   private readonly IRenderEngine renderEngine;
+   #region Constants and Fields
+
+   private readonly RenderingStyle blue;
 
    private readonly IConsole console;
+
+   private readonly RenderingStyle red;
+
+   private readonly IRenderEngine renderEngine;
+
+   #endregion
+
+   #region Constructors and Destructors
 
    public PromptsLogic(IRenderEngine renderEngine, IConsole console)
    {
       this.renderEngine = renderEngine ?? throw new ArgumentNullException(nameof(renderEngine));
       this.console = console ?? throw new ArgumentNullException(nameof(console));
+
+      red = new RenderingStyle(ConsoleColor.Red);
+      blue = new RenderingStyle(ConsoleColor.Blue);
    }
+
+   #endregion
+
+   #region IApplicationLogic<PromptsDemoArgs> Members
 
    public Task ExecuteAsync(PromptsDemoArgs arguments, CancellationToken cancellationToken)
    {
-      var line = new Line();
-      line.Add(new Text("Hello ", new RenderingStyle(ConsoleColor.Red, ConsoleColor.Green))
-      {
-         MinWidth = 10, Alignment = Alignment.Right
-      });
-      line.Add(new Text("World "));
+      var text = new Text("Hello World");
+      var panel = new Panel(text) { Padding = new Thickness(3) };
+      renderEngine.Render(panel);
 
-      renderEngine.Render(line);
+      text = new Text("Hello World");
+      panel = new Panel(text) { Alignment = Alignment.Right };
+      renderEngine.Render(panel);
+
+      text = new Text("Hello World");
+      panel = new Panel(text) { Alignment = Alignment.Left };
+      renderEngine.Render(panel);
+
+      text = new Text("Hello World");
+      panel = new Panel(text) { Alignment = Alignment.Center, Padding = new Thickness(3,0,10,0) };
+      renderEngine.Render(panel);
+
+      panel = new Panel(panel) { Alignment = Alignment.Center, Style = red };
+      renderEngine.Render(panel);
+
       console.ReadLine();
       return Task.CompletedTask;
-      
    }
+
+   #endregion
+
+   #region Methods
+
+
+   #endregion
 }
