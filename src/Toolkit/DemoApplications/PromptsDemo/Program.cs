@@ -4,17 +4,12 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace MenusAndCommands
+namespace PromptsDemo
 {
-   using System;
-   using System.Threading;
-   using System.Threading.Tasks;
-
-   using ConsoLovers.ConsoleToolkit;
-   using ConsoLovers.ConsoleToolkit.Contracts;
    using ConsoLovers.ConsoleToolkit.Core;
-   using ConsoLovers.ConsoleToolkit.Menu;
+   using ConsoLovers.ConsoleToolkit.Prompts;
 
+   using Microsoft.Extensions.DependencyInjection;
 
    public static class Program
    {
@@ -22,13 +17,12 @@ namespace MenusAndCommands
 
       private static void Main()
       {
-          ConsoleApplication.WithArguments<PromptsDemoArgs>()
+         ConsoleApplication.WithArguments<PromptsDemoArgs>()
+            .UseApplicationLogic(typeof(PromptsLogic))
+            .AddService(s => s.AddSingleton<IRenderEngine, RenderEngine>())
             .Run();
       }
 
       #endregion
-
    }
-
-
 }
