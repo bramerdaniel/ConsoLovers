@@ -11,6 +11,7 @@ using System.Text;
 
 public class Panel : Renderable, IHaveAlignment
 {
+   // TODO Add header for the panel
    private int lineCount;
 
    private MeasuredSize contentSize;
@@ -31,7 +32,7 @@ public class Panel : Renderable, IHaveAlignment
    public override MeasuredSize Measure(int availableWidth)
    {
       contentSize = Content.Measure(availableWidth - 2);
-      lineCount = contentSize.Height + 2;
+      lineCount = contentSize.Height + 2 + Padding.Bottom + Padding.Top;
 
       var width = Padding.Left + 1 + contentSize.MinWidth + 1 + Padding.Right;
 
@@ -48,11 +49,19 @@ public class Panel : Renderable, IHaveAlignment
    {
       if (lineIndex == 0)
       {
-         yield return CreateBorderSegment(context, "┌", "┐");
+         yield return CreateBorderSegment(context, "┌", "┐", '─');
       }
       else if (lineCount - 1 == lineIndex)
       {
-         yield return CreateBorderSegment(context, "└", "┘");
+         yield return CreateBorderSegment(context, "└", "┘", '─');
+      }
+      else if (lineIndex <= Padding.Top)
+      {
+         yield return CreateBorderSegment(context, "│", "│", ' ');
+      }
+      else if (lineIndex >= 1 + Padding.Top + contentSize.Height)
+      {
+         yield return CreateBorderSegment(context, "│", "│", ' ');
       }
       else
       {
@@ -69,18 +78,18 @@ public class Panel : Renderable, IHaveAlignment
    {
       var availableSize = contentSize.MinWidth;
       var renderContext = new RenderContext { AvailableWidth = availableSize };
-      foreach (var segment in Content.RenderLine(renderContext, lineIndex - 1))
+      foreach (var segment in Content.RenderLine(renderContext, lineIndex - 1 - Padding.Top))
          yield return segment;
    }
 
-   private Segment CreateBorderSegment(IRenderContext context, string left, string right)
+   private Segment CreateBorderSegment(IRenderContext context, string left, string right, char middle)
    {
       if (Alignment == Alignment.Left)
       {
          var width = contentSize.MinWidth + 2 + Padding.Left + Padding.Right;
          var builder = new StringBuilder();
          builder.Append(left);
-         builder.Append(string.Empty.PadRight(width - 2, '─'));
+         builder.Append(string.Empty.PadRight(width - 2, middle));
          builder.Append(right);
          return new Segment(builder.ToString(), Style);
       }
@@ -89,7 +98,7 @@ public class Panel : Renderable, IHaveAlignment
       {
          var builder = new StringBuilder();
          builder.Append(left);
-         builder.Append(string.Empty.PadRight(context.AvailableWidth - 2, '─'));
+         builder.Append(string.Empty.PadRight(context.AvailableWidth - 2, middle));
          builder.Append(right);
          return new Segment(builder.ToString(), Style);
       }
@@ -97,7 +106,7 @@ public class Panel : Renderable, IHaveAlignment
       {
          var builder = new StringBuilder();
          builder.Append(left);
-         builder.Append(string.Empty.PadRight(context.AvailableWidth - 2, '─'));
+         builder.Append(string.Empty.PadRight(context.AvailableWidth - 2, middle));
          builder.Append(right);
          return new Segment(builder.ToString(), Style);
       }

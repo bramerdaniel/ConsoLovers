@@ -44,6 +44,21 @@ internal class PromptsLogic : IApplicationLogic<PromptsDemoArgs>
 
    public Task ExecuteAsync(PromptsDemoArgs arguments, CancellationToken cancellationToken)
    {
+
+      var text = new Text("Hello" + Environment.NewLine + "World");
+      var panel = new Panel(text) { Padding = new Thickness(2) };
+      renderEngine.Render(panel);
+
+      console.ReadLine();
+      return Task.CompletedTask;
+   }
+
+   private void Old()
+   {
+      renderEngine.Render(new Rule("Hello World") { Style = blue, RuleCharacter = '*' });
+      renderEngine.Render(new Rule("Hello World") { Style = red, TextAlignment = Alignment.Right, TextOffset = 20 });
+      renderEngine.Render(new Rule("Hello World") { TextAlignment = Alignment.Center });
+
       var text = new Text("Hello World");
       var panel = new Panel(text) { Padding = new Thickness(3) };
       renderEngine.Render(panel);
@@ -57,14 +72,15 @@ internal class PromptsLogic : IApplicationLogic<PromptsDemoArgs>
       renderEngine.Render(panel);
 
       text = new Text("Hello World");
-      panel = new Panel(text) { Alignment = Alignment.Center, Padding = new Thickness(3,0,10,0) };
+      panel = new Panel(text) { Alignment = Alignment.Center, Padding = new Thickness(3, 0, 10, 0) };
       renderEngine.Render(panel);
 
       panel = new Panel(panel) { Alignment = Alignment.Center, Style = red };
       renderEngine.Render(panel);
 
-      console.ReadLine();
-      return Task.CompletedTask;
+      panel = new Panel(new Rule("Hello World") { MaxWidth = 60, TextAlignment = Alignment.Center });
+      renderEngine.Render(panel);
+      renderEngine.Render(new Rule("Hello World") { MaxWidth = 60, TextAlignment = Alignment.Center });
    }
 
    #endregion

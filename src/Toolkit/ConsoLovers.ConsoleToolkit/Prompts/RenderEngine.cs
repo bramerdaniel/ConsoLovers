@@ -70,7 +70,7 @@ public class RenderEngine : IRenderEngine
          }
       }
 
-      return new RenderContext { AvailableWidth = console.WindowWidth };
+      return new RenderContext { AvailableWidth = measuredSize.MinWidth };
    }
 
    private int WriteSegment(Segment segment, int availableSize)
