@@ -68,4 +68,33 @@ public class TextTests
 
       renderedText.Should().Be("  Value");
    }
+
+   [TestMethod]
+   public void EnsureSingleLineTextIsWrappedCorrectly()
+   {
+      var text = Setup.Text().WithValue("Value Is To Long")
+         .Done();
+
+      var renderedText = Setup.TestRenderer()
+         .WithConsoleWidth(10)
+         .Render(text);
+
+      renderedText.Should().Be(@"Value Is
+To Long");
+   }
+
+   [TestMethod]
+   public void EnsureSingleLineTextIsTrimmedCorrectlyIfItCanNotBeWrapped()
+   {
+      var text = Setup.Text().WithValue("ValueIsToLongAndMustBeWrapped")
+         .Done();
+
+      var renderedText = Setup.TestRenderer()
+         .WithConsoleWidth(10)
+         .Render(text);
+
+      renderedText.Should().Be(@"ValueIsToL
+ongAndMust
+BeWrapped");
+   }
 }

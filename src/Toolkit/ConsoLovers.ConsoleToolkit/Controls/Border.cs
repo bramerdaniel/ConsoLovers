@@ -12,23 +12,43 @@ using System.Text;
 
 public class Border : Renderable, IHaveAlignment
 {
-   // TODO Add header for the panel
-   private int lineCount;
+   #region Constants and Fields
 
    private MeasuredSize contentSize;
 
+   // TODO Add header for the panel
+   private int lineCount;
+
    private MeasuredSize size;
 
+   #endregion
+
+   #region Constructors and Destructors
+
+   /// <summary>Initializes a new instance of the <see cref="Border"/> class.</summary>
+   /// <param name="content">The content.</param>
    public Border(IRenderable content)
    {
       Content = content;
    }
 
-   public IRenderable Content { get; }
+   #endregion
+
+   #region IHaveAlignment Members
 
    public Alignment Alignment { get; set; }
 
+   #endregion
+
+   #region Public Properties
+
+   public IRenderable Content { get; }
+
    public Thickness Padding { get; set; }
+
+   #endregion
+
+   #region Public Methods and Operators
 
    public override MeasuredSize Measure(int availableWidth)
    {
@@ -44,11 +64,7 @@ public class Border : Renderable, IHaveAlignment
 
       var width = Padding.Left + 1 + contentSize.MinWidth + 1 + Padding.Right;
 
-      size = new MeasuredSize
-      {
-         Height = lineCount,
-         MinWidth = width,
-      };
+      size = new MeasuredSize { Height = lineCount, MinWidth = width, };
 
       return size;
    }
@@ -87,13 +103,9 @@ public class Border : Renderable, IHaveAlignment
       }
    }
 
-   private IEnumerable<Segment> RenderContent(IRenderContext context, int lineIndex)
-   {
-      var availableSize = contentSize.MinWidth;
-      var renderContext = new RenderContext { AvailableWidth = availableSize };
-      foreach (var segment in Content.RenderLine(renderContext, lineIndex - 1 - Padding.Top))
-         yield return segment;
-   }
+   #endregion
+
+   #region Methods
 
    private Segment CreateBorderSegment(IRenderContext context, string left, string right, char middle)
    {
@@ -124,7 +136,15 @@ public class Border : Renderable, IHaveAlignment
          return new Segment(this, builder.ToString(), Style);
       }
       // context.Console.Write("├┤┬┴┼");
-
    }
 
+   private IEnumerable<Segment> RenderContent(IRenderContext context, int lineIndex)
+   {
+      var availableSize = contentSize.MinWidth;
+      var renderContext = new RenderContext { AvailableWidth = availableSize };
+      foreach (var segment in Content.RenderLine(renderContext, lineIndex - 1 - Padding.Top))
+         yield return segment;
+   }
+
+   #endregion
 }

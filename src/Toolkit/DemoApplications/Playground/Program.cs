@@ -20,11 +20,12 @@ namespace Playground
 
       private static void Main()
       {
-         var panel = new StackPanel();
-         panel.Add(new Border(new Text($"Hello{Environment.NewLine}Console")));
-         panel.Add(new Text($"{Environment.NewLine}Hello{Environment.NewLine}Console"));
-         panel.Add(new Border(new Text($"Hello{Environment.NewLine}Console")));
-         Console.Render(panel);
+         Console.WindowWidth = 20;
+         Text t = "Hello";
+         //var panel = new StackPanel();
+         //panel.Add(new Border(new Text($"Hello World {Environment.NewLine}from the Console")));
+         //panel.Add(new Border(new Text($"Hello World {Environment.NewLine}from the Console")));
+         Console.Render(new Border((Text)$"Hello World from but the text is so long oh my god the Console"));
 
          //var panel = new StackPanel();
          //panel.Add(new Text("Say"));

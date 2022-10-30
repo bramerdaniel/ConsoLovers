@@ -65,4 +65,33 @@ public class StackPanelTests
       renderedText.Should().Be(value);
    }
 
+   [TestMethod]
+   [Ignore]
+   public void EnsureOverflowIsRenderedCorrectly()
+   {
+      var border = Setup.StackPanel()
+         .WithChild(new Border(new Text("xxx")))
+         .WithChild(new Border(new Text("abc")))
+         .WithChild(new Border(new Text("123")))
+         .Done();
+
+      var renderer = Setup.TestRenderer()
+         .WithConsoleWidth(11)
+         .Done();
+
+      var renderedText = renderer
+         .Render(border);
+
+      var value = @"
+┌───┐┌───┐
+│xxx││abc│
+└───┘└───┘
+┌───┐
+│123│
+└───┘
+".Trim();
+
+      renderedText.Should().Be(value);
+   }
+
 }
