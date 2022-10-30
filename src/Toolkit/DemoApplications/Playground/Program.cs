@@ -49,6 +49,7 @@ namespace Playground
 
       private static void ShowFirst()
       {
+         Console.WriteLine("Continue ?");
          var list = new CSelector<bool?> { Selector = string.Empty, Orientation = Orientation.Horizontal };
          list.Add(true, "Yes");
          list.Add(false, "No");

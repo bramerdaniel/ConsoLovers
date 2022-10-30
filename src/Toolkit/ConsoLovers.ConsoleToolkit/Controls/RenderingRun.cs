@@ -31,6 +31,10 @@ internal class RenderingRun : IDisposable
 
    private Action cancellationAction;
 
+   private int initialLeft;
+
+   private int initialTop;
+
    #endregion
 
    #region Constructors and Destructors
@@ -235,18 +239,23 @@ internal class RenderingRun : IDisposable
 
    private void OnRenderableInvalidated(object sender, EventArgs e)
    {
-      Refresh();
-   }
-
-   private void Refresh()
-   {
-      // TODO this can be done better !!!
-      console.Clear();
       RenderInternal(false);
    }
 
    private void RenderInternal(bool isFirstRun)
    {
+      if (isFirstRun)
+      {
+         initialLeft = console.CursorLeft;
+         initialTop = console.CursorTop;
+      }
+      else
+      {
+         // TODO I assume this could cause fragments when previous run produced longer lines!!!
+         console.CursorTop = initialTop;
+         console.CursorLeft = initialLeft;
+      }
+
       renderInfos.Clear();
       var availableSize = console.WindowWidth;
       var size = root.Measure(availableSize);
