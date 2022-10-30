@@ -20,10 +20,11 @@ namespace Playground
 
       private static void Main()
       {
-
-         Console.Render(new Border(new Text($"Hello{Environment.NewLine}Console")) { Alignment = Alignment.Left});
-         Console.Render(new Border(new Text($"Hello{Environment.NewLine}Console")) { Alignment = Alignment.Center, Padding = new Thickness(5)});
-         Console.Render(new Border(new Text($"Hello{Environment.NewLine}Console")) { Alignment = Alignment.Right });
+         var panel = new StackPanel();
+         panel.Add(new Border(new Text($"Hello{Environment.NewLine}Console")));
+         panel.Add(new Text($"{Environment.NewLine}Hello{Environment.NewLine}Console"));
+         panel.Add(new Border(new Text($"Hello{Environment.NewLine}Console")));
+         Console.Render(panel);
 
          //var panel = new StackPanel();
          //panel.Add(new Text("Say"));

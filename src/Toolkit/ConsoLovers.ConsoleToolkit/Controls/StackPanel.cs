@@ -8,12 +8,13 @@ namespace ConsoLovers.ConsoleToolkit.Controls;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using JetBrains.Annotations;
 
 public class StackPanel : Renderable, IHaveAlignment
 {
-   
+
    private MeasuredSize size;
 
    public StackPanel()
@@ -53,7 +54,7 @@ public class StackPanel : Renderable, IHaveAlignment
             totalWidth += childSize.MinWidth;
          }
       }
-      
+
       size = new MeasuredSize
       {
          Height = totalHeight,
@@ -67,10 +68,22 @@ public class StackPanel : Renderable, IHaveAlignment
    {
       foreach (var child in Children)
       {
-         if (Measurements.TryGetValue(child, out size) && size.Height > lineIndex)
+         if (Measurements.TryGetValue(child, out size))
          {
-            foreach (var segment in child.RenderLine(context, lineIndex))
-               yield return segment;
+            if (size.Height > lineIndex)
+            {
+               var childSegments = child.RenderLine(context, lineIndex).ToArray();
+               foreach (var segment in childSegments)
+                  yield return segment;
+
+               var required = size.MinWidth - childSegments.Sum(x => x.Width);
+               if (required > 0)
+                  yield return new Segment(this, string.Empty.PadRight(required), child.Style);
+            }
+            else
+            {
+               yield return new Segment(this, string.Empty.PadRight(size.MinWidth), child.Style);
+            }
          }
       }
    }
