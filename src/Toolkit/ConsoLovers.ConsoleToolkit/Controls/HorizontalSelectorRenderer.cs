@@ -46,13 +46,16 @@ internal class HorizontalSelectorRenderer<T> : ISelectorRenderer
          width += itemSize.MinWidth + 1;
       }
 
-      var size = new MeasuredSize { Height = height + 1, MinWidth = width };
+      if (!string.IsNullOrWhiteSpace(selector.Selector))
+         height++;
+
+      var size = new MeasuredSize { Height = height, MinWidth = width };
       return size;
    }
 
    public IEnumerable<Segment> RenderLine(IRenderContext context, int line)
    {
-      if (line == context.Size.Height - 1)
+      if (!string.IsNullOrWhiteSpace(selector.Selector) && line == context.Size.Height - 1)
          return RenderSelector();
 
       return RenderItems(context, line);
@@ -115,9 +118,11 @@ internal class HorizontalSelectorRenderer<T> : ISelectorRenderer
    {
       foreach (var item in Items.Where(ShouldBeRendered))
       {
+         var itemSize = measuredItems[item];
          var isSelectedItem = item == selector.SelectedItem;
 
-         foreach (var segment in item.RenderLine(context, line))
+         var renderContext = new RenderContext{ AvailableWidth = itemSize.MinWidth, Size = itemSize };
+         foreach (var segment in item.RenderLine(renderContext, line))
          {
             if (isSelectedItem)
             {

@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-public class CButton : Renderable, IClickable ,IHaveAlignment
+public class CButton : Renderable, IMouseInputHandler ,IHaveAlignment
 {
    private int lineCount;
 
@@ -74,7 +74,7 @@ public class CButton : Renderable, IClickable ,IHaveAlignment
       }
    }
 
-   public void NotifyClicked()
+   public void HandleMouseInput(IMouseInputContext context)
    {
       Clicked?.Invoke(this, EventArgs.Empty);
    }

@@ -8,7 +8,6 @@ namespace ConsoLovers.ConsoleToolkit.Controls;
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
 using JetBrains.Annotations;
 
@@ -107,6 +106,7 @@ public class CSelector<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignm
             return Items[SelectedIndex];
          return null;
       }
+      internal set => SelectedIndex = Items.IndexOf(value);
    }
 
    /// <summary>Gets the selected item.</summary>
@@ -156,7 +156,7 @@ public class CSelector<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignm
       if (displayText == null)
          throw new ArgumentNullException(nameof(displayText));
 
-      Items.Add(new ListItem<T>(value, new CText(displayText)));
+      Items.Add(new ListItem<T>(this, value, new CText(displayText)));
    }
 
    public void Add(T value, [NotNull] IRenderable template)
@@ -164,12 +164,12 @@ public class CSelector<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignm
       if (template == null)
          throw new ArgumentNullException(nameof(template));
 
-      Items.Add(new ListItem<T>(value, template));
+      Items.Add(new ListItem<T>(this, value, template));
    }
 
    public void Add(T value)
    {
-      Items.Add(new ListItem<T>(value));
+      Items.Add(new ListItem<T>(this, value));
    }
 
    public override MeasuredSize Measure(int availableWidth)

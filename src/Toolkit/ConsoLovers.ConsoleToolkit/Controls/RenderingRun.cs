@@ -139,7 +139,7 @@ internal class RenderingRun : IDisposable
       return new RenderContext { AvailableWidth = measuredSize.MinWidth, Size = measuredSize };
    }
 
-   private IClickable FindClickable(int line, int column)
+   private IMouseInputHandler FindClickable(int line, int column)
    {
       if (renderInfos.TryGetValue(line, out var lineInfos))
       {
@@ -147,7 +147,7 @@ internal class RenderingRun : IDisposable
          {
             if (renderInfo.Column <= column && column <= renderInfo.EndColumn)
             {
-               return renderInfo.Segment.Renderable as IClickable;
+               return renderInfo.Segment.Renderable as IMouseInputHandler;
             }
          }
       }
@@ -158,9 +158,7 @@ internal class RenderingRun : IDisposable
    private void NotifyKeyHandlers(KeyEventArgs args)
    {
       var context = new KeyInputContext(args);
-      var candidates = GetHandlers().Distinct().ToArray();
-
-      foreach (var renderable in candidates)
+      foreach (var renderable in GetHandlers().ToArray())
          Notify(renderable);
 
       CheckForExit(context);
@@ -170,8 +168,14 @@ internal class RenderingRun : IDisposable
          if (toNotify is IKeyInputHandler handler)
             handler.HandleKeyInput(context);
       }
+   }
 
-      IEnumerable<IRenderable> GetHandlers()
+   private IEnumerable<IRenderable> GetHandlers()
+   {
+      return GetAllHandlers()
+         .Distinct();
+      
+      IEnumerable<IRenderable> GetAllHandlers()
       {
          yield return root;
          foreach (var lineInfo in renderInfos.Values)
@@ -207,11 +211,25 @@ internal class RenderingRun : IDisposable
 
    private void OnMouseClicked(object sender, MouseEventArgs e)
    {
-      var clickable = FindClickable(e.WindowTop, e.WindowLeft);
-      if (clickable != null)
+      NotifyMouseHandlers(e);
+   }
+
+   private void NotifyMouseHandlers(MouseEventArgs e)
+   {
+      var mouseHandler = FindClickable(e.WindowTop, e.WindowLeft);
+      if (mouseHandler != null)
       {
-         inputHandler.Stop();
-         clickable.NotifyClicked();
+         var context = new MouseInputContext(e);
+         mouseHandler.HandleMouseInput(context);
+
+         if (context.Accepted)
+            inputHandler.Stop();
+
+         if (context.Canceled)
+         {
+            inputHandler.Stop();
+            cancellationAction = context.CancellationAction;
+         }
       }
    }
 
