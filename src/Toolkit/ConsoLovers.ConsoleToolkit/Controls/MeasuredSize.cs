@@ -6,6 +6,9 @@
 
 namespace ConsoLovers.ConsoleToolkit.Controls;
 
+using System.Diagnostics;
+
+[DebuggerDisplay("Height: {Height}, Width: {MinWidth}")]
 public struct MeasuredSize
 {
    #region Public Properties

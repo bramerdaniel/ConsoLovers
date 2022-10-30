@@ -46,7 +46,7 @@ internal class PromptsLogic : IApplicationLogic<PromptsDemoArgs>
    {
 
       var text = new Text("Hello" + Environment.NewLine + "World");
-      var panel = new Panel(text) { Padding = new Thickness(2) };
+      var panel = new Border(text) { Padding = new Thickness(2) };
       renderEngine.Render(panel);
 
       console.ReadLine();
@@ -60,25 +60,25 @@ internal class PromptsLogic : IApplicationLogic<PromptsDemoArgs>
       renderEngine.Render(new Rule("Hello World") { TextAlignment = Alignment.Center });
 
       var text = new Text("Hello World");
-      var panel = new Panel(text) { Padding = new Thickness(3) };
+      var panel = new Border(text) { Padding = new Thickness(3) };
       renderEngine.Render(panel);
 
       text = new Text("Hello World");
-      panel = new Panel(text) { Alignment = Alignment.Right };
+      panel = new Border(text) { Alignment = Alignment.Right };
       renderEngine.Render(panel);
 
       text = new Text("Hello World");
-      panel = new Panel(text) { Alignment = Alignment.Left };
+      panel = new Border(text) { Alignment = Alignment.Left };
       renderEngine.Render(panel);
 
       text = new Text("Hello World");
-      panel = new Panel(text) { Alignment = Alignment.Center, Padding = new Thickness(3, 0, 10, 0) };
+      panel = new Border(text) { Alignment = Alignment.Center, Padding = new Thickness(3, 0, 10, 0) };
       renderEngine.Render(panel);
 
-      panel = new Panel(panel) { Alignment = Alignment.Center, Style = red };
+      panel = new Border(panel) { Alignment = Alignment.Center, Style = red };
       renderEngine.Render(panel);
 
-      panel = new Panel(new Rule("Hello World") { MaxWidth = 60, TextAlignment = Alignment.Center });
+      panel = new Border(new Rule("Hello World") { MaxWidth = 60, TextAlignment = Alignment.Center });
       renderEngine.Render(panel);
       renderEngine.Render(new Rule("Hello World") { MaxWidth = 60, TextAlignment = Alignment.Center });
    }

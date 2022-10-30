@@ -14,15 +14,25 @@ namespace Playground
 
    public static class Program
    {
-      private static ConsoleProxy Console = new ConsoleProxy();
+      private static readonly ConsoleProxy Console = new ConsoleProxy();
 
       #region Methods
 
       private static void Main()
       {
-         var button = new Button(new Text("Click Me"));
-         button.Clicked += OnButtonClicked;
-         Console.Render(button);
+
+         Console.Render(new Border(new Text($"Hello{Environment.NewLine}Console")) { Alignment = Alignment.Left});
+         Console.Render(new Border(new Text($"Hello{Environment.NewLine}Console")) { Alignment = Alignment.Center, Padding = new Thickness(5)});
+         Console.Render(new Border(new Text($"Hello{Environment.NewLine}Console")) { Alignment = Alignment.Right });
+
+         //var panel = new StackPanel();
+         //panel.Add(new Text("Say"));
+         //panel.Add(new Text($"Hello{Environment.NewLine}World"));
+         //Console.Render(panel);
+
+         //var button = new Button(new Text("Click Me"));
+         //button.Clicked += OnButtonClicked;
+         //Console.Render(button);
 
          Console.ReadLine();
       }

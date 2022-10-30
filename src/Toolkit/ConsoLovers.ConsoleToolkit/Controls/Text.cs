@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class Text : Renderable
+public class Text : Renderable, IHaveAlignment
 {
    private int? minWidth;
 
@@ -30,12 +30,6 @@ public class Text : Renderable
    : base(RenderingStyle.Default)
    {
       Value = value;
-   }
-
-   public int MinWidth
-   {
-      get => minWidth.GetValueOrDefault(Value.Length);
-      set => minWidth = value;
    }
 
    public Alignment Alignment { get; set; }
@@ -85,7 +79,7 @@ public class Text : Renderable
          throw new ArgumentOutOfRangeException(nameof(lineIndex), $"Only can render lines between {0} and {lines.Length - 1}");
 
       var textWithPadding = PadLine(lineIndex, context.AvailableWidth);
-      yield return new Segment(this, textWithPadding, Style);
+      yield return new Segment(this, lines[lineIndex], Style);
    }
 
    private string PadLine(int line, int available)

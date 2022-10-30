@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Panel.cs" company="ConsoLovers">
+// <copyright file="Border.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -7,9 +7,10 @@
 namespace ConsoLovers.ConsoleToolkit.Controls;
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
-public class Panel : Renderable, IHaveAlignment
+public class Border : Renderable, IHaveAlignment
 {
    // TODO Add header for the panel
    private int lineCount;
@@ -18,7 +19,7 @@ public class Panel : Renderable, IHaveAlignment
 
    private MeasuredSize size;
 
-   public Panel(IRenderable content)
+   public Border(IRenderable content)
    {
       Content = content;
    }
@@ -31,6 +32,13 @@ public class Panel : Renderable, IHaveAlignment
 
    public override MeasuredSize Measure(int availableWidth)
    {
+      if (Content == null)
+      {
+         size = new MeasuredSize { Height = 2, MinWidth = 2 };
+         lineCount = 2;
+         return size;
+      }
+
       contentSize = Content.Measure(availableWidth - 2);
       lineCount = contentSize.Height + 2 + Padding.Bottom + Padding.Top;
 
@@ -65,12 +73,17 @@ public class Panel : Renderable, IHaveAlignment
       }
       else
       {
-         yield return new Segment(this, "│".PadRight(Padding.Left + 1), Style);
+         var leftWidth = Padding.Left + 1;
+         yield return new Segment(this, "│".PadRight(leftWidth), Style);
 
-         foreach (var segment in RenderContent(context, lineIndex))
+         var segments = RenderContent(context, lineIndex).ToArray();
+         foreach (var segment in segments)
             yield return segment;
 
-         yield return new Segment(this, "│".PadLeft(Padding.Right + 1), Style);
+         var contentWidth = segments.Sum(x => x.Width);
+         var rightWidth = context.AvailableWidth - leftWidth - contentWidth;
+
+         yield return new Segment(this, "│".PadLeft(rightWidth), Style);
       }
    }
 
