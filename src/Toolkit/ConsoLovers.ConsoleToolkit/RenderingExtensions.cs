@@ -33,5 +33,13 @@ public static class RenderingExtensions
          throw new ArgumentNullException(nameof(renderable));
 
       new RenderEngine(console).Render(renderable, true);
+   }   
+
+   public static ChoiceBuilder<T> Choice<T>([NotNull] this IConsole console, string question)
+   {
+      if (console == null)
+         throw new ArgumentNullException(nameof(console));
+
+      return new ChoiceBuilder<T>(console, question);
    }
 }

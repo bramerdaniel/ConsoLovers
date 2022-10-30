@@ -12,7 +12,7 @@ using System.Linq;
 
 using JetBrains.Annotations;
 
-public class CList : InteractiveRenderable, IKeyInputHandler
+public class CList : InteractiveRenderable, IKeyInputHandler, IHaveAlignment
 {
    #region Constants and Fields
 
@@ -31,6 +31,12 @@ public class CList : InteractiveRenderable, IKeyInputHandler
 
    #endregion
 
+   #region IHaveAlignment Members
+
+   public Alignment Alignment { get; set; }
+
+   #endregion
+
    #region IKeyInputHandler Members
 
    public void HandleKeyInput(IKeyInputContext context)
@@ -39,11 +45,9 @@ public class CList : InteractiveRenderable, IKeyInputHandler
       {
          case ConsoleKey.UpArrow:
             DecreaseSelectedIndex();
-            RaiseInvalidated();
             break;
          case ConsoleKey.DownArrow:
             IncreaseSelectedIndex();
-            RaiseInvalidated();
             break;
          case ConsoleKey.Enter:
             context.Cancel();
@@ -60,12 +64,30 @@ public class CList : InteractiveRenderable, IKeyInputHandler
    public int SelectedIndex
    {
       get => selectedIndex;
-      set => selectedIndex = value;
+      set
+      {
+         if (selectedIndex == value)
+            return;
+
+         selectedIndex = value;
+         RaiseInvalidated();
+      }
+   }
+
+   /// <summary>Gets the selected item.</summary>
+   public IRenderable SelectedItem
+   {
+      get
+      {
+         if (SelectedIndex >= 0 && SelectedIndex < Items.Count)
+            return Items[SelectedIndex];
+         return null;
+      }
    }
 
    public RenderingStyle SelectionStyle { get; set; } = RenderingStyle.Selection;
 
-   public string Selector { get; set; } = ">";
+   public string Selector { get; set; } = "> ";
 
    #endregion
 
@@ -96,9 +118,11 @@ public class CList : InteractiveRenderable, IKeyInputHandler
       renderQueue = new Queue<ItemRenderInfo>();
 
       int itemIndex = 0;
+      var availableItemLength = availableWidth - Selector.Length;
+
       foreach (var item in Items)
       {
-         var itemSize = item.Measure(availableWidth);
+         var itemSize = item.Measure(availableItemLength);
 
          height += itemSize.Height;
          width = Math.Max(width, itemSize.MinWidth);
@@ -120,7 +144,7 @@ public class CList : InteractiveRenderable, IKeyInputHandler
          itemIndex++;
       }
 
-      width = width + 1 + Selector.Length;
+      width = width + Selector.Length;
       return new MeasuredSize { Height = height, MinWidth = width };
    }
 
@@ -131,11 +155,11 @@ public class CList : InteractiveRenderable, IKeyInputHandler
 
       if (data.ItemIndex == selectedIndex && data.AppendSelector)
       {
-         yield return new Segment(this, $"{Selector} ", SelectionStyle);
+         yield return new Segment(this, $"{Selector}", SelectionStyle);
       }
       else
       {
-         yield return new Segment(this, string.Empty.PadRight(Selector.Length + 1), data.Item.Style);
+         yield return new Segment(this, string.Empty.PadRight(Selector.Length), data.Item.Style);
       }
 
       var renderContext = new RenderContext { AvailableWidth = data.Width };
@@ -163,16 +187,20 @@ public class CList : InteractiveRenderable, IKeyInputHandler
 
    private void DecreaseSelectedIndex()
    {
-      SelectedIndex -= 1;
-      if (SelectedIndex < 0)
-         SelectedIndex = Items.Count - 1;
+      var nextIndex = SelectedIndex - 1;
+      if (nextIndex < 0)
+         nextIndex = Items.Count - 1;
+
+      SelectedIndex = nextIndex;
    }
 
    private void IncreaseSelectedIndex()
    {
-      SelectedIndex += 1;
-      if (SelectedIndex >= Items.Count)
-         SelectedIndex = 0;
+      var nextIndex = SelectedIndex + 1;
+      if (nextIndex >= Items.Count)
+         nextIndex = 0;
+
+      SelectedIndex = nextIndex;
    }
 
    #endregion

@@ -79,4 +79,22 @@ public class ListTests
   └─────────┘
   No");
    }
+
+   [TestMethod]
+   public void EnsureListWithRuleIsRenderedCorrectly()
+   {
+      var list = Setup.List()
+         .WithItem(CText.FromString("First"))
+         .WithItem(new CRule(null))
+         .WithItem(CText.FromString("Second"))
+         .Done();
+
+      var renderedText = Setup.TestRenderer()
+         .WithConsoleWidth(10)
+         .Render(list);
+
+      renderedText.Should().Be(@"> First
+  --------
+  Second");
+   }
 }

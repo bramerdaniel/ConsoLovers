@@ -20,7 +20,27 @@ namespace Playground
 
       private static void Main()
       {
-         var list = CList.ForItems(new CBorder(new CText("Oha")), (CText)"Yes", new CText($"Very {Environment.NewLine}long text"), new CBorder(new CText($"Very {Environment.NewLine}long text")), (CText)"No", (CText)"Cancel");
+         var choice = Console.Choice<bool?>("Do you want to continue ?")
+            .WithAnswer(true, "Yes i want")
+            .WithAnswer(false, "No, go away")
+            .WithAnswer(null, "Can not decide yet")
+            .Build();
+
+         Console.RenderInteractive(new CBorder(choice));
+         Console.WriteLine($"result was {choice.SelectedItem}");
+
+         var result = Console.Choice<int>("Do you want to continue ?")
+            .WithAnswer(1, "Yes i want")
+            .WithAnswer(2, "No, go away")
+            .Show();
+
+         Console.WriteLine($"result was {result}");
+
+
+
+         var list = CList.ForItems((CText)"Yes", (CText)"No", new CRule("Bam"){ TextOffset = 1 }, (CText)"Cancel");
+         
+         // var list = CList.ForItems(new CBorder(new CText("Oha")), (CText)"Yes", new CText($"Very {Environment.NewLine}long text"), new CBorder(new CText($"Very {Environment.NewLine}long ext")), (CText)"No", (CText)"Cancel");
          Console.RenderInteractive(list);
 
          var panel = new CPanel();
@@ -45,6 +65,8 @@ namespace Playground
 
          Console.ReadLine();
       }
+
+
 
       private static void OnYesButtonClicked(object sender, EventArgs e)
       {
