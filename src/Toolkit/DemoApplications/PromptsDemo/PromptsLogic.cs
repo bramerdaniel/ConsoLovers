@@ -45,8 +45,8 @@ internal class PromptsLogic : IApplicationLogic<PromptsDemoArgs>
    public Task ExecuteAsync(PromptsDemoArgs arguments, CancellationToken cancellationToken)
    {
 
-      var text = new Text("Hello" + Environment.NewLine + "World");
-      var panel = new Border(text) { Padding = new Thickness(2) };
+      var text = new CText("Hello" + Environment.NewLine + "World");
+      var panel = new CBorder(text) { Padding = new Thickness(2) };
       renderEngine.Render(panel);
 
       console.ReadLine();
@@ -55,32 +55,32 @@ internal class PromptsLogic : IApplicationLogic<PromptsDemoArgs>
 
    private void Old()
    {
-      renderEngine.Render(new Rule("Hello World") { Style = blue, RuleCharacter = '*' });
-      renderEngine.Render(new Rule("Hello World") { Style = red, TextAlignment = Alignment.Right, TextOffset = 20 });
-      renderEngine.Render(new Rule("Hello World") { TextAlignment = Alignment.Center });
+      renderEngine.Render(new CRule("Hello World") { Style = blue, RuleCharacter = '*' });
+      renderEngine.Render(new CRule("Hello World") { Style = red, TextAlignment = Alignment.Right, TextOffset = 20 });
+      renderEngine.Render(new CRule("Hello World") { TextAlignment = Alignment.Center });
 
-      var text = new Text("Hello World");
-      var panel = new Border(text) { Padding = new Thickness(3) };
+      var text = new CText("Hello World");
+      var panel = new CBorder(text) { Padding = new Thickness(3) };
       renderEngine.Render(panel);
 
-      text = new Text("Hello World");
-      panel = new Border(text) { Alignment = Alignment.Right };
+      text = new CText("Hello World");
+      panel = new CBorder(text) { Alignment = Alignment.Right };
       renderEngine.Render(panel);
 
-      text = new Text("Hello World");
-      panel = new Border(text) { Alignment = Alignment.Left };
+      text = new CText("Hello World");
+      panel = new CBorder(text) { Alignment = Alignment.Left };
       renderEngine.Render(panel);
 
-      text = new Text("Hello World");
-      panel = new Border(text) { Alignment = Alignment.Center, Padding = new Thickness(3, 0, 10, 0) };
+      text = new CText("Hello World");
+      panel = new CBorder(text) { Alignment = Alignment.Center, Padding = new Thickness(3, 0, 10, 0) };
       renderEngine.Render(panel);
 
-      panel = new Border(panel) { Alignment = Alignment.Center, Style = red };
+      panel = new CBorder(panel) { Alignment = Alignment.Center, Style = red };
       renderEngine.Render(panel);
 
-      panel = new Border(new Rule("Hello World") { MaxWidth = 60, TextAlignment = Alignment.Center });
+      panel = new CBorder(new CRule("Hello World") { MaxWidth = 60, TextAlignment = Alignment.Center });
       renderEngine.Render(panel);
-      renderEngine.Render(new Rule("Hello World") { MaxWidth = 60, TextAlignment = Alignment.Center });
+      renderEngine.Render(new CRule("Hello World") { MaxWidth = 60, TextAlignment = Alignment.Center });
    }
 
    #endregion

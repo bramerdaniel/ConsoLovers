@@ -20,27 +20,27 @@ namespace Playground
 
       private static void Main()
       {
-         var list = new List(new Border(new Text("Oha")), (Text)"Yes", new Text($"Very {Environment.NewLine}long Text"), new Border(new Text($"Very {Environment.NewLine}long Text")), (Text)"No", (Text)"Cancel");
-         //var list = new List((Text)"Yes", (Text)"No", (Text)"Cancel");
+         var list = new CList(new CBorder(new CText("Oha")), (CText)"Yes", new CText($"Very {Environment.NewLine}long CText"), new CBorder(new CText($"Very {Environment.NewLine}long CText")), (CText)"No", (CText)"Cancel");
+         //var list = new List((CText)"Yes", (CText)"No", (CText)"Cancel");
          Console.RenderInteractive(list);
 
-         var panel = new StackPanel();
-         var y = new Button(new Text("Yes"));
+         var panel = new CPanel();
+         var y = new CButton(new CText("Yes"));
          y.Clicked += OnYesButtonClicked;
          panel.Add(y);
-         var no = new Button(new Text("No "));
+         var no = new CButton(new CText("No "));
          no.Clicked += OnButtonClicked;
          panel.Add(no);
 
          Console.WriteLine("Click yes or no");
          Console.RenderInteractive(panel);
 
-         //var panel = new StackPanel();
-         //panel.Add(new Text("Say"));
-         //panel.Add(new Text($"Hello{Environment.NewLine}World"));
+         //var panel = new CPanel();
+         //panel.Add(new CText("Say"));
+         //panel.Add(new CText($"Hello{Environment.NewLine}World"));
          //Console.Render(panel);
 
-         //var button = new Button(new Text("Click Me"));
+         //var button = new CButton(new CText("Click Me"));
          //button.Clicked += OnButtonClicked;
          //Console.Render(button);
 

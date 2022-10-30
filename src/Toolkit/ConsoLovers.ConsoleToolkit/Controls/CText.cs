@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Text.cs" company="ConsoLovers">
+// <copyright file="CText.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class Text : Renderable, IHaveAlignment
+public class CText : Renderable, IHaveAlignment
 {
    private int? minWidth;
 
@@ -18,21 +18,21 @@ public class Text : Renderable, IHaveAlignment
 
    #region Constructors and Destructors
 
-   public Text(string value, RenderingStyle style)
+   public CText(string value, RenderingStyle style)
       : base(style)
    {
       Value = value ?? String.Empty;
    }
 
-   public Text(string value)
+   public CText(string value)
    : base(RenderingStyle.Default)
    {
       Value = value;
    }
 
-   public static implicit operator Text(string text) => new Text(text);
+   public static implicit operator CText(string text) => new CText(text);
 
-   // public static explicit operator Text(string value) => new Text(value);
+   // public static explicit operator CText(string value) => new CText(value);
 
    public Alignment Alignment { get; set; }
 

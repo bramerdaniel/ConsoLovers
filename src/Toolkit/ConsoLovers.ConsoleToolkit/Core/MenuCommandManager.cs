@@ -141,7 +141,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
             //value = !value;
 
             //argument.PropertyInfo.SetValue(argumentInstance, value, null);
-            //menuItem.Text = $"{argument.ParameterName}={value}";
+            //menuItem.CText = $"{argument.ParameterName}={value}";
          }
       }
 

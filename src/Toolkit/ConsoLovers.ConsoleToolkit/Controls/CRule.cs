@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Rule.cs" company="ConsoLovers">
+// <copyright file="CRule.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -8,7 +8,7 @@ namespace ConsoLovers.ConsoleToolkit.Controls;
 
 using System.Collections.Generic;
 
-public class Rule : Renderable
+public class CRule : Renderable
 {
 
    private MeasuredSize measuredSize;
@@ -21,7 +21,7 @@ public class Rule : Renderable
 
    public string Text { get; }
 
-   public Rule(string text)
+   public CRule(string text)
    {
       Text = text;
    }

@@ -12,7 +12,7 @@ using System.Linq;
 
 using JetBrains.Annotations;
 
-public class List : InteractiveRenderable, IKeyInputHandler
+public class CList : InteractiveRenderable, IKeyInputHandler
 {
    #region Constants and Fields
 
@@ -24,7 +24,7 @@ public class List : InteractiveRenderable, IKeyInputHandler
 
    #region Constructors and Destructors
 
-   public List(params IRenderable[] items)
+   public CList(params IRenderable[] items)
    {
       Items = items.ToList();
    }

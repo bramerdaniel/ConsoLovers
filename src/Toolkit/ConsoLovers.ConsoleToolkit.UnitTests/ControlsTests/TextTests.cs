@@ -9,14 +9,11 @@ namespace ConsoLovers.ConsoleToolkit.UnitTests.ControlsTests;
 using System;
 
 using ConsoLovers.ConsoleToolkit.Controls;
-using ConsoLovers.ConsoleToolkit.Core;
 using ConsoLovers.ConsoleToolkit.UnitTests.Setups;
 
 using FluentAssertions;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-using Moq;
 
 [TestClass]
 public class TextTests

@@ -22,7 +22,7 @@ public class BorderTests
    public void EnsureBorderWithTextIsRenderedCorrectly()
    {
       var border = Setup.Border()
-         .WithContent(new Text("X"))
+         .WithContent(new CText("X"))
          .Done();
 
       var renderer = Setup.TestRenderer().Done();
@@ -44,7 +44,7 @@ public class BorderTests
    public void EnsureBorderWithMultilineTextIsRenderedCorrectly()
    {
       var border = Setup.Border()
-         .WithContent(new Text($"First{Environment.NewLine}Second"))
+         .WithContent(new CText($"First{Environment.NewLine}Second"))
          .Done();
 
       var renderer = Setup.TestRenderer().Done();
@@ -66,7 +66,7 @@ public class BorderTests
    public void EnsureBorderWithLeftRightPaddingIsRenderedCorrectly()
    {
       var border = Setup.Border()
-         .WithContent(new Text($"First{Environment.NewLine}Second"))
+         .WithContent(new CText($"First{Environment.NewLine}Second"))
          .WithPadding(new Thickness(2, 0, 3, 0))
          .Done();
 
@@ -89,7 +89,7 @@ public class BorderTests
    public void EnsureBorderWithTobBottomPaddingIsRenderedCorrectly()
    {
       var border = Setup.Border()
-         .WithContent(new Text($"First{Environment.NewLine}Second"))
+         .WithContent(new CText($"First{Environment.NewLine}Second"))
          .WithPadding(new Thickness(0, 1, 0, 2))
          .Done();
 
@@ -136,7 +136,7 @@ public class BorderTests
    public void EnsureLongTextIsRenderedCorrectly()
    {
       var border = Setup.Border()
-         .WithContent(new Text("Long text but OK"))
+         .WithContent(new CText("Long text but OK"))
          .Done();
 
       var renderer = Setup.TestRenderer().Done();

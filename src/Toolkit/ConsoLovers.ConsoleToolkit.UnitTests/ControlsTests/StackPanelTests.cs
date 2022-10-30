@@ -21,9 +21,9 @@ public class StackPanelTests
    [TestMethod]
    public void EnsureBorderWithMultilineTextIsRenderedCorrectly()
    {
-      var border = Setup.StackPanel()
-         .WithChild(new Border(new Text($"First{Environment.NewLine}Second")))
-         .WithChild(new Border(new Text($"First{Environment.NewLine}Second")))
+      var border = Setup.Panel()
+         .WithChild(new CBorder(new CText($"First{Environment.NewLine}Second")))
+         .WithChild(new CBorder(new CText($"First{Environment.NewLine}Second")))
          .Done();
 
       var renderer = Setup.TestRenderer().Done();
@@ -44,10 +44,10 @@ public class StackPanelTests
    [TestMethod]
    public void EnsureBordersAndTextIsRenderedCorrectly()
    {
-      var border = Setup.StackPanel()
-         .WithChild(new Border(new Text($"First{Environment.NewLine}Second")))
-         .WithChild(new Text($"{Environment.NewLine}First{Environment.NewLine}Second"))
-         .WithChild(new Border(new Text($"First{Environment.NewLine}Second")))
+      var border = Setup.Panel()
+         .WithChild(new CBorder(new CText($"First{Environment.NewLine}Second")))
+         .WithChild(new CText($"{Environment.NewLine}First{Environment.NewLine}Second"))
+         .WithChild(new CBorder(new CText($"First{Environment.NewLine}Second")))
          .Done();
 
       var renderer = Setup.TestRenderer().Done();
@@ -69,10 +69,10 @@ public class StackPanelTests
    [Ignore]
    public void EnsureOverflowIsRenderedCorrectly()
    {
-      var border = Setup.StackPanel()
-         .WithChild(new Border(new Text("xxx")))
-         .WithChild(new Border(new Text("abc")))
-         .WithChild(new Border(new Text("123")))
+      var border = Setup.Panel()
+         .WithChild(new CBorder(new CText("xxx")))
+         .WithChild(new CBorder(new CText("abc")))
+         .WithChild(new CBorder(new CText("123")))
          .Done();
 
       var renderer = Setup.TestRenderer()

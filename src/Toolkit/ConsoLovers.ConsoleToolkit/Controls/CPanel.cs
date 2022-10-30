@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="StackPanel.cs" company="ConsoLovers">
+// <copyright file="CPanel.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -12,17 +12,17 @@ using System.Linq;
 
 using JetBrains.Annotations;
 
-public class StackPanel : Renderable, IHaveAlignment
+public class CPanel : Renderable, IHaveAlignment
 {
    private MeasuredSize size;
 
-   public StackPanel()
+   public CPanel()
    : this(RenderingStyle.Default)
    {
 
    }
 
-   public StackPanel(RenderingStyle style)
+   public CPanel(RenderingStyle style)
    : base(style)
    {
       Children = new List<IRenderable>(5);
@@ -88,7 +88,7 @@ public class StackPanel : Renderable, IHaveAlignment
    }
 
 
-   public StackPanel Add([NotNull] IRenderable renderable)
+   public CPanel Add([NotNull] IRenderable renderable)
    {
       if (renderable == null)
          throw new ArgumentNullException(nameof(renderable));
@@ -97,7 +97,7 @@ public class StackPanel : Renderable, IHaveAlignment
       return this;
    }
 
-   public StackPanel Remove([NotNull] IRenderable renderable)
+   public CPanel Remove([NotNull] IRenderable renderable)
    {
       if (renderable == null)
          throw new ArgumentNullException(nameof(renderable));

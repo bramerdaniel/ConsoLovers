@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Border.cs" company="ConsoLovers">
+// <copyright file="CBorder.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-public class Border : Renderable, IHaveAlignment
+public class CBorder : Renderable, IHaveAlignment
 {
    #region Constants and Fields
 
@@ -25,9 +25,9 @@ public class Border : Renderable, IHaveAlignment
 
    #region Constructors and Destructors
 
-   /// <summary>Initializes a new instance of the <see cref="Border"/> class.</summary>
+   /// <summary>Initializes a new instance of the <see cref="CBorder"/> class.</summary>
    /// <param name="content">The content.</param>
-   public Border(IRenderable content)
+   public CBorder(IRenderable content)
    {
       Content = content;
    }

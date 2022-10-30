@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Button.cs" company="ConsoLovers">
+// <copyright file="CButton.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-public class Button : Renderable, IClickable ,IHaveAlignment
+public class CButton : Renderable, IClickable ,IHaveAlignment
 {
    private int lineCount;
 
@@ -18,7 +18,7 @@ public class Button : Renderable, IClickable ,IHaveAlignment
 
    private MeasuredSize size;
 
-   public Button(IRenderable content)
+   public CButton(IRenderable content)
    {
       Content = content;
    }

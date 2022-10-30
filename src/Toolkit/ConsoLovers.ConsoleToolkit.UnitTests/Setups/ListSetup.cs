@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="BorderSetup.cs" company="ConsoLovers">
+// <copyright file="ListSetup.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -10,8 +10,8 @@ using ConsoLovers.ConsoleToolkit.Controls;
 
 using FluentSetups;
 
-[FluentSetup(typeof(CBorder), SetupMethod = "Border")]
-public partial class BorderSetup
+// [FluentSetup(typeof(CList))]
+public partial class ListSetup
 {
    
 }

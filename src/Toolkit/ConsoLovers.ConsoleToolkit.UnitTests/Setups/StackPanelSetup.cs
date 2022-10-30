@@ -12,15 +12,15 @@ using ConsoLovers.ConsoleToolkit.Controls;
 
 using FluentSetups;
 
-[FluentSetup(typeof(StackPanel))]
+[FluentSetup(typeof(CPanel), SetupMethod = "Panel")]
 public partial class StackPanelSetup
 {
    [FluentMember]
    private List<IRenderable> children;
 
-   protected StackPanel CreateTarget()
+   protected CPanel CreateTarget()
    {
-      var target = new StackPanel();
+      var target = new CPanel();
       foreach (var child in children)
          target.Add(child);
       return target;

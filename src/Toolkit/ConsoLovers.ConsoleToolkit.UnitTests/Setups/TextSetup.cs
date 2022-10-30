@@ -10,7 +10,7 @@ using ConsoLovers.ConsoleToolkit.Controls;
 
 using FluentSetups;
 
-[FluentSetup(typeof(Text))]
+[FluentSetup(typeof(CText),SetupMethod = "Text")]
 public partial class TextSetup
 {
    
