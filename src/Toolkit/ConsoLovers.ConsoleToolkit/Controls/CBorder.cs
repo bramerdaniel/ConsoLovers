@@ -141,7 +141,7 @@ public class CBorder : Renderable, IHaveAlignment
    private IEnumerable<Segment> RenderContent(IRenderContext context, int lineIndex)
    {
       var availableSize = contentSize.MinWidth;
-      var renderContext = new RenderContext { AvailableWidth = availableSize };
+      var renderContext = new RenderContext { AvailableWidth = availableSize, Size = contentSize };
       foreach (var segment in Content.RenderLine(renderContext, lineIndex - 1 - Padding.Top))
          yield return segment;
    }

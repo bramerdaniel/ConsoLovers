@@ -9,6 +9,8 @@ namespace ConsoLovers.ConsoleToolkit.Controls
    public interface IRenderContext
    {
       int AvailableWidth { get; }
-      
+
+      MeasuredSize Size { get; }
+
    }
 }

@@ -29,6 +29,8 @@ internal class RenderingRun : IDisposable
 
    private readonly IRenderable root;
 
+   private Action cancellationAction;
+
    #endregion
 
    #region Constructors and Destructors
@@ -88,6 +90,9 @@ internal class RenderingRun : IDisposable
    public void Wait()
    {
       inputHandler.Wait();
+
+      if (cancellationAction != null)
+         cancellationAction();
    }
 
    #endregion
@@ -120,18 +125,18 @@ internal class RenderingRun : IDisposable
          {
             var left = console.WindowWidth - measuredSize.MinWidth;
             console.CursorLeft = left;
-            return new RenderContext { AvailableWidth = measuredSize.MinWidth };
+            return new RenderContext { AvailableWidth = measuredSize.MinWidth, Size = measuredSize};
          }
 
          if (hasAlignment.Alignment == Alignment.Center)
          {
             var remaining = console.WindowWidth - measuredSize.MinWidth;
             console.CursorLeft = remaining / 2;
-            return new RenderContext { AvailableWidth = measuredSize.MinWidth };
+            return new RenderContext { AvailableWidth = measuredSize.MinWidth, Size = measuredSize };
          }
       }
 
-      return new RenderContext { AvailableWidth = measuredSize.MinWidth };
+      return new RenderContext { AvailableWidth = measuredSize.MinWidth, Size = measuredSize };
    }
 
    private IClickable FindClickable(int line, int column)
@@ -158,8 +163,7 @@ internal class RenderingRun : IDisposable
       foreach (var renderable in candidates)
          Notify(renderable);
 
-      if (context.Canceled)
-         inputHandler.Stop();
+      CheckForExit(context);
 
       void Notify(IRenderable toNotify)
       {
@@ -178,6 +182,21 @@ internal class RenderingRun : IDisposable
                yield return renderable;
             }
          }
+      }
+   }
+
+   private void CheckForExit(KeyInputContext context)
+   {
+      if (context.Accepted)
+      {
+         inputHandler.Stop();
+         return;
+      }
+
+      if (context.Canceled)
+      {
+         cancellationAction = context.CancellationAction;
+         inputHandler.Stop();
       }
    }
 

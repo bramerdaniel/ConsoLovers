@@ -21,6 +21,7 @@ namespace Playground
       private static void Main()
       {
          ShowFirst();
+         Console.Clear();
          ShowSecond();
 
          var panel = new CPanel();
@@ -48,7 +49,7 @@ namespace Playground
 
       private static void ShowFirst()
       {
-         var list = new CSelector<bool?>() { Selector = ">> ", Orientation = Orientation.Horizontal };
+         var list = new CSelector<bool?> { Orientation = Orientation.Horizontal };
          list.Add(true, "Yes");
          list.Add(false, "No");
          list.Add(null, "Unsure");

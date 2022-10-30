@@ -6,6 +6,8 @@
 
 namespace ConsoLovers.ConsoleToolkit.Controls;
 
+using System;
+
 using ConsoLovers.ConsoleToolkit.InputHandler;
 
 public interface IKeyInputContext
@@ -13,4 +15,8 @@ public interface IKeyInputContext
    KeyEventArgs KeyEventArgs { get; }
 
    void Cancel();
+
+   void Cancel(Action cancellationAction);
+   
+   void Accept();
 }

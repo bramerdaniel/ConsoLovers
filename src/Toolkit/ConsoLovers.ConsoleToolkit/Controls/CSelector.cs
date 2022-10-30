@@ -8,6 +8,7 @@ namespace ConsoLovers.ConsoleToolkit.Controls;
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 using JetBrains.Annotations;
 
@@ -15,11 +16,13 @@ public class CSelector<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignm
 {
    #region Constants and Fields
 
+   private Orientation orientation;
+
    private ISelectorRenderer renderer;
 
    private int selectedIndex;
 
-   private Orientation orientation;
+   private string selector;
 
    #endregion
 
@@ -38,12 +41,33 @@ public class CSelector<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignm
 
    public Alignment Alignment { get; set; }
 
+   #endregion
+
+   #region IKeyInputHandler Members
+
+   public void HandleKeyInput(IKeyInputContext context)
+   {
+      if(context.KeyEventArgs.Key == ConsoleKey.Escape && !AllowCancellation)
+         return;
+
+      Renderer.HandleKeyInput(context);
+   }
+
+   #endregion
+
+   #region Public Properties
+
+   /// <summary>Gets or sets a value indicating whether user is allowed  to cancel the selection or not.</summary>
+   public bool AllowCancellation { get; set; } = true;
+
+   public IList<ListItem<T>> Items { get; }
+
    public Orientation Orientation
    {
       get => orientation;
       set
       {
-         if(orientation == value)
+         if (orientation == value)
             return;
 
          orientation = value;
@@ -60,21 +84,6 @@ public class CSelector<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignm
          }
       }
    }
-
-   #endregion
-
-   #region IKeyInputHandler Members
-
-   public void HandleKeyInput(IKeyInputContext context)
-   {
-      Renderer.HandleKeyInput(context);
-   }
-
-   #endregion
-
-   #region Public Properties
-
-   public IList<ListItem<T>> Items { get; }
 
    public int SelectedIndex
    {
@@ -105,7 +114,21 @@ public class CSelector<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignm
 
    public RenderingStyle SelectionStyle { get; set; } = RenderingStyle.Selection;
 
-   public string Selector { get; set; } = "> ";
+   public string Selector
+   {
+      get => selector ?? UseDefaultSelector(Orientation);
+      set => selector = value;
+   }
+
+   private string UseDefaultSelector(Orientation ori)
+   {
+      return ori switch
+      {
+         Orientation.Vertical => "> ",
+         Orientation.Horizontal => "^",
+         _ => throw new ArgumentOutOfRangeException(nameof(ori))
+      };
+   }
 
    #endregion
 

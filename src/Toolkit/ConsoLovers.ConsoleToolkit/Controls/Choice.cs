@@ -51,6 +51,9 @@ public class Choice<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignment
             IncreaseSelectedIndex();
             break;
          case ConsoleKey.Enter:
+            context.Accept();
+            break;       
+         case ConsoleKey.Escape:
             context.Cancel();
             break;
       }

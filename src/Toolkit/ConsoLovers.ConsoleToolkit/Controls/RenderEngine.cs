@@ -86,18 +86,18 @@ public class RenderEngine : IRenderEngine
          {
             var left = console.WindowWidth - measuredSize.MinWidth;
             console.CursorLeft = left;
-            return new RenderContext { AvailableWidth = measuredSize.MinWidth };
+            return new RenderContext { AvailableWidth = measuredSize.MinWidth, Size = measuredSize };
          }
 
          if (hasAlignment.Alignment == Alignment.Center)
          {
             var remaining = console.WindowWidth - measuredSize.MinWidth;
             console.CursorLeft = remaining / 2;
-            return new RenderContext { AvailableWidth = measuredSize.MinWidth };
+            return new RenderContext { AvailableWidth = measuredSize.MinWidth, Size = measuredSize };
          }
       }
 
-      return new RenderContext { AvailableWidth = measuredSize.MinWidth };
+      return new RenderContext { AvailableWidth = measuredSize.MinWidth, Size = measuredSize };
    }
 
    private int WriteSegment(Segment segment, int availableSize)

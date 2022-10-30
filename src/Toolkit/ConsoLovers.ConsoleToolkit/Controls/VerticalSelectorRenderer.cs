@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using ConsoLovers.ConsoleToolkit.Core.Input;
+
 using JetBrains.Annotations;
 
 internal class VerticalSelectorRenderer<T> : ISelectorRenderer
@@ -33,7 +35,9 @@ internal class VerticalSelectorRenderer<T> : ISelectorRenderer
 
       public int ItemLine { get; set; }
 
-      public int Width { get; set; }
+      public int ItemWidth => ItemSize.MinWidth;
+
+      public MeasuredSize ItemSize { get; set; }
 
       #endregion
    }
@@ -64,8 +68,8 @@ internal class VerticalSelectorRenderer<T> : ISelectorRenderer
                Item = item,
                ItemLine = i,
                ItemIndex = itemIndex,
+               ItemSize = itemSize,
                AppendSelector = AppendSelector(i, itemSize.Height),
-               Width = itemSize.MinWidth
             };
 
             renderQueue.Enqueue(data);
@@ -101,7 +105,7 @@ internal class VerticalSelectorRenderer<T> : ISelectorRenderer
          yield return new Segment(selector, string.Empty.PadRight(selector.Selector.Length), data.Item.Style);
       }
 
-      var renderContext = new RenderContext { AvailableWidth = data.Width };
+      var renderContext = new RenderContext { AvailableWidth = data.ItemWidth, Size = data.ItemSize };
       var segments = data.Item.RenderLine(renderContext, itemIndex).ToArray();
       foreach (var segment in segments)
       {
@@ -146,6 +150,9 @@ internal class VerticalSelectorRenderer<T> : ISelectorRenderer
             selector.SelectedIndex = 0;
             break;
          case ConsoleKey.Enter:
+            context.Accept();
+            break;
+         case ConsoleKey.Escape:
             context.Cancel();
             break;
       }

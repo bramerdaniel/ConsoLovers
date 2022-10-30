@@ -8,6 +8,7 @@ namespace ConsoLovers.ConsoleToolkit.Controls;
 
 using System;
 
+using ConsoLovers.ConsoleToolkit.Core.Input;
 using ConsoLovers.ConsoleToolkit.InputHandler;
 
 using JetBrains.Annotations;
@@ -29,14 +30,28 @@ internal class KeyInputContext : IKeyInputContext
 
    public void Cancel()
    {
-      Canceled = true;
+      Cancel(() => throw new InputCanceledException("Selection"));
+   }
+
+   public void Cancel([NotNull] Action cancellationAction)
+   {
+      CancellationAction = cancellationAction ?? throw new ArgumentNullException(nameof(cancellationAction));
+   }
+
+   public void Accept()
+   {
+      Accepted = true;
    }
 
    #endregion
 
    #region Public Properties
 
-   public bool Canceled { get; set; }
+   public bool Accepted { get; private set; }
+
+   public bool Canceled => CancellationAction != null;
+
+   public Action CancellationAction { get; private set; }
 
    #endregion
 }
