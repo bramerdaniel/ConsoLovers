@@ -169,6 +169,7 @@ internal class RenderingRun : IDisposable
 
       IEnumerable<IRenderable> GetHandlers()
       {
+         yield return root;
          foreach (var lineInfo in renderInfos.Values)
          {
             foreach (var renderInfo in lineInfo)

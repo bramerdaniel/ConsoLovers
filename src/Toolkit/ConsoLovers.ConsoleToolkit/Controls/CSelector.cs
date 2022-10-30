@@ -90,15 +90,18 @@ public class CSelector<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignm
    }
 
    /// <summary>Gets the selected item.</summary>
-   public T SelectedItem
+   public ListItem<T> SelectedItem
    {
       get
       {
          if (SelectedIndex >= 0 && SelectedIndex < Items.Count)
-            return Items[SelectedIndex].Value;
-         return default;
+            return Items[SelectedIndex];
+         return null;
       }
    }
+
+   /// <summary>Gets the selected item.</summary>
+   public T SelectedValue => SelectedItem == null ? default : SelectedItem.Value;
 
    public RenderingStyle SelectionStyle { get; set; } = RenderingStyle.Selection;
 

@@ -18,8 +18,6 @@ internal class HorizontalSelectorRenderer<T> : ISelectorRenderer
 
    private readonly CSelector<T> selector;
 
-   private Queue<ItemRenderInfo> renderQueue;
-
    #endregion
 
    #region Constructors and Destructors
@@ -28,6 +26,10 @@ internal class HorizontalSelectorRenderer<T> : ISelectorRenderer
    {
       this.selector = selector ?? throw new ArgumentNullException(nameof(selector));
    }
+
+   public IList<ListItem<T>> Items => selector.Items;
+
+   private readonly Dictionary<ListItem<T>, MeasuredSize> measuredItems = new();
 
    #endregion
 
@@ -38,71 +40,60 @@ internal class HorizontalSelectorRenderer<T> : ISelectorRenderer
       var height = 0;
       var width = 0;
 
-      renderQueue = new Queue<ItemRenderInfo>();
-
-      int itemIndex = 0;
-      var availableItemLength = availableWidth - selector.Selector.Length;
-
-      foreach (var item in selector.Items)
+      foreach (var item in Items)
       {
-         var itemSize = item.Measure(availableItemLength);
-
-         height += itemSize.Height;
-         width = Math.Max(width, itemSize.MinWidth);
-
-         for (var i = 0; i < itemSize.Height; i++)
-         {
-            var data = new ItemRenderInfo
-            {
-               Item = item,
-               ItemLine = i,
-               ItemIndex = itemIndex,
-               AppendSelector = AppendSelector(i, itemSize.Height),
-               Width = itemSize.MinWidth
-            };
-
-            renderQueue.Enqueue(data);
-         }
-
-         itemIndex++;
+         var itemSize = item.Measure(availableWidth);
+         measuredItems[item] = itemSize;
+         height = Math.Max(height, itemSize.Height);
+         width = +itemSize.MinWidth;
       }
 
-      width = width + selector.Selector.Length;
-      return new MeasuredSize { Height = height, MinWidth = width };
+      return new MeasuredSize
+      {
+         Height = height,
+         MinWidth = width
+      };
    }
 
    public IEnumerable<Segment> RenderLine(IRenderContext context, int line)
    {
-      var data = renderQueue.Dequeue();
-      var itemIndex = data.ItemLine;
+      foreach (var item in Items.Where(ShouldBeRendered))
+      {
+         var isSelectedItem = item == selector.SelectedItem;
+         
+         foreach (var segment in item.RenderLine(context, line))
+         {
+            if (isSelectedItem)
+            {
+               yield return segment.WithStyle(selector.SelectionStyle);
+            }
+            else
+            {
+               yield return segment;
+            }
+         }
 
-      if (data.ItemIndex == selector.SelectedIndex && data.AppendSelector)
-      {
-         yield return new Segment(selector, $"{selector.Selector}", selector.SelectionStyle);
-      }
-      else
-      {
-         yield return new Segment(selector, string.Empty.PadRight(selector.Selector.Length), data.Item.Style);
+         yield return new Segment(selector, " ", selector.Style);
       }
 
-      var renderContext = new RenderContext { AvailableWidth = data.Width };
-      var segments = data.Item.RenderLine(renderContext, itemIndex).ToArray();
-      foreach (var segment in segments)
+      bool ShouldBeRendered(ListItem<T> candidate)
       {
-         yield return data.ItemIndex == selector.SelectedIndex
-            ? segment.WithStyle(selector.SelectionStyle)
-            : segment;
+         if (measuredItems.TryGetValue(candidate, out var size) && size.Height > line)
+            return true;
+         return false;
       }
    }
+
+
 
    public void HandleKeyInput(IKeyInputContext context)
    {
       switch (context.KeyEventArgs.Key)
       {
-         case ConsoleKey.UpArrow:
+         case ConsoleKey.LeftArrow:
             DecreaseSelectedIndex();
             break;
-         case ConsoleKey.DownArrow:
+         case ConsoleKey.RightArrow:
             IncreaseSelectedIndex();
             break;
          case ConsoleKey.End:
@@ -120,15 +111,6 @@ internal class HorizontalSelectorRenderer<T> : ISelectorRenderer
    #endregion
 
    #region Methods
-
-   private static bool AppendSelector(int line, int height)
-   {
-      if (height == 1 || height == 2)
-         return line == 0;
-
-      var halfHeight = (height - 1) / 2;
-      return line == halfHeight;
-   }
 
    private void DecreaseSelectedIndex()
    {
@@ -149,21 +131,4 @@ internal class HorizontalSelectorRenderer<T> : ISelectorRenderer
    }
 
    #endregion
-
-   struct ItemRenderInfo
-   {
-      #region Public Properties
-
-      public bool AppendSelector { get; set; }
-
-      public IRenderable Item { get; set; }
-
-      public int ItemIndex { get; set; }
-
-      public int ItemLine { get; set; }
-
-      public int Width { get; set; }
-
-      #endregion
-   }
 }
