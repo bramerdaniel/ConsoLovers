@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Choice.cs" company="ConsoLovers">
+// <copyright file="GList.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -12,7 +12,7 @@ using System.Linq;
 
 using JetBrains.Annotations;
 
-public class Choice<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignment
+public class GList<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignment
 {
    #region Constants and Fields
 
@@ -24,10 +24,9 @@ public class Choice<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignment
 
    #region Constructors and Destructors
 
-   public Choice(string question, params Tuple<T, string>[] answers)
+   public GList()
    {
-      Question = question;
-      Items = new List<Tuple<T, IRenderable>>(answers.Select(x => new Tuple<T, IRenderable>(x.Item1, new CText(x.Item2))));
+      Items = new List<ListItem<T>>(5);
    }
 
    #endregion
@@ -60,7 +59,7 @@ public class Choice<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignment
 
    #region Public Properties
 
-   public string Question { get; set; }
+   public IList<ListItem<T>> Items { get; }
 
    public int SelectedIndex
    {
@@ -75,12 +74,13 @@ public class Choice<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignment
       }
    }
 
+   /// <summary>Gets the selected item.</summary>
    public T SelectedItem
    {
       get
       {
          if (SelectedIndex >= 0 && SelectedIndex < Items.Count)
-            return Items[SelectedIndex].Item1;
+            return Items[SelectedIndex].Value;
          return default;
       }
    }
@@ -91,20 +91,21 @@ public class Choice<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignment
 
    #endregion
 
-   #region Properties
-
-   private List<Tuple<T, IRenderable>> Items { get; }
-
-   #endregion
-
    #region Public Methods and Operators
 
-   public void Add([NotNull] Tuple<T, string> answer)
+   public void Add([NotNull] T value, string displayText)
    {
-      if (answer == null)
-         throw new ArgumentNullException(nameof(answer));
+      Items.Add(new ListItem<T>(value, new CText(displayText)));
+   }
 
-      Items.Add(new Tuple<T, IRenderable>(answer.Item1, CText.FromString(answer.Item2)));
+   public void Add([NotNull] T value, IRenderable template)
+   {
+      Items.Add(new ListItem<T>(value, template));
+   }
+
+   public void Add([NotNull] T value)
+   {
+      Items.Add(new ListItem<T>(value));
    }
 
    public override MeasuredSize Measure(int availableWidth)
@@ -119,7 +120,7 @@ public class Choice<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignment
 
       foreach (var item in Items)
       {
-         var itemSize = item.Item2.Measure(availableItemLength);
+         var itemSize = item.Measure(availableItemLength);
 
          height += itemSize.Height;
          width = Math.Max(width, itemSize.MinWidth);
@@ -128,7 +129,7 @@ public class Choice<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignment
          {
             var data = new ItemRenderInfo
             {
-               Item = item.Item2,
+               Item = item,
                ItemLine = i,
                ItemIndex = itemIndex,
                AppendSelector = AppendSelector(i, itemSize.Height),
@@ -217,5 +218,33 @@ public class Choice<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignment
       public int Width { get; set; }
 
       #endregion
+   }
+}
+
+public class ListItem<T> : Renderable
+{
+   public T Value { get; }
+
+   public IRenderable Template { get; }
+
+   public ListItem(T value)
+   : this(value, new CText(value.ToString()))
+   {
+   }
+
+   public ListItem(T value, [NotNull] IRenderable template)
+   {
+      Value = value;
+      Template = template ?? throw new ArgumentNullException(nameof(template));
+   }
+
+   public override MeasuredSize Measure(int availableWidth)
+   {
+      return Template.Measure(availableWidth);
+   }
+
+   public override IEnumerable<Segment> RenderLine(IRenderContext context, int line)
+   {
+      return Template.RenderLine(context, line);
    }
 }

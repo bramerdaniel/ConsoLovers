@@ -20,28 +20,13 @@ namespace Playground
 
       private static void Main()
       {
-         var choice = Console.Choice<bool?>("Do you want to continue ?")
-            .WithAnswer(true, "Yes i want")
-            .WithAnswer(false, "No, go away")
-            .WithAnswer(null, "Can not decide yet")
-            .Build();
+         var list = new GList<string>() { Selector = ">> " };
+         list.Add("1", "First");
+         list.Add("2", new CBorder(new CText("Second")));
+         list.Add(3.ToString());
 
-         Console.RenderInteractive(new CBorder(choice));
-         Console.WriteLine($"result was {choice.SelectedItem}");
-
-         var result = Console.Choice<int>("Do you want to continue ?")
-            .WithAnswer(1, "Yes i want")
-            .WithAnswer(2, "No, go away")
-            .Show();
-
-         Console.WriteLine($"result was {result}");
-
-
-
-         var list = CList.ForItems((CText)"Yes", (CText)"No", new CRule("Bam"){ TextOffset = 1 }, (CText)"Cancel");
-         
-         // var list = CList.ForItems(new CBorder(new CText("Oha")), (CText)"Yes", new CText($"Very {Environment.NewLine}long text"), new CBorder(new CText($"Very {Environment.NewLine}long ext")), (CText)"No", (CText)"Cancel");
          Console.RenderInteractive(list);
+         Console.WriteLine("Selected item was " + list.SelectedItem );
 
          var panel = new CPanel();
          var y = new CButton(new CText("Yes"));
