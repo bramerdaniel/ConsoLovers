@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="List.cs" company="ConsoLovers">
+// <copyright file="CList.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -16,7 +16,7 @@ public class CList : InteractiveRenderable, IKeyInputHandler
 {
    #region Constants and Fields
 
-   private Queue<Renderdata> renderQueue;
+   private Queue<ItemRenderInfo> renderQueue;
 
    private int selectedIndex;
 
@@ -24,9 +24,9 @@ public class CList : InteractiveRenderable, IKeyInputHandler
 
    #region Constructors and Destructors
 
-   public CList(params IRenderable[] items)
+   public CList()
    {
-      Items = items.ToList();
+      Items = new List<IRenderable>();
    }
 
    #endregion
@@ -71,6 +71,15 @@ public class CList : InteractiveRenderable, IKeyInputHandler
 
    #region Public Methods and Operators
 
+   public static CList ForItems(params IRenderable[] items)
+   {
+      var list = new CList();
+      foreach (var item in items)
+         list.Add(item);
+
+      return list;
+   }
+
    public void Add([NotNull] IRenderable renderable)
    {
       if (renderable == null)
@@ -84,7 +93,7 @@ public class CList : InteractiveRenderable, IKeyInputHandler
       var height = 0;
       var width = 0;
 
-      renderQueue = new Queue<Renderdata>();
+      renderQueue = new Queue<ItemRenderInfo>();
 
       int itemIndex = 0;
       foreach (var item in Items)
@@ -96,7 +105,7 @@ public class CList : InteractiveRenderable, IKeyInputHandler
 
          for (var i = 0; i < itemSize.Height; i++)
          {
-            var data = new Renderdata
+            var data = new ItemRenderInfo
             {
                Item = item,
                ItemLine = i,
@@ -104,6 +113,7 @@ public class CList : InteractiveRenderable, IKeyInputHandler
                AppendSelector = AppendSelector(i, itemSize.Height),
                Width = itemSize.MinWidth
             };
+
             renderQueue.Enqueue(data);
          }
 
@@ -112,15 +122,6 @@ public class CList : InteractiveRenderable, IKeyInputHandler
 
       width = width + 1 + Selector.Length;
       return new MeasuredSize { Height = height, MinWidth = width };
-   }
-
-   private static bool AppendSelector(int line, int height)
-   {
-      if (height == 1 || height == 2)
-         return line == 0;
-
-      var halfHeight = (height - 1) / 2;
-      return line == halfHeight;
    }
 
    public override IEnumerable<Segment> RenderLine(IRenderContext context, int line)
@@ -151,6 +152,15 @@ public class CList : InteractiveRenderable, IKeyInputHandler
 
    #region Methods
 
+   private static bool AppendSelector(int line, int height)
+   {
+      if (height == 1 || height == 2)
+         return line == 0;
+
+      var halfHeight = (height - 1) / 2;
+      return line == halfHeight;
+   }
+
    private void DecreaseSelectedIndex()
    {
       SelectedIndex -= 1;
@@ -167,7 +177,7 @@ public class CList : InteractiveRenderable, IKeyInputHandler
 
    #endregion
 
-   struct Renderdata
+   struct ItemRenderInfo
    {
       #region Public Properties
 

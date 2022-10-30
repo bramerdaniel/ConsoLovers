@@ -96,4 +96,9 @@ public class CText : Renderable, IHaveAlignment
    }
 
    #endregion
+
+   public static IRenderable FromString(string value)
+   {
+      return (CText)value;
+   }
 }

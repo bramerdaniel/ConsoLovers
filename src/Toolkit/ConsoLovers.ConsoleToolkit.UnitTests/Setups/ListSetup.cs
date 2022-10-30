@@ -6,12 +6,24 @@
 
 namespace ConsoLovers.ConsoleToolkit.UnitTests.Setups;
 
+using System.Collections.Generic;
+
 using ConsoLovers.ConsoleToolkit.Controls;
 
 using FluentSetups;
 
-// [FluentSetup(typeof(CList))]
+[FluentSetup(typeof(CList), SetupMethod = "List")]
 public partial class ListSetup
 {
-   
+   [FluentMember]
+   private List<IRenderable> items;
+
+   protected CList CreateTarget()
+   {
+      var target = new CList();
+      foreach (var item in items)
+         target.Add(item);
+      return target;
+   }
+
 }

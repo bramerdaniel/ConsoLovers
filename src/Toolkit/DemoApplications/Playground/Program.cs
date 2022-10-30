@@ -14,14 +14,13 @@ namespace Playground
 
    public static class Program
    {
-      private static readonly ConsoleProxy Console = new ConsoleProxy();
+      private static readonly ConsoleProxy Console = new();
 
       #region Methods
 
       private static void Main()
       {
-         var list = new CList(new CBorder(new CText("Oha")), (CText)"Yes", new CText($"Very {Environment.NewLine}long CText"), new CBorder(new CText($"Very {Environment.NewLine}long CText")), (CText)"No", (CText)"Cancel");
-         //var list = new List((CText)"Yes", (CText)"No", (CText)"Cancel");
+         var list = CList.ForItems(new CBorder(new CText("Oha")), (CText)"Yes", new CText($"Very {Environment.NewLine}long text"), new CBorder(new CText($"Very {Environment.NewLine}long text")), (CText)"No", (CText)"Cancel");
          Console.RenderInteractive(list);
 
          var panel = new CPanel();
