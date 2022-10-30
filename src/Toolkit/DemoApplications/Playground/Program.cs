@@ -20,10 +20,10 @@ namespace Playground
 
       private static void Main()
       {
-         var list = new GList<string>() { Selector = ">> " };
-         list.Add("1", "First");
-         list.Add("2", new CBorder(new CText("Second")));
-         list.Add(3.ToString());
+         var list = new CSelector<bool?>() { Selector = ">> " };
+         list.Add(true, "First");
+         list.Add(false, new CBorder(new CText("Second")));
+         list.Add(null);
 
          Console.RenderInteractive(list);
          Console.WriteLine("Selected item was " + list.SelectedItem );

@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="GList.cs" company="ConsoLovers">
+// <copyright file="CSelector.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -12,7 +12,7 @@ using System.Linq;
 
 using JetBrains.Annotations;
 
-public class GList<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignment
+public class CSelector<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignment
 {
    #region Constants and Fields
 
@@ -24,7 +24,7 @@ public class GList<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignment
 
    #region Constructors and Destructors
 
-   public GList()
+   public CSelector()
    {
       Items = new List<ListItem<T>>(5);
    }
@@ -48,6 +48,12 @@ public class GList<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignment
             break;
          case ConsoleKey.DownArrow:
             IncreaseSelectedIndex();
+            break;
+         case ConsoleKey.End:
+            SelectedIndex = Items.Count - 1;
+            break;         
+         case ConsoleKey.Home:
+            SelectedIndex = 0;
             break;
          case ConsoleKey.Enter:
             context.Cancel();
@@ -93,17 +99,23 @@ public class GList<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignment
 
    #region Public Methods and Operators
 
-   public void Add([NotNull] T value, string displayText)
+   public void Add(T value, [NotNull] string displayText)
    {
+      if (displayText == null)
+         throw new ArgumentNullException(nameof(displayText));
+
       Items.Add(new ListItem<T>(value, new CText(displayText)));
    }
 
-   public void Add([NotNull] T value, IRenderable template)
+   public void Add(T value, [NotNull] IRenderable template)
    {
+      if (template == null)
+         throw new ArgumentNullException(nameof(template));
+
       Items.Add(new ListItem<T>(value, template));
    }
 
-   public void Add([NotNull] T value)
+   public void Add(T value)
    {
       Items.Add(new ListItem<T>(value));
    }
@@ -218,33 +230,5 @@ public class GList<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignment
       public int Width { get; set; }
 
       #endregion
-   }
-}
-
-public class ListItem<T> : Renderable
-{
-   public T Value { get; }
-
-   public IRenderable Template { get; }
-
-   public ListItem(T value)
-   : this(value, new CText(value.ToString()))
-   {
-   }
-
-   public ListItem(T value, [NotNull] IRenderable template)
-   {
-      Value = value;
-      Template = template ?? throw new ArgumentNullException(nameof(template));
-   }
-
-   public override MeasuredSize Measure(int availableWidth)
-   {
-      return Template.Measure(availableWidth);
-   }
-
-   public override IEnumerable<Segment> RenderLine(IRenderContext context, int line)
-   {
-      return Template.RenderLine(context, line);
    }
 }

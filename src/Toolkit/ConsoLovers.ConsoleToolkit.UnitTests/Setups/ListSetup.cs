@@ -18,12 +18,20 @@ public partial class ListSetup
    [FluentMember]
    private List<IRenderable> items;
 
+   private int idx;
+
    protected CList CreateTarget()
    {
       var target = new CList();
       foreach (var item in items)
          target.Add(item);
+      target.SelectedIndex = idx;
       return target;
    }
 
+   public ListSetup WithSelectedIndex(int index)
+   {
+      this.idx = index;
+      return this;
+   }
 }
