@@ -51,7 +51,7 @@ public abstract class InteractiveRenderable : IInteractiveRenderable
       set
       {
          style = value;
-         RaiseInvalidated();
+         Invalidate();
       }
    }
 
@@ -59,7 +59,7 @@ public abstract class InteractiveRenderable : IInteractiveRenderable
 
    #region Methods
 
-   protected virtual void RaiseInvalidated()
+   protected virtual void Invalidate()
    {
       Invalidated?.Invoke(this, EventArgs.Empty);
    }

@@ -1,0 +1,153 @@
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Renderer.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace ConsoLovers.ConsoleToolkit.Controls;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using JetBrains.Annotations;
+
+internal class VerticalSelectorRenderer<T> : ISelectorRenderer
+{
+   private readonly CSelector<T> selector;
+
+   public VerticalSelectorRenderer([NotNull] CSelector<T> selector)
+   {
+      this.selector = selector ?? throw new ArgumentNullException(nameof(selector));
+   }
+
+   struct ItemRenderInfo
+   {
+      #region Public Properties
+
+      public bool AppendSelector { get; set; }
+
+      public IRenderable Item { get; set; }
+
+      public int ItemIndex { get; set; }
+
+      public int ItemLine { get; set; }
+
+      public int Width { get; set; }
+
+      #endregion
+   }
+
+   private Queue<ItemRenderInfo> renderQueue;
+
+   public MeasuredSize Measure(int availableWidth)
+   {
+      var height = 0;
+      var width = 0;
+
+      renderQueue = new Queue<ItemRenderInfo>();
+
+      int itemIndex = 0;
+      var availableItemLength = availableWidth - selector.Selector.Length;
+
+      foreach (var item in selector.Items)
+      {
+         var itemSize = item.Measure(availableItemLength);
+
+         height += itemSize.Height;
+         width = Math.Max(width, itemSize.MinWidth);
+
+         for (var i = 0; i < itemSize.Height; i++)
+         {
+            var data = new ItemRenderInfo
+            {
+               Item = item,
+               ItemLine = i,
+               ItemIndex = itemIndex,
+               AppendSelector = AppendSelector(i, itemSize.Height),
+               Width = itemSize.MinWidth
+            };
+
+            renderQueue.Enqueue(data);
+         }
+
+         itemIndex++;
+      }
+
+      width = width + selector.Selector.Length;
+      return new MeasuredSize { Height = height, MinWidth = width };
+   }
+
+   private static bool AppendSelector(int line, int height)
+   {
+      if (height == 1 || height == 2)
+         return line == 0;
+
+      var halfHeight = (height - 1) / 2;
+      return line == halfHeight;
+   }
+
+   public IEnumerable<Segment> RenderLine(IRenderContext context, int line)
+   {
+      var data = renderQueue.Dequeue();
+      var itemIndex = data.ItemLine;
+
+      if (data.ItemIndex == selector.SelectedIndex && data.AppendSelector)
+      {
+         yield return new Segment(selector, $"{selector.Selector}", selector.SelectionStyle);
+      }
+      else
+      {
+         yield return new Segment(selector, string.Empty.PadRight(selector.Selector.Length), data.Item.Style);
+      }
+
+      var renderContext = new RenderContext { AvailableWidth = data.Width };
+      var segments = data.Item.RenderLine(renderContext, itemIndex).ToArray();
+      foreach (var segment in segments)
+      {
+         yield return data.ItemIndex == selector.SelectedIndex
+            ? segment.WithStyle(selector.SelectionStyle)
+            : segment;
+      }
+   }
+
+   private void DecreaseSelectedIndex()
+   {
+      var nextIndex = selector.SelectedIndex - 1;
+      if (nextIndex < 0)
+         nextIndex = selector.Items.Count - 1;
+
+      selector.SelectedIndex = nextIndex;
+   }
+
+   private void IncreaseSelectedIndex()
+   {
+      var nextIndex = selector.SelectedIndex + 1;
+      if (nextIndex >= selector.Items.Count)
+         nextIndex = 0;
+
+      selector.SelectedIndex = nextIndex;
+   }
+
+   public void HandleKeyInput(IKeyInputContext context)
+   {
+      switch (context.KeyEventArgs.Key)
+      {
+         case ConsoleKey.UpArrow:
+            DecreaseSelectedIndex();
+            break;
+         case ConsoleKey.DownArrow:
+            IncreaseSelectedIndex();
+            break;
+         case ConsoleKey.End:
+            selector.SelectedIndex = selector.Items.Count - 1;
+            break;
+         case ConsoleKey.Home:
+            selector.SelectedIndex = 0;
+            break;
+         case ConsoleKey.Enter:
+            context.Cancel();
+            break;
+      }
+   }
+}

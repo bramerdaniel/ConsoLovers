@@ -71,7 +71,7 @@ public class Choice<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignment
             return;
 
          selectedIndex = value;
-         RaiseInvalidated();
+         Invalidate();
       }
    }
 
