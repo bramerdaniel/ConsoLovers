@@ -17,7 +17,7 @@ namespace ConsoLovers.ConsoleToolkit.Controls
       /// <returns>The minimum and maximum width of the object.</returns>
       MeasuredSize Measure(int availableWidth);
       
-      IEnumerable<Segment> RenderLine(IRenderContext context, int lineIndex);
+      IEnumerable<Segment> RenderLine(IRenderContext context, int line);
       
 
       /// <summary>Gets or sets the style the renderable will use.</summary>

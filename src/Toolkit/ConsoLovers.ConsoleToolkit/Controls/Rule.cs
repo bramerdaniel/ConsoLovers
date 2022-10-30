@@ -37,7 +37,7 @@ public class Rule : Renderable
       return measuredSize;
    }
 
-   public override IEnumerable<Segment> RenderLine(IRenderContext context, int lineIndex)
+   public override IEnumerable<Segment> RenderLine(IRenderContext context, int line)
    {
       var text = Text ?? string.Empty;
       var availableWidth = context.AvailableWidth;

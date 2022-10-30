@@ -37,9 +37,8 @@ namespace ConsoLovers.ConsoleToolkit.Controls
 
       public abstract MeasuredSize Measure(int availableWidth);
 
-      public abstract IEnumerable<Segment> RenderLine(IRenderContext context, int lineIndex);
+      public abstract IEnumerable<Segment> RenderLine(IRenderContext context, int line);
       
-
       public RenderingStyle Style
       {
          get => style;

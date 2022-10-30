@@ -87,12 +87,12 @@ public class Text : Renderable, IHaveAlignment
       }
    }
 
-   public override IEnumerable<Segment> RenderLine(IRenderContext context, int lineIndex)
+   public override IEnumerable<Segment> RenderLine(IRenderContext context, int line)
    {
-      if (lineIndex >= lines.Length)
-         throw new ArgumentOutOfRangeException(nameof(lineIndex), $"Only can render lines between {0} and {lines.Length - 1}");
+      if (line >= lines.Length)
+         throw new ArgumentOutOfRangeException(nameof(line), $"Only can render lines between {0} and {lines.Length - 1}");
       
-      yield return new Segment(this, lines[lineIndex], Style);
+      yield return new Segment(this, lines[line], Style);
    }
 
    #endregion

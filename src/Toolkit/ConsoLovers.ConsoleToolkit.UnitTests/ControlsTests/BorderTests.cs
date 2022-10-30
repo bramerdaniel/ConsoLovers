@@ -130,4 +130,26 @@ public class BorderTests
 
       renderedText.Should().Be(value);
    }
+
+
+   [TestMethod]
+   public void EnsureLongTextIsRenderedCorrectly()
+   {
+      var border = Setup.Border()
+         .WithContent(new Text("Long text but OK"))
+         .Done();
+
+      var renderer = Setup.TestRenderer().Done();
+
+      var renderedText = renderer
+         .Render(border);
+
+      var value = @"
+┌────────────────┐
+│Long text but OK│
+└────────────────┘
+".Trim();
+
+      renderedText.Should().Be(value);
+   }
 }

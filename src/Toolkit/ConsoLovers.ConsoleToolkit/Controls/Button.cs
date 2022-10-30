@@ -45,21 +45,21 @@ public class Button : Renderable, IClickable ,IHaveAlignment
       return size;
    }
 
-   public override IEnumerable<Segment> RenderLine(IRenderContext context, int lineIndex)
+   public override IEnumerable<Segment> RenderLine(IRenderContext context, int line)
    {
-      if (lineIndex == 0)
+      if (line == 0)
       {
          yield return CreateBorderSegment(context, "┌", "┐", '─');
       }
-      else if (lineCount - 1 == lineIndex)
+      else if (lineCount - 1 == line)
       {
          yield return CreateBorderSegment(context, "└", "┘", '─');
       }
-      else if (lineIndex <= Padding.Top)
+      else if (line <= Padding.Top)
       {
          yield return CreateBorderSegment(context, "│", "│", ' ');
       }
-      else if (lineIndex >= 1 + Padding.Top + contentSize.Height)
+      else if (line >= 1 + Padding.Top + contentSize.Height)
       {
          yield return CreateBorderSegment(context, "│", "│", ' ');
       }
@@ -67,7 +67,7 @@ public class Button : Renderable, IClickable ,IHaveAlignment
       {
          yield return new Segment(this, "│".PadRight(Padding.Left + 1), Style);
 
-         foreach (var segment in RenderContent(context, lineIndex))
+         foreach (var segment in RenderContent(context, line))
             yield return new Segment(this, segment.Text, segment.Style);
 
          yield return new Segment(this, "│".PadLeft(Padding.Right + 1), Style);

@@ -23,5 +23,15 @@ public static class RenderingExtensions
          throw new ArgumentNullException(nameof(renderable));
 
       new RenderEngine(console).Render(renderable);
+   }   
+   
+   public static void RenderInteractive([NotNull] this IConsole console, IRenderable renderable)
+   {
+      if (console == null)
+         throw new ArgumentNullException(nameof(console));
+      if (renderable == null)
+         throw new ArgumentNullException(nameof(renderable));
+
+      new RenderEngine(console).Render(renderable, true);
    }
 }

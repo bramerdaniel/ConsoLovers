@@ -12,9 +12,11 @@ using ConsoLovers.ConsoleToolkit.Core;
 
 public sealed class RenderingStyle 
 {
-   private static RenderingStyle defaultStyle;
+   private static RenderingStyle defaultStyle, selection;
 
    public static RenderingStyle Default => defaultStyle ??= new RenderingStyle(Console.ForegroundColor, Console.BackgroundColor);
+
+   public static RenderingStyle Selection => selection ??= new RenderingStyle(Console.BackgroundColor, Console.ForegroundColor);
 
    /// <summary>Gets the foreground color.</summary>
    public ConsoleColor Foreground { get; }

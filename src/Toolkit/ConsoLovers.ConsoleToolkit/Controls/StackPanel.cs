@@ -14,7 +14,6 @@ using JetBrains.Annotations;
 
 public class StackPanel : Renderable, IHaveAlignment
 {
-
    private MeasuredSize size;
 
    public StackPanel()
@@ -64,15 +63,15 @@ public class StackPanel : Renderable, IHaveAlignment
       return size;
    }
 
-   public override IEnumerable<Segment> RenderLine(IRenderContext context, int lineIndex)
+   public override IEnumerable<Segment> RenderLine(IRenderContext context, int line)
    {
       foreach (var child in Children)
       {
          if (Measurements.TryGetValue(child, out size))
          {
-            if (size.Height > lineIndex)
+            if (size.Height > line)
             {
-               var childSegments = child.RenderLine(context, lineIndex).ToArray();
+               var childSegments = child.RenderLine(context, line).ToArray();
                foreach (var segment in childSegments)
                   yield return segment;
 

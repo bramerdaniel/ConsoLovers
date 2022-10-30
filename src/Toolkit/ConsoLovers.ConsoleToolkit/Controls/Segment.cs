@@ -36,5 +36,13 @@ public struct Segment
 
    public int Width => Text.Length;
 
+   public Segment WithStyle([NotNull] RenderingStyle stye)
+   {
+      if (stye == null)
+         throw new ArgumentNullException(nameof(stye));
+
+      return new Segment(Renderable, Text, stye);
+   }
+
    #endregion
 }

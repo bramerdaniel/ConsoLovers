@@ -7,11 +7,8 @@
 namespace ConsoLovers.ConsoleToolkit.Controls;
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 using ConsoLovers.ConsoleToolkit.Core;
-using ConsoLovers.ConsoleToolkit.InputHandler;
 
 using JetBrains.Annotations;
 
@@ -20,8 +17,6 @@ public class RenderEngine : IRenderEngine
    #region Constants and Fields
 
    private readonly IConsole console;
-
-   private IInputHandler inputHandler;
 
    #endregion
 
@@ -37,64 +32,37 @@ public class RenderEngine : IRenderEngine
 
    #region Public Methods and Operators
 
-   private Dictionary<int, List<RenderInfo>> renderInfos = new();
-
-   public void Render([NotNull] IRenderable renderable)
+   public void Render([NotNull] IRenderable renderable, bool interactive)
    {
       if (renderable == null)
          throw new ArgumentNullException(nameof(renderable));
-      
-      if (renderable is IClickable clickable)
+
+      if (interactive)
       {
-         RenderInteactive(clickable);
+         RenderInteractive(renderable);
       }
       else
       {
-         RenderSimple(renderable);
+         RenderNonInteractive(renderable);
       }
    }
 
-   private void RenderInteactive(IClickable renderable)
+   public void Render([NotNull] IRenderable renderable)
+   {
+      Render(renderable, false);
+   }
+
+   private void RenderInteractive(IRenderable renderable)
    {
       if (renderable == null)
          throw new ArgumentNullException(nameof(renderable));
 
-      var availableSize = console.WindowWidth;
-      var size = renderable.Measure(availableSize);
-
-      inputHandler = InputHandlerFactory.GetInputHandler();
-      inputHandler.MouseClicked += OnMouseClicked;
-      inputHandler.Start();
-
-      for (int line = 0; line < size.Height; line++)
-      {
-         var context = ComputeContext(renderable, size);
-         foreach (var segment in renderable.RenderLine(context, line))
-         {
-            UpdateRenderInfo(segment);
-            availableSize = WriteSegment(segment, availableSize);
-         }
-
-         console.WriteLine();
-         availableSize = console.WindowWidth;
-      }
-
-      inputHandler.Wait();
+      using var renderingRun = new RenderingRun(console, renderable);
+      renderingRun.Start();
+      renderingRun.Wait();
    }
 
-   private void UpdateRenderInfo(Segment segment)
-   {
-      if (!renderInfos.TryGetValue(console.CursorTop, out var lineRenderInfos))
-      {
-         lineRenderInfos = new List<RenderInfo>();
-         renderInfos.Add(console.CursorTop, lineRenderInfos);
-      }
-
-      var renderInfo = new RenderInfo(console.CursorTop, console.CursorLeft, segment);
-      lineRenderInfos.Add(renderInfo);
-   }
-
-   private void RenderSimple(IRenderable renderable)
+   private void RenderNonInteractive(IRenderable renderable)
    {
       var availableSize = console.WindowWidth;
       var size = renderable.Measure(availableSize);
@@ -108,33 +76,6 @@ public class RenderEngine : IRenderEngine
          console.WriteLine();
          availableSize = console.WindowWidth;
       }
-   }
-
-   private void OnMouseClicked(object sender, MouseEventArgs e)
-   {
-      // Console.WriteLine($"Clicked Left={e.WindowLeft}, Top={e.WindowTop}");
-      var clickable = FindClickable(e.WindowTop, e.WindowLeft);
-      if (clickable != null)
-      {
-         inputHandler.Stop();
-         clickable.NotifyClicked();
-      }
-   }
-
-   private IClickable FindClickable(int line, int column)
-   {
-      if (renderInfos.TryGetValue(line, out var lineInfos))
-      {
-         foreach (var renderInfo in lineInfos)
-         {
-            if (renderInfo.Column <= column &&  column <= renderInfo.EndColumn)
-            {
-               return (IClickable)renderInfo.Segment.Renderable;
-            }
-         }
-      }
-
-      return null;
    }
 
    private RenderContext ComputeContext(IRenderable renderable, MeasuredSize measuredSize)

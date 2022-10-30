@@ -20,12 +20,20 @@ namespace Playground
 
       private static void Main()
       {
-         Console.WindowWidth = 20;
-         Text t = "Hello";
-         //var panel = new StackPanel();
-         //panel.Add(new Border(new Text($"Hello World {Environment.NewLine}from the Console")));
-         //panel.Add(new Border(new Text($"Hello World {Environment.NewLine}from the Console")));
-         Console.Render(new Border((Text)$"Hello World from but the text is so long oh my god the Console"));
+         var list = new List(new Border(new Text("Oha")), (Text)"Yes", new Text($"Very {Environment.NewLine}long Text"), new Border(new Text($"Very {Environment.NewLine}long Text")), (Text)"No", (Text)"Cancel");
+         //var list = new List((Text)"Yes", (Text)"No", (Text)"Cancel");
+         Console.RenderInteractive(list);
+
+         var panel = new StackPanel();
+         var y = new Button(new Text("Yes"));
+         y.Clicked += OnYesButtonClicked;
+         panel.Add(y);
+         var no = new Button(new Text("No "));
+         no.Clicked += OnButtonClicked;
+         panel.Add(no);
+
+         Console.WriteLine("Click yes or no");
+         Console.RenderInteractive(panel);
 
          //var panel = new StackPanel();
          //panel.Add(new Text("Say"));
@@ -39,9 +47,14 @@ namespace Playground
          Console.ReadLine();
       }
 
+      private static void OnYesButtonClicked(object sender, EventArgs e)
+      {
+         Console.WriteLine("Yes button clicked");
+      }
+
       private static void OnButtonClicked(object sender, EventArgs e)
       {
-         Console.WriteLine("Button clicked");
+         Console.WriteLine("No button clicked");
 
       }
 
