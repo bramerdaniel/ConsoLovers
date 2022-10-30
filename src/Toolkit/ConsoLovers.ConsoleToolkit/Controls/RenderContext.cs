@@ -1,12 +1,12 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IHaveAlignment.cs" company="ConsoLovers">
+// <copyright file="RenderContext.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Prompts;
+namespace ConsoLovers.ConsoleToolkit.Controls;
 
-public interface IHaveAlignment
+public class RenderContext : IRenderContext
 {
-   Alignment Alignment { get; }
+   public int AvailableWidth { get; set; }
 }

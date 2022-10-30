@@ -6,8 +6,8 @@
 
 namespace PromptsDemo
 {
+   using ConsoLovers.ConsoleToolkit.Controls;
    using ConsoLovers.ConsoleToolkit.Core;
-   using ConsoLovers.ConsoleToolkit.Prompts;
 
    using Microsoft.Extensions.DependencyInjection;
 

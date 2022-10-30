@@ -1,24 +1,24 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Panel.cs" company="ConsoLovers">
+// <copyright file="Button.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Prompts;
+namespace ConsoLovers.ConsoleToolkit.Controls;
 
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-public class Panel : Renderable, IHaveAlignment
+public class Button : Renderable, IClickable ,IHaveAlignment
 {
-   // TODO Add header for the panel
    private int lineCount;
 
    private MeasuredSize contentSize;
 
    private MeasuredSize size;
 
-   public Panel(IRenderable content)
+   public Button(IRenderable content)
    {
       Content = content;
    }
@@ -65,14 +65,21 @@ public class Panel : Renderable, IHaveAlignment
       }
       else
       {
-         yield return new Segment("│".PadRight(Padding.Left + 1), Style);
+         yield return new Segment(this, "│".PadRight(Padding.Left + 1), Style);
 
          foreach (var segment in RenderContent(context, lineIndex))
-            yield return segment;
+            yield return new Segment(this, segment.Text, segment.Style);
 
-         yield return new Segment("│".PadLeft(Padding.Right + 1), Style);
+         yield return new Segment(this, "│".PadLeft(Padding.Right + 1), Style);
       }
    }
+
+   public void NotifyClicked()
+   {
+      Clicked?.Invoke(this, EventArgs.Empty);
+   }
+
+   public event EventHandler Clicked;
 
    private IEnumerable<Segment> RenderContent(IRenderContext context, int lineIndex)
    {
@@ -91,7 +98,7 @@ public class Panel : Renderable, IHaveAlignment
          builder.Append(left);
          builder.Append(string.Empty.PadRight(width - 2, middle));
          builder.Append(right);
-         return new Segment(builder.ToString(), Style);
+         return new Segment(this, builder.ToString(), Style);
       }
 
       if (Alignment == Alignment.Right)
@@ -100,7 +107,7 @@ public class Panel : Renderable, IHaveAlignment
          builder.Append(left);
          builder.Append(string.Empty.PadRight(context.AvailableWidth - 2, middle));
          builder.Append(right);
-         return new Segment(builder.ToString(), Style);
+         return new Segment(this, builder.ToString(), Style);
       }
       else
       {
@@ -108,7 +115,7 @@ public class Panel : Renderable, IHaveAlignment
          builder.Append(left);
          builder.Append(string.Empty.PadRight(context.AvailableWidth - 2, middle));
          builder.Append(right);
-         return new Segment(builder.ToString(), Style);
+         return new Segment(this, builder.ToString(), Style);
       }
       // context.Console.Write("├┤┬┴┼");
 

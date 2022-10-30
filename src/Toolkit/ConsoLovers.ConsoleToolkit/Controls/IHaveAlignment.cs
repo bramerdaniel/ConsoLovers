@@ -1,12 +1,12 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IRenderEngine.cs" company="ConsoLovers">
+// <copyright file="IHaveAlignment.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Prompts;
+namespace ConsoLovers.ConsoleToolkit.Controls;
 
-public interface IRenderEngine
+public interface IHaveAlignment
 {
-   void Render(IRenderable renderable);
+   Alignment Alignment { get; }
 }

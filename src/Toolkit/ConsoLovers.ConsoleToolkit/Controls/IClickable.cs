@@ -1,16 +1,12 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IRenderContext.cs" company="ConsoLovers">
+// <copyright file="IClickable.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Prompts
-{
-   using ConsoLovers.ConsoleToolkit.Core;
+namespace ConsoLovers.ConsoleToolkit.Controls;
 
-   public interface IRenderContext
-   {
-      int AvailableWidth { get; }
-      
-   }
+internal interface IClickable : IRenderable
+{
+   void NotifyClicked();
 }

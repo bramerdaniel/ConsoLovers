@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Prompts;
+namespace ConsoLovers.ConsoleToolkit.Controls;
 
 using System;
 using System.Collections.Generic;
@@ -27,6 +27,7 @@ public class Text : Renderable
    }
 
    public Text(string value)
+   : base(RenderingStyle.Default)
    {
       Value = value;
    }
@@ -57,7 +58,7 @@ public class Text : Renderable
    {
 #if NETFRAMEWORK
 
-      return value.Split(new string[]{ Environment.NewLine }, StringSplitOptions.None);
+      return value.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
 #else
       return value.Split(Environment.NewLine, StringSplitOptions.None);
 #endif
@@ -84,7 +85,7 @@ public class Text : Renderable
          throw new ArgumentOutOfRangeException(nameof(lineIndex), $"Only can render lines between {0} and {lines.Length - 1}");
 
       var textWithPadding = PadLine(lineIndex, context.AvailableWidth);
-      yield return new Segment(textWithPadding, Style);
+      yield return new Segment(this, textWithPadding, Style);
    }
 
    private string PadLine(int line, int available)

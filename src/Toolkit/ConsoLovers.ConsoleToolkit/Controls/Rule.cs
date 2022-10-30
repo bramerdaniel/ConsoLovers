@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Prompts;
+namespace ConsoLovers.ConsoleToolkit.Controls;
 
 using System.Collections.Generic;
 
@@ -44,7 +44,7 @@ public class Rule : Renderable
 
       var (left, right) = ComputeOffsets(availableWidth);
       text = text.PadLeft(left, RuleCharacter).PadRight(availableWidth, RuleCharacter);
-      yield return new Segment(text, Style);
+      yield return new Segment(this, text, Style);
    }
 
    private (int, int) ComputeOffsets(int availableWidth)

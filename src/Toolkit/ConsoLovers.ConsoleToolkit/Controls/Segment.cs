@@ -4,23 +4,21 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Prompts;
+namespace ConsoLovers.ConsoleToolkit.Controls;
 
 using System;
+using System.Diagnostics;
 
 using JetBrains.Annotations;
 
+[DebuggerDisplay("{Text} {Style.Foreground}")]
 public struct Segment
 {
    #region Constructors and Destructors
-
-   public Segment([NotNull] string text)
-      : this(text, RenderingStyle.Default)
+   
+   public Segment([NotNull] IRenderable renderable, [NotNull] string text, [NotNull] RenderingStyle style)
    {
-   }
-
-   public Segment([NotNull] string text, [NotNull] RenderingStyle style)
-   {
+      Renderable = renderable ?? throw new ArgumentNullException(nameof(renderable));
       Text = text ?? throw new ArgumentNullException(nameof(text));
       Style = style ?? throw new ArgumentNullException(nameof(style));
    }
@@ -30,6 +28,9 @@ public struct Segment
    #region Public Properties
 
    public RenderingStyle Style { get; }
+
+   /// <summary>Gets the renderable that produced this segment.</summary>
+   public IRenderable Renderable { get; }
 
    public string Text { get; }
 

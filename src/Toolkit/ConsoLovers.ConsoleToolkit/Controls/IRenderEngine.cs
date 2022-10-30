@@ -1,12 +1,12 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="RenderContext.cs" company="ConsoLovers">
+// <copyright file="IRenderEngine.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Prompts;
+namespace ConsoLovers.ConsoleToolkit.Controls;
 
-public class RenderContext : IRenderContext
+public interface IRenderEngine
 {
-   public int AvailableWidth { get; set; }
+   void Render(IRenderable renderable);
 }

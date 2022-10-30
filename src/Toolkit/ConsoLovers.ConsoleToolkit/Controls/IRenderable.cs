@@ -4,11 +4,9 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Prompts
+namespace ConsoLovers.ConsoleToolkit.Controls
 {
    using System.Collections.Generic;
-
-   using JetBrains.Annotations;
 
    public interface IRenderable
    {

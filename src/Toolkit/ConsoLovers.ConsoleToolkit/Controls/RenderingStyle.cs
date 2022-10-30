@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Prompts;
+namespace ConsoLovers.ConsoleToolkit.Controls;
 
 using System;
 
@@ -12,7 +12,9 @@ using ConsoLovers.ConsoleToolkit.Core;
 
 public sealed class RenderingStyle 
 {
-   public static RenderingStyle Default { get; private set; }
+   private static RenderingStyle defaultStyle;
+
+   public static RenderingStyle Default => defaultStyle ??= new RenderingStyle(Console.ForegroundColor, Console.BackgroundColor);
 
    /// <summary>Gets the foreground color.</summary>
    public ConsoleColor Foreground { get; }
@@ -31,8 +33,9 @@ public sealed class RenderingStyle
       Background = background ?? Default.Background;
    }
 
-   public static void InitializeDefaultStyle(IConsole console)
+   public static RenderingStyle InitializeDefaultStyle(IConsole console)
    {
-      Default =new RenderingStyle(console.ForegroundColor, console.BackgroundColor);
+      defaultStyle = new RenderingStyle(console.ForegroundColor, console.BackgroundColor);
+      return defaultStyle;
    }
 }

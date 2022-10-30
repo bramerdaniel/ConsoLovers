@@ -10,8 +10,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
+using ConsoLovers.ConsoleToolkit.Controls;
 using ConsoLovers.ConsoleToolkit.Core;
-using ConsoLovers.ConsoleToolkit.Prompts;
 
 internal class PromptsLogic : IApplicationLogic<PromptsDemoArgs>
 {
