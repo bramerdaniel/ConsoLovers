@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-public class CBorder : Renderable, IHaveAlignment
+public class Border : Renderable, IHaveAlignment
 {
    #region Constants and Fields
 
@@ -25,12 +25,12 @@ public class CBorder : Renderable, IHaveAlignment
 
    #region Constructors and Destructors
 
-   /// <summary>Initializes a new instance of the <see cref="CBorder"/> class.</summary>
+   /// <summary>Initializes a new instance of the <see cref="Border"/> class.</summary>
    /// <param name="content">The content.</param>
-   public CBorder(IRenderable content)
+   public Border(IRenderable content)
    {
       Content = content;
-      Border = Borders.Default;
+      CharSet = Borders.Default;
    }
 
    #endregion
@@ -47,7 +47,7 @@ public class CBorder : Renderable, IHaveAlignment
 
    public Thickness Padding { get; set; }
 
-   public BorderCharSet Border { get; set; }
+   public BorderCharSet CharSet { get; set; }
 
    #endregion
 
@@ -76,24 +76,24 @@ public class CBorder : Renderable, IHaveAlignment
    {
       if (line == 0)
       {
-         yield return CreateBorderSegment(context, Border.TopLeft, Border.TopRight, Border.Top);
+         yield return CreateBorderSegment(context, CharSet.TopLeft, CharSet.TopRight, CharSet.Top);
       }
       else if (lineCount - 1 == line)
       {
-         yield return CreateBorderSegment(context, Border.BottomLeft, Border.BottomRight, Border.Bottom);
+         yield return CreateBorderSegment(context, CharSet.BottomLeft, CharSet.BottomRight, CharSet.Bottom);
       }
       else if (line <= Padding.Top)
       {
-         yield return CreateBorderSegment(context, Border.Left, Border.Right, ' ');
+         yield return CreateBorderSegment(context, CharSet.Left, CharSet.Right, ' ');
       }
       else if (line >= 1 + Padding.Top + contentSize.Height)
       {
-         yield return CreateBorderSegment(context, Border.Left, Border.Right, ' ');
+         yield return CreateBorderSegment(context, CharSet.Left, CharSet.Right, ' ');
       }
       else
       {
          var leftWidth = Padding.Left + 1;
-         yield return new Segment(this, Border.Left.ToString().PadRight(leftWidth), Style);
+         yield return new Segment(this, CharSet.Left.ToString().PadRight(leftWidth), Style);
 
          var segments = RenderContent(context, line).ToArray();
          foreach (var segment in segments)
@@ -102,7 +102,7 @@ public class CBorder : Renderable, IHaveAlignment
          var contentWidth = segments.Sum(x => x.Width);
          var rightWidth = context.AvailableWidth - leftWidth - contentWidth;
 
-         yield return new Segment(this, Border.Right.ToString().PadLeft(rightWidth), Style);
+         yield return new Segment(this, CharSet.Right.ToString().PadLeft(rightWidth), Style);
       }
    }
 

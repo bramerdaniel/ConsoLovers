@@ -23,9 +23,9 @@ public class GenericSelectorTests
    {
       var list = Setup.Selector<IRenderable>()
          .WithItem((CText)"Yes")
-         .WithItem(new CBorder(new CText("Oha")))
+         .WithItem(new Border(new CText("Oha")))
          .WithItem(new CText($"Very {Environment.NewLine}long text"))
-         .WithItem(new CBorder(new CText($"Very {Environment.NewLine}long text")))
+         .WithItem(new Border(new CText($"Very {Environment.NewLine}long text")))
          .WithItem((CText)"No")
          .Done();
 

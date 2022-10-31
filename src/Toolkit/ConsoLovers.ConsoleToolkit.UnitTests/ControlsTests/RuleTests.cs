@@ -58,7 +58,7 @@ public class RuleTests
 
       var renderedText = Setup.TestRenderer()
          .WithConsoleWidth(13)
-         .Render(new CBorder(rule));
+         .Render(new Border(rule));
 
       var expected = @"
 ┌───────────┐

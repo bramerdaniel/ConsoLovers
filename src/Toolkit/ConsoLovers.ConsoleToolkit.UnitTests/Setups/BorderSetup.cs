@@ -10,7 +10,7 @@ using ConsoLovers.ConsoleToolkit.Controls;
 
 using FluentSetups;
 
-[FluentSetup(typeof(CBorder), SetupMethod = "Border")]
+[FluentSetup(typeof(Border), SetupMethod = "Border")]
 public partial class BorderSetup
 {
    

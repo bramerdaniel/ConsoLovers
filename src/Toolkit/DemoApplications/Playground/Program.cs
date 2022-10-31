@@ -21,9 +21,9 @@ namespace Playground
 
       private static void Main()
       {
-         var border = new CBorder(new CText($"Hello{Environment.NewLine}world"))
+         var border = new Border(new CText($"Hello{Environment.NewLine}world"))
          {
-            Border = Borders.Doubled
+            CharSet = Borders.Doubled
          };
 
          Console.Render(border);
@@ -119,9 +119,9 @@ namespace Playground
       {
          Console.WriteLine("Continue ?");
          var list = new CSelector<bool?>();
-         list.Add(true, new CBorder(new CText("Yes ")));
-         list.Add(false, new CBorder(new CText("No  ")));
-         list.Add(null, new CBorder(new CText("No sure yet")));
+         list.Add(true, new Border(new CText("Yes ")));
+         list.Add(false, new Border(new CText("No  ")));
+         list.Add(null, new Border(new CText("No sure yet")));
 
          Console.RenderInteractive(list);
          Console.WriteLine("Selected item was " + list.SelectedValue);
@@ -131,9 +131,9 @@ namespace Playground
       private static void ShowSecond()
       {
          var list = new CSelector<int?>() { Selector = "↑", Orientation = Orientation.Horizontal };
-         list.Add(1, new CBorder(new CText("One")));
-         list.Add(2, new CBorder(new CText("Two")));
-         list.Add(3, new CBorder(new CText("Three")));
+         list.Add(1, new Border(new CText("One")));
+         list.Add(2, new Border(new CText("Two")));
+         list.Add(3, new Border(new CText("Three")));
          list.Add(4, "Four");
          list.Add(null, "null");
 

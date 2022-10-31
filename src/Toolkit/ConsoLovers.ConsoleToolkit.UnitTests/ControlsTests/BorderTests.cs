@@ -25,7 +25,7 @@ public class BorderTests
    {
       var border = Setup.Border()
          .WithContent(new CText("Some TEXT"))
-         .WithBorder(Borders.Doubled)
+         .WithCharSet(Borders.Doubled)
          .Done();
 
       var renderer = Setup.TestRenderer().Done();
