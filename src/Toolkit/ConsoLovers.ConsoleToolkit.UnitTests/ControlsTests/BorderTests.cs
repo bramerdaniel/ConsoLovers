@@ -18,11 +18,14 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 [TestClass]
 public class BorderTests
 {
+   #region Public Methods and Operators
+
    [TestMethod]
-   public void EnsureBorderWithTextIsRenderedCorrectly()
+   public void EnsureBorderTypeIsRespected()
    {
       var border = Setup.Border()
-         .WithContent(new CText("X"))
+         .WithContent(new CText("Some TEXT"))
+         .WithBorder(Borders.Doubled)
          .Done();
 
       var renderer = Setup.TestRenderer().Done();
@@ -31,14 +34,36 @@ public class BorderTests
          .Render(border);
 
       var value = @"
-┌─┐
-│X│
-└─┘
+╔═════════╗
+║Some TEXT║
+╚═════════╝
 ".Trim();
 
       renderedText.Should().Be(value);
    }
 
+   [TestMethod]
+   public void EnsureBorderWithLeftRightPaddingIsRenderedCorrectly()
+   {
+      var border = Setup.Border()
+         .WithContent(new CText($"First{Environment.NewLine}Second"))
+         .WithPadding(new Thickness(2, 0, 3, 0))
+         .Done();
+
+      var renderer = Setup.TestRenderer().Done();
+
+      var renderedText = renderer
+         .Render(border);
+
+      var value = @"
+┌───────────┐
+│  First    │
+│  Second   │
+└───────────┘
+".Trim();
+
+      renderedText.Should().Be(value);
+   }
 
    [TestMethod]
    public void EnsureBorderWithMultilineTextIsRenderedCorrectly()
@@ -63,11 +88,10 @@ public class BorderTests
    }
 
    [TestMethod]
-   public void EnsureBorderWithLeftRightPaddingIsRenderedCorrectly()
+   public void EnsureBorderWithTextIsRenderedCorrectly()
    {
       var border = Setup.Border()
-         .WithContent(new CText($"First{Environment.NewLine}Second"))
-         .WithPadding(new Thickness(2, 0, 3, 0))
+         .WithContent(new CText("X"))
          .Done();
 
       var renderer = Setup.TestRenderer().Done();
@@ -76,10 +100,9 @@ public class BorderTests
          .Render(border);
 
       var value = @"
-┌───────────┐
-│  First    │
-│  Second   │
-└───────────┘
+┌─┐
+│X│
+└─┘
 ".Trim();
 
       renderedText.Should().Be(value);
@@ -112,27 +135,6 @@ public class BorderTests
    }
 
    [TestMethod]
-   public void EnsureSingleLineTextIsRenderedCorrectly()
-   {
-      var border = Setup.Border()
-         .WithContent(null)
-         .Done();
-
-      var renderer = Setup.TestRenderer().Done();
-
-      var renderedText = renderer
-         .Render(border);
-
-      var value = @"
-┌┐
-└┘
-".Trim();
-
-      renderedText.Should().Be(value);
-   }
-
-
-   [TestMethod]
    public void EnsureLongTextIsRenderedCorrectly()
    {
       var border = Setup.Border()
@@ -154,11 +156,10 @@ public class BorderTests
    }
 
    [TestMethod]
-   public void EnsureBorderTypeIsRespected()
+   public void EnsureSingleLineTextIsRenderedCorrectly()
    {
       var border = Setup.Border()
-         .WithContent(new CText("Some TEXT"))
-         .WithBorder(Borders.Doubled)
+         .WithContent(null)
          .Done();
 
       var renderer = Setup.TestRenderer().Done();
@@ -167,11 +168,12 @@ public class BorderTests
          .Render(border);
 
       var value = @"
-╔═════════╗
-║Some TEXT║
-╚═════════╝
+┌┐
+└┘
 ".Trim();
 
       renderedText.Should().Be(value);
    }
+
+   #endregion
 }
