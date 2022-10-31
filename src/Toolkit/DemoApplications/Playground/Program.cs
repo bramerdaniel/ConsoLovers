@@ -23,6 +23,7 @@ namespace Playground
          ShowFirst();
          Console.Clear();
          ShowSecond();
+         ShowThird();
 
          var panel = new CPanel();
          var y = new CButton(new CText("Yes"));
@@ -50,13 +51,27 @@ namespace Playground
       private static void ShowFirst()
       {
          Console.WriteLine("Continue ?");
-         var list = new CSelector<bool?> { Selector = string.Empty, Orientation = Orientation.Horizontal };
+         var list = new CSelector<bool?> { Orientation = Orientation.Horizontal };
+         list.Add(true, "Yes");
+         list.Add(false, "No");
+         list.Add(null);
+
+         Console.RenderInteractive(list);
+         Console.WriteLine($"Selected item was {list.SelectedValue}");
+         Console.ReadLine();
+         Console.Clear();
+      }
+      private static void ShowThird()
+      {
+         Console.WriteLine("Continue ?");
+         var list = new CSelector<bool?>();
          list.Add(true, "Yes");
          list.Add(false, "No");
          list.Add(null, "Unsure");
 
          Console.RenderInteractive(list);
          Console.WriteLine("Selected item was " + list.SelectedValue);
+         Console.ReadLine();
       }
 
       private static void ShowSecond()
@@ -70,6 +85,8 @@ namespace Playground
 
          Console.RenderInteractive(list);
          Console.WriteLine("Selected item was " + list.SelectedValue);
+         Console.ReadLine();
+         Console.Clear();
       }
 
       private static void OnYesButtonClicked(object sender, EventArgs e)

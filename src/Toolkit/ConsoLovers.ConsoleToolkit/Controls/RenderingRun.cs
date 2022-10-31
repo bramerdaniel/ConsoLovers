@@ -35,6 +35,8 @@ internal class RenderingRun : IDisposable
 
    private int initialTop;
 
+   private IRenderable hoveredRenderable;
+
    #endregion
 
    #region Constructors and Destructors
@@ -52,8 +54,9 @@ internal class RenderingRun : IDisposable
 
    public void Dispose()
    {
-      inputHandler.MouseClicked -= OnMouseClicked;
       inputHandler.KeyDown -= OnKeyDown;
+      inputHandler.MouseClicked -= OnMouseClicked;
+      inputHandler.MouseMoved -= OnMouseMoved;
 
       foreach (var action in disposeActions)
          action();
@@ -72,12 +75,15 @@ internal class RenderingRun : IDisposable
 
    public void Start()
    {
-      inputHandler.MouseClicked += OnMouseClicked;
       inputHandler.KeyDown += OnKeyDown;
+      inputHandler.MouseClicked += OnMouseClicked;
+      inputHandler.MouseMoved += OnMouseMoved;
       inputHandler.Start();
 
       RenderInternal(true);
    }
+
+
 
    public void UpdateRenderInfo(Segment segment)
    {
@@ -129,7 +135,7 @@ internal class RenderingRun : IDisposable
          {
             var left = console.WindowWidth - measuredSize.MinWidth;
             console.CursorLeft = left;
-            return new RenderContext { AvailableWidth = measuredSize.MinWidth, Size = measuredSize};
+            return new RenderContext { AvailableWidth = measuredSize.MinWidth, Size = measuredSize };
          }
 
          if (hasAlignment.Alignment == Alignment.Center)
@@ -143,7 +149,12 @@ internal class RenderingRun : IDisposable
       return new RenderContext { AvailableWidth = measuredSize.MinWidth, Size = measuredSize };
    }
 
-   private IMouseInputHandler FindClickable(int line, int column)
+   private IMouseInputHandler FindInputHandler(int line, int column)
+   {
+      return FindRenderable(line, column) as IMouseInputHandler;
+   }
+
+   private IRenderable FindRenderable(int line, int column)
    {
       if (renderInfos.TryGetValue(line, out var lineInfos))
       {
@@ -151,13 +162,14 @@ internal class RenderingRun : IDisposable
          {
             if (renderInfo.Column <= column && column <= renderInfo.EndColumn)
             {
-               return renderInfo.Segment.Renderable as IMouseInputHandler;
+               return renderInfo.Segment.Renderable;
             }
          }
       }
 
       return null;
    }
+
 
    private void NotifyKeyHandlers(KeyEventArgs args)
    {
@@ -178,7 +190,7 @@ internal class RenderingRun : IDisposable
    {
       return GetAllHandlers()
          .Distinct();
-      
+
       IEnumerable<IRenderable> GetAllHandlers()
       {
          yield return root;
@@ -218,9 +230,39 @@ internal class RenderingRun : IDisposable
       NotifyMouseHandlers(e);
    }
 
+   private void OnMouseMoved(object sender, MouseEventArgs e)
+   {
+      var underMouse = FindRenderable(e.WindowTop, e.WindowLeft);
+      HoveredRenderable = underMouse;
+   }
+
+   internal IRenderable HoveredRenderable
+   {
+      get => hoveredRenderable;
+      set
+      {
+         if (Equals(hoveredRenderable, value))
+            return;
+
+         var previous = hoveredRenderable;
+         hoveredRenderable = value;
+
+         UpdateMouseOver(previous, false);
+         UpdateMouseOver(hoveredRenderable, true);
+      }
+   }
+
+   private void UpdateMouseOver(IRenderable renderable, bool mouseOver)
+   {
+      if (renderable is IMouseAware mouseAware)
+      {
+         mouseAware.IsMouseOver = mouseOver;
+      }
+   }
+
    private void NotifyMouseHandlers(MouseEventArgs e)
    {
-      var mouseHandler = FindClickable(e.WindowTop, e.WindowLeft);
+      var mouseHandler = FindInputHandler(e.WindowTop, e.WindowLeft);
       if (mouseHandler != null)
       {
          var context = new MouseInputContext(e);

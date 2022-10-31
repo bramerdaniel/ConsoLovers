@@ -46,7 +46,7 @@ public class CSelector<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignm
 
    public void HandleKeyInput(IKeyInputContext context)
    {
-      if(context.KeyEventArgs.Key == ConsoleKey.Escape && !AllowCancellation)
+      if (context.KeyEventArgs.Key == ConsoleKey.Escape && !AllowCancellation)
          return;
 
       Renderer.HandleKeyInput(context);
@@ -60,6 +60,8 @@ public class CSelector<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignm
    public bool AllowCancellation { get; set; } = true;
 
    public IList<ListItem<T>> Items { get; }
+
+   public RenderingStyle MouseOverStyle { get; set; } = DefaultStyles.MouseOver;
 
    public Orientation Orientation
    {
@@ -112,22 +114,12 @@ public class CSelector<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignm
    /// <summary>Gets the selected item.</summary>
    public T SelectedValue => SelectedItem == null ? default : SelectedItem.Value;
 
-   public RenderingStyle SelectionStyle { get; set; } = RenderingStyle.Selection;
+   public RenderingStyle SelectionStyle { get; set; } = DefaultStyles.Selection;
 
    public string Selector
    {
       get => selector ?? UseDefaultSelector(Orientation);
       set => selector = value;
-   }
-
-   private string UseDefaultSelector(Orientation ori)
-   {
-      return ori switch
-      {
-         Orientation.Vertical => "> ",
-         Orientation.Horizontal => "^",
-         _ => throw new ArgumentOutOfRangeException(nameof(ori))
-      };
    }
 
    #endregion
@@ -180,6 +172,20 @@ public class CSelector<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignm
    public override IEnumerable<Segment> RenderLine(IRenderContext context, int line)
    {
       return Renderer.RenderLine(context, line);
+   }
+
+   #endregion
+
+   #region Methods
+
+   private string UseDefaultSelector(Orientation ori)
+   {
+      return ori switch
+      {
+         Orientation.Vertical => "> ",
+         Orientation.Horizontal => "^",
+         _ => throw new ArgumentOutOfRangeException(nameof(ori))
+      };
    }
 
    #endregion

@@ -14,21 +14,24 @@ using JetBrains.Annotations;
 /// <summary>Represents one item in a <see cref="CSelector{T}"/></summary>
 /// <typeparam name="T">The type of the value</typeparam>
 /// <seealso cref="ConsoLovers.ConsoleToolkit.Controls.Renderable" />
-public class ListItem<T> : Renderable, IMouseInputHandler
+public class ListItem<T> : InteractiveRenderable, IMouseInputHandler, IMouseAware
 {
-   private readonly CSelector<T> owner;
+   private bool isMouseOver;
 
-   
+   private IRenderable template;
+
+   private RenderingStyle mouseOverStyle;
+
    #region Constructors and Destructors
 
-   public ListItem(CSelector<T> owner,  T value)
+   public ListItem(CSelector<T> owner, T value)
       : this(owner, value, CreateTemplate(value))
    {
    }
 
    public ListItem([NotNull] CSelector<T> owner, T value, [NotNull] IRenderable template)
    {
-      this.owner = owner ?? throw new ArgumentNullException(nameof(owner));
+      Owner = owner ?? throw new ArgumentNullException(nameof(owner));
       Template = template ?? throw new ArgumentNullException(nameof(template));
       Value = value;
    }
@@ -37,8 +40,21 @@ public class ListItem<T> : Renderable, IMouseInputHandler
 
    #region Public Properties
 
-   public IRenderable Template { get; }
+   /// <summary>Gets the <see cref="IRenderable"/> that is displayed when rendered.</summary>
+   public IRenderable Template
+   {
+      get => template;
+      set
+      {
+         if(Equals(template, value))
+            return;
 
+         template = value;
+         Invalidate();
+      }
+   }
+
+   /// <summary>Gets the value the list item holds.</summary>
    public T Value { get; }
 
    #endregion
@@ -50,16 +66,25 @@ public class ListItem<T> : Renderable, IMouseInputHandler
       return Template.Measure(availableWidth);
    }
 
+   public RenderingStyle MouseOverStyle
+   {
+      get => mouseOverStyle ??= Owner.MouseOverStyle;
+      set => mouseOverStyle = value;
+   }
+
    public override IEnumerable<Segment> RenderLine(IRenderContext context, int line)
    {
       var segments = Template.RenderLine(context, line);
       foreach (var segment in segments)
-         yield return new Segment(this, segment.Text, segment.Style);
+      {
+         var segmentStyle = isMouseOver ? MouseOverStyle : segment.Style;
+         yield return new Segment(this, segment.Text, segmentStyle);
+      }
    }
 
    public void HandleMouseInput(IMouseInputContext context)
    {
-      owner.SelectedItem = this;
+      Owner.SelectedItem = this;
       context.Accept();
    }
 
@@ -76,4 +101,24 @@ public class ListItem<T> : Renderable, IMouseInputHandler
    }
 
    #endregion
+
+   /// <summary>Gets or sets a value indicating whether this instance is mouse over.</summary>
+   /// <value>
+   ///   <c>true</c> if this instance is mouse over; otherwise, <c>false</c>.
+   /// </value>
+   bool IMouseAware.IsMouseOver
+   {
+      get => isMouseOver;
+      set
+      {
+         if (isMouseOver == value)
+            return;
+
+         isMouseOver = value;
+         Invalidate();
+      }
+   }
+
+   /// <summary>Gets the selector that hold this item</summary>
+   public CSelector<T> Owner { get; }
 }

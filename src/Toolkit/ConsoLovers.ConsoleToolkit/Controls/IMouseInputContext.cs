@@ -1,14 +1,18 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IMouseInputHandler.cs" company="ConsoLovers">
+// <copyright file="IMouseInputContext.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace ConsoLovers.ConsoleToolkit.Controls;
 
-internal interface IMouseInputHandler : IRenderable
+using System;
+
+public interface IMouseInputContext
 {
-   void HandleMouseInput(IMouseInputContext context);
-   
-   // void HandleMouseMove(IMouseInputContext context);
+   void Cancel();
+
+   void Cancel(Action cancellationAction);
+
+   void Accept();
 }

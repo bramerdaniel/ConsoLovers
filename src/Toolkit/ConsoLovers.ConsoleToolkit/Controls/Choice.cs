@@ -88,7 +88,7 @@ public class Choice<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignment
       }
    }
 
-   public RenderingStyle SelectionStyle { get; set; } = RenderingStyle.Selection;
+   public RenderingStyle SelectionStyle { get; set; } = DefaultStyles.Selection;
 
    public string Selector { get; set; } = "> ";
 

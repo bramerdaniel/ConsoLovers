@@ -10,22 +10,35 @@ using System;
 
 using ConsoLovers.ConsoleToolkit.Core;
 
-public sealed class RenderingStyle 
+public static class DefaultStyles
 {
-   private static RenderingStyle defaultStyle, selection;
+   #region Constants and Fields
 
-   public static RenderingStyle Default => defaultStyle ??= new RenderingStyle(Console.ForegroundColor, Console.BackgroundColor);
+   private static RenderingStyle mouseOver;
 
-   public static RenderingStyle Selection => selection ??= new RenderingStyle(Console.BackgroundColor, Console.ForegroundColor);
+   private static RenderingStyle selection;
 
-   /// <summary>Gets the foreground color.</summary>
-   public ConsoleColor Foreground { get; }
+   #endregion
 
-   /// <summary>
-   /// Gets the background color.
-   /// </summary>
-   public ConsoleColor Background { get; }
-   
+   #region Public Properties
+
+   public static RenderingStyle MouseOver => mouseOver ??= new RenderingStyle(ConsoleColor.Black, ConsoleColor.Gray);
+
+   public static RenderingStyle Selection => selection ??= new RenderingStyle(ConsoleColor.Black, ConsoleColor.White); 
+
+   #endregion
+}
+
+public sealed class RenderingStyle
+{
+   #region Constants and Fields
+
+   private static RenderingStyle defaultStyle;
+
+   #endregion
+
+   #region Constructors and Destructors
+
    /// <summary>Initializes a new instance of the <see cref="RenderingStyle"/> class.</summary>
    /// <param name="foreground">The foreground color.</param>
    /// <param name="background">The background color.</param>
@@ -35,9 +48,27 @@ public sealed class RenderingStyle
       Background = background ?? Default.Background;
    }
 
+   #endregion
+
+   #region Public Properties
+
+   public static RenderingStyle Default => defaultStyle ??= new RenderingStyle(Console.ForegroundColor, Console.BackgroundColor);
+
+   /// <summary>Gets the background color.</summary>
+   public ConsoleColor Background { get; }
+
+   /// <summary>Gets the foreground color.</summary>
+   public ConsoleColor Foreground { get; }
+
+   #endregion
+
+   #region Public Methods and Operators
+
    public static RenderingStyle InitializeDefaultStyle(IConsole console)
    {
       defaultStyle = new RenderingStyle(console.ForegroundColor, console.BackgroundColor);
       return defaultStyle;
    }
+
+   #endregion
 }

@@ -10,13 +10,15 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-public class CButton : Renderable, IMouseInputHandler ,IHaveAlignment
+public class CButton : InteractiveRenderable, IMouseInputHandler ,IHaveAlignment, IMouseAware
 {
    private int lineCount;
 
    private MeasuredSize contentSize;
 
    private MeasuredSize size;
+
+   private bool isMouseOver;
 
    public CButton(IRenderable content)
    {
@@ -79,6 +81,11 @@ public class CButton : Renderable, IMouseInputHandler ,IHaveAlignment
       Clicked?.Invoke(this, EventArgs.Empty);
    }
 
+   public void HandleMouseMove(IMouseInputContext context)
+   {
+      // 
+   }
+
    public event EventHandler Clicked;
 
    private IEnumerable<Segment> RenderContent(IRenderContext context, int lineIndex)
@@ -121,4 +128,20 @@ public class CButton : Renderable, IMouseInputHandler ,IHaveAlignment
 
    }
 
+   /// <summary>Gets or sets a value indicating whether this instance is mouse over.</summary>
+   /// <value>
+   ///   <c>true</c> if this instance is mouse over; otherwise, <c>false</c>.
+   /// </value>
+   bool IMouseAware.IsMouseOver
+   {
+      get => isMouseOver;
+      set
+      {
+         if (isMouseOver == value)
+            return;
+
+         isMouseOver = value;
+         Invalidate();
+      }
+   }
 }
