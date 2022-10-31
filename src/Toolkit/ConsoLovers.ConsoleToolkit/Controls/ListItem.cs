@@ -8,7 +8,6 @@ namespace ConsoLovers.ConsoleToolkit.Controls;
 
 using System;
 using System.Collections.Generic;
-
 using JetBrains.Annotations;
 
 /// <summary>Represents one item in a <see cref="CSelector{T}"/></summary>
@@ -61,7 +60,7 @@ public class ListItem<T> : InteractiveRenderable, IMouseInputHandler, IMouseAwar
 
    #region Public Methods and Operators
 
-   public override MeasuredSize Measure(int availableWidth)
+   public override MeasuredSize MeasureOverride(int availableWidth)
    {
       return Template.Measure(availableWidth);
    }

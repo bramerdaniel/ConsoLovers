@@ -10,8 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using ConsoLovers.ConsoleToolkit.Core.Input;
-
 using JetBrains.Annotations;
 
 internal class VerticalSelectorRenderer<T> : ISelectorRenderer

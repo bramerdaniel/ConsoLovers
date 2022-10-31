@@ -8,7 +8,7 @@ namespace ConsoLovers.ConsoleToolkit.Controls;
 
 using System.Collections.Generic;
 
-public class CRule : Renderable
+public class Rule : Renderable
 {
 
    private MeasuredSize measuredSize;
@@ -21,7 +21,7 @@ public class CRule : Renderable
 
    public string Text { get; }
 
-   public CRule(string text)
+   public Rule(string text)
    {
       Text = text;
    }

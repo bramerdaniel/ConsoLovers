@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="RuleSetup.cs" company="ConsoLovers">
+// <copyright file="MessageDisplaySetup.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -10,8 +10,8 @@ using ConsoLovers.ConsoleToolkit.Controls;
 
 using FluentSetups;
 
-[FluentSetup(typeof(Rule), SetupMethod = "Rule")]
-public partial class RuleSetup
+[FluentSetup(typeof(MessageDisplay))]
+public partial class MessageDisplaySetup
 {
    
 }

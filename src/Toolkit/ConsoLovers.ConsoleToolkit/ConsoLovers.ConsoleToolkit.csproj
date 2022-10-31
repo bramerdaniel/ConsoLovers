@@ -48,4 +48,7 @@
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
 		<Reference Include="Microsoft.CSharp" />
 	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Controls\Link\" />
+	</ItemGroup>
 </Project>

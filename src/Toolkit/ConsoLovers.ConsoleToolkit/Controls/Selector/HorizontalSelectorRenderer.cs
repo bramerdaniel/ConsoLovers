@@ -9,7 +9,6 @@ namespace ConsoLovers.ConsoleToolkit.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using JetBrains.Annotations;
 
 internal class HorizontalSelectorRenderer<T> : ISelectorRenderer

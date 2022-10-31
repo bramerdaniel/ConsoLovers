@@ -57,7 +57,7 @@ public class StringSelectorTests
    {
       var list = Setup.Selector<string>()
          .WithItem("First")
-         .WithItem(null, new CRule(null))
+         .WithItem(null, new Rule(null))
          .WithItem("Second")
          .Done();
 

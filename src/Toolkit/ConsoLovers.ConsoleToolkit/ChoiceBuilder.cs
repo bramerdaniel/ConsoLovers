@@ -110,7 +110,7 @@ public class ChoiceBuilder<T>
 
       if (singleLine)
       {
-         var panel = new CPanel();
+         var panel = new Panel();
          panel.Add(new CText(Question));
          panel.Add(choiceSelector);
          targetConsole.RenderInteractive(panel);

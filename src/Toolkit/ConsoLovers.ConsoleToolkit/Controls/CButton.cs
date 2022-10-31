@@ -31,7 +31,7 @@ public class CButton : InteractiveRenderable, IMouseInputHandler ,IHaveAlignment
 
    public Thickness Padding { get; set; }
 
-   public override MeasuredSize Measure(int availableWidth)
+   public override MeasuredSize MeasureOverride(int availableWidth)
    {
       contentSize = Content.Measure(availableWidth - 2);
       lineCount = contentSize.Height + 2 + Padding.Bottom + Padding.Top;

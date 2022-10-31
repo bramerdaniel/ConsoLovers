@@ -15,18 +15,31 @@ namespace Playground
 
    public static class Program
    {
+      #region Constants and Fields
+
       private static readonly ConsoleProxy Console = new();
+
+      #endregion
 
       #region Methods
 
       private static void Main()
       {
-         var border = new Border(new CText($"Hello{Environment.NewLine}world"))
+         try
          {
-            CharSet = Borders.Doubled
-         };
+            new Thrower().Run();
+         }
+         catch (Exception e)
+         {
+            // var display = new MessageDisplay(e.GetType().FullName, e.Message);
+            var display = new ExceptionDisplay(e);
+            Console.Render(display);
+            // Console.WriteLine(e.ToString());
+         }
 
-         Console.Render(border);
+         var border = new Border(new Link("https://spectreconsole.net")) { CharSet = Borders.Doubled };
+
+         Console.RenderInteractive(border);
 
          ShowYesNo();
 
@@ -54,7 +67,7 @@ namespace Playground
          ShowThird();
          ShowFourth();
 
-         var panel = new CPanel();
+         var panel = new Panel();
          var y = new CButton(new CText("Yes"));
          y.Clicked += OnYesButtonClicked;
          panel.Add(y);
@@ -68,22 +81,19 @@ namespace Playground
          Console.ReadLine();
       }
 
-      private static void ShowYesNo()
+      private static void OnButtonClicked(object sender, EventArgs e)
       {
-         try
-         {
-            if (!Console.YesNo("Continue ?"))
-               throw new OperationCanceledException();
-         }
-         catch (InputCanceledException)
-         {
-            // We ignore
-         }
+         Console.WriteLine("No button clicked");
+      }
+
+      private static void OnYesButtonClicked(object sender, EventArgs e)
+      {
+         Console.WriteLine("Yes button clicked");
       }
 
       private static void ShowFirst()
       {
-         var panel = new CPanel();
+         var panel = new Panel();
          var list = new CSelector<bool?> { Orientation = Orientation.Horizontal };
          list.Add(true, "Yes");
          list.Add(false, "No");
@@ -96,23 +106,6 @@ namespace Playground
          Console.WriteLine($"Selected item was {list.SelectedValue}");
          Console.ReadLine();
          Console.Clear();
-      }
-      private static void ShowThird()
-      {
-         Console.WriteLine("Continue ?");
-         var list = new CSelector<bool?>
-         {
-            Selector = "→ ",
-            SelectionStyle = new RenderingStyle(ConsoleColor.Blue),
-            MouseOverStyle = new RenderingStyle(ConsoleColor.DarkCyan)
-         };
-         list.Add(true, "Yes");
-         list.Add(false, "No");
-         list.Add(null, "Unsure");
-
-         Console.RenderInteractive(list);
-         Console.WriteLine("Selected item was " + list.SelectedValue);
-         Console.ReadLine();
       }
 
       private static void ShowFourth()
@@ -143,14 +136,54 @@ namespace Playground
          Console.Clear();
       }
 
-      private static void OnYesButtonClicked(object sender, EventArgs e)
+      private static void ShowThird()
       {
-         Console.WriteLine("Yes button clicked");
+         Console.WriteLine("Continue ?");
+         var list = new CSelector<bool?>
+         {
+            Selector = "→ ", SelectionStyle = new RenderingStyle(ConsoleColor.Blue), MouseOverStyle = new RenderingStyle(ConsoleColor.DarkCyan)
+         };
+         list.Add(true, "Yes");
+         list.Add(false, "No");
+         list.Add(null, "Unsure");
+
+         Console.RenderInteractive(list);
+         Console.WriteLine("Selected item was " + list.SelectedValue);
+         Console.ReadLine();
       }
 
-      private static void OnButtonClicked(object sender, EventArgs e)
+      private static void ShowYesNo()
       {
-         Console.WriteLine("No button clicked");
+         try
+         {
+            if (!Console.YesNo("Continue ?"))
+               throw new OperationCanceledException();
+         }
+         catch (InputCanceledException)
+         {
+            // We ignore
+         }
+      }
+
+      #endregion
+   }
+
+   internal class Thrower
+   {
+      #region Public Methods and Operators
+
+      public void Run()
+      {
+         Call();
+      }
+
+      #endregion
+
+      #region Methods
+
+      private void Call()
+      {
+         throw new InvalidOperationException("This sounds wrong, but the text of this exception needs to be quite long as it must be wrapped to multiple lines. To archive this is must write more and more text.");
       }
 
       #endregion

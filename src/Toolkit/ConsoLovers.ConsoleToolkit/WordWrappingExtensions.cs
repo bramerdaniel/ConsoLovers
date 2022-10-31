@@ -9,12 +9,17 @@ namespace ConsoLovers.ConsoleToolkit;
 using System;
 using System.Collections.Generic;
 
+using JetBrains.Annotations;
+
 public static class WordWrappingExtensions
 {
    private static char[] wrappingChars = new[] { ' ', ',', '.', '?', '!', ':', ';', '-', '\n', '\r', '\t' };
 
-   public static List<string> Wrap(this string text, int maxLineLength)
+   public static IList<string> Wrap([NotNull] this string text, int maxLineLength)
    {
+      if (text == null)
+         throw new ArgumentNullException(nameof(text));
+
       var list = new List<string>();
 
       int currentIndex;

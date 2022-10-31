@@ -12,16 +12,16 @@ using System.Linq;
 
 using JetBrains.Annotations;
 
-public class CPanel : Renderable, IHaveAlignment
+public class Panel : Renderable, IHaveAlignment
 {
    private MeasuredSize size;
 
-   public CPanel()
+   public Panel()
    : this(RenderingStyle.Default)
    {
    }
 
-   public CPanel(RenderingStyle style)
+   public Panel(RenderingStyle style)
    : base(style)
    {
       Children = new List<IRenderable>(5);
@@ -87,7 +87,7 @@ public class CPanel : Renderable, IHaveAlignment
    }
 
 
-   public CPanel Add([NotNull] IRenderable renderable)
+   public Panel Add([NotNull] IRenderable renderable)
    {
       if (renderable == null)
          throw new ArgumentNullException(nameof(renderable));
@@ -96,7 +96,7 @@ public class CPanel : Renderable, IHaveAlignment
       return this;
    }
 
-   public CPanel Remove([NotNull] IRenderable renderable)
+   public Panel Remove([NotNull] IRenderable renderable)
    {
       if (renderable == null)
          throw new ArgumentNullException(nameof(renderable));

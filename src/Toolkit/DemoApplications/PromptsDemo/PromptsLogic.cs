@@ -55,9 +55,9 @@ internal class PromptsLogic : IApplicationLogic<PromptsDemoArgs>
 
    private void Old()
    {
-      renderEngine.Render(new CRule("Hello World") { Style = blue, RuleCharacter = '*' });
-      renderEngine.Render(new CRule("Hello World") { Style = red, TextAlignment = Alignment.Right, TextOffset = 20 });
-      renderEngine.Render(new CRule("Hello World") { TextAlignment = Alignment.Center });
+      renderEngine.Render(new Rule("Hello World") { Style = blue, RuleCharacter = '*' });
+      renderEngine.Render(new Rule("Hello World") { Style = red, TextAlignment = Alignment.Right, TextOffset = 20 });
+      renderEngine.Render(new Rule("Hello World") { TextAlignment = Alignment.Center });
 
       var text = new CText("Hello World");
       var panel = new Border(text) { Padding = new Thickness(3) };
@@ -78,9 +78,9 @@ internal class PromptsLogic : IApplicationLogic<PromptsDemoArgs>
       panel = new Border(panel) { Alignment = Alignment.Center, Style = red };
       renderEngine.Render(panel);
 
-      panel = new Border(new CRule("Hello World") { MaxWidth = 60, TextAlignment = Alignment.Center });
+      panel = new Border(new Rule("Hello World") { MaxWidth = 60, TextAlignment = Alignment.Center });
       renderEngine.Render(panel);
-      renderEngine.Render(new CRule("Hello World") { MaxWidth = 60, TextAlignment = Alignment.Center });
+      renderEngine.Render(new Rule("Hello World") { MaxWidth = 60, TextAlignment = Alignment.Center });
    }
 
    #endregion
