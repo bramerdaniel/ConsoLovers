@@ -21,6 +21,13 @@ namespace Playground
 
       private static void Main()
       {
+         var border = new CBorder(new CText($"Hello{Environment.NewLine}world"))
+         {
+            Border = Borders.Doubled
+         };
+
+         Console.Render(border);
+
          ShowYesNo();
 
          var count = Console.Choice<int>("Choose a number: ")
@@ -95,7 +102,7 @@ namespace Playground
          Console.WriteLine("Continue ?");
          var list = new CSelector<bool?>
          {
-            Selector = "→ ", 
+            Selector = "→ ",
             SelectionStyle = new RenderingStyle(ConsoleColor.Blue),
             MouseOverStyle = new RenderingStyle(ConsoleColor.DarkCyan)
          };

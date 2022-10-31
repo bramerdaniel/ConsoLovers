@@ -152,4 +152,26 @@ public class BorderTests
 
       renderedText.Should().Be(value);
    }
+
+   [TestMethod]
+   public void EnsureBorderTypeIsRespected()
+   {
+      var border = Setup.Border()
+         .WithContent(new CText("Some TEXT"))
+         .WithBorder(Borders.Doubled)
+         .Done();
+
+      var renderer = Setup.TestRenderer().Done();
+
+      var renderedText = renderer
+         .Render(border);
+
+      var value = @"
+╔═════════╗
+║Some TEXT║
+╚═════════╝
+".Trim();
+
+      renderedText.Should().Be(value);
+   }
 }
