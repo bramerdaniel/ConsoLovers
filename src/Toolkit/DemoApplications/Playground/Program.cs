@@ -21,9 +21,9 @@ namespace Playground
       private static void Main()
       {
          ShowFirst();
-         Console.Clear();
          ShowSecond();
          ShowThird();
+         ShowFourth();
 
          var panel = new CPanel();
          var y = new CButton(new CText("Yes"));
@@ -64,7 +64,7 @@ namespace Playground
       private static void ShowThird()
       {
          Console.WriteLine("Continue ?");
-         var list = new CSelector<bool?>();
+         var list = new CSelector<bool?>(){ Selector = "→ " };
          list.Add(true, "Yes");
          list.Add(false, "No");
          list.Add(null, "Unsure");
@@ -74,9 +74,22 @@ namespace Playground
          Console.ReadLine();
       }
 
+      private static void ShowFourth()
+      {
+         Console.WriteLine("Continue ?");
+         var list = new CSelector<bool?>();
+         list.Add(true, new CBorder(new CText("Yes ")));
+         list.Add(false, new CBorder(new CText("No  ")));
+         list.Add(null, new CBorder(new CText("No sure yet")));
+
+         Console.RenderInteractive(list);
+         Console.WriteLine("Selected item was " + list.SelectedValue);
+         Console.ReadLine();
+      }
+
       private static void ShowSecond()
       {
-         var list = new CSelector<int?>() { Selector = ">> ", Orientation = Orientation.Horizontal };
+         var list = new CSelector<int?>() { Selector = "↑", Orientation = Orientation.Horizontal };
          list.Add(1, new CBorder(new CText("One")));
          list.Add(2, new CBorder(new CText("Two")));
          list.Add(3, new CBorder(new CText("Three")));

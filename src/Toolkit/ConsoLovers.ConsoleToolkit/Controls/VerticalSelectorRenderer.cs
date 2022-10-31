@@ -78,7 +78,7 @@ internal class VerticalSelectorRenderer<T> : ISelectorRenderer
          itemIndex++;
       }
 
-      width = width + selector.Selector.Length;
+      width += selector.Selector.Length;
       return new MeasuredSize { Height = height, MinWidth = width };
    }
 
@@ -94,7 +94,6 @@ internal class VerticalSelectorRenderer<T> : ISelectorRenderer
    public IEnumerable<Segment> RenderLine(IRenderContext context, int line)
    {
       var data = renderQueue.Dequeue();
-      var itemIndex = data.ItemLine;
 
       if (data.ItemIndex == selector.SelectedIndex && data.AppendSelector)
       {
@@ -106,13 +105,21 @@ internal class VerticalSelectorRenderer<T> : ISelectorRenderer
       }
 
       var renderContext = new RenderContext { AvailableWidth = data.ItemWidth, Size = data.ItemSize };
-      var segments = data.Item.RenderLine(renderContext, itemIndex).ToArray();
+      var segments = data.Item.RenderLine(renderContext, data.ItemLine).ToArray();
       foreach (var segment in segments)
       {
          yield return data.ItemIndex == selector.SelectedIndex
             ? segment.WithStyle(selector.SelectionStyle)
             : segment;
       }
+      
+      // This extends the selection but not the mouse over effect
+      ////var width = context.AvailableWidth - data.ItemWidth;
+      ////if (width > 0)
+      ////{
+      ////   var style = data.ItemIndex == selector.SelectedIndex ? selector.SelectionStyle : selector.Style;
+      ////   yield return new Segment(selector, string.Empty.PadRight(width), style);
+      ////}
    }
 
    private void DecreaseSelectedIndex()
