@@ -10,25 +10,6 @@ using System;
 
 using ConsoLovers.ConsoleToolkit.Core;
 
-public static class DefaultStyles
-{
-   #region Constants and Fields
-
-   private static RenderingStyle mouseOver;
-
-   private static RenderingStyle selection;
-
-   #endregion
-
-   #region Public Properties
-
-   public static RenderingStyle MouseOver => mouseOver ??= new RenderingStyle(ConsoleColor.Black, ConsoleColor.Gray);
-
-   public static RenderingStyle Selection => selection ??= new RenderingStyle(ConsoleColor.Black, ConsoleColor.White); 
-
-   #endregion
-}
-
 public sealed class RenderingStyle
 {
    #region Constants and Fields
@@ -68,6 +49,22 @@ public sealed class RenderingStyle
    {
       defaultStyle = new RenderingStyle(console.ForegroundColor, console.BackgroundColor);
       return defaultStyle;
+   }
+
+   /// <summary>Creates a copy of the current style and adjusts the <see cref="Background"/></summary>
+   /// <param name="background">The background to use .</param>
+   /// <returns>A copy with the adjusted background</returns>
+   public RenderingStyle WithBackground(ConsoleColor background)
+   {
+      return new RenderingStyle(Foreground, background);
+   }
+
+   /// <summary>Creates a copy of the current style and adjusts the <see cref="Foreground"/></summary>
+   /// <param name="foreground">The foreground to use .</param>
+   /// <returns>A copy with the adjusted foreground</returns>
+   public RenderingStyle WithForeground(ConsoleColor foreground)
+   {
+      return new RenderingStyle(foreground, Background);
    }
 
    #endregion

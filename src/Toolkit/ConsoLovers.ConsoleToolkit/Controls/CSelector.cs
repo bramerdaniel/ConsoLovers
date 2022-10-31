@@ -61,7 +61,7 @@ public class CSelector<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignm
 
    public IList<ListItem<T>> Items { get; }
 
-   public RenderingStyle MouseOverStyle { get; set; } = DefaultStyles.MouseOver;
+   public RenderingStyle MouseOverStyle { get; set; } = DefaultStyles.MouseOverStyle;
 
    public Orientation Orientation
    {
@@ -114,7 +114,7 @@ public class CSelector<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignm
    /// <summary>Gets the selected item.</summary>
    public T SelectedValue => SelectedItem == null ? default : SelectedItem.Value;
 
-   public RenderingStyle SelectionStyle { get; set; } = DefaultStyles.Selection;
+   public RenderingStyle SelectionStyle { get; set; } = DefaultStyles.SelectionStyle;
 
    public string Selector
    {

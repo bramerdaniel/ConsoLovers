@@ -94,4 +94,28 @@ public class StackPanelTests
       renderedText.Should().Be(value);
    }
 
+   [TestMethod]
+   public void EnsureTextAndListIsRenderedCorrectly()
+   {
+      var selector = Setup.Selector<string>()
+         .WithItem("Yes")
+         .WithItem("No")
+         .WithItem("Cancel")
+         .WithOrientation(Orientation.Horizontal)
+         .WithoutSelector()
+         .Done();
+
+      var border = Setup.Panel()
+         .WithChild(new CText("Label : "))
+         .WithChild(selector)
+         .Done();
+
+      var renderer = Setup.TestRenderer().Done();
+
+      var renderedText = renderer
+         .Render(border);
+
+      renderedText.Should().Be("Label : Yes No Cancel");
+   }
+
 }

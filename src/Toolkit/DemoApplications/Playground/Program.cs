@@ -11,6 +11,7 @@ namespace Playground
    using ConsoLovers.ConsoleToolkit;
    using ConsoLovers.ConsoleToolkit.Controls;
    using ConsoLovers.ConsoleToolkit.Core;
+   using ConsoLovers.ConsoleToolkit.Core.Input;
 
    public static class Program
    {
@@ -20,6 +21,27 @@ namespace Playground
 
       private static void Main()
       {
+         ShowYesNo();
+
+         var count = Console.Choice<int>("Choose a number: ")
+            .WithAnswer(23)
+            .WithAnswer(7)
+            .WithAnswer(1572)
+            .Show();
+
+         var answer = Console.Choice<string>("Answer please ? ")
+            .WithAnswer("Yes")
+            .WithAnswer("No")
+            .WithAnswer("Cancel", new CText("Cancel", RenderingStyle.Default.WithForeground(ConsoleColor.Red)))
+            .WithOrientation(Orientation.Horizontal, true)
+            .AllowCancellation(false)
+            .WithSelector("↑")
+            .Show();
+
+         Console.WriteLine($"Answer was {answer}");
+         Console.ReadLine();
+         Console.Clear();
+
          ShowFirst();
          ShowSecond();
          ShowThird();
@@ -36,27 +58,34 @@ namespace Playground
          Console.WriteLine("Click yes or no");
          Console.RenderInteractive(panel);
 
-         //var panel = new CPanel();
-         //panel.Add(new CText("Say"));
-         //panel.Add(new CText($"Hello{Environment.NewLine}World"));
-         //Console.Render(panel);
-
-         //var button = new CButton(new CText("Click Me"));
-         //button.Clicked += OnButtonClicked;
-         //Console.Render(button);
-
          Console.ReadLine();
+      }
+
+      private static void ShowYesNo()
+      {
+         try
+         {
+            if (!Console.YesNo("Continue ?"))
+               throw new OperationCanceledException();
+         }
+         catch (InputCanceledException)
+         {
+            // We ignore
+         }
       }
 
       private static void ShowFirst()
       {
-         Console.WriteLine("Continue ?");
+         var panel = new CPanel();
          var list = new CSelector<bool?> { Orientation = Orientation.Horizontal };
          list.Add(true, "Yes");
          list.Add(false, "No");
          list.Add(null);
+         panel.Add(new CText("Continue ? : "));
+         panel.Add(list);
 
-         Console.RenderInteractive(list);
+         Console.RenderInteractive(panel);
+
          Console.WriteLine($"Selected item was {list.SelectedValue}");
          Console.ReadLine();
          Console.Clear();
@@ -64,7 +93,12 @@ namespace Playground
       private static void ShowThird()
       {
          Console.WriteLine("Continue ?");
-         var list = new CSelector<bool?>(){ Selector = "→ " };
+         var list = new CSelector<bool?>
+         {
+            Selector = "→ ", 
+            SelectionStyle = new RenderingStyle(ConsoleColor.Blue),
+            MouseOverStyle = new RenderingStyle(ConsoleColor.DarkCyan)
+         };
          list.Add(true, "Yes");
          list.Add(false, "No");
          list.Add(null, "Unsure");
@@ -110,7 +144,6 @@ namespace Playground
       private static void OnButtonClicked(object sender, EventArgs e)
       {
          Console.WriteLine("No button clicked");
-
       }
 
       #endregion

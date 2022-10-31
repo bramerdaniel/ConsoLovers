@@ -19,7 +19,6 @@ public class CPanel : Renderable, IHaveAlignment
    public CPanel()
    : this(RenderingStyle.Default)
    {
-
    }
 
    public CPanel(RenderingStyle style)

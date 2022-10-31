@@ -119,6 +119,27 @@ Yes No Cancel".TrimStart();
 
       renderedText.Should().Be(expected);
    }
+   
+   [TestMethod]
+   public void EnsureNullCanBeUsedAsValue()
+   {
+      var list = Setup.Selector<string>()
+         .WithItem("Yes")
+         .WithItem("No")
+         .WithItem(null)
+         .WithOrientation(Orientation.Horizontal)
+         .WithSelector(string.Empty)
+         .Done();
+
+      var renderer = Setup.TestRenderer().Done();
+      renderer.Render(list).Should().Be("Yes No null".Trim());
+
+      renderer.Reset();
+      list.Items[2].Template = new CText("<NULL>");
+      renderer.Render(list).Should().Be("Yes No <NULL>".Trim());
+   }
+
+
 
    #endregion
 }

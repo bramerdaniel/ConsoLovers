@@ -60,6 +60,11 @@ internal class SelectorSetup<T>
       return this;
    }
 
+   public SelectorSetup<T> WithoutSelector()
+   {
+      return WithSelector(string.Empty);
+   }
+
    public SelectorSetup<T> WithSelector(string value)
    {
       selector.Selector = value;

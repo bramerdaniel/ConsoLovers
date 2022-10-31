@@ -49,7 +49,7 @@ internal class HorizontalSelectorRenderer<T> : ISelectorRenderer
       if (!string.IsNullOrWhiteSpace(selector.Selector))
          height++;
 
-      var size = new MeasuredSize { Height = height, MinWidth = width };
+      var size = new MeasuredSize { Height = height, MinWidth = width - 1 };
       return size;
    }
 

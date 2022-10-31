@@ -17,9 +17,11 @@ public class ChoiceBuilder<T>
 {
    #region Constants and Fields
 
-   private readonly Choice<T> choice;
+   private readonly CSelector<T> choiceSelector;
 
    private readonly IConsole console;
+
+   private bool singleLine;
 
    #endregion
 
@@ -27,17 +29,25 @@ public class ChoiceBuilder<T>
 
    public ChoiceBuilder(IConsole console, string question)
    {
+      Question = question;
       this.console = console;
-      choice = new Choice<T>(question);
+      choiceSelector = new CSelector<T>();
    }
+
+   #endregion
+
+   #region Public Properties
+
+   public string Question { get; }
 
    #endregion
 
    #region Public Methods and Operators
 
-   public Choice<T> Build()
+   public ChoiceBuilder<T> AllowCancellation(bool value)
    {
-      return choice;
+      choiceSelector.AllowCancellation = value;
+      return this;
    }
 
    public T Show()
@@ -47,7 +57,45 @@ public class ChoiceBuilder<T>
 
    public ChoiceBuilder<T> WithAnswer(T value, string displayText)
    {
-      choice.Add(new Tuple<T, string>(value, displayText));
+      choiceSelector.Add(value, displayText);
+      return this;
+   }
+
+   public ChoiceBuilder<T> WithAnswer(T value)
+   {
+      choiceSelector.Add(value);
+      return this;
+   }
+
+   public ChoiceBuilder<T> WithAnswer(T value, IRenderable template)
+   {
+      choiceSelector.Add(value, template);
+      return this;
+   }
+
+   public ChoiceBuilder<T> WithOrientation(Orientation orientation)
+   {
+      return WithOrientation(orientation, false);
+   }
+
+   public ChoiceBuilder<T> WithOrientation(Orientation orientation, bool useSingleLine)
+   {
+      if (useSingleLine && orientation == Orientation.Vertical)
+         throw new ArgumentException("UseSingleLine can only be true when the orientation is set to horizontal", nameof(useSingleLine));
+
+      choiceSelector.Orientation = orientation;
+      singleLine = useSingleLine;
+      return this;
+   }
+
+   public ChoiceBuilder<T> WithoutSelector()
+   {
+      return WithSelector(string.Empty);
+   }
+
+   public ChoiceBuilder<T> WithSelector(string value)
+   {
+      choiceSelector.Selector = value;
       return this;
    }
 
@@ -60,8 +108,20 @@ public class ChoiceBuilder<T>
       if (targetConsole == null)
          throw new ArgumentNullException(nameof(targetConsole));
 
-      targetConsole.RenderInteractive(choice);
-      return choice.SelectedItem;
+      if (singleLine)
+      {
+         var panel = new CPanel();
+         panel.Add(new CText(Question));
+         panel.Add(choiceSelector);
+         targetConsole.RenderInteractive(panel);
+      }
+      else
+      {
+         console.WriteLine(Question);
+         targetConsole.RenderInteractive(choiceSelector);
+      }
+
+      return choiceSelector.SelectedValue;
    }
 
    #endregion

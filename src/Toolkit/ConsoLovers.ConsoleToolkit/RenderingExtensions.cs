@@ -42,4 +42,27 @@ public static class RenderingExtensions
 
       return new ChoiceBuilder<T>(console, question);
    }
+
+   public static bool YesNo([NotNull] this IConsole console, string question, bool allowCancellation = true)
+   {
+      if (console == null)
+         throw new ArgumentNullException(nameof(console));
+
+      var show = console.Choice<bool>(EnsureAtLeastOneSpace(question))
+         .WithOrientation(Orientation.Horizontal, true)
+         .WithAnswer(true, new CText("yes", RenderingStyle.Default.WithForeground(ConsoleColor.Green)))
+         .WithAnswer(false, new CText("no", RenderingStyle.Default.WithForeground(ConsoleColor.Red)))
+         .AllowCancellation(allowCancellation)
+         .Show();
+
+      return show;
+   }
+
+   private static string EnsureAtLeastOneSpace(string question)
+   {
+      if (question == null)
+         return null;
+
+      return question.EndsWith(" ") ? question : $"{question} ";
+   }
 }
