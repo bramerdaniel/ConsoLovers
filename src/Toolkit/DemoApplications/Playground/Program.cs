@@ -27,14 +27,14 @@ namespace Playground
       {
          try
          {
-            new Thrower().Run();
+            Action action = () => throw new InvalidOperationException("This sounds wrong, but the text of this exception "
+                  + "needs to be quite long as it must be wrapped to multiple lines. To archive this is must write more and more text.");
+            var thrower = new Thrower(action, 34);
          }
          catch (Exception e)
          {
-            // var display = new MessageDisplay(e.GetType().FullName, e.Message);
             var display = new ExceptionDisplay(e);
-            Console.Render(display);
-            // Console.WriteLine(e.ToString());
+            Console.Render(new Border(display)); Console.WriteLine(e.ToString());
          }
 
          var border = new Border(new Link("https://spectreconsole.net")) { CharSet = Borders.Doubled };
@@ -141,7 +141,9 @@ namespace Playground
          Console.WriteLine("Continue ?");
          var list = new CSelector<bool?>
          {
-            Selector = "→ ", SelectionStyle = new RenderingStyle(ConsoleColor.Blue), MouseOverStyle = new RenderingStyle(ConsoleColor.DarkCyan)
+            Selector = "→ ",
+            SelectionStyle = new RenderingStyle(ConsoleColor.Blue),
+            MouseOverStyle = new RenderingStyle(ConsoleColor.DarkCyan)
          };
          list.Add(true, "Yes");
          list.Add(false, "No");
@@ -170,20 +172,29 @@ namespace Playground
 
    internal class Thrower
    {
+      private readonly Action callback;
+
+      public Thrower(Action callback, int times)
+      {
+         this.callback = callback;
+         Run(callback, times < 10);
+      }
+
       #region Public Methods and Operators
 
-      public void Run()
+      public TimeSpan Run(Action callback, bool force)
       {
-         Call();
+         CallCalback();
+         return TimeSpan.FromHours(1);
       }
 
       #endregion
 
       #region Methods
 
-      private void Call()
+      private void CallCalback()
       {
-         throw new InvalidOperationException("This sounds wrong, but the text of this exception needs to be quite long as it must be wrapped to multiple lines. To archive this is must write more and more text.");
+         callback();
       }
 
       #endregion

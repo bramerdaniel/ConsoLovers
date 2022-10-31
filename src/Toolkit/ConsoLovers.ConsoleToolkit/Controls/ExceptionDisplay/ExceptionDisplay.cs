@@ -11,6 +11,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 
 using JetBrains.Annotations;
 
@@ -66,12 +67,7 @@ public class ExceptionDisplay : InteractiveRenderable
 
    public override IEnumerable<Segment> RenderLine(IRenderContext context, int line)
    {
-      if (line == 0)
-      {
-         foreach (var segment in messageDisplay.RenderLine(context, line))
-            yield return segment;
-      }
-      else if(line < ExceptionData.MessageLines.Count)
+      if (line < ExceptionData.MessageLines.Count)
       {
          foreach (var segment in messageDisplay.RenderLine(context, line))
             yield return segment;
@@ -88,15 +84,31 @@ public class ExceptionDisplay : InteractiveRenderable
 
    private IEnumerable<Segment> RenderStackFrame(StackFrame frame)
    {
-      var method = frame.GetMethod();
-
+      var methodBase = frame.GetMethod();
       var irelevant = Style.WithForeground(ConsoleColor.Gray);
 
       yield return new Segment(this, ExceptionData.StackFrameIndent, irelevant);
       yield return new Segment(this, "at ", irelevant);
-      yield return new Segment(this, "void ", Style.WithForeground(ConsoleColor.DarkCyan));
-      yield return new Segment(this, method.Name, Style);
+      if (methodBase is MethodInfo methodInfo)
+         yield return new Segment(this, $"{methodInfo.ReturnType.AliasOrName()} ", Style.WithForeground(ConsoleColor.DarkCyan));
+      if (methodBase is ConstructorInfo ctorInfo)
+         yield return new Segment(this, $"{ctorInfo.DeclaringType.AliasOrName()}", Style.WithForeground(ConsoleColor.DarkCyan));
+      
+      yield return new Segment(this, $"{methodBase.Name}(", Style);
+
+      var parameters = methodBase.GetParameters();
+      for (var i = 0; i < parameters.Length; i++)
+      {
+         var parameter = parameters[i];
+         yield return new Segment(this, parameter.ParameterType.AliasOrName(), Style.WithForeground(ConsoleColor.DarkCyan));
+         if (i != parameters.Length - 1)
+            yield return new Segment(this, ", ", irelevant);
+      }
+
+      yield return new Segment(this, $")", Style);
       yield return new Segment(this, " in ", irelevant);
+
+
 
       var name = frame.GetFileName() ?? "NoFile.cs";
       name = Path.GetFileName(name);
