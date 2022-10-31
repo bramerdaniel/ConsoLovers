@@ -23,7 +23,7 @@ internal class RenderingRun : IDisposable
 
    private readonly List<Action> disposeActions = new();
 
-   private readonly IInputHandler inputHandler;
+   private IInputHandler inputHandler;
 
    private readonly Dictionary<int, List<RenderInfo>> renderInfos = new();
 
@@ -45,7 +45,6 @@ internal class RenderingRun : IDisposable
    {
       this.console = console ?? throw new ArgumentNullException(nameof(console));
       this.root = root ?? throw new ArgumentNullException(nameof(root));
-      inputHandler = InputHandlerFactory.GetInputHandler();
    }
 
    #endregion
@@ -54,9 +53,12 @@ internal class RenderingRun : IDisposable
 
    public void Dispose()
    {
-      inputHandler.KeyDown -= OnKeyDown;
-      inputHandler.MouseClicked -= OnMouseClicked;
-      inputHandler.MouseMoved -= OnMouseMoved;
+      if (inputHandler != null)
+      {
+         inputHandler.KeyDown -= OnKeyDown;
+         inputHandler.MouseClicked -= OnMouseClicked;
+         inputHandler.MouseMoved -= OnMouseMoved;
+      }
 
       foreach (var action in disposeActions)
          action();
@@ -75,6 +77,7 @@ internal class RenderingRun : IDisposable
 
    public void Start()
    {
+      inputHandler = InputHandlerFactory.GetInputHandler();
       inputHandler.KeyDown += OnKeyDown;
       inputHandler.MouseClicked += OnMouseClicked;
       inputHandler.MouseMoved += OnMouseMoved;

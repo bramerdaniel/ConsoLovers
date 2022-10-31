@@ -37,13 +37,15 @@ public class RenderEngine : IRenderEngine
       if (renderable == null)
          throw new ArgumentNullException(nameof(renderable));
 
+      using var renderingRun = new RenderingRun(console, renderable);
       if (interactive)
       {
-         RenderInteractive(renderable);
+         renderingRun.Start();
+         renderingRun.Wait();
       }
       else
       {
-         RenderNonInteractive(renderable);
+         renderingRun.RenderOnce();
       }
    }
 
@@ -64,46 +66,8 @@ public class RenderEngine : IRenderEngine
 
    private void RenderNonInteractive(IRenderable renderable)
    {
-      var availableSize = console.WindowWidth;
-      var size = renderable.Measure(availableSize);
-
-      for (int line = 0; line < size.Height; line++)
-      {
-         var context = ComputeContext(renderable, size);
-         foreach (var segment in renderable.RenderLine(context, line))
-            availableSize = WriteSegment(segment, availableSize);
-
-         console.WriteLine();
-         availableSize = console.WindowWidth;
-      }
-   }
-
-   private RenderContext ComputeContext(IRenderable renderable, MeasuredSize measuredSize)
-   {
-      if (renderable is IHaveAlignment hasAlignment)
-      {
-         if (hasAlignment.Alignment == Alignment.Right)
-         {
-            var left = console.WindowWidth - measuredSize.MinWidth;
-            console.CursorLeft = left;
-            return new RenderContext { AvailableWidth = measuredSize.MinWidth, Size = measuredSize };
-         }
-
-         if (hasAlignment.Alignment == Alignment.Center)
-         {
-            var remaining = console.WindowWidth - measuredSize.MinWidth;
-            console.CursorLeft = remaining / 2;
-            return new RenderContext { AvailableWidth = measuredSize.MinWidth, Size = measuredSize };
-         }
-      }
-
-      return new RenderContext { AvailableWidth = measuredSize.MinWidth, Size = measuredSize };
-   }
-
-   private int WriteSegment(Segment segment, int availableSize)
-   {
-      console.Write(segment.Text, segment.Style.Foreground, segment.Style.Background);
-      return availableSize - segment.Width;
+      using var renderingRun = new RenderingRun(console, renderable);
+      renderingRun.RenderOnce();
    }
 
    #endregion
