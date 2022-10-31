@@ -80,15 +80,24 @@ public class StringSelectorTests
          .WithOrientation(Orientation.Horizontal)
          .Done();
 
-      var renderedText = Setup.TestRenderer()
+      var renderer = Setup.TestRenderer()
          .WithConsoleWidth(10)
-         .Render(list);
+         .Done();
 
       var expected = @"
 Yes No Cancel
 ^          ".TrimStart();
 
-      renderedText.Should().Be(expected);
+      renderer.Render(list).Should().Be(expected);
+
+      renderer.Reset();
+      list.SelectedIndex = 1;
+
+      expected = @"
+Yes No Cancel
+    ^       ".TrimStart();
+
+      renderer.Render(list).Should().Be(expected);
    }
 
    [TestMethod]
