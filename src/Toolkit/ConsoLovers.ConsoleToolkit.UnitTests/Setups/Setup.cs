@@ -19,6 +19,11 @@ namespace ConsoLovers.ConsoleToolkit.UnitTests.Setups
          return new MenuCommandTestSetup<T>();
       }
 
+      internal static SelectorSetup<T> Selector<T>()
+      {
+         return new SelectorSetup<T>();
+      }
+
       #endregion
    }
 }

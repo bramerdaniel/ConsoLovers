@@ -121,7 +121,7 @@ internal class HorizontalSelectorRenderer<T> : ISelectorRenderer
          var itemSize = measuredItems[item];
          var isSelectedItem = item == selector.SelectedItem;
 
-         var renderContext = new RenderContext{ AvailableWidth = itemSize.MinWidth, Size = itemSize };
+         var renderContext = new RenderContext { AvailableWidth = itemSize.MinWidth, Size = itemSize };
          foreach (var segment in item.RenderLine(renderContext, line))
          {
             if (isSelectedItem)
@@ -134,7 +134,8 @@ internal class HorizontalSelectorRenderer<T> : ISelectorRenderer
             }
          }
 
-         yield return new Segment(selector, " ", selector.Style);
+         if (!IsLast(item))
+            yield return new Segment(selector, " ", selector.Style);
       }
 
       bool ShouldBeRendered(ListItem<T> candidate)
@@ -143,6 +144,11 @@ internal class HorizontalSelectorRenderer<T> : ISelectorRenderer
             return true;
          return false;
       }
+   }
+
+   private bool IsLast(ListItem<T> item)
+   {
+      return Items[Items.Count - 1] == item;
    }
 
    private IEnumerable<Segment> RenderSelector()
