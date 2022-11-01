@@ -6,6 +6,8 @@
 
 namespace ConsoLovers.ConsoleToolkit.UnitTests.ControlsTests.StackFrameDisplayTests;
 
+using System.Diagnostics;
+
 using ConsoLovers.ConsoleToolkit.Controls;
 using ConsoLovers.ConsoleToolkit.UnitTests.Setups;
 
@@ -19,13 +21,26 @@ public class RenderTests
    [TestMethod]
    public void EnsureNormalStackTraceIsRenderedCorrectly()
    {
-      var frame = StackFrameGenerator.CreateNormal();
-      var target = new StackFrameDisplay(frame);
+      var target = new StackFrameDisplay(new StackFrame());
+      target.RemoveSegment("Namespace");
 
       var renderer = Setup.TestRenderer()
          .WithConsoleWidth(int.MaxValue)
          .Done();
 
-      renderer.Render(target).Should().Be("at void NormalMethod() in StackFrameGenerator.cs:41");
+      renderer.Render(target).Should().Be("   at void RenderTests.EnsureNormalStackTraceIsRenderedCorrectly()");
+   }
+
+   [TestMethod]
+   public void EnsureStackTraceWithFileNameIsRenderedCorrectly()
+   {
+      var target = new StackFrameDisplay(new StackFrame("Filename.cs", 123));
+      target.RemoveSegment("Namespace");
+
+      var renderer = Setup.TestRenderer()
+         .WithConsoleWidth(int.MaxValue)
+         .Done();
+
+      renderer.Render(target).Should().Be("   at void RenderTests.EnsureStackTraceWithFileNameIsRenderedCorrectly() in Filename.cs:123");
    }
 }

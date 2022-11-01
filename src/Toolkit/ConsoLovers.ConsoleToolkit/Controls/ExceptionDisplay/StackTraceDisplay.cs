@@ -22,8 +22,7 @@ public class StackTraceDisplay : Renderable
       if (stackTrace == null)
          throw new ArgumentNullException(nameof(stackTrace));
 
-      var stackFrames = stackTrace.GetFrames() ?? Array.Empty<StackFrame>();
-      FrameDisplays = stackFrames.Select(sf => new StackFrameDisplay(sf)).ToArray();
+      FrameDisplays = stackTrace.GetFrames().Select(sf => new StackFrameDisplay(sf)).ToArray();
    }
 
    #endregion
@@ -41,10 +40,13 @@ public class StackTraceDisplay : Renderable
       if (FrameDisplays.Length == 0)
          return RenderSize.Empty;
 
+      foreach (var frameDisplay in FrameDisplays)
+         frameDisplay.Reset();
+
       if (FitsIntoAvailableWidth(availableWidth, out var size))
          return size;
       
-      foreach (var name in StartMeasuring())
+      foreach (var name in StackFrameDisplay.AvailableSegmentNames)
       {
          Remove(name);
 
@@ -67,8 +69,9 @@ public class StackTraceDisplay : Renderable
 
    private bool FitsIntoAvailableWidth(int availableWidth, out RenderSize measuredSize)
    {
-      int height = 0;
-      int width = 0;
+      var height = 0;
+      var width = 0;
+      
       foreach (var display in FrameDisplays)
       {
          var frameSize = display.Measure(availableWidth);
@@ -86,19 +89,11 @@ public class StackTraceDisplay : Renderable
       return true;
    }
 
-   private void Remove(string toRemove)
+   private void Remove(string segmentToRemove)
    {
       foreach (var frameDisplay in FrameDisplays)
-         frameDisplay.RemoveSegment(toRemove);
+         frameDisplay.RemoveSegment(segmentToRemove);
    }
-
-   private IEnumerable<string> StartMeasuring()
-   {
-      foreach (var frameDisplay in FrameDisplays)
-         frameDisplay.StartMeasuring();
-
-      return StackFrameDisplay.AvailableSegmentNames;
-   }
-
+   
    #endregion
 }

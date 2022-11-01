@@ -15,6 +15,7 @@ using System.Reflection;
 
 using JetBrains.Annotations;
 
+[Obsolete]
 public class FrameParts
 {
    #region Constants and Fields
@@ -188,14 +189,5 @@ public class FrameParts
 
    #endregion
 
-   struct NamedSegment
-   {
-      #region Public Properties
 
-      public string Name { get; set; }
-
-      public Segment Segment { get; set; }
-
-      #endregion
-   }
 }

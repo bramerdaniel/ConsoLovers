@@ -22,7 +22,7 @@ internal class Thrower
 
    public TimeSpan Run(Action callback, bool force)
    {
-      CallCalback();
+      CallCallback("Go");
       return TimeSpan.FromHours(1);
    }
 
@@ -30,7 +30,7 @@ internal class Thrower
 
    #region Methods
 
-   private void CallCalback()
+   private void CallCallback(string name)
    {
       callback();
    }

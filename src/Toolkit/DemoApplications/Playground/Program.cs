@@ -28,12 +28,19 @@ namespace Playground
 
       private static void Main()
       {
-         Console.WindowWidth = 200;
-         try
+         static void Invoker()
          {
             Action action = () => throw new InvalidOperationException("This sounds wrong, but the text of this exception "
-                  + "needs to be quite long as it must be wrapped to multiple lines. To archive this is must write more and more text.");
-            var thrower = new Thrower(action, 34);
+                                                                      + "needs to be quite long as it must be wrapped to multiple lines. To archive this is must write more and more text.");
+
+            action();
+         }
+
+         // Console.WindowWidth = 210;
+         try
+         {
+
+            var thrower = new Thrower(Invoker, 34);
          }
          catch (Exception e)
          {
@@ -83,6 +90,8 @@ namespace Playground
 
          Console.ReadLine();
       }
+
+
 
       private static void ShowException(Exception e)
       {

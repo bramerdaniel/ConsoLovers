@@ -27,7 +27,6 @@ public class MeasureTests
 
       var size = target.Measure(120);
       size.Height.Should().Be(4);
-      size.Width.Should().Be(10);
    }
 
    private StackTrace CreateStackTrace(int depth)

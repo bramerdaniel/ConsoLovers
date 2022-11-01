@@ -23,6 +23,8 @@ public class StackFrameRenderingStyles
    public RenderingStyle FileName { get; set; } = new(ConsoleColor.DarkYellow);
    
    public RenderingStyle LineNumber { get; set; } = new(ConsoleColor.Blue);
+   
+   public RenderingStyle Namespaces { get; set; } = new(ConsoleColor.Gray);
 
    public RenderingStyle Types { get; set; } = new(ConsoleColor.DarkCyan);
 }

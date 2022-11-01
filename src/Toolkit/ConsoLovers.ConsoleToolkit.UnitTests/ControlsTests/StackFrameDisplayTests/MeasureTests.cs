@@ -10,6 +10,7 @@ using System;
 using System.Diagnostics;
 
 using ConsoLovers.ConsoleToolkit.Controls;
+using ConsoLovers.ConsoleToolkit.UnitTests.Setups;
 
 using FluentAssertions;
 
@@ -27,7 +28,6 @@ public class MeasureTests
       var target = new StackFrameDisplay(frame);
 
       target.Measure(int.MaxValue).Height.Should().Be(1);
-      // target.Measure(5).Height.Should().Be(2);
    }
 
    [TestMethod]
@@ -36,8 +36,10 @@ public class MeasureTests
       var frame = new StackFrame("Test.cs", 25);
       var target = new StackFrameDisplay(frame);
 
-      target.Measure(int.MaxValue).Width.Should().Be(1);
-      // target.Measure(5).Height.Should().Be(2);
+      target.Measure(int.MaxValue).Width.Should().Be(144);
+
+      target.RemoveSegment("Namespace");
+      target.Measure(140).Width.Should().Be(70);
    }
 
    #endregion
