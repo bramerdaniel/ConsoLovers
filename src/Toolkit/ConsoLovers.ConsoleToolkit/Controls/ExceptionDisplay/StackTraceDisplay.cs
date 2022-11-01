@@ -41,7 +41,7 @@ public class StackTraceDisplay : Renderable
          return RenderSize.Empty;
 
       foreach (var frameDisplay in FrameDisplays)
-         frameDisplay.Reset();
+         frameDisplay.RenderAllSegments();
 
       if (FitsIntoAvailableWidth(availableWidth, out var size))
          return size;

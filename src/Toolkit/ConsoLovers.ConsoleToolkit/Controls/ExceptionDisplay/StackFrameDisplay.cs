@@ -36,7 +36,7 @@ public class StackFrameDisplay : InteractiveRenderable, IMouseInputHandler, IMou
       LineNumber = stackFrame.GetFileLineNumber();
       methodBase = stackFrame.GetMethod();
       InitializeSegments();
-      Reset();
+      RenderAllSegments();
    }
 
    #endregion
@@ -49,7 +49,7 @@ public class StackFrameDisplay : InteractiveRenderable, IMouseInputHandler, IMou
       {
          yield return new Segment(this, " → ", RenderingStyle.Default);
          foreach (var segment in RenderedSegments.Skip(1))
-            yield return segment.Segment;
+            yield return segment.Segment.WithStyle(new RenderingStyle(segment.Segment.Style.Foreground, ConsoleColor.DarkGray));
       }
       else
       {
@@ -62,6 +62,7 @@ public class StackFrameDisplay : InteractiveRenderable, IMouseInputHandler, IMou
    {
       if (File.Exists(FileName))
       {
+         // TODO make this customizable
          Process.Start("notepad", FileName);
       }
    }
@@ -79,7 +80,6 @@ public class StackFrameDisplay : InteractiveRenderable, IMouseInputHandler, IMou
          yield return "TypeName";
          yield return "ParameterName";
          yield return "ParameterType";
-         yield return "Indent";
       }
    }
 
@@ -114,7 +114,7 @@ public class StackFrameDisplay : InteractiveRenderable, IMouseInputHandler, IMou
          RenderedSegments.Remove(seg);
    }
 
-   public void Reset()
+   public void RenderAllSegments()
    {
       RenderedSegments = AvailableSegments.ToList();
    }
@@ -226,7 +226,7 @@ public class StackFrameDisplay : InteractiveRenderable, IMouseInputHandler, IMou
       CreateSegment("(", new Segment(this, "(", Styles.NormalText));
       CreateParameterSegment();
       CreateSegment(")", new Segment(this, ")", Styles.NormalText));
-  
+
       CreateFilePathAndName();
    }
 

@@ -28,14 +28,8 @@ namespace Playground
 
       private static void Main()
       {
-         static void Invoker()
-         {
-            Action action = () => throw new InvalidOperationException("This sounds wrong, but the text of this exception "
-                                                                      + "needs to be quite long as it must be wrapped to multiple lines. To archive this is must write more and more text.");
-
-            action();
-         }
-
+         ShowYesNo();
+         
          // Console.WindowWidth = 210;
          try
          {
@@ -51,7 +45,7 @@ namespace Playground
 
          Console.RenderInteractive(border);
 
-         ShowYesNo();
+
 
          var count = Console.Choice<int>("Choose a number: ")
             .WithAnswer(23)
@@ -89,6 +83,15 @@ namespace Playground
          Console.RenderInteractive(panel);
 
          Console.ReadLine();
+
+         static void Invoker()
+         {
+            Action action = () => throw new InvalidOperationException("This sounds wrong, but the text of this exception "
+                                                                      + "needs to be quite long as it must be wrapped to multiple lines. To archive this is must write more and more text.");
+
+            action();
+         }
+
       }
 
 

@@ -8,6 +8,7 @@ namespace ConsoLovers.ConsoleToolkit.Controls;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 using ConsoLovers.ConsoleToolkit.Core;
@@ -110,6 +111,7 @@ internal class RenderingRun : IDisposable
       }
 
       var renderInfo = new RenderInfo(console.CursorTop, console.CursorLeft, segment);
+      // Trace.WriteLine(segment.Text + " = " + console.CursorLeft);
       lineRenderInfos.Add(renderInfo);
    }
 
@@ -178,6 +180,7 @@ internal class RenderingRun : IDisposable
          {
             if (renderInfo.Column <= column && column <= renderInfo.EndColumn)
             {
+               // Trace.WriteLine(renderInfo.Segment.Text  + " => " + column);
                return renderInfo.Segment.Renderable;
             }
          }
@@ -248,7 +251,7 @@ internal class RenderingRun : IDisposable
 
    private void OnMouseMoved(object sender, MouseEventArgs e)
    {
-      var underMouse = FindRenderable(e.WindowTop, e.WindowLeft);
+      var underMouse = FindRenderable(e.WindowTop, e.WindowLeft + 1);
       HoveredRenderable = underMouse;
    }
 
@@ -278,7 +281,7 @@ internal class RenderingRun : IDisposable
 
    private void NotifyMouseHandlers(MouseEventArgs e)
    {
-      var mouseHandler = FindInputHandler(e.WindowTop, e.WindowLeft);
+      var mouseHandler = FindInputHandler(e.WindowTop, e.WindowLeft + 1);
       if (mouseHandler != null)
       {
          var context = new MouseInputContext(e);
