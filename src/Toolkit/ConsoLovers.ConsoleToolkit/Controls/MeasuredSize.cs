@@ -19,5 +19,8 @@ public struct MeasuredSize
    /// <summary>Gets the minimum width.</summary>
    public int MinWidth { get; set; }
 
+   /// <summary>Gets the empty.</summary>
+   public static MeasuredSize Empty { get; } = new() { Height = 0, MinWidth = 0 };
+
    #endregion
 }
