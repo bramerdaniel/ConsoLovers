@@ -54,9 +54,9 @@ public class Link : InteractiveRenderable, IMouseAware, IMouseInputHandler
 
    #region IMouseInputHandler Members
 
-   public override MeasuredSize MeasureOverride(int availableWidth)
+   public override RenderSize MeasureOverride(int availableWidth)
    {
-      return new MeasuredSize { Height = 1, MinWidth = DisplayText.Length };
+      return new RenderSize { Height = 1, Width = DisplayText.Length };
    }
 
    public override IEnumerable<Segment> RenderLine(IRenderContext context, int line)

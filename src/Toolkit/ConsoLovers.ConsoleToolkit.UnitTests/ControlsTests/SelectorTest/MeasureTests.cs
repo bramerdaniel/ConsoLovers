@@ -48,6 +48,6 @@ public class MeasureTests
          .WithItem("No")
          .Done();
 
-      list.Measure(int.MaxValue).MinWidth.Should().Be(6);
+      list.Measure(int.MaxValue).Width.Should().Be(6);
    }
 }

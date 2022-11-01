@@ -164,7 +164,7 @@ public class CSelector<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignm
       Items.Add(new ListItem<T>(this, value));
    }
 
-   public override MeasuredSize MeasureOverride(int availableWidth)
+   public override RenderSize MeasureOverride(int availableWidth)
    {
       return Renderer.Measure(availableWidth);
    }

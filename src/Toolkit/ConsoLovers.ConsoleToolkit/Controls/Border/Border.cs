@@ -14,13 +14,11 @@ public class Border : Renderable, IHaveAlignment
 {
    #region Constants and Fields
 
-   private MeasuredSize contentSize;
+   private RenderSize contentSize;
 
    // TODO Add header for the panel
    private int lineCount;
-
-   private MeasuredSize size;
-
+   
    #endregion
 
    #region Constructors and Destructors
@@ -53,23 +51,20 @@ public class Border : Renderable, IHaveAlignment
 
    #region Public Methods and Operators
 
-   public override MeasuredSize Measure(int availableWidth)
+   public override RenderSize MeasureOverride(int availableWidth)
    {
       if (Content == null)
       {
-         size = new MeasuredSize { Height = 2, MinWidth = 2 };
          lineCount = 2;
-         return size;
+         return new RenderSize { Height = 2, Width = 2 };
       }
 
       contentSize = Content.Measure(availableWidth - 2);
       lineCount = contentSize.Height + 2 + Padding.Bottom + Padding.Top;
 
-      var width = Padding.Left + 1 + contentSize.MinWidth + 1 + Padding.Right;
+      var width = Padding.Left + 1 + contentSize.Width + 1 + Padding.Right;
 
-      size = new MeasuredSize { Height = lineCount, MinWidth = width, };
-
-      return size;
+      return new RenderSize { Height = lineCount, Width = width };
    }
 
    public override IEnumerable<Segment> RenderLine(IRenderContext context, int line)
@@ -114,7 +109,7 @@ public class Border : Renderable, IHaveAlignment
    {
       if (Alignment == Alignment.Left)
       {
-         var width = contentSize.MinWidth + 2 + Padding.Left + Padding.Right;
+         var width = contentSize.Width + 2 + Padding.Left + Padding.Right;
          var builder = new StringBuilder();
          builder.Append(left);
          builder.Append(string.Empty.PadRight(width - 2, middle));
@@ -143,7 +138,7 @@ public class Border : Renderable, IHaveAlignment
 
    private IEnumerable<Segment> RenderContent(IRenderContext context, int lineIndex)
    {
-      var availableSize = contentSize.MinWidth;
+      var availableSize = contentSize.Width;
       var renderContext = new RenderContext { AvailableWidth = availableSize, Size = contentSize };
       foreach (var segment in Content.RenderLine(renderContext, lineIndex - 1 - Padding.Top))
          yield return segment;

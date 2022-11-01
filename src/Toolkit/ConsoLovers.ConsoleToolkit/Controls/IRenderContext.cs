@@ -10,7 +10,7 @@ namespace ConsoLovers.ConsoleToolkit.Controls
    {
       int AvailableWidth { get; }
 
-      MeasuredSize Size { get; }
+      RenderSize Size { get; }
 
    }
 }

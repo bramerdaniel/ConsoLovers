@@ -60,7 +60,7 @@ public class ListItem<T> : InteractiveRenderable, IMouseInputHandler, IMouseAwar
 
    #region Public Methods and Operators
 
-   public override MeasuredSize MeasureOverride(int availableWidth)
+   public override RenderSize MeasureOverride(int availableWidth)
    {
       return Template.Measure(availableWidth);
    }

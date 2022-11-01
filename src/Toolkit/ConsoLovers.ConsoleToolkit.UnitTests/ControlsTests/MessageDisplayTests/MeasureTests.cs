@@ -25,7 +25,7 @@ public class MeasureTests
 
       var size = list.Measure(int.MaxValue);
       size.Height.Should().Be(1);
-      size.MinWidth.Should().Be(5 + 2 + 7);
+      size.Width.Should().Be(5 + 2 + 7);
    }
 
    [TestMethod]
@@ -38,7 +38,7 @@ public class MeasureTests
 
       var size = list.Measure(17);
       size.Height.Should().Be(2);
-      size.MinWidth.Should().Be(17);
+      size.Width.Should().Be(17);
    }
 
    [TestMethod]
@@ -51,6 +51,6 @@ public class MeasureTests
 
       var size = list.Measure(17);
       size.Height.Should().Be(2);
-      size.MinWidth.Should().Be(16);
+      size.Width.Should().Be(16);
    }
 }

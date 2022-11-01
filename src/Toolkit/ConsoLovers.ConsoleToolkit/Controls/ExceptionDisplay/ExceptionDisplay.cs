@@ -51,17 +51,17 @@ public class ExceptionDisplay : InteractiveRenderable
 
    #region Public Methods and Operators
 
-   public override MeasuredSize MeasureOverride(int availableWidth)
+   public override RenderSize MeasureOverride(int availableWidth)
    {
       var messageSize = messageDisplay.Measure(availableWidth);
 
       var messageLength = availableWidth - ExceptionData.MessageHint.Length;
       ExceptionData.Update(messageLength);
 
-      return new MeasuredSize
+      return new RenderSize
       {
          Height = messageSize.Height + ExceptionData.StackTrace.FrameCount,
-         MinWidth = availableWidth
+         Width = availableWidth
       };
    }
 

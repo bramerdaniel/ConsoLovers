@@ -10,9 +10,6 @@ using System.Collections.Generic;
 
 public class Rule : Renderable
 {
-
-   private MeasuredSize measuredSize;
-
    public char RuleCharacter { get; set; } = '-';
 
    public int TextOffset { get; set; } = 5;
@@ -26,15 +23,13 @@ public class Rule : Renderable
       Text = text;
    }
 
-   public override MeasuredSize Measure(int availableWidth)
+   public override RenderSize MeasureOverride(int availableWidth)
    {
-      measuredSize = new MeasuredSize
+      return new RenderSize
       {
          Height = 1, 
-         MinWidth = MaxWidth.GetValueOrDefault(availableWidth)
+         Width = MaxWidth.GetValueOrDefault(availableWidth)
       };
-
-      return measuredSize;
    }
 
    public override IEnumerable<Segment> RenderLine(IRenderContext context, int line)

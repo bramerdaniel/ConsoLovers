@@ -14,9 +14,9 @@ public class CButton : InteractiveRenderable, IMouseInputHandler ,IHaveAlignment
 {
    private int lineCount;
 
-   private MeasuredSize contentSize;
+   private RenderSize contentSize;
 
-   private MeasuredSize size;
+   private RenderSize size;
 
    private bool isMouseOver;
 
@@ -31,17 +31,17 @@ public class CButton : InteractiveRenderable, IMouseInputHandler ,IHaveAlignment
 
    public Thickness Padding { get; set; }
 
-   public override MeasuredSize MeasureOverride(int availableWidth)
+   public override RenderSize MeasureOverride(int availableWidth)
    {
       contentSize = Content.Measure(availableWidth - 2);
       lineCount = contentSize.Height + 2 + Padding.Bottom + Padding.Top;
 
-      var width = Padding.Left + 1 + contentSize.MinWidth + 1 + Padding.Right;
+      var width = Padding.Left + 1 + contentSize.Width + 1 + Padding.Right;
 
-      size = new MeasuredSize
+      size = new RenderSize
       {
          Height = lineCount,
-         MinWidth = width,
+         Width = width,
       };
 
       return size;
@@ -90,7 +90,7 @@ public class CButton : InteractiveRenderable, IMouseInputHandler ,IHaveAlignment
 
    private IEnumerable<Segment> RenderContent(IRenderContext context, int lineIndex)
    {
-      var availableSize = contentSize.MinWidth;
+      var availableSize = contentSize.Width;
       var renderContext = new RenderContext { AvailableWidth = availableSize, Size = contentSize };
       foreach (var segment in Content.RenderLine(renderContext, lineIndex - 1 - Padding.Top))
          yield return segment;
@@ -100,7 +100,7 @@ public class CButton : InteractiveRenderable, IMouseInputHandler ,IHaveAlignment
    {
       if (Alignment == Alignment.Left)
       {
-         var width = contentSize.MinWidth + 2 + Padding.Left + Padding.Right;
+         var width = contentSize.Width + 2 + Padding.Left + Padding.Right;
          var builder = new StringBuilder();
          builder.Append(left);
          builder.Append(string.Empty.PadRight(width - 2, middle));

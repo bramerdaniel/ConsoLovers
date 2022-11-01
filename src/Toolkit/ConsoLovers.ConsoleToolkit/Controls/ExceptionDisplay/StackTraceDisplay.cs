@@ -24,10 +24,10 @@ public class StackTraceDisplay : InteractiveRenderable
       stackFrames = stackTrace.GetFrames();
    }
 
-   public override MeasuredSize MeasureOverride(int availableWidth)
+   public override RenderSize MeasureOverride(int availableWidth)
    {
       if (stackFrames == null)
-         return MeasuredSize.Empty;
+         return RenderSize.Empty;
 
       int width = 0;
       foreach (var frame in stackFrames)
@@ -36,7 +36,7 @@ public class StackTraceDisplay : InteractiveRenderable
          width = Math.Max(width, frameWidth);
       }
 
-      return new MeasuredSize { Height = stackTrace.FrameCount, MinWidth = width };
+      return new RenderSize { Height = stackTrace.FrameCount, Width = width };
    }
 
    private int ComputeFrameWidth(StackFrame frame)

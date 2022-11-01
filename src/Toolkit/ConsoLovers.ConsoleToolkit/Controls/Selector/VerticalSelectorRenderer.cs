@@ -33,16 +33,16 @@ internal class VerticalSelectorRenderer<T> : ISelectorRenderer
 
       public int ItemLine { get; set; }
 
-      public int ItemWidth => ItemSize.MinWidth;
+      public int ItemWidth => ItemSize.Width;
 
-      public MeasuredSize ItemSize { get; set; }
+      public RenderSize ItemSize { get; set; }
 
       #endregion
    }
 
    private Queue<ItemRenderInfo> renderQueue;
 
-   public MeasuredSize Measure(int availableWidth)
+   public RenderSize Measure(int availableWidth)
    {
       var height = 0;
       var width = 0;
@@ -57,7 +57,7 @@ internal class VerticalSelectorRenderer<T> : ISelectorRenderer
          var itemSize = item.Measure(availableItemLength);
 
          height += itemSize.Height;
-         width = Math.Max(width, itemSize.MinWidth);
+         width = Math.Max(width, itemSize.Width);
 
          for (var i = 0; i < itemSize.Height; i++)
          {
@@ -77,7 +77,7 @@ internal class VerticalSelectorRenderer<T> : ISelectorRenderer
       }
 
       width += selector.Selector.Length;
-      return new MeasuredSize { Height = height, MinWidth = width };
+      return new RenderSize { Height = height, Width = width };
    }
 
    private static bool AppendSelector(int line, int height)

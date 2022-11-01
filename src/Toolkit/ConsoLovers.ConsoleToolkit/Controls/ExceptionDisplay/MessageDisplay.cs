@@ -47,17 +47,17 @@ public class MessageDisplay : InteractiveRenderable
 
    #region Public Methods and Operators
 
-   public override MeasuredSize MeasureOverride(int availableWidth)
+   public override RenderSize MeasureOverride(int availableWidth)
    {
       var separatorLength = Separator?.Length ?? 0;
       var messageLength = availableWidth - title.Length - separatorLength;
       messageLines = message.Wrap(messageLength);
       int width = title.Length + separatorLength + messageLines.Max(x => x.Length);
 
-      return new MeasuredSize
+      return new RenderSize
       {
          Height = messageLines.Count, 
-         MinWidth = width
+         Width = width
       };
    }
 

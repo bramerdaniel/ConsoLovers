@@ -130,26 +130,26 @@ internal class RenderingRun : IDisposable
       attached.Add(renderable);
    }
 
-   private RenderContext ComputeContext(IRenderable renderable, MeasuredSize measuredSize)
+   private RenderContext ComputeContext(IRenderable renderable, RenderSize measuredSize)
    {
       if (renderable is IHaveAlignment hasAlignment)
       {
          if (hasAlignment.Alignment == Alignment.Right)
          {
-            var left = console.WindowWidth - measuredSize.MinWidth;
+            var left = console.WindowWidth - measuredSize.Width;
             console.CursorLeft = left;
-            return new RenderContext { AvailableWidth = measuredSize.MinWidth, Size = measuredSize };
+            return new RenderContext { AvailableWidth = measuredSize.Width, Size = measuredSize };
          }
 
          if (hasAlignment.Alignment == Alignment.Center)
          {
-            var remaining = console.WindowWidth - measuredSize.MinWidth;
+            var remaining = console.WindowWidth - measuredSize.Width;
             console.CursorLeft = remaining / 2;
-            return new RenderContext { AvailableWidth = measuredSize.MinWidth, Size = measuredSize };
+            return new RenderContext { AvailableWidth = measuredSize.Width, Size = measuredSize };
          }
       }
 
-      return new RenderContext { AvailableWidth = measuredSize.MinWidth, Size = measuredSize };
+      return new RenderContext { AvailableWidth = measuredSize.Width, Size = measuredSize };
    }
 
    private IMouseInputHandler FindInputHandler(int line, int column)
@@ -303,15 +303,15 @@ internal class RenderingRun : IDisposable
 
       renderInfos.Clear();
       var availableSize = console.WindowWidth;
-      var size = root.Measure(availableSize);
+      var measuredSize = root.Measure(availableSize);
 
       var attached = new HashSet<IRenderable>();
       if (isFirstRun)
          AttachToInteractiveEvents(root, attached);
 
-      for (int line = 0; line < size.Height; line++)
+      for (int line = 0; line < measuredSize.Height; line++)
       {
-         var context = ComputeContext(root, size);
+         var context = ComputeContext(root, measuredSize);
          foreach (var segment in root.RenderLine(context, line))
          {
             UpdateRenderInfo(segment);

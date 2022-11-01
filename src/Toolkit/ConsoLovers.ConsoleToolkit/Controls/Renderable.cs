@@ -13,12 +13,6 @@ namespace ConsoLovers.ConsoleToolkit.Controls
 
    public abstract class Renderable : IRenderable
    {
-      #region Constants and Fields
-
-      private RenderingStyle style;
-
-      #endregion
-
       #region Constructors and Destructors
 
       protected Renderable()
@@ -28,24 +22,39 @@ namespace ConsoLovers.ConsoleToolkit.Controls
 
       protected Renderable([NotNull] RenderingStyle style)
       {
-         this.style = style ?? throw new ArgumentNullException(nameof(style));
+         Style = style ?? throw new ArgumentNullException(nameof(style));
       }
 
       #endregion
 
       #region IRenderable Members
 
-      public abstract MeasuredSize Measure(int availableWidth);
-
-      public abstract IEnumerable<Segment> RenderLine(IRenderContext context, int line);
-      
-      public RenderingStyle Style
+      public RenderSize Measure(int availableWidth)
       {
-         get => style;
-         set => style = value;
+         MeasuredSize = MeasureOverride(availableWidth);
+         return MeasuredSize;
       }
 
-      
+      public abstract IEnumerable<Segment> RenderLine(IRenderContext context, int line);
+
+      /// <summary>Gets or sets the style the renderable will use.</summary>
+      public RenderingStyle Style { get; set; }
+
+      #endregion
+
+      #region Public Properties
+
+      public RenderSize MeasuredSize { get; private set; }
+
+      #endregion
+
+      #region Public Methods and Operators
+
+      /// <summary>The measure override for the renderable.</summary>
+      /// <param name="availableWidth">Width of the available.</param>
+      /// <returns>The computed <see cref="RenderSize"/></returns>
+      public abstract RenderSize MeasureOverride(int availableWidth);
+
       #endregion
    }
 }

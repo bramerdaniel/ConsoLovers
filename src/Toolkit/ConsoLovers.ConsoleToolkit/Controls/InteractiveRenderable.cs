@@ -41,16 +41,16 @@ public abstract class InteractiveRenderable : IInteractiveRenderable
 
    #region IInteractiveRenderable Members
 
-   public MeasuredSize Measure(int availableWidth)
+   public RenderSize Measure(int availableWidth)
    {
       Size = MeasureOverride(availableWidth);
       return Size;
    }
 
    /// <summary>Gets the size the renderable measured for itself.</summary>
-   protected MeasuredSize Size { get; private set; }
+   protected RenderSize Size { get; private set; }
 
-   public abstract MeasuredSize MeasureOverride(int availableWidth);
+   public abstract RenderSize MeasureOverride(int availableWidth);
 
    public abstract IEnumerable<Segment> RenderLine(IRenderContext context, int line);
 

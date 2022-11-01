@@ -15,7 +15,7 @@ internal class HorizontalSelectorRenderer<T> : ISelectorRenderer
 {
    #region Constants and Fields
 
-   private readonly Dictionary<ListItem<T>, MeasuredSize> measuredItems = new();
+   private readonly Dictionary<ListItem<T>, RenderSize> measuredItems = new();
 
    private readonly CSelector<T> selector;
 
@@ -32,7 +32,7 @@ internal class HorizontalSelectorRenderer<T> : ISelectorRenderer
 
    #region ISelectorRenderer Members
 
-   public MeasuredSize Measure(int availableWidth)
+   public RenderSize Measure(int availableWidth)
    {
       var height = 0;
       var width = 0;
@@ -42,13 +42,13 @@ internal class HorizontalSelectorRenderer<T> : ISelectorRenderer
          var itemSize = item.Measure(availableWidth);
          measuredItems[item] = itemSize;
          height = Math.Max(height, itemSize.Height);
-         width += itemSize.MinWidth + 1;
+         width += itemSize.Width + 1;
       }
 
       if (!string.IsNullOrWhiteSpace(selector.Selector))
          height++;
 
-      var size = new MeasuredSize { Height = height, MinWidth = width - 1 };
+      var size = new RenderSize { Height = height, Width = width - 1 };
       return size;
    }
 
@@ -120,7 +120,7 @@ internal class HorizontalSelectorRenderer<T> : ISelectorRenderer
          var itemSize = measuredItems[item];
          var isSelectedItem = item == selector.SelectedItem;
 
-         var renderContext = new RenderContext { AvailableWidth = itemSize.MinWidth, Size = itemSize };
+         var renderContext = new RenderContext { AvailableWidth = itemSize.Width, Size = itemSize };
          foreach (var segment in item.RenderLine(renderContext, line))
          {
             if (isSelectedItem)
@@ -162,7 +162,7 @@ internal class HorizontalSelectorRenderer<T> : ISelectorRenderer
             }
             else
             {
-               yield return new Segment(selector, string.Empty.PadRight(size.MinWidth + 1), selector.Style);
+               yield return new Segment(selector, string.Empty.PadRight(size.Width + 1), selector.Style);
             }
          }
       }

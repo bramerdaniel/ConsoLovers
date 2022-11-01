@@ -12,5 +12,5 @@ internal interface ISelectorRenderer : IKeyInputHandler
 {
    IEnumerable<Segment> RenderLine(IRenderContext context, int line);
 
-   MeasuredSize Measure(int availableWidth);
+   RenderSize Measure(int availableWidth);
 }

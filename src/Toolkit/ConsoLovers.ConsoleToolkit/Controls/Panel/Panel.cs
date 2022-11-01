@@ -14,8 +14,6 @@ using JetBrains.Annotations;
 
 public class Panel : Renderable, IHaveAlignment
 {
-   private MeasuredSize size;
-
    public Panel()
    : this(RenderingStyle.Default)
    {
@@ -25,18 +23,18 @@ public class Panel : Renderable, IHaveAlignment
    : base(style)
    {
       Children = new List<IRenderable>(5);
-      Measurements = new Dictionary<IRenderable, MeasuredSize>();
+      Measurements = new Dictionary<IRenderable, RenderSize>();
    }
 
    private List<IRenderable> Children { get; }
 
-   private Dictionary<IRenderable, MeasuredSize> Measurements { get; }
+   private Dictionary<IRenderable, RenderSize> Measurements { get; }
 
    public Alignment Alignment { get; set; }
 
    public Thickness Padding { get; set; }
 
-   public override MeasuredSize Measure(int availableWidth)
+   public override RenderSize MeasureOverride(int availableWidth)
    {
       int totalHeight = 1;
       int totalWidth = 0;
@@ -49,24 +47,22 @@ public class Panel : Renderable, IHaveAlignment
          if (childSize.Height > totalHeight)
          {
             totalHeight = childSize.Height;
-            totalWidth += childSize.MinWidth;
+            totalWidth += childSize.Width;
          }
       }
 
-      size = new MeasuredSize
+      return new RenderSize
       {
          Height = totalHeight,
-         MinWidth = totalWidth,
+         Width = totalWidth,
       };
-
-      return size;
    }
 
    public override IEnumerable<Segment> RenderLine(IRenderContext context, int line)
    {
       foreach (var child in Children)
       {
-         if (Measurements.TryGetValue(child, out size))
+         if (Measurements.TryGetValue(child, out var size))
          {
             if (size.Height > line)
             {
@@ -74,13 +70,13 @@ public class Panel : Renderable, IHaveAlignment
                foreach (var segment in childSegments)
                   yield return segment;
 
-               var required = size.MinWidth - childSegments.Sum(x => x.Width);
+               var required = size.Width - childSegments.Sum(x => x.Width);
                if (required > 0)
                   yield return new Segment(this, string.Empty.PadRight(required), child.Style);
             }
             else
             {
-               yield return new Segment(this, string.Empty.PadRight(size.MinWidth), child.Style);
+               yield return new Segment(this, string.Empty.PadRight(size.Width), child.Style);
             }
          }
       }

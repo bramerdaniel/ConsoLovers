@@ -15,7 +15,7 @@ namespace ConsoLovers.ConsoleToolkit.Controls
       /// <summary>Measures the renderable object.</summary>
       /// <param name="availableWidth">The maximum allowed width.</param>
       /// <returns>The minimum and maximum width of the object.</returns>
-      MeasuredSize Measure(int availableWidth);
+      RenderSize Measure(int availableWidth);
       
       IEnumerable<Segment> RenderLine(IRenderContext context, int line);
       
