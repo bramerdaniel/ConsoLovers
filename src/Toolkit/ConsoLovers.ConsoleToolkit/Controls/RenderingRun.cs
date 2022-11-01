@@ -31,9 +31,6 @@ internal class RenderingRun : IDisposable
 
    private Action cancellationAction;
 
-   private int initialLeft;
-
-   private int initialTop;
 
    private IRenderable hoveredRenderable;
 
@@ -47,9 +44,24 @@ internal class RenderingRun : IDisposable
       this.root = root ?? throw new ArgumentNullException(nameof(root));
    }
 
+   class ConsolePosition
+   {
+      public ConsolePosition(int cursorTop, int cursorLeft)
+      {
+         CursorLeft = cursorLeft;
+         CursorTop = cursorTop;
+      }
+
+      public int CursorLeft { get; }
+
+      public int CursorTop { get; }
+   }
+
    #endregion
 
    #region IDisposable Members
+
+   private ConsolePosition InitialPosition { get; set; }
 
    public void Dispose()
    {
@@ -83,6 +95,7 @@ internal class RenderingRun : IDisposable
       inputHandler.MouseMoved += OnMouseMoved;
       inputHandler.Start();
 
+      InitialPosition = new ConsolePosition(console.CursorTop, console.CursorLeft);
       RenderInternal(true);
    }
 
@@ -284,29 +297,21 @@ internal class RenderingRun : IDisposable
 
    private void OnRenderableInvalidated(object sender, EventArgs e)
    {
+      // TODO I assume this could cause fragments when previous run produced longer lines!!!
+      console.CursorTop = InitialPosition.CursorTop;
+      console.CursorLeft = InitialPosition.CursorLeft;
+
       RenderInternal(false);
    }
 
-   private void RenderInternal(bool isFirstRun)
+   private void RenderInternal(bool attachToEvents)
    {
-      if (isFirstRun)
-      {
-         initialLeft = console.CursorLeft;
-         initialTop = console.CursorTop;
-      }
-      else
-      {
-         // TODO I assume this could cause fragments when previous run produced longer lines!!!
-         console.CursorTop = initialTop;
-         console.CursorLeft = initialLeft;
-      }
-
       renderInfos.Clear();
       var availableSize = console.WindowWidth;
       var measuredSize = root.Measure(availableSize);
 
       var attached = new HashSet<IRenderable>();
-      if (isFirstRun)
+      if (attachToEvents)
          AttachToInteractiveEvents(root, attached);
 
       for (int line = 0; line < measuredSize.Height; line++)
@@ -317,7 +322,7 @@ internal class RenderingRun : IDisposable
             UpdateRenderInfo(segment);
             availableSize = WriteSegment(segment, availableSize);
 
-            if (isFirstRun)
+            if (attachToEvents)
                AttachToInteractiveEvents(segment.Renderable, attached);
          }
 

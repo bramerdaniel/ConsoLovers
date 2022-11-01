@@ -4,13 +4,12 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.UnitTests.ControlsTests.StackTraceDisplayTests;
+namespace ConsoLovers.ConsoleToolkit.UnitTests.ControlsTests.StackFrameDisplayTests;
 
 using System;
 using System.Diagnostics;
 
 using ConsoLovers.ConsoleToolkit.Controls;
-using ConsoLovers.ConsoleToolkit.UnitTests.Setups;
 
 using FluentAssertions;
 
@@ -19,16 +18,31 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 [TestClass]
 public class MeasureTests
 {
+   #region Public Methods and Operators
+
    [TestMethod]
    public void EnsureHeightIsMeasuredCorrectly()
    {
-      var stackTrace = CreateStackTrace(4);
-      var target = new StackTraceDisplay(stackTrace);
+      var frame = new StackFrame("Test.cs", 25);
+      var target = new StackFrameDisplay(frame);
 
-      var size = target.Measure(120);
-      size.Height.Should().Be(4);
-      size.Width.Should().Be(10);
+      target.Measure(int.MaxValue).Height.Should().Be(1);
+      // target.Measure(5).Height.Should().Be(2);
    }
+
+   [TestMethod]
+   public void EnsureWidthIsMeasuredCorrectly()
+   {
+      var frame = new StackFrame("Test.cs", 25);
+      var target = new StackFrameDisplay(frame);
+
+      target.Measure(int.MaxValue).Width.Should().Be(1);
+      // target.Measure(5).Height.Should().Be(2);
+   }
+
+   #endregion
+
+   #region Methods
 
    private StackTrace CreateStackTrace(int depth)
    {
@@ -47,8 +61,10 @@ public class MeasureTests
    {
       if (depth == 0)
          throw new InvalidOperationException("End of recursion");
-      
+
       depth--;
       return RecursiveCall(depth);
    }
+
+   #endregion
 }

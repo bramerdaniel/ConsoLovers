@@ -7,11 +7,14 @@
 namespace Playground
 {
    using System;
+   using System.Diagnostics;
 
    using ConsoLovers.ConsoleToolkit;
    using ConsoLovers.ConsoleToolkit.Controls;
    using ConsoLovers.ConsoleToolkit.Core;
    using ConsoLovers.ConsoleToolkit.Core.Input;
+
+   using Playground.SomeWeirdLongNamespace.ThatDoesNotMakeSense;
 
    public static class Program
    {
@@ -25,6 +28,7 @@ namespace Playground
 
       private static void Main()
       {
+         Console.WindowWidth = 200;
          try
          {
             Action action = () => throw new InvalidOperationException("This sounds wrong, but the text of this exception "
@@ -33,8 +37,7 @@ namespace Playground
          }
          catch (Exception e)
          {
-            var display = new ExceptionDisplay(e);
-            Console.Render(new Border(display)); Console.WriteLine(e.ToString());
+            ShowException(e);
          }
 
          var border = new Border(new Link("https://spectreconsole.net")) { CharSet = Borders.Doubled };
@@ -78,6 +81,23 @@ namespace Playground
          Console.WriteLine("Click yes or no");
          Console.RenderInteractive(panel);
 
+         Console.ReadLine();
+      }
+
+      private static void ShowException(Exception e)
+      {
+         var display = new ExceptionDisplay(e);
+         Console.RenderInteractive(display);
+         return;
+         var stackTrace = new StackTrace(e, true);
+         foreach (var stackFrame in stackTrace.GetFrames())
+         {
+            var frameDisplay = new StackFrameDisplay(stackFrame);
+            Console.Render(frameDisplay);
+         }
+
+         Console.ReadLine();
+         Console.WriteLine(e.ToString());
          Console.ReadLine();
       }
 
@@ -165,36 +185,6 @@ namespace Playground
          {
             // We ignore
          }
-      }
-
-      #endregion
-   }
-
-   internal class Thrower
-   {
-      private readonly Action callback;
-
-      public Thrower(Action callback, int times)
-      {
-         this.callback = callback;
-         Run(callback, times < 10);
-      }
-
-      #region Public Methods and Operators
-
-      public TimeSpan Run(Action callback, bool force)
-      {
-         CallCalback();
-         return TimeSpan.FromHours(1);
-      }
-
-      #endregion
-
-      #region Methods
-
-      private void CallCalback()
-      {
-         callback();
       }
 
       #endregion

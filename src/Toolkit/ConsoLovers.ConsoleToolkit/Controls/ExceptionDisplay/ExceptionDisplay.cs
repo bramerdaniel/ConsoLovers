@@ -19,6 +19,8 @@ public class ExceptionDisplay : InteractiveRenderable
 {
    private readonly MessageDisplay messageDisplay;
 
+   private readonly StackTraceDisplay stackTraceDisplay;
+
    #region Constructors and Destructors
 
    public ExceptionDisplay([NotNull] Exception exception)
@@ -27,8 +29,9 @@ public class ExceptionDisplay : InteractiveRenderable
       ExceptionData = new ExceptionData(exception);
 
       messageDisplay = new MessageDisplay(ExceptionData.MessageHint, exception.Message);
-
+      
       StackTrace = new StackTrace(exception, fNeedFileInfo: true);
+      stackTraceDisplay = new StackTraceDisplay(StackTrace);
    }
 
 
@@ -54,29 +57,31 @@ public class ExceptionDisplay : InteractiveRenderable
    public override RenderSize MeasureOverride(int availableWidth)
    {
       var messageSize = messageDisplay.Measure(availableWidth);
-
-      var messageLength = availableWidth - ExceptionData.MessageHint.Length;
-      ExceptionData.Update(messageLength);
+      var stackTraceSize = stackTraceDisplay.Measure(availableWidth);
 
       return new RenderSize
       {
-         Height = messageSize.Height + ExceptionData.StackTrace.FrameCount,
-         Width = availableWidth
+         Height = messageSize.Height + stackTraceSize.Height,
+         Width =  Math.Max(messageSize.Width , stackTraceSize.Width) 
       };
    }
 
    public override IEnumerable<Segment> RenderLine(IRenderContext context, int line)
    {
-      if (line < ExceptionData.MessageLines.Count)
+      if (line < messageDisplay.Size.Height)
       {
          foreach (var segment in messageDisplay.RenderLine(context, line))
             yield return segment;
       }
       else
       {
-         var frame = ExceptionData.StackTrace.GetFrame(line - ExceptionData.MessageLines.Count);
-         foreach (var segment in RenderStackFrame(frame))
+         foreach (var segment in stackTraceDisplay.RenderLine(context, line - messageDisplay.Size.Height))
             yield return segment;
+            
+
+         //var frame = ExceptionData.StackTrace.GetFrame(line - ExceptionData.MessageLines.Count);
+         //foreach (var segment in RenderStackFrame(frame))
+         //   yield return segment;
 
          // yield return new Segment(this, frame.GetMethod().Name, RenderingStyle.Default.WithForeground(ConsoleColor.Red));
       }

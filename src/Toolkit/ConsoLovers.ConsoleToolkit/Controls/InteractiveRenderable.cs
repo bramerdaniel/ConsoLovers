@@ -48,7 +48,7 @@ public abstract class InteractiveRenderable : IInteractiveRenderable
    }
 
    /// <summary>Gets the size the renderable measured for itself.</summary>
-   protected RenderSize Size { get; private set; }
+   public RenderSize Size { get; private set; }
 
    public abstract RenderSize MeasureOverride(int availableWidth);
 

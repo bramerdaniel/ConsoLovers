@@ -8,6 +8,7 @@ namespace ConsoLovers.ConsoleToolkit.Controls
 {
    using System;
    using System.Collections.Generic;
+   using System.Diagnostics;
 
    using JetBrains.Annotations;
 
@@ -29,6 +30,7 @@ namespace ConsoLovers.ConsoleToolkit.Controls
 
       #region IRenderable Members
 
+      [DebuggerStepThrough]
       public RenderSize Measure(int availableWidth)
       {
          MeasuredSize = MeasureOverride(availableWidth);
