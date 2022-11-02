@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 using JetBrains.Annotations;
 
-public class Panel : Renderable, IHaveAlignment
+public class Panel : InteractiveRenderable, IHaveAlignment
 {
    #region Constants and Fields
 
@@ -88,6 +88,7 @@ public class Panel : Renderable, IHaveAlignment
          throw new ArgumentNullException(nameof(renderable));
 
       Children.Add(renderable);
+      Invalidate();
       return this;
    }
 
@@ -101,12 +102,15 @@ public class Panel : Renderable, IHaveAlignment
       if (renderable == null)
          throw new ArgumentNullException(nameof(renderable));
 
-      Children.Remove(renderable);
+      if (Children.Remove(renderable))
+         Invalidate();
+
       return this;
    }
 
    public override IEnumerable<Segment> RenderLine(IRenderContext context, int line)
    {
+      // context.RegisterInteractive(this);
       return Renderer.RenderLine(context, line);
    }
 

@@ -36,6 +36,11 @@ namespace ConsoLovers.ConsoleToolkit.Controls
          MeasuredSize = MeasureOverride(availableWidth);
          return MeasuredSize;
       }
+      
+      protected bool IsLastLine(int line)
+      {
+         return MeasuredSize.Height - 1 == line;
+      }
 
       public abstract IEnumerable<Segment> RenderLine(IRenderContext context, int line);
 

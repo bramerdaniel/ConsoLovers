@@ -87,7 +87,14 @@ public class Link : InteractiveRenderable, IMouseAware, IMouseInputHandler, IKey
    public string DisplayText
    {
       get => displayText ?? Address;
-      set => displayText = value;
+      set
+      {
+         if(displayText == value)
+            return;
+
+         displayText = value;
+         Invalidate();
+      }
    }
 
    public Action<string> LinkResolver

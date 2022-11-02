@@ -16,7 +16,7 @@ using ConsoLovers.ConsoleToolkit.InputHandler;
 
 using JetBrains.Annotations;
 
-internal class RenderingRun : IDisposable
+internal class RenderingRun : IDisposable, IRenderContext
 {
    #region Constants and Fields
 
@@ -131,6 +131,7 @@ internal class RenderingRun : IDisposable
    {
       if (renderable is IInteractiveRenderable interactiveRenderable)
       {
+         // TODO cache registration and do only once
          interactiveRenderable.Invalidated += OnRenderableInvalidated;
          disposeActions.Add(() => interactiveRenderable.Invalidated -= OnRenderableInvalidated);
       }
@@ -145,7 +146,7 @@ internal class RenderingRun : IDisposable
       attached.Add(renderable);
    }
 
-   private RenderContext ComputeContext(IRenderable renderable, RenderSize measuredSize)
+   private void ComputeContext(IRenderable renderable, RenderSize measuredSize)
    {
       if (renderable is IHaveAlignment hasAlignment)
       {
@@ -161,8 +162,7 @@ internal class RenderingRun : IDisposable
             console.CursorLeft = remaining / 2;
          }
       }
-
-      return new RenderContext { Size = measuredSize };
+      
    }
 
    private IMouseInputHandler FindInputHandler(int line, int column)
@@ -317,8 +317,8 @@ internal class RenderingRun : IDisposable
 
       for (int line = 0; line < measuredSize.Height; line++)
       {
-         var context = ComputeContext(root, measuredSize);
-         foreach (var segment in root.RenderLine(context, line))
+         ComputeContext(root, measuredSize);
+         foreach (var segment in root.RenderLine(this, line))
          {
             UpdateRenderInfo(segment);
             availableSize = WriteSegment(segment, availableSize);
@@ -339,4 +339,9 @@ internal class RenderingRun : IDisposable
    }
 
    #endregion
+
+   public void RegisterInteractive(IInteractiveRenderable renderable)
+   {
+      AttachToInteractiveEvents(renderable);
+   }
 }

@@ -10,7 +10,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-public class CButton : InteractiveRenderable, IMouseInputHandler ,IHaveAlignment, IMouseAware
+using ConsoLovers.ConsoleToolkit.InputHandler;
+
+public class CButton : InteractiveRenderable, IMouseInputHandler, IHaveAlignment, IMouseAware
 {
    private int lineCount;
 
@@ -78,7 +80,8 @@ public class CButton : InteractiveRenderable, IMouseInputHandler ,IHaveAlignment
 
    public void HandleMouseInput(IMouseInputContext context)
    {
-      Clicked?.Invoke(this, EventArgs.Empty);
+      if (context.MouseEventArgs.ButtonState == ButtonStates.Left)
+         Clicked?.Invoke(this, EventArgs.Empty);
    }
 
    public void HandleMouseMove(IMouseInputContext context)
@@ -90,8 +93,7 @@ public class CButton : InteractiveRenderable, IMouseInputHandler ,IHaveAlignment
 
    private IEnumerable<Segment> RenderContent(IRenderContext context, int lineIndex)
    {
-      var renderContext = new RenderContext { Size = contentSize };
-      foreach (var segment in Content.RenderLine(renderContext, lineIndex - 1 - Padding.Top))
+      foreach (var segment in Content.RenderLine(context, lineIndex - 1 - Padding.Top))
          yield return segment;
    }
 

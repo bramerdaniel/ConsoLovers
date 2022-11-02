@@ -8,8 +8,12 @@ namespace ConsoLovers.ConsoleToolkit.Controls;
 
 using System;
 
+using ConsoLovers.ConsoleToolkit.InputHandler;
+
 public interface IMouseInputContext
 {
+   MouseEventArgs MouseEventArgs { get; }
+
    void Cancel();
 
    void Cancel(Action cancellationAction);

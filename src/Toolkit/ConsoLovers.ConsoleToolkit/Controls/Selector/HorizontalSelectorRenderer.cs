@@ -119,9 +119,8 @@ internal class HorizontalSelectorRenderer<T> : ISelectorRenderer
       {
          var itemSize = measuredItems[item];
          var isSelectedItem = item == selector.SelectedItem;
-
-         var renderContext = new RenderContext { Size = itemSize };
-         foreach (var segment in item.RenderLine(renderContext, line))
+         
+         foreach (var segment in item.RenderLine(context, line))
          {
             if (isSelectedItem)
             {

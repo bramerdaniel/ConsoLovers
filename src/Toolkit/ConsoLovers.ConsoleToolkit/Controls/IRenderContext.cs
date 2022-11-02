@@ -8,7 +8,6 @@ namespace ConsoLovers.ConsoleToolkit.Controls
 {
    public interface IRenderContext
    {
-      RenderSize Size { get; }
-
+      void RegisterInteractive(IInteractiveRenderable renderable);
    }
 }

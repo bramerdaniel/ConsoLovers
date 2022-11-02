@@ -36,20 +36,11 @@ internal class VerticalPanelRenderer : IPanelRenderer
    public IEnumerable<Segment> RenderLine(IRenderContext context, int line)
    {
       var data = renderQueue.Dequeue();
-      var renderSize = Measurements[data.Child];
-      foreach (var segment in data.Child.RenderLine(new RenderContext{ Size = renderSize }, data.Line))
+      foreach (var segment in data.Child.RenderLine(context, data.Line))
          yield return segment;
    }
 
-   private IEnumerable<Segment> RenderChild(IRenderable child, RenderSize childSize)
-   {
-      for (int i = 0; i < childSize.Height; i++)
-      {
-         var context = new RenderContext { Size = childSize };
-         foreach (var segment in child.RenderLine(context, i))
-            yield return segment;
-      }
-   }
+
 
    public RenderSize Measure(int availableWidth)
    {

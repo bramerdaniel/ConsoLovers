@@ -7,6 +7,7 @@
 namespace Playground
 {
    using System;
+   using System.Diagnostics;
 
    using ConsoLovers.ConsoleToolkit;
    using ConsoLovers.ConsoleToolkit.Controls;
@@ -27,7 +28,30 @@ namespace Playground
       {
          //Console.Render(new CText("Simple text") { Alignment = Alignment.Right });
 
-         var verticalPanel = new Panel{ Orientation = Orientation.Vertical };
+         var verticalPanel = new Panel
+         {
+            Orientation = Orientation.Vertical
+         };
+         for (int i = 0; i < 2; i++)
+         {
+            var row = new Panel();
+            row.Add(new Border(new CText("Row " + i)));
+            row.Add(new Border(new Link("Click me")));
+            var button = new CButton(new Link("Button"));
+            button.Clicked += (sender, args) =>
+            {
+               row.Remove((IRenderable)sender);
+               row.Add(new Border(new CText("I am not a button")));
+               Trace.WriteLine("Added");
+            };
+
+            row.Add(button);
+            verticalPanel.Add(row);
+         }
+
+         Console.RenderInteractive(verticalPanel);
+         Console.ReadLine();
+
          //var inner = new Panel{ Orientation = Orientation.Vertical };
          //inner.Add(new Border(new CText("Hello")));
          //inner.Add(new Border(new CText("World")));
@@ -37,9 +61,16 @@ namespace Playground
          verticalPanel.Add(new Border(new CText("Simple text")));
          // verticalPanel.Add(inner);
          verticalPanel.Add(new CButton(new CText("Button")));
-         verticalPanel.Add(new Link("Click me I am a link"));
+
+         var hansi = new Link("Hansi");
+         verticalPanel.Add(hansi);
+         verticalPanel.Add(new Link("Click me I am a link"){ LinkResolver = s =>
+         {
+            hansi.DisplayText = "Klaus";
+            hansi.Style = hansi.Style.WithForeground(ConsoleColor.Cyan);
+         } });
          // verticalPanel.Add(new Border(new CText("I can not be clicked")));
-         Console.Render(verticalPanel);
+         Console.RenderInteractive(verticalPanel);
 
          //var panel = new Panel();
          //var y = new CButton(new CText("Yes"));

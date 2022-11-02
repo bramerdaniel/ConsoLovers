@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="CBorder.cs" company="ConsoLovers">
+// <copyright file="Border.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -17,8 +17,8 @@ public class Border : Renderable, IHaveAlignment
    private RenderSize contentSize;
 
    // TODO Add header for the panel
-   private int lineCount;
-   
+
+
    #endregion
 
    #region Constructors and Destructors
@@ -41,11 +41,11 @@ public class Border : Renderable, IHaveAlignment
 
    #region Public Properties
 
+   public BorderCharSet CharSet { get; set; }
+
    public IRenderable Content { get; }
 
    public Thickness Padding { get; set; }
-
-   public BorderCharSet CharSet { get; set; }
 
    #endregion
 
@@ -54,17 +54,15 @@ public class Border : Renderable, IHaveAlignment
    public override RenderSize MeasureOverride(int availableWidth)
    {
       if (Content == null)
-      {
-         lineCount = 2;
          return new RenderSize { Height = 2, Width = 2 };
-      }
 
       contentSize = Content.Measure(availableWidth - 2);
-      lineCount = contentSize.Height + 2 + Padding.Bottom + Padding.Top;
 
-      var width = Padding.Left + 1 + contentSize.Width + 1 + Padding.Right;
-
-      return new RenderSize { Height = lineCount, Width = width };
+      return new RenderSize
+      {
+         Height = contentSize.Height + 2 + Padding.Bottom + Padding.Top, 
+         Width = Padding.Left + 1 + contentSize.Width + 1 + Padding.Right
+      };
    }
 
    public override IEnumerable<Segment> RenderLine(IRenderContext context, int line)
@@ -73,7 +71,7 @@ public class Border : Renderable, IHaveAlignment
       {
          yield return CreateBorderSegment(context, CharSet.TopLeft, CharSet.TopRight, CharSet.Top);
       }
-      else if (lineCount - 1 == line)
+      else if (IsLastLine(line))
       {
          yield return CreateBorderSegment(context, CharSet.BottomLeft, CharSet.BottomRight, CharSet.Bottom);
       }
@@ -138,9 +136,7 @@ public class Border : Renderable, IHaveAlignment
 
    private IEnumerable<Segment> RenderContent(IRenderContext context, int lineIndex)
    {
-      var availableSize = contentSize.Width;
-      var renderContext = new RenderContext { Size = contentSize };
-      foreach (var segment in Content.RenderLine(renderContext, lineIndex - 1 - Padding.Top))
+      foreach (var segment in Content.RenderLine(context, lineIndex - 1 - Padding.Top))
          yield return segment;
    }
 

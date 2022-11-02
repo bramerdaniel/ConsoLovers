@@ -101,9 +101,8 @@ internal class VerticalSelectorRenderer<T> : ISelectorRenderer
       {
          yield return new Segment(selector, string.Empty.PadRight(selector.Selector.Length), data.Item.Style);
       }
-
-      var renderContext = new RenderContext { Size = data.ItemSize };
-      var segments = data.Item.RenderLine(renderContext, data.ItemLine).ToArray();
+      
+      var segments = data.Item.RenderLine(context, data.ItemLine).ToArray();
       foreach (var segment in segments)
       {
          yield return data.ItemIndex == selector.SelectedIndex
