@@ -336,7 +336,7 @@ internal class RenderingRun : IDisposable
 
    private int WriteSegment(Segment segment, int availableSize)
    {
-      console.Write(segment.Text, segment.Style.Foreground, segment.Style.Background);
+      console.Write(segment.Text, segment.Style.GetForeground(console.ForegroundColor), segment.Style.GetBackground(console.BackgroundColor));
       return availableSize - segment.Width;
    }
 

@@ -27,4 +27,6 @@ public class StackFrameRenderingStyles
    public RenderingStyle Namespaces { get; set; } = new(ConsoleColor.Gray);
 
    public RenderingStyle Types { get; set; } = new(ConsoleColor.DarkCyan);
+   
+   public RenderingStyle MouseOver { get; set; } = new(null, ConsoleColor.DarkGray);
 }

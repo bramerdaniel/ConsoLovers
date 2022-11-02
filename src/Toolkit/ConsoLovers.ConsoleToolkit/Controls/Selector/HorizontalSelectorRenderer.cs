@@ -125,7 +125,7 @@ internal class HorizontalSelectorRenderer<T> : ISelectorRenderer
          {
             if (isSelectedItem)
             {
-               yield return segment.WithStyle(selector.SelectionStyle);
+               yield return segment.OverrideStyle(selector.SelectionStyle);
             }
             else
             {

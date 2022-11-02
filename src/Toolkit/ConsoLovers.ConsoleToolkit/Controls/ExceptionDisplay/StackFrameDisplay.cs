@@ -15,11 +15,9 @@ using System.Reflection;
 
 using JetBrains.Annotations;
 
-public class StackFrameDisplay : InteractiveRenderable, IMouseInputHandler, IMouseAware
+public class StackFrameDisplay : InteractiveRenderable, IMouseInputHandler, IMouseAware, IKeyInputHandler
 {
    #region Constants and Fields
-
-   private readonly MethodBase methodBase;
 
    private bool isMouseOver;
 
@@ -34,9 +32,27 @@ public class StackFrameDisplay : InteractiveRenderable, IMouseInputHandler, IMou
 
       FileName = stackFrame.GetFileName();
       LineNumber = stackFrame.GetFileLineNumber();
-      methodBase = stackFrame.GetMethod();
+      MethodBase = stackFrame.GetMethod();
       InitializeSegments();
       RenderAllSegments();
+   }
+
+   #endregion
+
+   #region IMouseAware Members
+
+   /// <summary>Gets or sets a value indicating whether this instance is mouse over.</summary>
+   bool IMouseAware.IsMouseOver
+   {
+      get => isMouseOver;
+      set
+      {
+         if (isMouseOver == value)
+            return;
+
+         isMouseOver = value;
+         Invalidate();
+      }
    }
 
    #endregion
@@ -49,7 +65,7 @@ public class StackFrameDisplay : InteractiveRenderable, IMouseInputHandler, IMou
       {
          yield return new Segment(this, " → ", RenderingStyle.Default);
          foreach (var segment in RenderedSegments.Skip(1))
-            yield return segment.Segment.WithStyle(new RenderingStyle(segment.Segment.Style.Foreground, ConsoleColor.DarkGray));
+            yield return segment.Segment.OverrideStyle(Styles.MouseOver);
       }
       else
       {
@@ -83,7 +99,11 @@ public class StackFrameDisplay : InteractiveRenderable, IMouseInputHandler, IMou
       }
    }
 
+   /// <summary>Gets the line number of the stack frame if available.</summary>
    public int LineNumber { get; }
+
+   /// <summary>Gets the method the stack frame comes from.</summary>
+   public MethodBase MethodBase { get; }
 
    public StackFrameRenderingStyles Styles { get; set; } = new();
 
@@ -145,12 +165,12 @@ public class StackFrameDisplay : InteractiveRenderable, IMouseInputHandler, IMou
 
    private Segment? CreateMethodName()
    {
-      return new Segment(this, $"{methodBase.Name}", Styles.MethodName);
+      return new Segment(this, $"{MethodBase.Name}", Styles.MethodName);
    }
 
    private IEnumerable<Segment> CreateNamespace()
    {
-      var typeNamespace = methodBase.DeclaringType?.Namespace;
+      var typeNamespace = MethodBase.DeclaringType?.Namespace;
       if (typeNamespace != null)
       {
          yield return new Segment(this, $"{typeNamespace}", Styles.Namespaces);
@@ -160,7 +180,7 @@ public class StackFrameDisplay : InteractiveRenderable, IMouseInputHandler, IMou
 
    private void CreateParameterSegment()
    {
-      var parameters = methodBase.GetParameters();
+      var parameters = MethodBase.GetParameters();
       for (var i = 0; i < parameters.Length; i++)
       {
          var parameter = parameters[i];
@@ -209,14 +229,14 @@ public class StackFrameDisplay : InteractiveRenderable, IMouseInputHandler, IMou
    {
       CreateSegment("Indent", new Segment(this, "   ", Styles.ControlCharacters));
       CreateSegment("At", new Segment(this, "at ", Styles.NormalText));
-      if (methodBase is MethodInfo methodInfo)
+      if (MethodBase is MethodInfo methodInfo)
       {
          CreateSegment("ReturnType", new Segment(this, $"{methodInfo.ReturnType.AliasOrName()} ", Styles.Types));
          CreateSegment("Namespace", CreateNamespace);
          CreateSegment("TypeName", new Segment(this, $"{methodInfo.DeclaringType.AliasOrName()}.", Styles.Namespaces));
       }
 
-      if (methodBase is ConstructorInfo constructorInfo)
+      if (MethodBase is ConstructorInfo constructorInfo)
       {
          CreateSegment("Namespace", CreateNamespace);
          CreateSegment("$TypeName$", new Segment(this, $"{constructorInfo.DeclaringType.AliasOrName()}", Styles.Types));
@@ -232,18 +252,10 @@ public class StackFrameDisplay : InteractiveRenderable, IMouseInputHandler, IMou
 
    #endregion
 
-
-   /// <summary>Gets or sets a value indicating whether this instance is mouse over.</summary>
-   bool IMouseAware.IsMouseOver
+   public void HandleKeyInput(IKeyInputContext context)
    {
-      get => isMouseOver;
-      set
-      {
-         if (isMouseOver == value)
-            return;
-
-         isMouseOver = value;
-         Invalidate();
-      }
+      var key = context.KeyEventArgs.Key;
+      if (key == ConsoleKey.Enter || key == ConsoleKey.Escape)
+         context.Accept();
    }
 }

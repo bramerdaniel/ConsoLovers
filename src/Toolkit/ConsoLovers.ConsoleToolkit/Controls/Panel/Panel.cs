@@ -17,6 +17,7 @@ public class Panel : Renderable, IHaveAlignment
    public Panel()
    : this(RenderingStyle.Default)
    {
+      // TODO add orientation Horizontal/Vertical
    }
 
    public Panel(RenderingStyle style)

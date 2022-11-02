@@ -107,7 +107,7 @@ internal class VerticalSelectorRenderer<T> : ISelectorRenderer
       foreach (var segment in segments)
       {
          yield return data.ItemIndex == selector.SelectedIndex
-            ? segment.WithStyle(selector.SelectionStyle)
+            ? segment.OverrideStyle(selector.SelectionStyle)
             : segment;
       }
       

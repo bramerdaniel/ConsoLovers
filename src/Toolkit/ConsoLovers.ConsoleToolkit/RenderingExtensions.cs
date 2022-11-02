@@ -58,6 +58,22 @@ public static class RenderingExtensions
       return show;
    }
 
+   public static bool? YesNoCancel([NotNull] this IConsole console, string question)
+   {
+      if (console == null)
+         throw new ArgumentNullException(nameof(console));
+
+      var show = console.Choice<bool?>(EnsureAtLeastOneSpace(question))
+         .WithOrientation(Orientation.Horizontal, true)
+         .WithAnswer(true, new CText("yes"))
+         .WithAnswer(false, new CText("no"))
+         .WithAnswer(null, new CText("cancel"))
+         .AllowCancellation(false)
+         .Show();
+
+      return show;
+   }
+
    private static string EnsureAtLeastOneSpace(string question)
    {
       if (question == null)

@@ -13,7 +13,7 @@ using System.Runtime.InteropServices;
 
 using JetBrains.Annotations;
 
-public class Link : InteractiveRenderable, IMouseAware, IMouseInputHandler
+public class Link : InteractiveRenderable, IMouseAware, IMouseInputHandler, IKeyInputHandler
 {
    #region Constants and Fields
 
@@ -30,6 +30,17 @@ public class Link : InteractiveRenderable, IMouseAware, IMouseInputHandler
    public Link([NotNull] string address)
    {
       Address = address ?? throw new ArgumentNullException(nameof(address));
+   }
+
+   #endregion
+
+   #region IKeyInputHandler Members
+
+   public void HandleKeyInput(IKeyInputContext context)
+   {
+      var key = context.KeyEventArgs.Key;
+      if (key == ConsoleKey.Enter || key == ConsoleKey.Escape)
+         context.Accept();
    }
 
    #endregion
@@ -53,11 +64,6 @@ public class Link : InteractiveRenderable, IMouseAware, IMouseInputHandler
    #endregion
 
    #region IMouseInputHandler Members
-
-   public override RenderSize MeasureOverride(int availableWidth)
-   {
-      return new RenderSize { Height = 1, Width = DisplayText.Length };
-   }
 
    public override IEnumerable<Segment> RenderLine(IRenderContext context, int line)
    {
@@ -94,12 +100,16 @@ public class Link : InteractiveRenderable, IMouseAware, IMouseInputHandler
 
    #endregion
 
-   #region Methods
+   #region Public Methods and Operators
 
-   private static void ResolveLink(string address)
+   public override RenderSize MeasureOverride(int availableWidth)
    {
-      OpenBrowser(address);
+      return new RenderSize { Height = 1, Width = DisplayText.Length };
    }
+
+   #endregion
+
+   #region Methods
 
    private static void OpenBrowser(string address)
    {
@@ -131,6 +141,11 @@ public class Link : InteractiveRenderable, IMouseAware, IMouseInputHandler
             throw;
          }
       }
+   }
+
+   private static void ResolveLink(string address)
+   {
+      OpenBrowser(address);
    }
 
    #endregion

@@ -7,12 +7,18 @@
 namespace ConsoLovers.ConsoleToolkit.Controls;
 
 using System;
+using System.Diagnostics;
 
 using ConsoLovers.ConsoleToolkit.Core;
 
+[DebuggerDisplay("{foreground}, {background}")]
 public sealed class RenderingStyle
 {
    #region Constants and Fields
+
+   private readonly ConsoleColor? background;
+
+   private readonly ConsoleColor? foreground;
 
    private static RenderingStyle defaultStyle;
 
@@ -25,8 +31,8 @@ public sealed class RenderingStyle
    /// <param name="background">The background color.</param>
    public RenderingStyle(ConsoleColor? foreground = null, ConsoleColor? background = null)
    {
-      Foreground = foreground ?? Default.Foreground;
-      Background = background ?? Default.Background;
+      this.foreground = foreground;
+      this.background = background;
    }
 
    #endregion
@@ -35,11 +41,13 @@ public sealed class RenderingStyle
 
    public static RenderingStyle Default => defaultStyle ??= new RenderingStyle(Console.ForegroundColor, Console.BackgroundColor);
 
-   /// <summary>Gets the background color.</summary>
-   public ConsoleColor Background { get; }
+   public ConsoleColor GetForeground(ConsoleColor defaultValue) => foreground ?? defaultValue;
 
-   /// <summary>Gets the foreground color.</summary>
-   public ConsoleColor Foreground { get; }
+   public ConsoleColor GetForeground() => foreground ?? Console.ForegroundColor;
+
+   public ConsoleColor GetBackground(ConsoleColor defaultValue) => background ?? defaultValue;
+   
+   public ConsoleColor GetBackground() => background ?? Console.BackgroundColor;
 
    #endregion
 
@@ -56,7 +64,7 @@ public sealed class RenderingStyle
    /// <returns>A copy with the adjusted background</returns>
    public RenderingStyle WithBackground(ConsoleColor background)
    {
-      return new RenderingStyle(Foreground, background);
+      return new RenderingStyle(foreground, background);
    }
 
    /// <summary>Creates a copy of the current style and adjusts the <see cref="Foreground"/></summary>
@@ -64,7 +72,7 @@ public sealed class RenderingStyle
    /// <returns>A copy with the adjusted foreground</returns>
    public RenderingStyle WithForeground(ConsoleColor foreground)
    {
-      return new RenderingStyle(foreground, Background);
+      return new RenderingStyle(foreground, background);
    }
 
    #endregion

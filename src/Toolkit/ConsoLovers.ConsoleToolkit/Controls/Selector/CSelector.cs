@@ -23,6 +23,8 @@ public class CSelector<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignm
 
    private string selector;
 
+   private SelectorStyles styles;
+
    #endregion
 
    #region Constructors and Destructors
@@ -59,9 +61,15 @@ public class CSelector<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignm
    /// <summary>Gets or sets a value indicating whether user is allowed  to cancel the selection or not.</summary>
    public bool AllowCancellation { get; set; } = true;
 
+   // TODO make items readonly
    public IList<ListItem<T>> Items { get; }
 
-   public RenderingStyle MouseOverStyle { get; set; } = DefaultStyles.MouseOverStyle;
+   /// <summary>Gets or sets the style the item the mouse is over will have.</summary>
+   public RenderingStyle MouseOverStyle
+   {
+      get => Styles.MouseOverStyle;
+      set => Styles.MouseOverStyle = value;
+   }
 
    public Orientation Orientation
    {
@@ -114,12 +122,24 @@ public class CSelector<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignm
    /// <summary>Gets the selected item.</summary>
    public T SelectedValue => SelectedItem == null ? default : SelectedItem.Value;
 
-   public RenderingStyle SelectionStyle { get; set; } = DefaultStyles.SelectionStyle;
+   /// <summary>Gets or sets the style the selected item will have.</summary>
+   public RenderingStyle SelectionStyle
+   {
+      get => Styles.SelectionStyle;
+      set => Styles.SelectionStyle = value;
+   }
 
    public string Selector
    {
       get => selector ?? UseDefaultSelector(Orientation);
       set => selector = value;
+   }
+
+   /// <summary>Gets or sets all the styles this selector uses.</summary>
+   public SelectorStyles Styles
+   {
+      get => styles ??= new SelectorStyles();
+      set => styles = value;
    }
 
    #endregion
@@ -143,6 +163,7 @@ public class CSelector<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignm
 
    #region Public Methods and Operators
 
+   /// <summary>Adds the specified value to the selector using the <see cref="displayText"/>.</summary>
    public void Add(T value, [NotNull] string displayText)
    {
       if (displayText == null)
@@ -151,6 +172,7 @@ public class CSelector<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignm
       Items.Add(new ListItem<T>(this, value, new CText(displayText)));
    }
 
+   /// <summary>Adds the specified value to the selector using the <see cref="template"/>.</summary>
    public void Add(T value, [NotNull] IRenderable template)
    {
       if (template == null)
@@ -159,6 +181,7 @@ public class CSelector<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignm
       Items.Add(new ListItem<T>(this, value, template));
    }
 
+   /// <summary>Adds the specified value to the selector.</summary>
    public void Add(T value)
    {
       Items.Add(new ListItem<T>(this, value));

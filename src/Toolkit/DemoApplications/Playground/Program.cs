@@ -28,6 +28,7 @@ namespace Playground
 
       private static void Main()
       {
+         ShowComplexSelection();
          ShowYesNo();
          
          // Console.WindowWidth = 210;
@@ -44,9 +45,7 @@ namespace Playground
          var border = new Border(new Link("https://spectreconsole.net")) { CharSet = Borders.Doubled };
 
          Console.RenderInteractive(border);
-
-
-
+         
          var count = Console.Choice<int>("Choose a number: ")
             .WithAnswer(23)
             .WithAnswer(7)
@@ -94,7 +93,21 @@ namespace Playground
 
       }
 
+      private static void ShowComplexSelection()
+      {
+         var yesTemplate = new Border(new CText($"Yes{Environment.NewLine}We will continue executing"));
+         var noTemplate = new Border(new CText($"No{Environment.NewLine}We shut down immediately"));
+         var cancelTemplate = new Border(new CText($"Cancel{Environment.NewLine}We surprise you"));
 
+         var answer = Console.Choice<string>("Answer please ? ")
+            .WithAnswer("Yes", yesTemplate)
+            .WithAnswer("No", noTemplate)
+            .WithAnswer("Cancel", cancelTemplate)
+            .WithOrientation(Orientation.Horizontal, false)
+            .AllowCancellation(false)
+            .WithSelector("↑")
+            .Show();
+      }
 
       private static void ShowException(Exception e)
       {
@@ -190,7 +203,7 @@ namespace Playground
       {
          try
          {
-            if (!Console.YesNo("Continue ?"))
+            if (!Console.YesNoCancel("Continue ?").GetValueOrDefault(true))
                throw new OperationCanceledException();
          }
          catch (InputCanceledException)

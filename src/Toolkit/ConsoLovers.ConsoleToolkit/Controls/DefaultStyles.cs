@@ -53,7 +53,7 @@ public static class DefaultStyles
 
    public static RenderingStyle SelectionStyle
    {
-      get => selection ??= new RenderingStyle(ConsoleColor.Black, ConsoleColor.White);
+      get => selection ??= new RenderingStyle(ConsoleColor.Blue);
       set => selection = value;
    }
 

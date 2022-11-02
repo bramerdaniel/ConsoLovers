@@ -75,8 +75,8 @@ public class ListItem<T> : InteractiveRenderable, IMouseInputHandler, IMouseAwar
    {
       var segments = Template.RenderLine(context, line);
       foreach (var segment in segments)
-      {
-         var segmentStyle = isMouseOver ? MouseOverStyle : segment.Style;
+      {  
+         var segmentStyle = isMouseOver ? segment.Style.WithBackground(ConsoleColor.DarkGray) : segment.Style;
          yield return new Segment(this, segment.Text, segmentStyle);
       }
    }
