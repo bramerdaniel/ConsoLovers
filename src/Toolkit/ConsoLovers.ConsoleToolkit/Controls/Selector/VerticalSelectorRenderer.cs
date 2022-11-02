@@ -102,7 +102,7 @@ internal class VerticalSelectorRenderer<T> : ISelectorRenderer
          yield return new Segment(selector, string.Empty.PadRight(selector.Selector.Length), data.Item.Style);
       }
 
-      var renderContext = new RenderContext { AvailableWidth = data.ItemWidth, Size = data.ItemSize };
+      var renderContext = new RenderContext { Size = data.ItemSize };
       var segments = data.Item.RenderLine(renderContext, data.ItemLine).ToArray();
       foreach (var segment in segments)
       {

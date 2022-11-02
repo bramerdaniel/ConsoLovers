@@ -43,12 +43,12 @@ public abstract class InteractiveRenderable : IInteractiveRenderable
 
    public RenderSize Measure(int availableWidth)
    {
-      Size = MeasureOverride(availableWidth);
-      return Size;
+      MeasuredSize = MeasureOverride(availableWidth);
+      return MeasuredSize;
    }
 
    /// <summary>Gets the size the renderable measured for itself.</summary>
-   public RenderSize Size { get; private set; }
+   public RenderSize MeasuredSize { get; private set; }
 
    public abstract RenderSize MeasureOverride(int availableWidth);
 

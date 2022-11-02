@@ -1,0 +1,87 @@
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="VerticalPanelRenderer.cs" company="ConsoLovers">
+//    Copyright (c) ConsoLovers  2015 - 2022
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace ConsoLovers.ConsoleToolkit.Controls;
+
+using System;
+using System.Collections.Generic;
+
+using JetBrains.Annotations;
+
+internal class VerticalPanelRenderer : IPanelRenderer
+{
+   private readonly Queue<Data> renderQueue;
+
+   public Panel Panel { get; }
+
+   public VerticalPanelRenderer([NotNull] Panel panel)
+   {
+      Panel = panel ?? throw new ArgumentNullException(nameof(panel));
+      Measurements = new Dictionary<IRenderable, RenderSize>();
+      renderQueue = new Queue<Data>();
+
+   }
+
+   class Data
+   {
+      public IRenderable Child { get; set; }
+      public int Line { get; set; }
+   }
+
+   public Dictionary<IRenderable, RenderSize> Measurements { get; set; }
+
+   public IEnumerable<Segment> RenderLine(IRenderContext context, int line)
+   {
+      var data = renderQueue.Dequeue();
+      var renderSize = Measurements[data.Child];
+      foreach (var segment in data.Child.RenderLine(new RenderContext{ Size = renderSize }, data.Line))
+         yield return segment;
+   }
+
+   private IEnumerable<Segment> RenderChild(IRenderable child, RenderSize childSize)
+   {
+      for (int i = 0; i < childSize.Height; i++)
+      {
+         var context = new RenderContext { Size = childSize };
+         foreach (var segment in child.RenderLine(context, i))
+            yield return segment;
+      }
+   }
+
+   public RenderSize Measure(int availableWidth)
+   {
+      int totalHeight = 0;
+      int totalWidth = 0;
+
+      foreach (var child in Panel.Children)
+      {
+         var childSize = child.Measure(availableWidth);
+         Measurements[child] = childSize;
+
+         totalHeight += childSize.Height;
+         if (childSize.Width > totalWidth)
+            totalWidth = childSize.Width;
+
+         AddDataToRenderQueue(child, childSize);
+      }
+
+      return new RenderSize
+      {
+         Height = totalHeight,
+         Width = totalWidth,
+      };
+
+   }
+
+   private void AddDataToRenderQueue(IRenderable child, RenderSize childSize)
+   {
+      for (int i = 0; i < childSize.Height; i++)
+      {
+         var data = new Data { Line = i, Child = child };
+         renderQueue.Enqueue(data);
+      }
+   }
+}

@@ -8,8 +8,6 @@ namespace ConsoLovers.ConsoleToolkit.Controls;
 
 public class RenderContext : IRenderContext
 {
-   public int AvailableWidth { get; set; }
-
    /// <summary>Gets or sets the size.</summary>
    public RenderSize Size { get; set; }
 }

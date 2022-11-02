@@ -95,7 +95,7 @@ public class Border : Renderable, IHaveAlignment
             yield return segment;
 
          var contentWidth = segments.Sum(x => x.Width);
-         var rightWidth = context.AvailableWidth - leftWidth - contentWidth;
+         var rightWidth = MeasuredSize.Width - leftWidth - contentWidth;
 
          yield return new Segment(this, CharSet.Right.ToString().PadLeft(rightWidth), Style);
       }
@@ -121,7 +121,7 @@ public class Border : Renderable, IHaveAlignment
       {
          var builder = new StringBuilder();
          builder.Append(left);
-         builder.Append(string.Empty.PadRight(context.AvailableWidth - 2, middle));
+         builder.Append(string.Empty.PadRight(MeasuredSize.Width - 2, middle));
          builder.Append(right);
          return new Segment(this, builder.ToString(), Style);
       }
@@ -129,7 +129,7 @@ public class Border : Renderable, IHaveAlignment
       {
          var builder = new StringBuilder();
          builder.Append(left);
-         builder.Append(string.Empty.PadRight(context.AvailableWidth - 2, middle));
+         builder.Append(string.Empty.PadRight(MeasuredSize.Width - 2, middle));
          builder.Append(right);
          return new Segment(this, builder.ToString(), Style);
       }
@@ -139,7 +139,7 @@ public class Border : Renderable, IHaveAlignment
    private IEnumerable<Segment> RenderContent(IRenderContext context, int lineIndex)
    {
       var availableSize = contentSize.Width;
-      var renderContext = new RenderContext { AvailableWidth = availableSize, Size = contentSize };
+      var renderContext = new RenderContext { Size = contentSize };
       foreach (var segment in Content.RenderLine(renderContext, lineIndex - 1 - Padding.Top))
          yield return segment;
    }

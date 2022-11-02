@@ -153,18 +153,16 @@ internal class RenderingRun : IDisposable
          {
             var left = console.WindowWidth - measuredSize.Width;
             console.CursorLeft = left;
-            return new RenderContext { AvailableWidth = measuredSize.Width, Size = measuredSize };
          }
 
          if (hasAlignment.Alignment == Alignment.Center)
          {
             var remaining = console.WindowWidth - measuredSize.Width;
             console.CursorLeft = remaining / 2;
-            return new RenderContext { AvailableWidth = measuredSize.Width, Size = measuredSize };
          }
       }
 
-      return new RenderContext { AvailableWidth = measuredSize.Width, Size = measuredSize };
+      return new RenderContext { Size = measuredSize };
    }
 
    private IMouseInputHandler FindInputHandler(int line, int column)

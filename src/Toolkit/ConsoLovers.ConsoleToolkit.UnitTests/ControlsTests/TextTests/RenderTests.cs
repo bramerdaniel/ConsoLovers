@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.UnitTests.ControlsTests;
+namespace ConsoLovers.ConsoleToolkit.UnitTests.ControlsTests.TextTests;
 
 using System;
 
@@ -16,7 +16,7 @@ using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [TestClass]
-public class TextTests
+public class RenderTests
 {
    [TestMethod]
    public void EnsureSingleLineTextIsRenderedCorrectly()

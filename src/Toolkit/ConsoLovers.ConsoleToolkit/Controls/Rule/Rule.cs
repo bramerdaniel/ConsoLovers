@@ -35,10 +35,9 @@ public class Rule : Renderable
    public override IEnumerable<Segment> RenderLine(IRenderContext context, int line)
    {
       var text = Text ?? string.Empty;
-      var availableWidth = context.AvailableWidth;
-
-      var (left, right) = ComputeOffsets(availableWidth);
-      text = text.PadLeft(left, RuleCharacter).PadRight(availableWidth, RuleCharacter);
+      
+      var (left, right) = ComputeOffsets(MeasuredSize.Width);
+      text = text.PadLeft(left, RuleCharacter).PadRight(MeasuredSize.Width, RuleCharacter);
       yield return new Segment(this, text, Style);
    }
 

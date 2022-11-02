@@ -62,14 +62,14 @@ public class ExceptionDisplay : InteractiveRenderable
 
    public override IEnumerable<Segment> RenderLine(IRenderContext context, int line)
    {
-      if (line < messageDisplay.Size.Height)
+      if (line < messageDisplay.MeasuredSize.Height)
       {
          foreach (var segment in messageDisplay.RenderLine(context, line))
             yield return segment;
       }
       else
       {
-         foreach (var segment in stackTraceDisplay.RenderLine(context, line - messageDisplay.Size.Height))
+         foreach (var segment in stackTraceDisplay.RenderLine(context, line - messageDisplay.MeasuredSize.Height))
             yield return segment;
       }
    }

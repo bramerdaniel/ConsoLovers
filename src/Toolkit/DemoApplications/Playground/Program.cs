@@ -7,14 +7,12 @@
 namespace Playground
 {
    using System;
-   using System.Diagnostics;
 
    using ConsoLovers.ConsoleToolkit;
    using ConsoLovers.ConsoleToolkit.Controls;
    using ConsoLovers.ConsoleToolkit.Core;
 
-   using Playground.SomeWeirdLongNamespace.ThatDoesNotMakeSense;
-
+   
    public static class Program
    {
       #region Constants and Fields
@@ -27,79 +25,37 @@ namespace Playground
 
       private static void Main()
       {
-         // Console.WindowWidth = 210;
-         try
-         {
+         //Console.Render(new CText("Simple text") { Alignment = Alignment.Right });
 
-            var thrower = new Thrower(Invoker, 34);
-         }
-         catch (Exception e)
-         {
-            ShowException(e);
-         }
-
-         var border = new Border(new Link("https://spectreconsole.net")) { CharSet = Borders.Doubled };
-
-         Console.RenderInteractive(border);
+         var verticalPanel = new Panel{ Orientation = Orientation.Vertical };
+         //var inner = new Panel{ Orientation = Orientation.Vertical };
+         //inner.Add(new Border(new CText("Hello")));
+         //inner.Add(new Border(new CText("World")));
+         //Console.Render(inner);
          
-         var count = Console.Choice<int>("Choose a number: ")
-            .WithAnswer(23)
-            .WithAnswer(7)
-            .WithAnswer(1572)
-            .Show();
+         verticalPanel.Add(new CText("Simple text"));
+         verticalPanel.Add(new Border(new CText("Simple text")));
+         // verticalPanel.Add(inner);
+         verticalPanel.Add(new CButton(new CText("Button")));
+         verticalPanel.Add(new Link("Click me I am a link"));
+         // verticalPanel.Add(new Border(new CText("I can not be clicked")));
+         Console.Render(verticalPanel);
 
-         var answer = Console.Choice<string>("Answer please ? ")
-            .WithAnswer("Yes")
-            .WithAnswer("No")
-            .WithAnswer("Cancel", new CText("Cancel", RenderingStyle.Default.WithForeground(ConsoleColor.Red)))
-            .WithOrientation(Orientation.Horizontal, true)
-            .AllowCancellation(false)
-            .WithSelector("↑")
-            .Show();
+         //var panel = new Panel();
+         //var y = new CButton(new CText("Yes"));
+         //y.Clicked += OnYesButtonClicked;
+         //panel.Add(y);
+         //var no = new CButton(new CText("No "));
+         //no.Clicked += OnButtonClicked;
+         //panel.Add(no);
 
-         Console.WriteLine($"Answer was {answer}");
-         Console.ReadLine();
-         Console.Clear();
-         
-         var panel = new Panel();
-         var y = new CButton(new CText("Yes"));
-         y.Clicked += OnYesButtonClicked;
-         panel.Add(y);
-         var no = new CButton(new CText("No "));
-         no.Clicked += OnButtonClicked;
-         panel.Add(no);
-
-         Console.WriteLine("Click yes or no");
-         Console.RenderInteractive(panel);
+         //Console.WriteLine("Click yes or no");
+         //Console.RenderInteractive(panel);
 
          Console.ReadLine();
-
-         static void Invoker()
-         {
-            Action action = () => throw new InvalidOperationException("This sounds wrong, but the text of this exception "
-                                                                      + "needs to be quite long as it must be wrapped to multiple lines. To archive this is must write more and more text.");
-
-            action();
-         }
-
       }
 
-      private static void ShowException(Exception e)
-      {
-         var display = new ExceptionDisplay(e);
-         Console.RenderInteractive(display);
-         return;
-         var stackTrace = new StackTrace(e, true);
-         foreach (var stackFrame in stackTrace.GetFrames())
-         {
-            var frameDisplay = new StackFrameDisplay(stackFrame);
-            Console.Render(frameDisplay);
-         }
-
-         Console.ReadLine();
-         Console.WriteLine(e.ToString());
-         Console.ReadLine();
-      }
+      
 
       private static void OnButtonClicked(object sender, EventArgs e)
       {

@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.UnitTests.ControlsTests;
+namespace ConsoLovers.ConsoleToolkit.UnitTests.ControlsTests.PanelTests;
 
 using System;
 
@@ -16,7 +16,7 @@ using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [TestClass]
-public class StackPanelTests
+public class RenderingTests
 {
    [TestMethod]
    public void EnsureBorderWithMultilineTextIsRenderedCorrectly()

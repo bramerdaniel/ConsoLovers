@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="CPanel.cs" company="ConsoLovers">
+// <copyright file="Panel.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -8,81 +8,79 @@ namespace ConsoLovers.ConsoleToolkit.Controls;
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 using JetBrains.Annotations;
 
 public class Panel : Renderable, IHaveAlignment
 {
+   #region Constants and Fields
+
+   private Orientation orientation;
+
+   #endregion
+
+   #region Constructors and Destructors
+
    public Panel()
-   : this(RenderingStyle.Default)
+      : this(RenderingStyle.Default)
    {
-      // TODO add orientation Horizontal/Vertical
    }
 
    public Panel(RenderingStyle style)
-   : base(style)
+      : base(style)
    {
       Children = new List<IRenderable>(5);
-      Measurements = new Dictionary<IRenderable, RenderSize>();
+
+      orientation = Orientation.Horizontal;
+      Renderer = new HorizontalPanelRenderer(this);
    }
 
-   private List<IRenderable> Children { get; }
+   #endregion
 
-   private Dictionary<IRenderable, RenderSize> Measurements { get; }
+   #region IHaveAlignment Members
 
    public Alignment Alignment { get; set; }
 
+   #endregion
+
+   #region Public Properties
+
+   public Orientation Orientation
+   {
+      get => orientation;
+      set
+      {
+         if (orientation == value)
+            return;
+
+         orientation = value;
+         switch (orientation)
+         {
+            case Orientation.Vertical:
+               Renderer = new VerticalPanelRenderer(this);
+               break;
+            case Orientation.Horizontal:
+               Renderer = new HorizontalPanelRenderer(this);
+               break;
+            default:
+               throw new ArgumentOutOfRangeException(nameof(value), value, null);
+         }
+      }
+   }
+
    public Thickness Padding { get; set; }
 
-   public override RenderSize MeasureOverride(int availableWidth)
-   {
-      int totalHeight = 1;
-      int totalWidth = 0;
+   #endregion
 
-      foreach (var child in Children)
-      {
-         var childSize = child.Measure(availableWidth);
-         Measurements[child] = childSize;
+   #region Properties
 
-         if (childSize.Height > totalHeight)
-         {
-            totalHeight = childSize.Height;
-            totalWidth += childSize.Width;
-         }
-      }
+   internal List<IRenderable> Children { get; }
 
-      return new RenderSize
-      {
-         Height = totalHeight,
-         Width = totalWidth,
-      };
-   }
+   private IPanelRenderer Renderer { get; set; }
 
-   public override IEnumerable<Segment> RenderLine(IRenderContext context, int line)
-   {
-      foreach (var child in Children)
-      {
-         if (Measurements.TryGetValue(child, out var size))
-         {
-            if (size.Height > line)
-            {
-               var childSegments = child.RenderLine(context, line).ToArray();
-               foreach (var segment in childSegments)
-                  yield return segment;
+   #endregion
 
-               var required = size.Width - childSegments.Sum(x => x.Width);
-               if (required > 0)
-                  yield return new Segment(this, string.Empty.PadRight(required), child.Style);
-            }
-            else
-            {
-               yield return new Segment(this, string.Empty.PadRight(size.Width), child.Style);
-            }
-         }
-      }
-   }
-
+   #region Public Methods and Operators
 
    public Panel Add([NotNull] IRenderable renderable)
    {
@@ -93,6 +91,11 @@ public class Panel : Renderable, IHaveAlignment
       return this;
    }
 
+   public override RenderSize MeasureOverride(int availableWidth)
+   {
+      return Renderer.Measure(availableWidth);
+   }
+
    public Panel Remove([NotNull] IRenderable renderable)
    {
       if (renderable == null)
@@ -101,4 +104,11 @@ public class Panel : Renderable, IHaveAlignment
       Children.Remove(renderable);
       return this;
    }
+
+   public override IEnumerable<Segment> RenderLine(IRenderContext context, int line)
+   {
+      return Renderer.RenderLine(context, line);
+   }
+
+   #endregion
 }
