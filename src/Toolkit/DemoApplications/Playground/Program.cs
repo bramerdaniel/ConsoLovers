@@ -12,7 +12,6 @@ namespace Playground
    using ConsoLovers.ConsoleToolkit;
    using ConsoLovers.ConsoleToolkit.Controls;
    using ConsoLovers.ConsoleToolkit.Core;
-   using ConsoLovers.ConsoleToolkit.Core.Input;
 
    using Playground.SomeWeirdLongNamespace.ThatDoesNotMakeSense;
 
@@ -28,9 +27,6 @@ namespace Playground
 
       private static void Main()
       {
-         ShowComplexSelection();
-         ShowYesNo();
-         
          // Console.WindowWidth = 210;
          try
          {
@@ -64,12 +60,7 @@ namespace Playground
          Console.WriteLine($"Answer was {answer}");
          Console.ReadLine();
          Console.Clear();
-
-         ShowFirst();
-         ShowSecond();
-         ShowThird();
-         ShowFourth();
-
+         
          var panel = new Panel();
          var y = new CButton(new CText("Yes"));
          y.Clicked += OnYesButtonClicked;
@@ -91,22 +82,6 @@ namespace Playground
             action();
          }
 
-      }
-
-      private static void ShowComplexSelection()
-      {
-         var yesTemplate = new Border(new CText($"Yes{Environment.NewLine}We will continue executing"));
-         var noTemplate = new Border(new CText($"No{Environment.NewLine}We shut down immediately"));
-         var cancelTemplate = new Border(new CText($"Cancel{Environment.NewLine}We surprise you"));
-
-         var answer = Console.Choice<string>("Answer please ? ")
-            .WithAnswer("Yes", yesTemplate)
-            .WithAnswer("No", noTemplate)
-            .WithAnswer("Cancel", cancelTemplate)
-            .WithOrientation(Orientation.Horizontal, false)
-            .AllowCancellation(false)
-            .WithSelector("↑")
-            .Show();
       }
 
       private static void ShowException(Exception e)
@@ -134,82 +109,6 @@ namespace Playground
       private static void OnYesButtonClicked(object sender, EventArgs e)
       {
          Console.WriteLine("Yes button clicked");
-      }
-
-      private static void ShowFirst()
-      {
-         var panel = new Panel();
-         var list = new CSelector<bool?> { Orientation = Orientation.Horizontal };
-         list.Add(true, "Yes");
-         list.Add(false, "No");
-         list.Add(null);
-         panel.Add(new CText("Continue ? : "));
-         panel.Add(list);
-
-         Console.RenderInteractive(panel);
-
-         Console.WriteLine($"Selected item was {list.SelectedValue}");
-         Console.ReadLine();
-         Console.Clear();
-      }
-
-      private static void ShowFourth()
-      {
-         Console.WriteLine("Continue ?");
-         var list = new CSelector<bool?>();
-         list.Add(true, new Border(new CText("Yes ")));
-         list.Add(false, new Border(new CText("No  ")));
-         list.Add(null, new Border(new CText("No sure yet")));
-
-         Console.RenderInteractive(list);
-         Console.WriteLine("Selected item was " + list.SelectedValue);
-         Console.ReadLine();
-      }
-
-      private static void ShowSecond()
-      {
-         var list = new CSelector<int?>() { Selector = "↑", Orientation = Orientation.Horizontal };
-         list.Add(1, new Border(new CText("One")));
-         list.Add(2, new Border(new CText("Two")));
-         list.Add(3, new Border(new CText("Three")));
-         list.Add(4, "Four");
-         list.Add(null, "null");
-
-         Console.RenderInteractive(list);
-         Console.WriteLine("Selected item was " + list.SelectedValue);
-         Console.ReadLine();
-         Console.Clear();
-      }
-
-      private static void ShowThird()
-      {
-         Console.WriteLine("Continue ?");
-         var list = new CSelector<bool?>
-         {
-            Selector = "→ ",
-            SelectionStyle = new RenderingStyle(ConsoleColor.Blue),
-            MouseOverStyle = new RenderingStyle(ConsoleColor.DarkCyan)
-         };
-         list.Add(true, "Yes");
-         list.Add(false, "No");
-         list.Add(null, "Unsure");
-
-         Console.RenderInteractive(list);
-         Console.WriteLine("Selected item was " + list.SelectedValue);
-         Console.ReadLine();
-      }
-
-      private static void ShowYesNo()
-      {
-         try
-         {
-            if (!Console.YesNoCancel("Continue ?").GetValueOrDefault(true))
-               throw new OperationCanceledException();
-         }
-         catch (InputCanceledException)
-         {
-            // We ignore
-         }
       }
 
       #endregion
