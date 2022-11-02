@@ -19,6 +19,8 @@ public static class WordWrappingExtensions
    {
       if (text == null)
          throw new ArgumentNullException(nameof(text));
+      if(maxLineLength <= 0)
+         throw new ArgumentOutOfRangeException(nameof(maxLineLength), "maxLineLength must be greater than 0");
 
       var list = new List<string>();
 

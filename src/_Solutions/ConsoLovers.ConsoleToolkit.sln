@@ -32,6 +32,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PromptsDemo", "..\Toolkit\D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Playground", "..\Toolkit\DemoApplications\Playground\Playground.csproj", "{E2456525-5CEB-437A-9A4E-CA07C79191AA}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExceptionDemo", "..\Toolkit\DemoApplications\ExceptionDemo\ExceptionDemo.csproj", "{800DB47B-D9CE-4A82-9109-3B740C3AEDD7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -78,6 +80,10 @@ Global
 		{E2456525-5CEB-437A-9A4E-CA07C79191AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E2456525-5CEB-437A-9A4E-CA07C79191AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E2456525-5CEB-437A-9A4E-CA07C79191AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{800DB47B-D9CE-4A82-9109-3B740C3AEDD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{800DB47B-D9CE-4A82-9109-3B740C3AEDD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{800DB47B-D9CE-4A82-9109-3B740C3AEDD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{800DB47B-D9CE-4A82-9109-3B740C3AEDD7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -91,6 +97,7 @@ Global
 		{9871FEC7-7A7C-4AA3-9444-8F9630414127} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
 		{58D6099F-21CA-4AF8-A437-0CDA3F615304} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
 		{E2456525-5CEB-437A-9A4E-CA07C79191AA} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
+		{800DB47B-D9CE-4A82-9109-3B740C3AEDD7} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {96E66A12-23DF-4590-A1FA-F6206E6C8F89}
