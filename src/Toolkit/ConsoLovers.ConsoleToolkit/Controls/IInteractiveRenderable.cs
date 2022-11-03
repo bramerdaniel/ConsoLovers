@@ -11,5 +11,6 @@ using System;
 public interface IInteractiveRenderable : IRenderable
 {
    /// <summary>Occurs when state of the <see cref="IRenderable"/> has changed and it needs to be rendered again.</summary>
-   event EventHandler Invalidated ;
+   event EventHandler<InvalidationEventArgs> Invalidated ;
+
 }

@@ -8,6 +8,5 @@ namespace ConsoLovers.ConsoleToolkit.Controls
 {
    public interface IRenderContext
    {
-      void RegisterInteractive(IInteractiveRenderable renderable);
    }
 }

@@ -16,9 +16,6 @@ public class Border : Renderable, IHaveAlignment
 
    private RenderSize contentSize;
 
-   // TODO Add header for the panel
-
-
    #endregion
 
    #region Constructors and Destructors
@@ -51,6 +48,11 @@ public class Border : Renderable, IHaveAlignment
 
    #region Public Methods and Operators
 
+   public override IEnumerable<IRenderable> GetChildren()
+   {
+      yield return Content;
+   }
+
    public override RenderSize MeasureOverride(int availableWidth)
    {
       if (Content == null)
@@ -60,8 +62,7 @@ public class Border : Renderable, IHaveAlignment
 
       return new RenderSize
       {
-         Height = contentSize.Height + 2 + Padding.Bottom + Padding.Top, 
-         Width = Padding.Left + 1 + contentSize.Width + 1 + Padding.Right
+         Height = contentSize.Height + 2 + Padding.Bottom + Padding.Top, Width = Padding.Left + 1 + contentSize.Width + 1 + Padding.Right
       };
    }
 
@@ -141,4 +142,6 @@ public class Border : Renderable, IHaveAlignment
    }
 
    #endregion
+
+   // TODO Add header for the panel
 }

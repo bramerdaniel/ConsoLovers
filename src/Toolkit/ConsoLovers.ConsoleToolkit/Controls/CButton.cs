@@ -33,6 +33,11 @@ public class CButton : InteractiveRenderable, IMouseInputHandler, IHaveAlignment
 
    public Thickness Padding { get; set; }
 
+   public override IEnumerable<IRenderable> GetChildren()
+   {
+      yield return Content;
+   }
+
    public override RenderSize MeasureOverride(int availableWidth)
    {
       contentSize = Content.Measure(availableWidth - 2);
@@ -142,7 +147,7 @@ public class CButton : InteractiveRenderable, IMouseInputHandler, IHaveAlignment
             return;
 
          isMouseOver = value;
-         Invalidate();
+         NotifyStyleChanged();
       }
    }
 }

@@ -51,7 +51,7 @@ public class StackFrameDisplay : InteractiveRenderable, IMouseInputHandler, IMou
             return;
 
          isMouseOver = value;
-         Invalidate();
+         NotifyStyleChanged();
       }
    }
 
@@ -120,6 +120,11 @@ public class StackFrameDisplay : InteractiveRenderable, IMouseInputHandler, IMou
    #endregion
 
    #region Public Methods and Operators
+
+   public override IEnumerable<IRenderable> GetChildren()
+   {
+      yield break;
+   }
 
    public override RenderSize MeasureOverride(int availableWidth)
    {

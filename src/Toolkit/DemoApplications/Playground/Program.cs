@@ -32,7 +32,7 @@ namespace Playground
          {
             Orientation = Orientation.Vertical
          };
-         for (int i = 0; i < 2; i++)
+         for (int i = 0; i < 5; i++)
          {
             var row = new Panel();
             row.Add(new Border(new CText("Row " + i)));

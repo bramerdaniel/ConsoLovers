@@ -88,8 +88,13 @@ public class Panel : InteractiveRenderable, IHaveAlignment
          throw new ArgumentNullException(nameof(renderable));
 
       Children.Add(renderable);
-      Invalidate();
+      Invalidate(InvalidationScope.All);
       return this;
+   }
+
+   public override IEnumerable<IRenderable> GetChildren()
+   {
+      return Children;
    }
 
    public override RenderSize MeasureOverride(int availableWidth)
@@ -103,7 +108,7 @@ public class Panel : InteractiveRenderable, IHaveAlignment
          throw new ArgumentNullException(nameof(renderable));
 
       if (Children.Remove(renderable))
-         Invalidate();
+         Invalidate(InvalidationScope.All);
 
       return this;
    }

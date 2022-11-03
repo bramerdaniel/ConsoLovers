@@ -49,7 +49,7 @@ public class ListItem<T> : InteractiveRenderable, IMouseInputHandler, IMouseAwar
             return;
 
          template = value;
-         Invalidate();
+         Invalidate(InvalidationScope.All);
       }
    }
 
@@ -59,6 +59,11 @@ public class ListItem<T> : InteractiveRenderable, IMouseInputHandler, IMouseAwar
    #endregion
 
    #region Public Methods and Operators
+
+   public override IEnumerable<IRenderable> GetChildren()
+   {
+      yield return Template;
+   }
 
    public override RenderSize MeasureOverride(int availableWidth)
    {
@@ -114,7 +119,7 @@ public class ListItem<T> : InteractiveRenderable, IMouseInputHandler, IMouseAwar
             return;
 
          isMouseOver = value;
-         Invalidate();
+         Invalidate(InvalidationScope.Style);
       }
    }
 

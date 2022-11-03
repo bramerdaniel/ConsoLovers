@@ -8,6 +8,7 @@ namespace ConsoLovers.ConsoleToolkit.Controls;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using JetBrains.Annotations;
 
@@ -103,7 +104,7 @@ public class CSelector<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignm
             return;
 
          selectedIndex = value;
-         Invalidate();
+         NotifyStyleChanged();
       }
    }
 
@@ -155,7 +156,7 @@ public class CSelector<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignm
             return;
 
          renderer = value;
-         Invalidate();
+         Invalidate(InvalidationScope.All);
       }
    }
 
@@ -185,6 +186,11 @@ public class CSelector<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignm
    public void Add(T value)
    {
       Items.Add(new ListItem<T>(this, value));
+   }
+
+   public override IEnumerable<IRenderable> GetChildren()
+   {
+      return Items;
    }
 
    public override RenderSize MeasureOverride(int availableWidth)

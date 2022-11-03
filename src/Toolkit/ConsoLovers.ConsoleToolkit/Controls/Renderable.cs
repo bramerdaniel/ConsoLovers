@@ -36,16 +36,17 @@ namespace ConsoLovers.ConsoleToolkit.Controls
          MeasuredSize = MeasureOverride(availableWidth);
          return MeasuredSize;
       }
-      
-      protected bool IsLastLine(int line)
-      {
-         return MeasuredSize.Height - 1 == line;
-      }
 
       public abstract IEnumerable<Segment> RenderLine(IRenderContext context, int line);
 
       /// <summary>Gets or sets the style the renderable will use.</summary>
       public RenderingStyle Style { get; set; }
+
+      /// <summary>Gets the children of the <see cref="IRenderable"/>.</summary>
+      public virtual IEnumerable<IRenderable> GetChildren()
+      {
+         yield break;
+      }
 
       #endregion
 
@@ -61,6 +62,15 @@ namespace ConsoLovers.ConsoleToolkit.Controls
       /// <param name="availableWidth">Width of the available.</param>
       /// <returns>The computed <see cref="RenderSize"/></returns>
       public abstract RenderSize MeasureOverride(int availableWidth);
+
+      #endregion
+
+      #region Methods
+
+      protected bool IsLastLine(int line)
+      {
+         return MeasuredSize.Height - 1 == line;
+      }
 
       #endregion
    }

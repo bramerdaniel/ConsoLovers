@@ -48,6 +48,12 @@ public class ExceptionDisplay : InteractiveRenderable
 
    #region Public Methods and Operators
 
+   public override IEnumerable<IRenderable> GetChildren()
+   {
+      yield return messageDisplay;
+      yield return stackTraceDisplay;
+   }
+
    public override RenderSize MeasureOverride(int availableWidth)
    {
       var messageSize = messageDisplay.Measure(availableWidth);

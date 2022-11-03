@@ -57,7 +57,7 @@ public class Link : InteractiveRenderable, IMouseAware, IMouseInputHandler, IKey
             return;
 
          isMouseOver = value;
-         Invalidate();
+         NotifyStyleChanged();
       }
    }
 
@@ -93,7 +93,7 @@ public class Link : InteractiveRenderable, IMouseAware, IMouseInputHandler, IKey
             return;
 
          displayText = value;
-         Invalidate();
+         Invalidate(InvalidationScope.All);
       }
    }
 

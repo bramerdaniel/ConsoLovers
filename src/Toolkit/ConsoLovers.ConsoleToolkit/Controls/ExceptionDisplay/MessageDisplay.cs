@@ -47,6 +47,11 @@ public class MessageDisplay : InteractiveRenderable
 
    #region Public Methods and Operators
 
+   public override IEnumerable<IRenderable> GetChildren()
+   {
+      yield break;
+   }
+
    public override RenderSize MeasureOverride(int availableWidth)
    {
       var separatorLength = Separator?.Length ?? 0;

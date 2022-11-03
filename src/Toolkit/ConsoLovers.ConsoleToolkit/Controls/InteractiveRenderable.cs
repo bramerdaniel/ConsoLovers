@@ -35,22 +35,24 @@ public abstract class InteractiveRenderable : IInteractiveRenderable
 
    #region Public Events
 
-   public event EventHandler Invalidated;
+   public event EventHandler<InvalidationEventArgs> Invalidated;
 
    #endregion
 
    #region IInteractiveRenderable Members
+
+   /// <summary>Gets the children of the <see cref="IRenderable"/>.</summary>
+   /// <returns>All children</returns>
+   public virtual IEnumerable<IRenderable> GetChildren()
+   {
+      yield break;
+   }
 
    public RenderSize Measure(int availableWidth)
    {
       MeasuredSize = MeasureOverride(availableWidth);
       return MeasuredSize;
    }
-
-   /// <summary>Gets the size the renderable measured for itself.</summary>
-   public RenderSize MeasuredSize { get; private set; }
-
-   public abstract RenderSize MeasureOverride(int availableWidth);
 
    public abstract IEnumerable<Segment> RenderLine(IRenderContext context, int line);
 
@@ -60,17 +62,40 @@ public abstract class InteractiveRenderable : IInteractiveRenderable
       set
       {
          style = value;
-         Invalidate();
+         NotifyStyleChanged();
       }
    }
 
    #endregion
 
+   #region Public Properties
+
+   /// <summary>Gets the size the renderable measured for itself.</summary>
+   public RenderSize MeasuredSize { get; private set; }
+
+   #endregion
+
+   #region Public Methods and Operators
+
+   public abstract RenderSize MeasureOverride(int availableWidth);
+
+   #endregion
+
    #region Methods
+
+   protected virtual void Invalidate(InvalidationScope scope)
+   {
+      Invalidated?.Invoke(this, new InvalidationEventArgs(scope));
+   }
 
    protected virtual void Invalidate()
    {
-      Invalidated?.Invoke(this, EventArgs.Empty);
+      Invalidate(InvalidationScope.All);
+   }
+
+   protected virtual void NotifyStyleChanged()
+   {
+      Invalidate(InvalidationScope.Style);
    }
 
    #endregion

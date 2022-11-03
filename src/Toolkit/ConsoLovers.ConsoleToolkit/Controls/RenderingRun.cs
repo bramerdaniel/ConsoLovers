@@ -8,7 +8,6 @@ namespace ConsoLovers.ConsoleToolkit.Controls;
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 using ConsoLovers.ConsoleToolkit.Core;
@@ -26,8 +25,7 @@ internal class RenderingRun : IDisposable, IRenderContext
 
    private IInputHandler inputHandler;
 
-   private readonly Dictionary<int, List<RenderInfo>> renderInfos = new();
-
+   
    private readonly IRenderable root;
 
    private Action cancellationAction;
@@ -85,7 +83,7 @@ internal class RenderingRun : IDisposable, IRenderContext
 
    public void RenderOnce()
    {
-      RenderInternal(false);
+      RenderInternal();
    }
 
    public void Start()
@@ -97,22 +95,19 @@ internal class RenderingRun : IDisposable, IRenderContext
       inputHandler.Start();
 
       InitialPosition = new ConsolePosition(console.CursorTop, console.CursorLeft);
-      RenderInternal(true);
+      AttachToInteractiveEvents(root, new HashSet<IRenderable>());
+
+      RenderInternal();
    }
 
+   private RenderingCache renderingCache = new RenderingCache();
 
-
-   public void UpdateRenderInfo(Segment segment)
+   public void RenderSegment(Segment segment)
    {
-      if (!renderInfos.TryGetValue(console.CursorTop, out var lineRenderInfos))
-      {
-         lineRenderInfos = new List<RenderInfo>();
-         renderInfos.Add(console.CursorTop, lineRenderInfos);
-      }
-
       var renderInfo = new RenderInfo(console.CursorTop, console.CursorLeft, segment);
-      // Trace.WriteLine(segment.Text + " = " + console.CursorLeft);
-      lineRenderInfos.Add(renderInfo);
+
+      renderingCache.Add(renderInfo);
+      WriteSegment(segment);
    }
 
    public void Wait()
@@ -144,6 +139,9 @@ internal class RenderingRun : IDisposable, IRenderContext
 
       AttachToInteractiveEvents(renderable);
       attached.Add(renderable);
+
+      foreach (var child in renderable.GetChildren())
+         AttachToInteractiveEvents(child, attached);
    }
 
    private void ComputeContext(IRenderable renderable, RenderSize measuredSize)
@@ -162,7 +160,6 @@ internal class RenderingRun : IDisposable, IRenderContext
             console.CursorLeft = remaining / 2;
          }
       }
-      
    }
 
    private IMouseInputHandler FindInputHandler(int line, int column)
@@ -172,19 +169,7 @@ internal class RenderingRun : IDisposable, IRenderContext
 
    private IRenderable FindRenderable(int line, int column)
    {
-      if (renderInfos.TryGetValue(line, out var lineInfos))
-      {
-         foreach (var renderInfo in lineInfos)
-         {
-            if (renderInfo.Column <= column && column <= renderInfo.EndColumn)
-            {
-               // Trace.WriteLine(renderInfo.Segment.Text  + " => " + column);
-               return renderInfo.Segment.Renderable;
-            }
-         }
-      }
-
-      return null;
+      return renderingCache.FindByLocation(line, column);
    }
 
 
@@ -211,14 +196,8 @@ internal class RenderingRun : IDisposable, IRenderContext
       IEnumerable<IRenderable> GetAllHandlers()
       {
          yield return root;
-         foreach (var lineInfo in renderInfos.Values)
-         {
-            foreach (var renderInfo in lineInfo)
-            {
-               var renderable = renderInfo.Segment.Renderable;
-               yield return renderable;
-            }
-         }
+         foreach (var renderable in renderingCache.GetRendered())
+            yield return renderable;
       }
    }
 
@@ -296,52 +275,62 @@ internal class RenderingRun : IDisposable, IRenderContext
       }
    }
 
-   private void OnRenderableInvalidated(object sender, EventArgs e)
+   private void OnRenderableInvalidated(object sender, InvalidationEventArgs e)
    {
-      // TODO I assume this could cause fragments when previous run produced longer lines!!!
+      if (e.Scope == InvalidationScope.Style)
+      {
+         if (sender is IInteractiveRenderable renderable)
+            RenderElement(renderable);
+      }
+      else
+      {
+         // TODO I assume this could cause fragments when previous run produced longer lines!!!
+         console.CursorTop = InitialPosition.CursorTop;
+         console.CursorLeft = InitialPosition.CursorLeft;
+
+         RenderInternal();
+      }
+   }
+
+   private void RenderElement(IInteractiveRenderable renderable)
+   {
+      
+
+      //foreach (var renderInfo in renderingCache.GetRenderInfo(renderable))
+      //{
+      //   renderInfo.
+      //}
+
       console.CursorTop = InitialPosition.CursorTop;
       console.CursorLeft = InitialPosition.CursorLeft;
 
-      RenderInternal(false);
+      RenderInternal();
    }
 
-   private void RenderInternal(bool attachToEvents)
+   private void RenderInternal()
    {
-      renderInfos.Clear();
+      renderingCache.Clear();
       var availableSize = console.WindowWidth;
       var measuredSize = root.Measure(availableSize);
-
-      var attached = new HashSet<IRenderable>();
-      if (attachToEvents)
-         AttachToInteractiveEvents(root, attached);
 
       for (int line = 0; line < measuredSize.Height; line++)
       {
          ComputeContext(root, measuredSize);
          foreach (var segment in root.RenderLine(this, line))
-         {
-            UpdateRenderInfo(segment);
-            availableSize = WriteSegment(segment, availableSize);
-
-            if (attachToEvents)
-               AttachToInteractiveEvents(segment.Renderable, attached);
-         }
+            RenderSegment(segment);
 
          console.WriteLine();
-         availableSize = console.WindowWidth;
       }
    }
 
-   private int WriteSegment(Segment segment, int availableSize)
+   private void WriteSegment(Segment segment)
    {
-      console.Write(segment.Text, segment.Style.GetForeground(console.ForegroundColor), segment.Style.GetBackground(console.BackgroundColor));
-      return availableSize - segment.Width;
+      var foreground = segment.Style.GetForeground(console.ForegroundColor);
+      var background = segment.Style.GetBackground(console.BackgroundColor);
+
+      console.Write(segment.Text, foreground, background);
    }
 
    #endregion
 
-   public void RegisterInteractive(IInteractiveRenderable renderable)
-   {
-      AttachToInteractiveEvents(renderable);
-   }
 }
