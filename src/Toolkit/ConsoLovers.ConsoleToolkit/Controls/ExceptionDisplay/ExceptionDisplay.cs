@@ -56,8 +56,8 @@ public class ExceptionDisplay : InteractiveRenderable
 
    public override RenderSize MeasureOverride(IRenderContext context, int availableWidth)
    {
-      var messageSize = messageDisplay.Measure(context, availableWidth);
-      var stackTraceSize = stackTraceDisplay.Measure(context, availableWidth);
+      var messageSize = context.Measure(messageDisplay, availableWidth);
+      var stackTraceSize = context.Measure(stackTraceDisplay, availableWidth);
 
       return new RenderSize
       {

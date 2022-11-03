@@ -1,13 +1,17 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IRenderContext.cs" company="ConsoLovers">
+// <copyright file="MockSetup.cs" company="ConsoLovers">
 //    Copyright (c) ConsoLovers  2015 - 2022
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.Controls
+namespace ConsoLovers.ConsoleToolkit.UnitTests.Setups;
+
+using ConsoLovers.ConsoleToolkit.UnitTests.ControlsTests;
+
+public class MockSetup
 {
-   public interface IRenderContext
+   public TestRenderContext RenderContext()
    {
-      RenderSize Measure(IRenderable renderable, int availableWidth);
+      return new TestRenderContext();
    }
 }

@@ -58,7 +58,7 @@ public class Border : Renderable, IHaveAlignment
       if (Content == null)
          return new RenderSize { Height = 2, Width = 2 };
 
-      contentSize = Content.Measure(context, availableWidth - 2);
+      contentSize = context.Measure(Content, availableWidth - 2);
 
       return new RenderSize
       {

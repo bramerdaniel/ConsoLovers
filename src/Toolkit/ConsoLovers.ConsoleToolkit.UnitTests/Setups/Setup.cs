@@ -25,5 +25,10 @@ namespace ConsoLovers.ConsoleToolkit.UnitTests.Setups
       }
 
       #endregion
+
+      public static MockSetup MockFor()
+      {
+         return new MockSetup();
+      }
    }
 }

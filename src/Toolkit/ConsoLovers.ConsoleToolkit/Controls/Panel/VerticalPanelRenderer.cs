@@ -49,7 +49,7 @@ internal class VerticalPanelRenderer : IPanelRenderer
 
       foreach (var child in Panel.Children)
       {
-         var childSize = child.Measure(context, availableWidth);
+         var childSize = context.Measure(child, availableWidth);
          Measurements[child] = childSize;
 
          totalHeight += childSize.Height;

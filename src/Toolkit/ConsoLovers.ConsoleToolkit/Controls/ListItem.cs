@@ -67,7 +67,7 @@ public class ListItem<T> : InteractiveRenderable, IMouseInputHandler, IMouseAwar
 
    public override RenderSize MeasureOverride(IRenderContext context, int availableWidth)
    {
-      return Template.Measure(context, availableWidth);
+      return context.Measure(Template, availableWidth);
    }
 
    public RenderingStyle MouseOverStyle

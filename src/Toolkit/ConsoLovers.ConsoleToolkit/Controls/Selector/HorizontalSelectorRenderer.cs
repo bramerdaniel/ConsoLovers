@@ -39,7 +39,7 @@ internal class HorizontalSelectorRenderer<T> : ISelectorRenderer
 
       foreach (var item in Items)
       {
-         var itemSize = item.Measure(context, availableWidth);
+         var itemSize = context.Measure(item, availableWidth);
          measuredItems[item] = itemSize;
          height = Math.Max(height, itemSize.Height);
          width += itemSize.Width + 1;

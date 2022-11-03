@@ -311,7 +311,7 @@ internal class RenderingRun : IDisposable, IRenderContext
    {
       renderingCache.Clear();
       var availableSize = console.WindowWidth;
-      var measuredSize = root.Measure(this, availableSize);
+      var measuredSize = Measure(root, availableSize);
 
       for (int line = 0; line < measuredSize.Height; line++)
       {
@@ -333,4 +333,9 @@ internal class RenderingRun : IDisposable, IRenderContext
 
    #endregion
 
+   public RenderSize Measure(IRenderable renderable, int availableWidth)
+   {
+      var size = renderable.Measure(this, availableWidth);
+      return size;
+   }
 }

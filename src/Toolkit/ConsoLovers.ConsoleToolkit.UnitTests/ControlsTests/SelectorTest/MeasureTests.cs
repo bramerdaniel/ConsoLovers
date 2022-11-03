@@ -26,21 +26,25 @@ public class MeasureTests
          .WithItem("No")
          .Done();
 
-      list.Measure(null, int.MaxValue).Height.Should().Be(1);
+      var context = Setup.MockFor().RenderContext();
+
+      list.Measure(context, int.MaxValue).Height.Should().Be(1);
 
       list.Selector = "↑";
-      list.Measure(null, int.MaxValue).Height.Should().Be(2);
+      list.Measure(context, int.MaxValue).Height.Should().Be(2);
 
       list.Orientation = Orientation.Vertical;
-      list.Measure(null, int.MaxValue).Height.Should().Be(2);
+      list.Measure(context, int.MaxValue).Height.Should().Be(2);
 
       list.Add("Cancel");
-      list.Measure(null, int.MaxValue).Height.Should().Be(3);
+      list.Measure(context, int.MaxValue).Height.Should().Be(3);
    }
 
    [TestMethod]
    public void EnsureHorizontalWidthIsComputedCorrectly()
    {
+      var context = Setup.MockFor().RenderContext();
+
       var list = Setup.Selector<string>()
          .WithOrientation(Orientation.Horizontal)
          .WithoutSelector()
@@ -48,6 +52,6 @@ public class MeasureTests
          .WithItem("No")
          .Done();
 
-      list.Measure(null, int.MaxValue).Width.Should().Be(6);
+      list.Measure(context, int.MaxValue).Width.Should().Be(6);
    }
 }

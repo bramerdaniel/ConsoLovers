@@ -54,7 +54,7 @@ internal class VerticalSelectorRenderer<T> : ISelectorRenderer
 
       foreach (var item in selector.Items)
       {
-         var itemSize = item.Measure(context, availableItemLength);
+         var itemSize = context.Measure(item, availableItemLength);
 
          height += itemSize.Height;
          width = Math.Max(width, itemSize.Width);

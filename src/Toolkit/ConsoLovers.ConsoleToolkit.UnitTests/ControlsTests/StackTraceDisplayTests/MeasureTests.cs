@@ -25,7 +25,9 @@ public class MeasureTests
       var stackTrace = CreateStackTrace(4);
       var target = new StackTraceDisplay(stackTrace);
 
-      var size = target.Measure(null, 120);
+      var context = Setup.MockFor().RenderContext();
+
+      var size = target.Measure(context, 120);
       size.Height.Should().Be(4);
    }
 

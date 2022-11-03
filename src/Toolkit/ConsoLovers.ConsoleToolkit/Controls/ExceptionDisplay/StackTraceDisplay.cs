@@ -74,7 +74,7 @@ public class StackTraceDisplay : Renderable
       
       foreach (var display in FrameDisplays)
       {
-         var frameSize = display.Measure(context, availableWidth);
+         var frameSize = context.Measure(display, availableWidth);
          if (frameSize.Width > availableWidth)
          {
             measuredSize = RenderSize.Empty;
