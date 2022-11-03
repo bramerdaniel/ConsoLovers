@@ -26,7 +26,29 @@ namespace Playground
 
       private static void Main()
       {
-         //Console.Render(new CText("Simple text") { Alignment = Alignment.Right });
+         var content = new Button("1");
+         var paddedBorder = new Padding(content){Value = new Thickness(1) };
+         paddedBorder.Style = new RenderingStyle(null, ConsoleColor.Red);
+         content.Clicked += (s, e) =>
+         {
+            var valueRight = paddedBorder.Value.Right + 1;
+            if (content.Content is Text text)
+               text.Value = valueRight.ToString().PadLeft(2).PadRight(3);
+
+            paddedBorder.Value = new Thickness(valueRight, 1);
+         };
+         
+         Console.RenderInteractive(paddedBorder);
+
+         //System.Console.BufferWidth = 30;
+
+         ////Console.Render(new CText("Simple text") { Alignment = Alignment.Right });
+         //Console.WriteLine($"ForegroundColor = {Console.ForegroundColor}");
+         //Console.WriteLine($"BackgroundColor = {Console.BackgroundColor}");
+         //System.Console.Out.WriteLine("Test");
+
+         //Console.ReadLine();
+
 
          var verticalPanel = new Panel
          {
@@ -35,13 +57,14 @@ namespace Playground
          for (int i = 0; i < 5; i++)
          {
             var row = new Panel();
-            row.Add(new Border(new Text("Row " + i)));
-            row.Add(new Border(new Link("Click me")));
-            var button = new CButton(new Link("Button"));
+            row.Add(new Border(new Text("Row " + i)){ Padding = new Thickness(1) });
+            var link = new Link("Click me"){ LinkResolver = (s, a) => s.DisplayText += " !"  };
+            row.Add(new Border(link));
+            var button = new Button(new Padding(new Link("Button"),new Thickness(2,0)));
             button.Clicked += (sender, args) =>
             {
                row.Remove((IRenderable)sender);
-               row.Add(new Border(new Text("I am not a button")));
+               row.Add(new Border(new Text("I am not a button any longer")));
                Trace.WriteLine("Added");
             };
 
@@ -49,7 +72,8 @@ namespace Playground
             verticalPanel.Add(row);
          }
 
-         Console.RenderInteractive(verticalPanel);
+         var padding = new Padding(verticalPanel);
+         Console.RenderInteractive(padding);
          Console.ReadLine();
 
          //var inner = new Panel{ Orientation = Orientation.Vertical };
@@ -60,11 +84,11 @@ namespace Playground
          verticalPanel.Add(new Text("Simple text"));
          verticalPanel.Add(new Border(new Text("Simple text")));
          // verticalPanel.Add(inner);
-         verticalPanel.Add(new CButton(new Text("Button")));
+         verticalPanel.Add(new Button(new Text("Button")));
 
          var hansi = new Link("Hansi");
          verticalPanel.Add(hansi);
-         verticalPanel.Add(new Link("Click me I am a link"){ LinkResolver = s =>
+         verticalPanel.Add(new Link("Click me I am a link"){ LinkResolver = (s, a) =>
          {
             hansi.DisplayText = "Klaus";
             hansi.Style = hansi.Style.WithForeground(ConsoleColor.Cyan);

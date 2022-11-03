@@ -11,9 +11,6 @@ namespace PromptsDemo
    using ConsoLovers.ConsoleToolkit;
    using ConsoLovers.ConsoleToolkit.Controls;
    using ConsoLovers.ConsoleToolkit.Core;
-   using ConsoLovers.ConsoleToolkit.Core.Input;
-
-   using Microsoft.Extensions.DependencyInjection;
 
    public static class Program
    {

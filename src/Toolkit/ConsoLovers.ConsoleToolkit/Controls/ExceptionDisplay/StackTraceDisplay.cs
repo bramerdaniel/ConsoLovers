@@ -25,6 +25,11 @@ public class StackTraceDisplay : Renderable
       FrameDisplays = stackTrace.GetFrames().Select(sf => new StackFrameDisplay(sf)).ToArray();
    }
 
+   public override IEnumerable<IRenderable> GetChildren()
+   {
+      return FrameDisplays;
+   }
+
    #endregion
 
    #region Public Properties

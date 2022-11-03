@@ -4,19 +4,16 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace PromptsDemo
+namespace ExceptionDemo
 {
    using System;
+   using System.Runtime.InteropServices;
 
    using ConsoLovers.ConsoleToolkit;
    using ConsoLovers.ConsoleToolkit.Controls;
    using ConsoLovers.ConsoleToolkit.Core;
-   using ConsoLovers.ConsoleToolkit.Core.Input;
-
-   using Microsoft.Extensions.DependencyInjection;
 
    using Playground.SomeWeirdLongNamespace;
-   
 
    public static class Program
    {
@@ -26,17 +23,32 @@ namespace PromptsDemo
 
       private static void Main()
       {
-         Console.WindowWidth = 200;
-
-         for (int i = 0; i < 5; i++)
+         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
          {
-            ThrowAndShow();
-            Console.Clear();
-            Console.WindowWidth /= 2;
+            SetSize(200);
+
+            for (int i = 0; i < 5; i++)
+            {
+               ThrowAndShow(true);
+               Console.Clear();
+               SetSize(Console.WindowWidth / 2);
+            }
+         }
+         else
+         {
+            ThrowAndShow(false);
          }
       }
 
-      private static void ThrowAndShow()
+      private static void SetSize(int width)
+      {
+         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+         {
+            Console.WindowWidth = width;
+         }
+      }
+
+      private static void ThrowAndShow(bool interactive)
       {
          try
          {
@@ -46,7 +58,14 @@ namespace PromptsDemo
          catch (Exception e)
          {
             var display = new ExceptionDisplay(e);
-            Console.RenderInteractive(display);
+            if (interactive)
+            {
+               Console.RenderInteractive(display);
+            }
+            else
+            {
+               Console.Render(display);
+            }
          }
       }
 
@@ -65,7 +84,7 @@ namespace PromptsDemo
             .WithAnswer(false, new Border(new Text("No  ")))
             .WithAnswer(null, new Border(new Text("No sure yet")))
             .Show();
-         
+
          Console.WriteLine("Selected item was " + result);
          Console.ReadLine();
          Console.Clear();
@@ -77,7 +96,7 @@ namespace PromptsDemo
             .WithAnswer(false, new Text($"No{Environment.NewLine}Let me go"))
             .WithAnswer(null, new Text($"?{Environment.NewLine}Who cares"))
             .Show();
-         
+
          Console.WriteLine("Selected item was " + result);
          Console.ReadLine();
          Console.Clear();
@@ -102,7 +121,7 @@ namespace PromptsDemo
             .WithOrientation(Orientation.Horizontal)
             .WithSelector("↑")
             .Show();
-         
+
          Console.WriteLine("Selected item was " + result);
          Console.ReadLine();
          Console.Clear();
@@ -139,7 +158,7 @@ namespace PromptsDemo
          {
             Console.WriteLine("Cancel");
          }
-         
+
          Console.ReadLine();
       }
 

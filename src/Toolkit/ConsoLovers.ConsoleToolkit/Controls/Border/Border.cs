@@ -50,7 +50,8 @@ public class Border : Renderable, IHaveAlignment
 
    public override IEnumerable<IRenderable> GetChildren()
    {
-      yield return Content;
+      if (Content != null)
+         yield return Content;
    }
 
    public override RenderSize MeasureOverride(IRenderContext context, int availableWidth)
@@ -62,7 +63,8 @@ public class Border : Renderable, IHaveAlignment
 
       return new RenderSize
       {
-         Height = contentSize.Height + 2 + Padding.Bottom + Padding.Top, Width = Padding.Left + 1 + contentSize.Width + 1 + Padding.Right
+         Height = contentSize.Height + 2 + Padding.Bottom + Padding.Top,
+         Width = Padding.Left + 1 + contentSize.Width + 1 + Padding.Right
       };
    }
 

@@ -8,11 +8,15 @@ namespace ConsoLovers.ConsoleToolkit.Controls;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+
 using JetBrains.Annotations;
 
 /// <summary>Represents one item in a <see cref="CSelector{T}"/></summary>
 /// <typeparam name="T">The type of the value</typeparam>
 /// <seealso cref="ConsoLovers.ConsoleToolkit.Controls.Renderable" />
+[DebuggerDisplay("{Value} : {Template.GetType().Name}")]
 public class ListItem<T> : InteractiveRenderable, IMouseInputHandler, IMouseAware
 {
    private bool isMouseOver;
@@ -20,7 +24,7 @@ public class ListItem<T> : InteractiveRenderable, IMouseInputHandler, IMouseAwar
    private IRenderable template;
 
    private RenderingStyle mouseOverStyle;
-
+   
    #region Constructors and Destructors
 
    public ListItem(CSelector<T> owner, T value)
@@ -45,7 +49,7 @@ public class ListItem<T> : InteractiveRenderable, IMouseInputHandler, IMouseAwar
       get => template;
       set
       {
-         if(Equals(template, value))
+         if (Equals(template, value))
             return;
 
          template = value;
@@ -78,11 +82,16 @@ public class ListItem<T> : InteractiveRenderable, IMouseInputHandler, IMouseAwar
 
    public override IEnumerable<Segment> RenderLine(IRenderContext context, int line)
    {
-      var segments = Template.RenderLine(context, line);
+      var segments = context.RenderLine(Template, line).ToList();
       foreach (var segment in segments)
-      {  
-         var segmentStyle = isMouseOver ? segment.Style.WithBackground(ConsoleColor.DarkGray) : segment.Style;
-         yield return new Segment(this, segment.Text, segmentStyle);
+      {
+         var result = segment;
+         if (IsSelected)
+            result = result.OverrideStyle(Owner.SelectionStyle);
+         if (isMouseOver)
+            result = result.OverrideStyle(new RenderingStyle(null, ConsoleColor.DarkGray));
+         
+         yield return new Segment(this, result.Text, result.Style);
       }
    }
 
@@ -103,6 +112,8 @@ public class ListItem<T> : InteractiveRenderable, IMouseInputHandler, IMouseAwar
 
       return new Text(value?.ToString() ?? "null");
    }
+
+   public bool IsSelected => Owner.SelectedItem == this;
 
    #endregion
 

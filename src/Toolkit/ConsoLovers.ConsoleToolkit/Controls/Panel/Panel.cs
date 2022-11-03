@@ -68,8 +68,6 @@ public class Panel : InteractiveRenderable, IHaveAlignment
       }
    }
 
-   public Thickness Padding { get; set; }
-
    #endregion
 
    #region Properties

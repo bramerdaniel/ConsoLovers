@@ -21,7 +21,7 @@ public class Link : InteractiveRenderable, IMouseAware, IMouseInputHandler, IKey
 
    private bool isMouseOver;
 
-   private Action<string> linkResolver = ResolveLink;
+   private Action<Link, string> linkResolver = ResolveLink;
 
    #endregion
 
@@ -75,7 +75,7 @@ public class Link : InteractiveRenderable, IMouseAware, IMouseInputHandler, IKey
 
    public void HandleMouseInput(IMouseInputContext context)
    {
-      LinkResolver.Invoke(Address);
+      LinkResolver.Invoke(this, Address);
    }
 
    #endregion
@@ -97,7 +97,7 @@ public class Link : InteractiveRenderable, IMouseAware, IMouseInputHandler, IKey
       }
    }
 
-   public Action<string> LinkResolver
+   public Action<Link, string> LinkResolver
    {
       get => linkResolver ?? ResolveLink;
       set => linkResolver = value;
@@ -150,7 +150,7 @@ public class Link : InteractiveRenderable, IMouseAware, IMouseInputHandler, IKey
       }
    }
 
-   private static void ResolveLink(string address)
+   private static void ResolveLink(Link source, string address)
    {
       OpenBrowser(address);
    }

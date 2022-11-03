@@ -60,19 +60,19 @@ public sealed class RenderingStyle
    }
 
    /// <summary>Creates a copy of the current style and adjusts the <see cref="Background"/></summary>
-   /// <param name="background">The background to use .</param>
+   /// <param name="backgroundColor">The background to use .</param>
    /// <returns>A copy with the adjusted background</returns>
-   public RenderingStyle WithBackground(ConsoleColor background)
+   public RenderingStyle WithBackground(ConsoleColor backgroundColor)
    {
-      return new RenderingStyle(foreground, background);
+      return new RenderingStyle(foreground, backgroundColor);
    }
 
    /// <summary>Creates a copy of the current style and adjusts the <see cref="Foreground"/></summary>
-   /// <param name="foreground">The foreground to use .</param>
+   /// <param name="foregroundColor">The foreground to use .</param>
    /// <returns>A copy with the adjusted foreground</returns>
-   public RenderingStyle WithForeground(ConsoleColor foreground)
+   public RenderingStyle WithForeground(ConsoleColor foregroundColor)
    {
-      return new RenderingStyle(foreground, background);
+      return new RenderingStyle(foregroundColor, background);
    }
 
    #endregion

@@ -44,6 +44,11 @@ public struct Segment
       return new Segment(Renderable, Text, stye);
    }
 
+   public Segment WithOwner([NotNull] IRenderable renderable)
+   {
+      return new Segment(renderable, Text, Style);
+   }
+
    public Segment OverrideStyle([NotNull] RenderingStyle stye)
    {
       if (stye == null)

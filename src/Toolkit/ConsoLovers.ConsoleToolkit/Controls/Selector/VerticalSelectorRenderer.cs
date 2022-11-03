@@ -101,15 +101,10 @@ internal class VerticalSelectorRenderer<T> : ISelectorRenderer
       {
          yield return new Segment(selector, string.Empty.PadRight(selector.Selector.Length), data.Item.Style);
       }
-      
-      var segments = data.Item.RenderLine(context, data.ItemLine).ToArray();
-      foreach (var segment in segments)
-      {
-         yield return data.ItemIndex == selector.SelectedIndex
-            ? segment.OverrideStyle(selector.SelectionStyle)
-            : segment;
-      }
-      
+
+      foreach (var segment in data.Item.RenderLine(context, data.ItemLine))
+         yield return segment;
+
       // This extends the selection but not the mouse over effect
       ////var width = context.AvailableWidth - data.ItemWidth;
       ////if (width > 0)

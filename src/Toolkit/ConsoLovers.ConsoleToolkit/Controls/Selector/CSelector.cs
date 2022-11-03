@@ -8,7 +8,6 @@ namespace ConsoLovers.ConsoleToolkit.Controls;
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 using JetBrains.Annotations;
 
@@ -104,7 +103,7 @@ public class CSelector<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignm
             return;
 
          selectedIndex = value;
-         NotifyStyleChanged();
+         Invalidate(InvalidationScope.All);
       }
    }
 

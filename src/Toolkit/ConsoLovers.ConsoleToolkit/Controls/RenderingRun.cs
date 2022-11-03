@@ -25,7 +25,7 @@ internal class RenderingRun : IDisposable, IRenderContext
 
    private IInputHandler inputHandler;
 
-   
+
    private readonly IRenderable root;
 
    private Action cancellationAction;
@@ -228,9 +228,9 @@ internal class RenderingRun : IDisposable, IRenderContext
             return;
 
          var previous = hoveredRenderable;
-         hoveredRenderable = value;
-
          UpdateMouseOver(previous, false);
+
+         hoveredRenderable = value;
          UpdateMouseOver(hoveredRenderable, true);
       }
    }
@@ -266,8 +266,8 @@ internal class RenderingRun : IDisposable, IRenderContext
    {
       if (e.Scope == InvalidationScope.Style)
       {
-         if (sender is IInteractiveRenderable renderable)
-            RenderElement(renderable);
+         if (sender is IRenderable renderable)
+            UpdateRenderable(renderable);
       }
       else
       {
@@ -279,17 +279,17 @@ internal class RenderingRun : IDisposable, IRenderContext
       }
    }
 
-   private void RenderElement(IInteractiveRenderable renderable)
+   private void UpdateRenderable(IRenderable renderable)
    {
       if (renderingCache.TryGetSize(renderable, out var size))
       {
          var position = ConsolePosition.FromConsole(console);
 
-         var segments = GetUpdatedSegments(renderable, size).ToArray();
-         var renderInfos = renderingCache.GetRenderInfo(renderable).ToArray();
-
+         var segments = RenderTarget(renderable, size).ToArray();
+         var renderInfos = renderingCache.GetRenderInfo(renderable).ToList();
          RenderSegments(segments, renderInfos);
 
+         // otherwise it would look ugly
          position.ApplyTo(console);
       }
       else
@@ -301,21 +301,29 @@ internal class RenderingRun : IDisposable, IRenderContext
       }
    }
 
-   private void RenderSegments(Segment[] segments, RenderInfo[] renderInfos)
+   private void RenderSegments(Segment[] segments, ICollection<RenderInfo> renderInfos)
    {
       foreach (var segment in segments)
       {
-         var renderInfo = renderInfos.FirstOrDefault(x => x.Segment.Text == segment.Text);
+         var renderInfo = renderInfos.FirstOrDefault(x => Matches(x, segment));
          if (renderInfo != null)
          {
+            renderInfos.Remove(renderInfo);
+
             console.CursorTop = renderInfo.Line;
             console.CursorLeft = renderInfo.Column;
             WriteSegment(segment);
          }
       }
+
+      bool Matches(RenderInfo x, Segment org)
+      {
+         return x.Segment.Text == org.Text;
+      }
+
    }
 
-   private IEnumerable<Segment> GetUpdatedSegments(IInteractiveRenderable renderable, RenderSize renderSize)
+   private IEnumerable<Segment> RenderTarget(IRenderable renderable, RenderSize renderSize)
    {
       for (int i = 0; i < renderSize.Height; i++)
       {
@@ -355,5 +363,18 @@ internal class RenderingRun : IDisposable, IRenderContext
       var size = renderable.Measure(this, availableWidth);
       renderingCache.CacheSize(renderable, size);
       return size;
+   }
+
+   public IEnumerable<Segment> RenderLine(IRenderable renderable, int line)
+   {
+      return renderable.RenderLine(this, line);
+   }
+
+   public RenderSize GetMeasuredSize(IRenderable renderable)
+   {
+      if (renderingCache.TryGetSize(renderable, out var size))
+         return size;
+
+      throw new InvalidOperationException("The specified renderable was not measured with this context");
    }
 }
