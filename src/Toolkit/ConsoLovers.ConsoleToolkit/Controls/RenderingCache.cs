@@ -13,6 +13,8 @@ internal class RenderingCache
    private readonly Dictionary<int, List<RenderInfo>> renderInfosByLocation = new();
 
    private readonly Dictionary<IRenderable, List<RenderInfo>> renderInfosByRendereable = new();
+   
+   private readonly Dictionary<IRenderable, RenderSize> renderSizes = new();
 
    public void Add(RenderInfo renderInfo)
    {
@@ -75,5 +77,15 @@ internal class RenderingCache
          foreach (var renderInfo in renderInfos)
             yield return renderInfo;
       }
+   }
+
+   public void CacheSize(IRenderable renderable, RenderSize size)
+   {
+      renderSizes[renderable] = size;
+   }
+
+   public bool TryGetSize(IRenderable renderable, out RenderSize renderSize)
+   {
+      return renderSizes.TryGetValue(renderable, out renderSize);
    }
 }

@@ -10,29 +10,25 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class CText : Renderable, IHaveAlignment
+public class Text : Renderable, IHaveAlignment
 {
-   private int? minWidth;
-
    private string[] lines;
 
    #region Constructors and Destructors
 
-   public CText(string value, RenderingStyle style)
+   public Text(string value, RenderingStyle style)
       : base(style)
    {
       Value = value ?? String.Empty;
    }
 
-   public CText(string value)
+   public Text(string value)
    : base(RenderingStyle.Default)
    {
       Value = value;
    }
 
-   public static implicit operator CText(string text) => new CText(text);
-
-   // public static explicit operator CText(string value) => new CText(value);
+   public static implicit operator Text(string text) => new(text);
 
    public Alignment Alignment { get; set; }
 
@@ -46,9 +42,9 @@ public class CText : Renderable, IHaveAlignment
    {
 #if NETFRAMEWORK
 
-      return value.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+      return value.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 #else
-      return value.Split(Environment.NewLine, StringSplitOptions.None);
+      return value.Split(Environment.NewLine);
 #endif
    }
 
@@ -98,6 +94,6 @@ public class CText : Renderable, IHaveAlignment
 
    public static IRenderable FromString(string value)
    {
-      return (CText)value;
+      return (Text)value;
    }
 }

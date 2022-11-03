@@ -35,13 +35,13 @@ namespace Playground
          for (int i = 0; i < 5; i++)
          {
             var row = new Panel();
-            row.Add(new Border(new CText("Row " + i)));
+            row.Add(new Border(new Text("Row " + i)));
             row.Add(new Border(new Link("Click me")));
             var button = new CButton(new Link("Button"));
             button.Clicked += (sender, args) =>
             {
                row.Remove((IRenderable)sender);
-               row.Add(new Border(new CText("I am not a button")));
+               row.Add(new Border(new Text("I am not a button")));
                Trace.WriteLine("Added");
             };
 
@@ -57,10 +57,10 @@ namespace Playground
          //inner.Add(new Border(new CText("World")));
          //Console.Render(inner);
          
-         verticalPanel.Add(new CText("Simple text"));
-         verticalPanel.Add(new Border(new CText("Simple text")));
+         verticalPanel.Add(new Text("Simple text"));
+         verticalPanel.Add(new Border(new Text("Simple text")));
          // verticalPanel.Add(inner);
-         verticalPanel.Add(new CButton(new CText("Button")));
+         verticalPanel.Add(new CButton(new Text("Button")));
 
          var hansi = new Link("Hansi");
          verticalPanel.Add(hansi);

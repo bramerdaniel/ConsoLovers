@@ -23,8 +23,8 @@ public class VerticalRenderingTests
    {
       var border = Setup.Panel()
          .WithOrientation(Orientation.Vertical)
-         .WithChild(new Border(new CText($"First{Environment.NewLine}Second")))
-         .WithChild(new Border(new CText($"First{Environment.NewLine}Second")))
+         .WithChild(new Border(new Text($"First{Environment.NewLine}Second")))
+         .WithChild(new Border(new Text($"First{Environment.NewLine}Second")))
          .Done();
 
       var renderer = Setup.TestRenderer().Done();
@@ -49,14 +49,14 @@ public class VerticalRenderingTests
    {
       var first = Setup.Panel()
          .WithOrientation(Orientation.Vertical)
-         .WithChild(new Border(new CText($"ABC{Environment.NewLine}DEFG")))
-         .WithChild(new Border(new CText($"Longer{Environment.NewLine}Than ABC")))
+         .WithChild(new Border(new Text($"ABC{Environment.NewLine}DEFG")))
+         .WithChild(new Border(new Text($"Longer{Environment.NewLine}Than ABC")))
          .Done();
 
       var inner = Setup.Panel()
          .WithOrientation(Orientation.Horizontal)
          .WithChild(first)
-         .WithChild(new Border(new CText($"Moment{Environment.NewLine}Alabama")))
+         .WithChild(new Border(new Text($"Moment{Environment.NewLine}Alabama")))
          .Done();
 
       var renderer = Setup.TestRenderer().Done();
@@ -81,8 +81,8 @@ public class VerticalRenderingTests
    {
       var panel = Setup.Panel()
          .WithOrientation(Orientation.Vertical)
-         .WithChild(new CText("A long text"))
-         .WithChild(new Border(new CText("Peter")))
+         .WithChild(new Text("A long text"))
+         .WithChild(new Border(new Text("Peter")))
          .Done();
 
       var renderer = Setup.TestRenderer().Done();

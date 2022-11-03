@@ -61,9 +61,9 @@ namespace PromptsDemo
       private static void ShowVerticalWithBorders()
       {
          var result = Console.Choice<bool?>("Continue ?")
-            .WithAnswer(true, new Border(new CText("Yes ")))
-            .WithAnswer(false, new Border(new CText("No  ")))
-            .WithAnswer(null, new Border(new CText("No sure yet")))
+            .WithAnswer(true, new Border(new Text("Yes ")))
+            .WithAnswer(false, new Border(new Text("No  ")))
+            .WithAnswer(null, new Border(new Text("No sure yet")))
             .Show();
          
          Console.WriteLine("Selected item was " + result);
@@ -73,9 +73,9 @@ namespace PromptsDemo
       private static void ShowVerticalWithMultilineText()
       {
          var result = Console.Choice<bool?>("Continue ?")
-            .WithAnswer(true, new CText($"Yes{Environment.NewLine}I want it"))
-            .WithAnswer(false, new CText($"No{Environment.NewLine}Let me go"))
-            .WithAnswer(null, new CText($"?{Environment.NewLine}Who cares"))
+            .WithAnswer(true, new Text($"Yes{Environment.NewLine}I want it"))
+            .WithAnswer(false, new Text($"No{Environment.NewLine}Let me go"))
+            .WithAnswer(null, new Text($"?{Environment.NewLine}Who cares"))
             .Show();
          
          Console.WriteLine("Selected item was " + result);
@@ -94,9 +94,9 @@ namespace PromptsDemo
       private static void ShowComplexHorizontalSelection()
       {
          var result = Console.Choice<int?>("Select a number")
-            .WithAnswer(1, new Border(new CText("One")))
-            .WithAnswer(2, new Border(new CText("Two")))
-            .WithAnswer(3, new Border(new CText("Three")))
+            .WithAnswer(1, new Border(new Text("One")))
+            .WithAnswer(2, new Border(new Text("Two")))
+            .WithAnswer(3, new Border(new Text("Three")))
             .WithAnswer(4, "Four")
             .WithAnswer(null, "null")
             .WithOrientation(Orientation.Horizontal)
@@ -152,7 +152,7 @@ namespace PromptsDemo
          list.Add(true);
          list.Add(false);
          list.Add(null);
-         panel.Add(new CText("Continue by hand ? : "));
+         panel.Add(new Text("Continue by hand ? : "));
          panel.Add(list);
 
          Console.RenderInteractive(panel);
@@ -164,9 +164,9 @@ namespace PromptsDemo
 
       private static void ShowComplexSelection()
       {
-         var yesTemplate = new Border(new CText($"Yes{Environment.NewLine}We will continue executing"));
-         var noTemplate = new Border(new CText($"No{Environment.NewLine}We shut down immediately"));
-         var cancelTemplate = new Border(new CText($"Cancel{Environment.NewLine}We surprise you"));
+         var yesTemplate = new Border(new Text($"Yes{Environment.NewLine}We will continue executing"));
+         var noTemplate = new Border(new Text($"No{Environment.NewLine}We shut down immediately"));
+         var cancelTemplate = new Border(new Text($"Cancel{Environment.NewLine}We surprise you"));
 
          var answer = Console.Choice<string>("Answer please ? ")
             .WithAnswer("Yes", yesTemplate)

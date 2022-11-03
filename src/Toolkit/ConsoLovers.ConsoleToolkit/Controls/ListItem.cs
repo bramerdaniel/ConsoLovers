@@ -101,7 +101,7 @@ public class ListItem<T> : InteractiveRenderable, IMouseInputHandler, IMouseAwar
       if (value is IRenderable renderable)
          return renderable;
 
-      return new CText(value?.ToString() ?? "null");
+      return new Text(value?.ToString() ?? "null");
    }
 
    #endregion

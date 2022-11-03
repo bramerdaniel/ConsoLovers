@@ -50,8 +50,8 @@ public static class RenderingExtensions
 
       var show = console.Choice<bool>(EnsureAtLeastOneSpace(question))
          .WithOrientation(Orientation.Horizontal, true)
-         .WithAnswer(true, new CText("yes", RenderingStyle.Default.WithForeground(ConsoleColor.Green)))
-         .WithAnswer(false, new CText("no", RenderingStyle.Default.WithForeground(ConsoleColor.Red)))
+         .WithAnswer(true, new Text("yes", RenderingStyle.Default.WithForeground(ConsoleColor.Green)))
+         .WithAnswer(false, new Text("no", RenderingStyle.Default.WithForeground(ConsoleColor.Red)))
          .AllowCancellation(allowCancellation)
          .Show();
 
@@ -65,9 +65,9 @@ public static class RenderingExtensions
 
       var show = console.Choice<bool?>(EnsureAtLeastOneSpace(question))
          .WithOrientation(Orientation.Horizontal, true)
-         .WithAnswer(true, new CText("yes"))
-         .WithAnswer(false, new CText("no"))
-         .WithAnswer(null, new CText("cancel"))
+         .WithAnswer(true, new Text("yes"))
+         .WithAnswer(false, new Text("no"))
+         .WithAnswer(null, new Text("cancel"))
          .AllowCancellation(false)
          .Show();
 

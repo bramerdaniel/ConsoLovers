@@ -170,7 +170,7 @@ public class CSelector<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignm
       if (displayText == null)
          throw new ArgumentNullException(nameof(displayText));
 
-      Items.Add(new ListItem<T>(this, value, new CText(displayText)));
+      Items.Add(new ListItem<T>(this, value, new Text(displayText)));
    }
 
    /// <summary>Adds the specified value to the selector using the <see cref="template"/>.</summary>

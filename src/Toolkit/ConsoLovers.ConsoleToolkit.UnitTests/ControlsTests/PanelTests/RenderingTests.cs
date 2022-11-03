@@ -22,8 +22,8 @@ public class RenderingTests
    public void EnsureBorderWithMultilineTextIsRenderedCorrectly()
    {
       var border = Setup.Panel()
-         .WithChild(new Border(new CText($"First{Environment.NewLine}Second")))
-         .WithChild(new Border(new CText($"First{Environment.NewLine}Second")))
+         .WithChild(new Border(new Text($"First{Environment.NewLine}Second")))
+         .WithChild(new Border(new Text($"First{Environment.NewLine}Second")))
          .Done();
 
       var renderer = Setup.TestRenderer().Done();
@@ -45,9 +45,9 @@ public class RenderingTests
    public void EnsureBordersAndTextIsRenderedCorrectly()
    {
       var border = Setup.Panel()
-         .WithChild(new Border(new CText($"First{Environment.NewLine}Second")))
-         .WithChild(new CText($"{Environment.NewLine}First{Environment.NewLine}Second"))
-         .WithChild(new Border(new CText($"First{Environment.NewLine}Second")))
+         .WithChild(new Border(new Text($"First{Environment.NewLine}Second")))
+         .WithChild(new Text($"{Environment.NewLine}First{Environment.NewLine}Second"))
+         .WithChild(new Border(new Text($"First{Environment.NewLine}Second")))
          .Done();
 
       var renderer = Setup.TestRenderer().Done();
@@ -70,9 +70,9 @@ public class RenderingTests
    public void EnsureOverflowIsRenderedCorrectly()
    {
       var border = Setup.Panel()
-         .WithChild(new Border(new CText("xxx")))
-         .WithChild(new Border(new CText("abc")))
-         .WithChild(new Border(new CText("123")))
+         .WithChild(new Border(new Text("xxx")))
+         .WithChild(new Border(new Text("abc")))
+         .WithChild(new Border(new Text("123")))
          .Done();
 
       var renderer = Setup.TestRenderer()
@@ -106,7 +106,7 @@ public class RenderingTests
          .Done();
 
       var border = Setup.Panel()
-         .WithChild(new CText("Label : "))
+         .WithChild(new Text("Label : "))
          .WithChild(selector)
          .Done();
 

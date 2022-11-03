@@ -22,11 +22,11 @@ public class GenericSelectorTests
    public void EnsureTypeCanBeIRenderableAndAllAreRenderedCorrectly()
    {
       var list = Setup.Selector<IRenderable>()
-         .WithItem((CText)"Yes")
-         .WithItem(new Border(new CText("Oha")))
-         .WithItem(new CText($"Very {Environment.NewLine}long text"))
-         .WithItem(new Border(new CText($"Very {Environment.NewLine}long text")))
-         .WithItem((CText)"No")
+         .WithItem((Text)"Yes")
+         .WithItem(new Border(new Text("Oha")))
+         .WithItem(new Text($"Very {Environment.NewLine}long text"))
+         .WithItem(new Border(new Text($"Very {Environment.NewLine}long text")))
+         .WithItem((Text)"No")
          .Done();
 
       var renderedText = Setup.TestRenderer()

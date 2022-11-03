@@ -43,19 +43,6 @@ internal class RenderingRun : IDisposable, IRenderContext
       this.root = root ?? throw new ArgumentNullException(nameof(root));
    }
 
-   class ConsolePosition
-   {
-      public ConsolePosition(int cursorTop, int cursorLeft)
-      {
-         CursorLeft = cursorLeft;
-         CursorTop = cursorTop;
-      }
-
-      public int CursorLeft { get; }
-
-      public int CursorTop { get; }
-   }
-
    #endregion
 
    #region IDisposable Members
@@ -294,17 +281,47 @@ internal class RenderingRun : IDisposable, IRenderContext
 
    private void RenderElement(IInteractiveRenderable renderable)
    {
-      
+      if (renderingCache.TryGetSize(renderable, out var size))
+      {
+         var position = ConsolePosition.FromConsole(console);
 
-      //foreach (var renderInfo in renderingCache.GetRenderInfo(renderable))
-      //{
-      //   renderInfo.
-      //}
+         var segments = GetUpdatedSegments(renderable, size).ToArray();
+         var renderInfos = renderingCache.GetRenderInfo(renderable).ToArray();
 
-      console.CursorTop = InitialPosition.CursorTop;
-      console.CursorLeft = InitialPosition.CursorLeft;
+         RenderSegments(segments, renderInfos);
 
-      RenderInternal();
+         position.ApplyTo(console);
+      }
+      else
+      {
+         console.CursorTop = InitialPosition.CursorTop;
+         console.CursorLeft = InitialPosition.CursorLeft;
+
+         RenderInternal();
+      }
+   }
+
+   private void RenderSegments(Segment[] segments, RenderInfo[] renderInfos)
+   {
+      foreach (var segment in segments)
+      {
+         var renderInfo = renderInfos.FirstOrDefault(x => x.Segment.Text == segment.Text);
+         if (renderInfo != null)
+         {
+            console.CursorTop = renderInfo.Line;
+            console.CursorLeft = renderInfo.Column;
+            WriteSegment(segment);
+         }
+      }
+   }
+
+   private IEnumerable<Segment> GetUpdatedSegments(IInteractiveRenderable renderable, RenderSize renderSize)
+   {
+      for (int i = 0; i < renderSize.Height; i++)
+      {
+         foreach (var segment in renderable.RenderLine(this, i))
+            yield return segment;
+      }
    }
 
    private void RenderInternal()
@@ -336,6 +353,7 @@ internal class RenderingRun : IDisposable, IRenderContext
    public RenderSize Measure(IRenderable renderable, int availableWidth)
    {
       var size = renderable.Measure(this, availableWidth);
+      renderingCache.CacheSize(renderable, size);
       return size;
    }
 }

@@ -135,7 +135,7 @@ Yes No Cancel".TrimStart();
       renderer.Render(list).Should().Be("Yes No null".Trim());
 
       renderer.Reset();
-      list.Items[2].Template = new CText("<NULL>");
+      list.Items[2].Template = new Text("<NULL>");
       renderer.Render(list).Should().Be("Yes No <NULL>".Trim());
    }
 
