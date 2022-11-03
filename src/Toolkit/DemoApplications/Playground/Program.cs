@@ -13,7 +13,7 @@ namespace Playground
    using ConsoLovers.ConsoleToolkit.Controls;
    using ConsoLovers.ConsoleToolkit.Core;
 
-   
+
    public static class Program
    {
       #region Constants and Fields
@@ -26,19 +26,8 @@ namespace Playground
 
       private static void Main()
       {
-         var content = new Button("1");
-         var paddedBorder = new Padding(content){Value = new Thickness(1) };
-         paddedBorder.Style = new RenderingStyle(null, ConsoleColor.Red);
-         content.Clicked += (s, e) =>
-         {
-            var valueRight = paddedBorder.Value.Right + 1;
-            if (content.Content is Text text)
-               text.Value = valueRight.ToString().PadLeft(2).PadRight(3);
 
-            paddedBorder.Value = new Thickness(valueRight, 1);
-         };
-         
-         Console.RenderInteractive(paddedBorder);
+         RenderPadding();
 
          //System.Console.BufferWidth = 30;
 
@@ -57,10 +46,10 @@ namespace Playground
          for (int i = 0; i < 5; i++)
          {
             var row = new Panel();
-            row.Add(new Border(new Text("Row " + i)){ Padding = new Thickness(1) });
-            var link = new Link("Click me"){ LinkResolver = (s, a) => s.DisplayText += " !"  };
+            row.Add(new Border(new Text("Row " + i)) { Padding = new Thickness(1) });
+            var link = new Link("Click me") { LinkResolver = (s, a) => s.DisplayText += " !" };
             row.Add(new Border(link));
-            var button = new Button(new Padding(new Link("Button"),new Thickness(2,0)));
+            var button = new Button(new Padding(new Link("Button"), new Thickness(2, 0)));
             button.Clicked += (sender, args) =>
             {
                row.Remove((IRenderable)sender);
@@ -80,7 +69,7 @@ namespace Playground
          //inner.Add(new Border(new CText("Hello")));
          //inner.Add(new Border(new CText("World")));
          //Console.Render(inner);
-         
+
          verticalPanel.Add(new Text("Simple text"));
          verticalPanel.Add(new Border(new Text("Simple text")));
          // verticalPanel.Add(inner);
@@ -88,11 +77,14 @@ namespace Playground
 
          var hansi = new Link("Hansi");
          verticalPanel.Add(hansi);
-         verticalPanel.Add(new Link("Click me I am a link"){ LinkResolver = (s, a) =>
+         verticalPanel.Add(new Link("Click me I am a link")
+         {
+            LinkResolver = (s, a) =>
          {
             hansi.DisplayText = "Klaus";
             hansi.Style = hansi.Style.WithForeground(ConsoleColor.Cyan);
-         } });
+         }
+         });
          // verticalPanel.Add(new Border(new CText("I can not be clicked")));
          Console.RenderInteractive(verticalPanel);
 
@@ -110,7 +102,43 @@ namespace Playground
          Console.ReadLine();
       }
 
-      
+
+      private static void RenderPadding()
+      {
+         var pannel = new Panel();
+         var padding = new Padding(pannel, new Thickness(2, 1))
+         {
+            Style = new RenderingStyle(null, ConsoleColor.Red)
+         };
+
+         var increaseLeft = new Button("<+");
+         increaseLeft.Clicked += (s, e) => padding.Left++;
+         pannel.Add(increaseLeft);
+
+         var decreaseLeft = new Button("<-");
+         decreaseLeft.Clicked += (s, e) =>
+         {
+            Console.Clear();
+            padding.Left--;
+         };
+         pannel.Add(decreaseLeft);
+
+         var decrease = new Button("->");
+         decrease.Clicked += (_, _) =>
+         {
+            Console.Clear();
+            padding.Right--;
+         };
+         pannel.Add(decrease);
+
+         var increase = new Button("+>");
+         increase.Clicked += (s, e) => padding.Right++;
+         pannel.Add(increase);
+
+
+
+         Console.RenderInteractive(padding);
+      }
 
       private static void OnButtonClicked(object sender, EventArgs e)
       {

@@ -28,6 +28,12 @@ public class Border : Renderable, IHaveAlignment
       CharSet = Borders.Default;
    }
 
+   public Border(string content)
+      :this(new Text(content))
+   {
+   }
+
+
    #endregion
 
    #region IHaveAlignment Members
