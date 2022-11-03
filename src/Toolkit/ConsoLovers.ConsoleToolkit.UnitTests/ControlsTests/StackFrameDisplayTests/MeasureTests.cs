@@ -27,7 +27,7 @@ public class MeasureTests
       var frame = new StackFrame("Test.cs", 25);
       var target = new StackFrameDisplay(frame);
 
-      target.Measure(int.MaxValue).Height.Should().Be(1);
+      target.Measure(null, int.MaxValue).Height.Should().Be(1);
    }
 
    [TestMethod]
@@ -36,10 +36,10 @@ public class MeasureTests
       var frame = new StackFrame("Test.cs", 25);
       var target = new StackFrameDisplay(frame);
 
-      target.Measure(int.MaxValue).Width.Should().Be(144);
+      target.Measure(null, int.MaxValue).Width.Should().Be(144);
 
       target.RemoveSegment("Namespace");
-      target.Measure(140).Width.Should().Be(70);
+      target.Measure(null, 140).Width.Should().Be(70);
    }
 
    #endregion

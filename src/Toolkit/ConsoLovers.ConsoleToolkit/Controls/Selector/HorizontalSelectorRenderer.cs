@@ -32,14 +32,14 @@ internal class HorizontalSelectorRenderer<T> : ISelectorRenderer
 
    #region ISelectorRenderer Members
 
-   public RenderSize Measure(int availableWidth)
+   public RenderSize Measure(IRenderContext context, int availableWidth)
    {
       var height = 0;
       var width = 0;
 
       foreach (var item in Items)
       {
-         var itemSize = item.Measure(availableWidth);
+         var itemSize = item.Measure(context, availableWidth);
          measuredItems[item] = itemSize;
          height = Math.Max(height, itemSize.Height);
          width += itemSize.Width + 1;

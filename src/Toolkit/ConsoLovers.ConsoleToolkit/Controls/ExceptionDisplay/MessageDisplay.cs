@@ -52,7 +52,7 @@ public class MessageDisplay : InteractiveRenderable
       yield break;
    }
 
-   public override RenderSize MeasureOverride(int availableWidth)
+   public override RenderSize MeasureOverride(IRenderContext context, int availableWidth)
    {
       var separatorLength = Separator?.Length ?? 0;
       var messageLength = availableWidth - title.Length - separatorLength;

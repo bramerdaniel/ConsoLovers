@@ -97,9 +97,9 @@ public class Panel : InteractiveRenderable, IHaveAlignment
       return Children;
    }
 
-   public override RenderSize MeasureOverride(int availableWidth)
+   public override RenderSize MeasureOverride(IRenderContext context, int availableWidth)
    {
-      return Renderer.Measure(availableWidth);
+      return Renderer.Measure(context, availableWidth);
    }
 
    public Panel Remove([NotNull] IRenderable renderable)

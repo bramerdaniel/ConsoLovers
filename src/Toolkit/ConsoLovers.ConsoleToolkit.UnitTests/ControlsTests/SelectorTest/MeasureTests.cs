@@ -26,16 +26,16 @@ public class MeasureTests
          .WithItem("No")
          .Done();
 
-      list.Measure(int.MaxValue).Height.Should().Be(1);
+      list.Measure(null, int.MaxValue).Height.Should().Be(1);
 
       list.Selector = "↑";
-      list.Measure(int.MaxValue).Height.Should().Be(2);
+      list.Measure(null, int.MaxValue).Height.Should().Be(2);
 
       list.Orientation = Orientation.Vertical;
-      list.Measure(int.MaxValue).Height.Should().Be(2);
+      list.Measure(null, int.MaxValue).Height.Should().Be(2);
 
       list.Add("Cancel");
-      list.Measure(int.MaxValue).Height.Should().Be(3);
+      list.Measure(null, int.MaxValue).Height.Should().Be(3);
    }
 
    [TestMethod]
@@ -48,6 +48,6 @@ public class MeasureTests
          .WithItem("No")
          .Done();
 
-      list.Measure(int.MaxValue).Width.Should().Be(6);
+      list.Measure(null, int.MaxValue).Width.Should().Be(6);
    }
 }

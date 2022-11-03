@@ -35,7 +35,7 @@ public class StackTraceDisplay : Renderable
 
    #region Public Methods and Operators
 
-   public override RenderSize MeasureOverride(int availableWidth)
+   public override RenderSize MeasureOverride(IRenderContext context, int availableWidth)
    {
       if (FrameDisplays.Length == 0)
          return RenderSize.Empty;
@@ -43,14 +43,14 @@ public class StackTraceDisplay : Renderable
       foreach (var frameDisplay in FrameDisplays)
          frameDisplay.RenderAllSegments();
 
-      if (FitsIntoAvailableWidth(availableWidth, out var size))
+      if (FitsIntoAvailableWidth(context, availableWidth, out var size))
          return size;
       
       foreach (var name in StackFrameDisplay.AvailableSegmentNames)
       {
          Remove(name);
 
-         if (FitsIntoAvailableWidth(availableWidth, out size))
+         if (FitsIntoAvailableWidth(context, availableWidth, out size))
             return size;
       }
 
@@ -67,14 +67,14 @@ public class StackTraceDisplay : Renderable
 
    #region Methods
 
-   private bool FitsIntoAvailableWidth(int availableWidth, out RenderSize measuredSize)
+   private bool FitsIntoAvailableWidth(IRenderContext context, int availableWidth, out RenderSize measuredSize)
    {
       var height = 0;
       var width = 0;
       
       foreach (var display in FrameDisplays)
       {
-         var frameSize = display.Measure(availableWidth);
+         var frameSize = display.Measure(context, availableWidth);
          if (frameSize.Width > availableWidth)
          {
             measuredSize = RenderSize.Empty;

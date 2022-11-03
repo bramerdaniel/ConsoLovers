@@ -24,7 +24,7 @@ public class MeasureTests
       var text = Setup.Text().WithValue("A length of 14")
          .Done();
 
-      var size = text.Measure(100);
+      var size = text.Measure(null, 100);
       size.Height.Should().Be(1);
       size.Width.Should().Be(14);
    }
@@ -35,7 +35,7 @@ public class MeasureTests
       var text = Setup.Text().WithValue($"FirstLine{Environment.NewLine}SecondLine")
          .Done();
 
-      var size = text.Measure(100);
+      var size = text.Measure(null, 100);
       size.Height.Should().Be(2);
       size.Width.Should().Be(10);
    }
@@ -47,7 +47,7 @@ public class MeasureTests
          .WithAlignment(Alignment.Right)
          .Done();
 
-      var size = text.Measure(10);
+      var size = text.Measure(null, 10);
       size.Height.Should().Be(1);
       size.Width.Should().Be(5);
    }
@@ -60,7 +60,7 @@ public class MeasureTests
          .WithAlignment(Alignment.Center)
          .Done();
 
-      var size = text.Measure(10);
+      var size = text.Measure(null, 10);
       size.Height.Should().Be(1);
       size.Width.Should().Be("  Value".Length);
    }

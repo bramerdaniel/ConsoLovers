@@ -23,7 +23,7 @@ public class MeasureTests
          .WithMessage("Message")
          .Done();
 
-      var size = list.Measure(int.MaxValue);
+      var size = list.Measure(null, int.MaxValue);
       size.Height.Should().Be(1);
       size.Width.Should().Be(5 + 2 + 7);
    }
@@ -36,7 +36,7 @@ public class MeasureTests
          .WithMessage("to long my friend")
          .Done();
 
-      var size = list.Measure(17);
+      var size = list.Measure(null, 17);
       size.Height.Should().Be(2);
       size.Width.Should().Be(17);
    }
@@ -49,7 +49,7 @@ public class MeasureTests
          .WithMessage("to friend my long")
          .Done();
 
-      var size = list.Measure(17);
+      var size = list.Measure(null, 17);
       size.Height.Should().Be(2);
       size.Width.Should().Be(16);
    }

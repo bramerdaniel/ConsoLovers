@@ -42,7 +42,7 @@ internal class VerticalSelectorRenderer<T> : ISelectorRenderer
 
    private Queue<ItemRenderInfo> renderQueue;
 
-   public RenderSize Measure(int availableWidth)
+   public RenderSize Measure(IRenderContext context, int availableWidth)
    {
       var height = 0;
       var width = 0;
@@ -54,7 +54,7 @@ internal class VerticalSelectorRenderer<T> : ISelectorRenderer
 
       foreach (var item in selector.Items)
       {
-         var itemSize = item.Measure(availableItemLength);
+         var itemSize = item.Measure(context, availableItemLength);
 
          height += itemSize.Height;
          width = Math.Max(width, itemSize.Width);

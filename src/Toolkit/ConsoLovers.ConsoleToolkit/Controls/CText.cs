@@ -58,7 +58,7 @@ public class CText : Renderable, IHaveAlignment
 
    #region Public Methods and Operators
 
-   public override RenderSize MeasureOverride(int availableWidth)
+   public override RenderSize MeasureOverride(IRenderContext context, int availableWidth)
    {
       lines = WrapIfRequired(Value, availableWidth).ToArray();
       var longestLine = lines.Max(x => x.Length);

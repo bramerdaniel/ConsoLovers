@@ -23,7 +23,7 @@ public class Rule : Renderable
       Text = text;
    }
 
-   public override RenderSize MeasureOverride(int availableWidth)
+   public override RenderSize MeasureOverride(IRenderContext context, int availableWidth)
    {
       return new RenderSize
       {

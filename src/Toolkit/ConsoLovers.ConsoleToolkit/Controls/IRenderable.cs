@@ -13,9 +13,10 @@ namespace ConsoLovers.ConsoleToolkit.Controls
       #region Public Methods and Operators
 
       /// <summary>Measures the renderable object.</summary>
+      /// <param name="context"></param>
       /// <param name="availableWidth">The maximum allowed width.</param>
       /// <returns>The minimum and maximum width of the object.</returns>
-      RenderSize Measure(int availableWidth);
+      RenderSize Measure(IRenderContext context, int availableWidth);
 
       /// <summary>Renders the specified <see cref="line"/> of the renderable.</summary>
       /// <param name="context">The context.</param>

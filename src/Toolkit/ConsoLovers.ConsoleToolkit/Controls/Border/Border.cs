@@ -53,12 +53,12 @@ public class Border : Renderable, IHaveAlignment
       yield return Content;
    }
 
-   public override RenderSize MeasureOverride(int availableWidth)
+   public override RenderSize MeasureOverride(IRenderContext context, int availableWidth)
    {
       if (Content == null)
          return new RenderSize { Height = 2, Width = 2 };
 
-      contentSize = Content.Measure(availableWidth - 2);
+      contentSize = Content.Measure(context, availableWidth - 2);
 
       return new RenderSize
       {

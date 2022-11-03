@@ -193,9 +193,9 @@ public class CSelector<T> : InteractiveRenderable, IKeyInputHandler, IHaveAlignm
       return Items;
    }
 
-   public override RenderSize MeasureOverride(int availableWidth)
+   public override RenderSize MeasureOverride(IRenderContext context, int availableWidth)
    {
-      return Renderer.Measure(availableWidth);
+      return Renderer.Measure(context, availableWidth);
    }
 
    public override IEnumerable<Segment> RenderLine(IRenderContext context, int line)

@@ -126,7 +126,7 @@ public class StackFrameDisplay : InteractiveRenderable, IMouseInputHandler, IMou
       yield break;
    }
 
-   public override RenderSize MeasureOverride(int availableWidth)
+   public override RenderSize MeasureOverride(IRenderContext context, int availableWidth)
    {
       var width = RenderedSegments.Sum(x => x.Segment.Width);
       return new RenderSize { Height = 1, Width = width };

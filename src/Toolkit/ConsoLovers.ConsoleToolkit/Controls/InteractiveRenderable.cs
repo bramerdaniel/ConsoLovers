@@ -48,9 +48,9 @@ public abstract class InteractiveRenderable : IInteractiveRenderable
       yield break;
    }
 
-   public RenderSize Measure(int availableWidth)
+   public RenderSize Measure(IRenderContext context, int availableWidth)
    {
-      MeasuredSize = MeasureOverride(availableWidth);
+      MeasuredSize = MeasureOverride(context, availableWidth);
       return MeasuredSize;
    }
 
@@ -77,7 +77,7 @@ public abstract class InteractiveRenderable : IInteractiveRenderable
 
    #region Public Methods and Operators
 
-   public abstract RenderSize MeasureOverride(int availableWidth);
+   public abstract RenderSize MeasureOverride(IRenderContext context, int availableWidth);
 
    #endregion
 

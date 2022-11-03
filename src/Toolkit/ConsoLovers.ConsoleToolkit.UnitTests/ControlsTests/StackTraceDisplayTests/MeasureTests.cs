@@ -25,7 +25,7 @@ public class MeasureTests
       var stackTrace = CreateStackTrace(4);
       var target = new StackTraceDisplay(stackTrace);
 
-      var size = target.Measure(120);
+      var size = target.Measure(null, 120);
       size.Height.Should().Be(4);
    }
 

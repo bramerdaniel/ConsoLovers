@@ -48,14 +48,14 @@ internal class HorizontalPanelRenderer : IPanelRenderer
       }
    }
 
-   public RenderSize Measure(int availableWidth)
+   public RenderSize Measure(IRenderContext context, int availableWidth)
    {
       int totalHeight = 1;
       int totalWidth = 0;
 
       foreach (var child in Panel.Children)
       {
-         var childSize = child.Measure(availableWidth);
+         var childSize = child.Measure(context, availableWidth);
          Measurements[child] = childSize;
 
          if (childSize.Height > totalHeight)

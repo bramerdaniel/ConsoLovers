@@ -38,9 +38,9 @@ public class CButton : InteractiveRenderable, IMouseInputHandler, IHaveAlignment
       yield return Content;
    }
 
-   public override RenderSize MeasureOverride(int availableWidth)
+   public override RenderSize MeasureOverride(IRenderContext context, int availableWidth)
    {
-      contentSize = Content.Measure(availableWidth - 2);
+      contentSize = Content.Measure(context, availableWidth - 2);
       lineCount = contentSize.Height + 2 + Padding.Bottom + Padding.Top;
 
       var width = Padding.Left + 1 + contentSize.Width + 1 + Padding.Right;

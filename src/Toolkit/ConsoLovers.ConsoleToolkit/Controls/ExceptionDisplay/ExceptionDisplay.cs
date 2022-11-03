@@ -54,10 +54,10 @@ public class ExceptionDisplay : InteractiveRenderable
       yield return stackTraceDisplay;
    }
 
-   public override RenderSize MeasureOverride(int availableWidth)
+   public override RenderSize MeasureOverride(IRenderContext context, int availableWidth)
    {
-      var messageSize = messageDisplay.Measure(availableWidth);
-      var stackTraceSize = stackTraceDisplay.Measure(availableWidth);
+      var messageSize = messageDisplay.Measure(context, availableWidth);
+      var stackTraceSize = stackTraceDisplay.Measure(context, availableWidth);
 
       return new RenderSize
       {

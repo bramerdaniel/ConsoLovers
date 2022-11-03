@@ -31,9 +31,9 @@ namespace ConsoLovers.ConsoleToolkit.Controls
       #region IRenderable Members
 
       [DebuggerStepThrough]
-      public RenderSize Measure(int availableWidth)
+      public RenderSize Measure(IRenderContext context, int availableWidth)
       {
-         MeasuredSize = MeasureOverride(availableWidth);
+         MeasuredSize = MeasureOverride(context, availableWidth);
          return MeasuredSize;
       }
 
@@ -59,9 +59,10 @@ namespace ConsoLovers.ConsoleToolkit.Controls
       #region Public Methods and Operators
 
       /// <summary>The measure override for the renderable.</summary>
+      /// <param name="context"></param>
       /// <param name="availableWidth">Width of the available.</param>
       /// <returns>The computed <see cref="RenderSize"/></returns>
-      public abstract RenderSize MeasureOverride(int availableWidth);
+      public abstract RenderSize MeasureOverride(IRenderContext context, int availableWidth);
 
       #endregion
 

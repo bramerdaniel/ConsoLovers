@@ -109,7 +109,7 @@ public class Link : InteractiveRenderable, IMouseAware, IMouseInputHandler, IKey
 
    #region Public Methods and Operators
 
-   public override RenderSize MeasureOverride(int availableWidth)
+   public override RenderSize MeasureOverride(IRenderContext context, int availableWidth)
    {
       return new RenderSize { Height = 1, Width = DisplayText.Length };
    }
