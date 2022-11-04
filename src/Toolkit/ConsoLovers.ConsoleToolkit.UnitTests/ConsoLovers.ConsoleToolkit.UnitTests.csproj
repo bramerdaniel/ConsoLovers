@@ -24,4 +24,8 @@
 		<ProjectReference Include="..\ConsoLovers.ConsoleToolkit\ConsoLovers.ConsoleToolkit.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="ControlsTests\RectangleTests\" />
+	</ItemGroup>
+
 </Project>

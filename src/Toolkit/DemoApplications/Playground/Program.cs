@@ -26,7 +26,6 @@ namespace Playground
 
       private static void Main()
       {
-
          RenderPadding();
 
          //System.Console.BufferWidth = 30;
@@ -50,7 +49,7 @@ namespace Playground
             var link = new Link("Click me") { LinkResolver = (s, a) => s.DisplayText += " !" };
             row.Add(new Border(link));
             var button = new Button(new Padding(new Link("Button"), new Thickness(2, 0)));
-            button.Clicked += (sender, args) =>
+            button.Clicked += (sender, _) =>
             {
                row.Remove((IRenderable)sender);
                row.Add(new Border(new Text("I am not a button any longer")));
@@ -79,7 +78,7 @@ namespace Playground
          verticalPanel.Add(hansi);
          verticalPanel.Add(new Link("Click me I am a link")
          {
-            LinkResolver = (s, a) =>
+            LinkResolver = (_, _) =>
          {
             hansi.DisplayText = "Klaus";
             hansi.Style = hansi.Style.WithForeground(ConsoleColor.Cyan);
@@ -105,23 +104,25 @@ namespace Playground
 
       private static void RenderPadding()
       {
-         var pannel = new Panel();
-         var padding = new Padding(pannel, new Thickness(2, 1))
+         var panel = new Panel();
+         var padding = new Padding(panel, new Thickness(2, 1))
          {
             Style = new RenderingStyle(null, ConsoleColor.Red)
          };
 
          var increaseLeft = new Button("<+");
-         increaseLeft.Clicked += (s, e) => padding.Left++;
-         pannel.Add(increaseLeft);
+         increaseLeft.Clicked += (_, _) => padding.Left++;
+         panel.Add(increaseLeft);
 
          var decreaseLeft = new Button("<-");
-         decreaseLeft.Clicked += (s, e) =>
+         decreaseLeft.Clicked += (_, _) =>
          {
             Console.Clear();
             padding.Left--;
          };
-         pannel.Add(decreaseLeft);
+         panel.Add(decreaseLeft);
+
+         panel.Add(new Rectangle(3, new RenderingStyle(ConsoleColor.DarkYellow, ConsoleColor.Red)){ Value = '█' });
 
          var decrease = new Button("->");
          decrease.Clicked += (_, _) =>
@@ -129,11 +130,11 @@ namespace Playground
             Console.Clear();
             padding.Right--;
          };
-         pannel.Add(decrease);
+         panel.Add(decrease);
 
          var increase = new Button("+>");
-         increase.Clicked += (s, e) => padding.Right++;
-         pannel.Add(increase);
+         increase.Clicked += (_, _) => padding.Right++;
+         panel.Add(increase);
 
 
 

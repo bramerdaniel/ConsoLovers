@@ -30,5 +30,6 @@ namespace ConsoLovers.ConsoleToolkit.UnitTests.Setups
       {
          return new MockSetup();
       }
+
    }
 }
