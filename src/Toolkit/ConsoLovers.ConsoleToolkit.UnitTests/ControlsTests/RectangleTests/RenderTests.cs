@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ConsoLovers.ConsoleToolkit.UnitTests.ControlsTests.BlockTests;
+namespace ConsoLovers.ConsoleToolkit.UnitTests.ControlsTests.RectangleTests;
 
 using ConsoLovers.ConsoleToolkit.UnitTests.Setups;
 

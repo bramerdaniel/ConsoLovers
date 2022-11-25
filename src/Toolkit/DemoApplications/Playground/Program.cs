@@ -26,6 +26,7 @@ namespace Playground
 
       private static void Main()
       {
+         ShowTable();
          RenderPadding();
 
          //System.Console.BufferWidth = 30;
@@ -101,6 +102,15 @@ namespace Playground
          Console.ReadLine();
       }
 
+      private static void ShowTable()
+      {
+         Table table = new Table();
+         table.AddColumns(new Text("First"), new Text("Second"), new Text("Third"));
+         table.AddRow(new Text("1"), new Text("2"), new Text("3"));
+
+         Console.Render(table);
+         Console.ReadLine();
+      }
 
       private static void RenderPadding()
       {

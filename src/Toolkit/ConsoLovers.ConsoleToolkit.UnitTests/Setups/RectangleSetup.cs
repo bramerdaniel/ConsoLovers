@@ -11,6 +11,6 @@ using ConsoLovers.ConsoleToolkit.Controls;
 using FluentSetups;
 
 [FluentSetup(typeof(Rectangle))]
-public partial class BlockSetup
+internal partial class RectangleSetup
 {
 }
