@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Net6Playground": {
+      "commandName": "Project",
+      "commandLineArgs": "destination=\"D:\\VRC\\Folder With Spaces\" /file=\"value \"with space\""
+    }
+  }
+}

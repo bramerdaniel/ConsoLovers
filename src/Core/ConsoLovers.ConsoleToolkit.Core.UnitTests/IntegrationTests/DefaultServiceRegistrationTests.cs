@@ -34,14 +34,24 @@ public class DefaultServiceRegistrationTests
    public void EnsureApplicationCanBeReplaced()
    {
       var mock = new Mock<IConsoleApplication<SomeArgs>>();
+#if NET5_0_OR_GREATER
+      mock.Setup(x => x.RunAsync(It.IsAny<string[]>(), CancellationToken.None))
+         .Returns(() => Task.FromResult(mock.Object));
+#else
       mock.Setup(x => x.RunAsync(It.IsAny<string>(), CancellationToken.None))
          .Returns(() => Task.FromResult(mock.Object));
+#endif
+
 
       var application = ConsoleApplication.WithArguments<SomeArgs>()
          .AddService(s => s.AddSingleton(mock.Object))
          .Run();
 
+#if NET5_0_OR_GREATER
+      mock.Verify(x => x.RunAsync(It.IsAny<string[]>(), CancellationToken.None), Times.Once);
+#else
       mock.Verify(x => x.RunAsync(It.IsAny<string>(), CancellationToken.None), Times.Once);
+#endif
       application.Should().BeSameAs(mock.Object);
    }
 

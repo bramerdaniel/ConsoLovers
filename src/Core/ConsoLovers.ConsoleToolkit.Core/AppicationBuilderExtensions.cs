@@ -7,6 +7,7 @@
 namespace ConsoLovers.ConsoleToolkit.Core;
 
 using System;
+using System.Linq;
 using System.Resources;
 using System.Threading;
 using System.Threading.Tasks;
@@ -195,17 +196,38 @@ public static class ApplicationBuilderExtensions
    public static IConsoleApplication<T> Run<T>([NotNull] this IApplicationBuilder<T> builder)
       where T : class
    {
+#if NET5_0_OR_GREATER
+      return builder.Run(Environment.GetCommandLineArgs().Skip(1).ToArray());
+#else
       return builder.Run(Environment.CommandLine);
+#endif
+
    }
 
    public static IConsoleApplication<T> Run<T>([NotNull] this IApplicationBuilder<T> builder, Action<T> applicationLogic)
       where T : class
    {
+#if NET5_0_OR_GREATER
+      return builder.Run(applicationLogic, Environment.GetCommandLineArgs().Skip(1).ToArray());
+#else
       return builder.Run(applicationLogic, Environment.CommandLine);
+#endif
    }
 
    public static IConsoleApplication<T> Run<T>([NotNull] this IApplicationBuilder<T> builder, Action<T> applicationLogic,
       string args)
+      where T : class
+   {
+      builder.UseApplicationLogic((t, _) =>
+      {
+         applicationLogic(t);
+         return Task.CompletedTask;
+      });
+
+      return builder.Run(args);
+   }
+
+   public static IConsoleApplication<T> Run<T>([NotNull] this IApplicationBuilder<T> builder, Action<T> applicationLogic, string[] args)
       where T : class
    {
       builder.UseApplicationLogic((t, _) =>
@@ -250,7 +272,11 @@ public static class ApplicationBuilderExtensions
       if (builder == null)
          throw new ArgumentNullException(nameof(builder));
 
+#if NET5_0_OR_GREATER
+      return builder.RunAsync(Environment.GetCommandLineArgs().Skip(1).ToArray(), cancellationToken);
+#else
       return builder.RunAsync(Environment.CommandLine, cancellationToken);
+#endif
    }
 
    public static Task<IConsoleApplication<T>> RunAsync<T>([NotNull] this IApplicationBuilder<T> builder, string args,
