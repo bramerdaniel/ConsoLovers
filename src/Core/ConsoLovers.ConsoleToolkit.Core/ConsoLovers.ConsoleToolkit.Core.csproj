@@ -5,7 +5,7 @@
 		<OutputPath>$(SolutionDir)$(Configuration)</OutputPath>
 		<Authors>Daniel Bramer</Authors>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>5.1.1</Version>
+		<Version>5.2.0</Version>
 		<PackageTags>Console Shell ConsoleToolkit .Net CommandLineArgument CommandLineArguments CommandLineParser</PackageTags>
 		<PackageIconUrl>https://raw.githubusercontent.com/bramerdaniel/ConsoLovers/master/src/ConsoLovers.ConsoleToolkit/Resources/Icon.ico</PackageIconUrl>
 		<PackageProjectUrl>https://github.com/bramerdaniel/ConsoLovers</PackageProjectUrl>
@@ -15,7 +15,10 @@
 			This package contains the basic funtionality like application handling and command line argument parsing/mapping like the 4.* version of the ConsoLovers.ConsoleToolkit did, but usable for .NetStandard 2.0
 		</Description>
 		<LangVersion>latest</LangVersion>
-		<PackageReleaseNotes>5.1.1
+		<PackageReleaseNotes>
+ 5.2.0
+  - Added fixed sections
+ 5.1.1
  - Workaround for .Net6 change of Environment.CommandLine changes
  - Added Clone method to ICommandLineArguments 
  5.0.0

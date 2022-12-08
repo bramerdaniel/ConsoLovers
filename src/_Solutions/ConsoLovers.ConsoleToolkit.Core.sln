@@ -26,7 +26,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InputBoxDemo", "..\Core\Dem
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Debugger", "Debugger\Debugger.csproj", "{AAED1E3D-08DF-4274-9CBF-29EB298DEB7F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net6Playground", "..\Core\DemoApplications\Net6Playground\Net6Playground.csproj", "{71F43171-51BA-47D1-AE2E-2343C4F3B496}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Net6Playground", "..\Core\DemoApplications\Net6Playground\Net6Playground.csproj", "{71F43171-51BA-47D1-AE2E-2343C4F3B496}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SectionUpdate", "..\Core\DemoApplications\SectionUpdate\SectionUpdate.csproj", "{EE805959-BEBE-4A84-9AD4-694C16182485}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -70,6 +72,10 @@ Global
 		{71F43171-51BA-47D1-AE2E-2343C4F3B496}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{71F43171-51BA-47D1-AE2E-2343C4F3B496}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{71F43171-51BA-47D1-AE2E-2343C4F3B496}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE805959-BEBE-4A84-9AD4-694C16182485}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE805959-BEBE-4A84-9AD4-694C16182485}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE805959-BEBE-4A84-9AD4-694C16182485}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE805959-BEBE-4A84-9AD4-694C16182485}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -81,6 +87,7 @@ Global
 		{9C3A99DB-0AE9-4F86-9810-FBEBD8FF8493} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
 		{58701FB8-1CFA-408B-9673-7C459EE1CED3} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
 		{71F43171-51BA-47D1-AE2E-2343C4F3B496} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
+		{EE805959-BEBE-4A84-9AD4-694C16182485} = {33481418-C30A-4396-A3D8-70468C8EE8CA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {96E66A12-23DF-4590-A1FA-F6206E6C8F89}
