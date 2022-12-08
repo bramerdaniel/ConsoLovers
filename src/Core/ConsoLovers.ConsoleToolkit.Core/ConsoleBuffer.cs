@@ -7,10 +7,9 @@
 namespace ConsoLovers.ConsoleToolkit.Core
 {
    using System;
-   using System.Runtime.InteropServices;
 
    /// <summary>Class providing direct write access to the console buffer, without the need to set the cursor before.</summary>
-   internal  class ConsoleBuffer 
+   internal class ConsoleBuffer 
    {
       #region Constants and Fields
 
@@ -58,15 +57,14 @@ namespace ConsoLovers.ConsoleToolkit.Core
       {
          Win32Console.SetConsoleTitle(text);
       }
-
-
+      
       public void SetCursorSize(int size)
       {
          if (size < 0 || size > 100)
             throw new ArgumentOutOfRangeException(nameof(size));
 
          var cursorInfo = new Win32Console.CONSOLE_CURSOR_INFO{  bVisible = true, dwSize = size };
-         var info = Win32Console.SetConsoleCursorInfo(outputHandle, ref cursorInfo);
+         Win32Console.SetConsoleCursorInfo(outputHandle, ref cursorInfo);
       }
 
 
@@ -99,8 +97,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
          if (clearLine)
          {
-            Win32Console.CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
-            Win32Console.GetConsoleScreenBufferInfo(outputHandle, out bufferInfo);
+            Win32Console.GetConsoleScreenBufferInfo(outputHandle, out var bufferInfo);
             bufferToWrite = CreateBuffer(bufferInfo.dwSize.X, foreground, background);
             InsertInBuffer(bufferToWrite, (short)left, text, foreground, background);
             left = 0;
@@ -111,12 +108,9 @@ namespace ConsoLovers.ConsoleToolkit.Core
          }
 
          var rect = new Win32Console.SMALL_RECT { Left = (short)left, Top = (short)top, Right = (short)(left + bufferToWrite.Length), Bottom = (short)(top + 1) };
-         Win32Console.WriteConsoleOutput(
-            outputHandle,
-            bufferToWrite,
+         Win32Console.WriteConsoleOutput(outputHandle, bufferToWrite,
             new Win32Console.COORD { X = (short)bufferToWrite.Length, Y = 1 },
-            new Win32Console.COORD { X = 0, Y = 0 },
-            ref rect);
+            new Win32Console.COORD { X = 0, Y = 0 }, ref rect);
       }
 
       public void WriteLine(int left, int top, char character, ConsoleColor foreground, ConsoleColor background)
@@ -124,16 +118,13 @@ namespace ConsoLovers.ConsoleToolkit.Core
          if (readonlySections[left, top])
             return;
 
-         short attribute = ConsoleColorToColorAttribute(foreground, background);
-         var bufferToWrite = new[] { new Win32Console.CHAR_INFO { attributes = attribute, charData = character } };
+         var attribute = ConsoleColorToColorAttribute(foreground, background);
+         var bufferToWrite = new[] { new Win32Console.CHAR_INFO { attributes = attribute, charData = new Win32Console.CharUnion{ UnicodeChar = character }} };
 
          var rect = new Win32Console.SMALL_RECT { Left = (short)left, Top = (short)top, Right = (short)(left + bufferToWrite.Length), Bottom = (short)(top + 1) };
-         Win32Console.WriteConsoleOutput(
-            outputHandle,
-            bufferToWrite,
+         Win32Console.WriteConsoleOutput(outputHandle, bufferToWrite,
             new Win32Console.COORD { X = (short)bufferToWrite.Length, Y = 1 },
-            new Win32Console.COORD { X = 0, Y = 0 },
-            ref rect);
+            new Win32Console.COORD { X = 0, Y = 0 }, ref rect);
       }
 
 
@@ -165,7 +156,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
          var index = 0;
          foreach (var c in text)
          {
-            buffer[index].charData = c;
+            buffer[index].charData = new Win32Console.CharUnion { UnicodeChar = c };
             buffer[index].attributes = attribute;
             index++;
          }
@@ -179,7 +170,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
          var index = startIndex;
          foreach (var c in text)
          {
-            buffer[index].charData = c;
+            buffer[index].charData = new Win32Console.CharUnion { UnicodeChar = c };
             buffer[index].attributes = attribute;
             index++;
          }

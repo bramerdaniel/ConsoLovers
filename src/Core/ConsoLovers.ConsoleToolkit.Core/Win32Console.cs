@@ -93,24 +93,32 @@ namespace ConsoLovers.ConsoleToolkit.Core
       [ResourceExposure(ResourceScope.Process)]
       internal static extern bool SetConsoleTitle(string title);
 
-      [DllImport(KERNEL32, SetLastError = true)]
+      [DllImport(KERNEL32, SetLastError = true, CharSet = CharSet.Unicode)]
       [ResourceExposure(ResourceScope.Process)]
       internal static extern bool WriteConsoleOutput(IntPtr hConsoleOutput, CHAR_INFO[] buffer, COORD bufferSize, COORD bufferCoord, ref SMALL_RECT writeRegion);
 
       #endregion
 
-      [StructLayout(LayoutKind.Sequential)]
+      [StructLayout(LayoutKind.Explicit, CharSet = CharSet.Unicode)]
+      public struct CharUnion
+      {
+         [FieldOffset(0)] public char UnicodeChar;
+         [FieldOffset(0)] public byte AsciiChar;
+      }
+
+
+      [StructLayout(LayoutKind.Explicit)]
       internal struct CHAR_INFO
       {
-         public ushort charData; // Union between WCHAR and ASCII char
+         [FieldOffset(0)] public CharUnion charData; // Union between WCHAR and ASCII char
 
-         public short attributes;
+         [FieldOffset(2)] public short attributes;
 
          /// <summary>Returns a <see cref="System.String"/> that represents this instance.</summary>
          /// <returns>A <see cref="System.String"/> that represents this instance.</returns>
          public override string ToString()
          {
-            return $"'{(char)charData} ({attributes})";
+            return $"'{charData} ({attributes})";
          }
       }
 

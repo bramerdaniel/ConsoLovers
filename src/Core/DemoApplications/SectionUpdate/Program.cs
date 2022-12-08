@@ -12,11 +12,10 @@
 
       static void Main(string[] args)
       {
-         var fixedSection = console.CreateFixedSegment(console.WindowWidth - 5 , 2, 5, "Hello");
          console.Write("Number: ");
          var section = console.CreateFixedSegment(5);
          console.Write("xxxxx");
-         var reverse = console.CreateFixedSegment(5);
+         var reverse = console.CreateFixedSegment(10);
          console.Write("xxxxx");
          console.WriteLine();
          Thread.Sleep(1000);
@@ -42,7 +41,7 @@
       {
          for (int i = 0; i <= 100; i++)
          {
-            segment.Update(i.ToString(), GetColor(i));
+            segment.Update($"{i}", GetColor(i));
             await Task.Delay(50);
          }
       }
@@ -50,7 +49,7 @@
       {
          for (int i = 100; i > 0; i--)
          {
-            segment.Update(i.ToString(), GetColor(i));
+            segment.Update($"äüö {i}", GetColor(i));
             await Task.Delay(50);
          }
       }

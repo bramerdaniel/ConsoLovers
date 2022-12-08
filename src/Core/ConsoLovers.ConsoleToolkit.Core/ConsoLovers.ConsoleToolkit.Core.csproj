@@ -5,7 +5,7 @@
 		<OutputPath>$(SolutionDir)$(Configuration)</OutputPath>
 		<Authors>Daniel Bramer</Authors>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>5.2.0</Version>
+		<Version>5.2.1</Version>
 		<PackageTags>Console Shell ConsoleToolkit .Net CommandLineArgument CommandLineArguments CommandLineParser</PackageTags>
 		<PackageIconUrl>https://raw.githubusercontent.com/bramerdaniel/ConsoLovers/master/src/ConsoLovers.ConsoleToolkit/Resources/Icon.ico</PackageIconUrl>
 		<PackageProjectUrl>https://github.com/bramerdaniel/ConsoLovers</PackageProjectUrl>
@@ -16,7 +16,9 @@
 		</Description>
 		<LangVersion>latest</LangVersion>
 		<PackageReleaseNotes>
- 5.2.0
+ 5.2.1
+  - Fixed unicode char set for fixed section
+5.2.0
   - Added fixed sections
  5.1.1
  - Workaround for .Net6 change of Environment.CommandLine changes
