@@ -1,7 +1,7 @@
 <!-- the .targets are all imported at the end of each project file-->
 <Project >
 	<ItemGroup>
-		<PackageReference Update="ConsoLovers.ConsoleToolkit.Core" Version="5.1.0"  />
+		<PackageReference Update="ConsoLovers.ConsoleToolkit.Core" Version="5.2.0"  />
 		<PackageReference Update="Castle.Core" Version="4.2.1" />
 		<PackageReference Update="FluentAssertions" Version="5.2.0" />
 		<PackageReference Update="Moq" Version="4.8.2" />

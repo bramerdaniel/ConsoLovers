@@ -4,10 +4,12 @@
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<AssemblyTitle>ConsoLovers.ConsoleToolkit</AssemblyTitle>
 		<PackageId>ConsoLovers.ConsoleToolkit</PackageId>
-		<Version>6.2.0</Version>
+		<Version>6.2.1</Version>
 		<AssemblyVersion>6.0.0.0</AssemblyVersion>
 		<FileVersion>6.0.0.0</FileVersion>
 		<PackageReleaseNotes>
+			6.2.1
+			- Update to ConsoLovers.ConsoleToolkit.Core package 5.2.0
 			6.2.0
 			- Added InitializationCancellationMode for menu argument initialization
 			6.1.0
