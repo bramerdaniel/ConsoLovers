@@ -67,11 +67,17 @@ namespace ConsoLovers.ConsoleToolkit.Core
 
       public void Clear()
       {
+         if (Console.IsOutputRedirected)
+            return;
+
          Console.Clear();
       }
 
       public void Clear(ConsoleColor color)
       {
+         if (Console.IsOutputRedirected)
+            return;
+
          Console.BackgroundColor = color;
          Console.Clear();
          Console.ResetColor();
@@ -143,7 +149,7 @@ namespace ConsoLovers.ConsoleToolkit.Core
       {
          Console.WriteLine(value);
       }
-      
+
       public void WriteLine(string value, ConsoleColor foreground)
       {
          var foregroundColor = Console.ForegroundColor;
