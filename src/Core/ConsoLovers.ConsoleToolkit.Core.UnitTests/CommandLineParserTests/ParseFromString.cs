@@ -25,6 +25,16 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.CommandLineParserTests
       #region Public Methods and Operators
 
       [TestMethod]
+      public void EnsureNetFrameworkUncPathIsParsedCorrectly()
+      {
+         var target = Setup.CommandLineArgumentParser().Done();
+
+         var argument = target.GetSingleArgument(@"kdm=""\\pc20550\share\someFile.txt""");
+         argument.Name.Should().Be("kdm");
+         argument.Value.Should().Be(@"\\pc20550\share\someFile.txt");
+      }
+
+      [TestMethod]
       public void EnsureNamePrefixEdgeCasesWorkCorrectly()
       {
          var target = Setup.CommandLineArgumentParser().Done();

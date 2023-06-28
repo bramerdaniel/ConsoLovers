@@ -9,6 +9,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.CommandLineParserTests
    using System;
    using System.Collections.Generic;
    using System.Diagnostics.CodeAnalysis;
+   using System.Linq;
 
    using ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine;
 
@@ -174,6 +175,14 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.CommandLineParserTests
          arguments.ContainsName("RELEASE").Should().BeTrue();
 
          arguments["ReleasE"].Value.Should().BeNull();
+      }
+
+      [TestMethod]
+      public void EnsureUncPathIsParsedCorrectly()
+      {
+         var argument = Parse(@"kdm=""\\pc20550\share\someFile.txt""").Single();
+         argument.Name.Should().Be("kdm");
+         argument.Value.Should().Be(@"""\\pc20550\share\someFile.txt""");
       }
 
       #endregion

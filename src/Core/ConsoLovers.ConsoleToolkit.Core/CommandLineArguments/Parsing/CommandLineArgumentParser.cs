@@ -58,8 +58,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
       public ICommandLineArguments ParseArguments(string args)
       {
          int skipFirst = args.Equals(Environment.CommandLine) ? 1 : 0;
-         var argumentList =
-            new CommandLineArgumentList(Options.CaseSensitive ? StringComparer.InvariantCulture : StringComparer.InvariantCultureIgnoreCase);
+         var argumentList = new CommandLineArgumentList(Options.CaseSensitive ? StringComparer.InvariantCulture : StringComparer.InvariantCultureIgnoreCase);
          int index = 0;
          foreach (var arg in SplitIntoArgs(args).Skip(skipFirst))
          {
@@ -245,7 +244,7 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
 
          void AppendCharacter(CharInfo charInfo)
          {
-            if (charInfo.Current == '\\' && (charInfo.Next == '\\' || charInfo.Next == '"'))
+            if (charInfo.Current == '\\' && charInfo.Next == '"')
                return;
 
             if (inName)
