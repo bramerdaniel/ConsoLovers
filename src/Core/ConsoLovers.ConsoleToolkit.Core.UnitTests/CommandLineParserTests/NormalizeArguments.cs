@@ -47,6 +47,24 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.CommandLineParserTests
       }
 
       [TestMethod]
+      public void EnsureEmptyStringIsRecognizedAsValue()
+      {
+         var result = GetTarget().NormalizeArguments("a=\"\"", "b=").ToList();
+         result.Count.Should().Be(2);
+         result.Contains("a=\"\"").Should().BeTrue();
+         result.Contains("b=").Should().BeTrue();
+      }
+
+
+      [TestMethod]
+      public void EnsureExpectedBehaviourForValuesEndingWithEqualsSign()
+      {
+         var result = GetTarget().NormalizeArguments("a=", "myEqualSign=").ToList();
+         result.Count.Should().Be(1);
+         result.Contains("a=myEqualSign=").Should().BeTrue();
+      }
+
+      [TestMethod]
       public void EnsureSpacedArgumentsAreCorrectedWithMultipleArguments()
       {
          var result = GetTarget().NormalizeArguments("-level", "=", "55", "/debug", ":", "true").ToList();

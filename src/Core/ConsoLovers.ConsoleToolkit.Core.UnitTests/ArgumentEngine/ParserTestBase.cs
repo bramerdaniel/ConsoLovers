@@ -25,6 +25,17 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.ArgumentEngine
       {
          return GetTarget().ParseArguments(parameters);
       }
+      
+      protected ICommandLineArguments Parse(ICommandLineOptions options, params string[] parameters)
+      {
+         return GetTarget(options).ParseArguments(parameters);
+      }
+
+      private CommandLineArgumentParser GetTarget(ICommandLineOptions options)
+      {
+         return Setup.CommandLineArgumentParser().WithOptions(options).Done();
+      }
+
       protected CommandLineArgument ParseSingle(params string[] parameters)
       {
          return GetTarget().ParseArguments(parameters).Single();

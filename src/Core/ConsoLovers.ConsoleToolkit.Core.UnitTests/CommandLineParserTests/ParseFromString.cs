@@ -379,6 +379,24 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.CommandLineParserTests
       }
 
       [TestMethod]
+      public void EnsureCombinationOfEmptyArgumentsIsParseCorrectly()
+      {
+         var target = Setup.CommandLineArgumentParser().Done();
+
+         var arguments = target.ParseArguments("-bla -searchPattern= -ifl= -kvi=somestring");
+         arguments.Count.Should().Be(4);
+         arguments.ContainsName("bla").Should().BeTrue();
+         arguments.ContainsName("searchPattern").Should().BeTrue();
+         arguments.ContainsName("ifl").Should().BeTrue();
+         arguments.ContainsName("kvi").Should().BeTrue();
+
+         arguments["bla"].Value.Should().BeNull();
+         arguments["searchPattern"].Value.Should().BeNull();
+         arguments["ifl"].Value.Should().BeNull();
+         arguments["kvi"].Value.Should().Be("somestring");
+      }
+
+      [TestMethod]
       public void EnsureMultipleParametersAreParsedCorrectly()
       {
          var target = Setup.CommandLineArgumentParser().Done();

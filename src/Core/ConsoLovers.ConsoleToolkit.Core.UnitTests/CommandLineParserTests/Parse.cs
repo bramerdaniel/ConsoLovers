@@ -7,7 +7,6 @@
 namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.CommandLineParserTests
 {
    using System;
-   using System.Collections.Generic;
    using System.Diagnostics.CodeAnalysis;
    using System.Linq;
 
@@ -86,6 +85,25 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.CommandLineParserTests
          AssertContains(arguments, "File", @"D:\Temp\file.txt");
          AssertContains(arguments, "P");
          AssertContains(arguments, "O");
+      }
+
+      [TestMethod]
+      public void EnsureArgumentsNormalizationCanBeSwitchedOff()
+      {
+         var commandLineOptions = new CommandLineOptions { NormalizeArgumentArray = false };
+         var arguments = Parse(commandLineOptions,"-searchPattern=", "-ifl=");
+
+         AssertContains(arguments, "searchPattern", @"");
+         AssertContains(arguments, "ifl", "");
+      }
+      
+      [TestMethod]
+      public void EnsureArgumentsNormalizationIsBackwardsCompatible()
+      {
+         var commandLineOptions = new CommandLineOptions(); // Normalization is true by default
+         var arguments = Parse("-searchPattern=", "-ifl=");
+
+         AssertContains(arguments, "searchPattern", @"-ifl=");
       }
 
       [TestMethod]
