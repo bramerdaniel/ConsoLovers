@@ -89,6 +89,15 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.CommandLineParserTests
       }
 
       [TestMethod]
+      public void EnsureAllKindOfArgumentsAreParsedCorrectly2()
+      {
+         var arguments = Parse("-searchPattern=", "-ifl=");
+
+         AssertContains(arguments, "searchPattern", @"");
+         AssertContains(arguments, "ifl", "");
+      }
+
+      [TestMethod]
       public void EnsureMultipleOptionsAreParsedCorrectly()
       {
          var arguments = Parse("-d", "/a", "-x");
