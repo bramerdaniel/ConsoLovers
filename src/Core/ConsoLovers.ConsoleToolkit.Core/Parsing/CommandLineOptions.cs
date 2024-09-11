@@ -12,5 +12,7 @@ public class CommandLineOptions : ICommandLineOptions
 
    public bool CaseSensitive { get; set; }
 
+   public bool NormalizeArgumentArray { get; set; } = true;
+
    #endregion
 }

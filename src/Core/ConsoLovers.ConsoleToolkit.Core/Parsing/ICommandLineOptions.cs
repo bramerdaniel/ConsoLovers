@@ -13,5 +13,7 @@ public interface ICommandLineOptions
    /// <summary>Gets or sets a value indicating whether the parser is case sensitive.</summary>
    bool CaseSensitive { get; set; }
 
+   bool NormalizeArgumentArray { get; set; }
+
    #endregion
 }

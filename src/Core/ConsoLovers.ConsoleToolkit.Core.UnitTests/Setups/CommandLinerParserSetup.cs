@@ -14,9 +14,21 @@ namespace ConsoLovers.ConsoleToolkit.Core.UnitTests.Setups
 
       protected override CommandLineArgumentParser CreateInstance()
       {
-         return new CommandLineArgumentParser();
+         var parser = new CommandLineArgumentParser();
+         if (Options != null)
+            parser.Options = Options;
+
+         return parser;
+      }
+      
+      #endregion
+
+      public CommandLinerParserSetup WithOptions(ICommandLineOptions options)
+      {
+         Options = options;
+         return this;
       }
 
-      #endregion
+      protected ICommandLineOptions Options { get; set; }
    }
 }

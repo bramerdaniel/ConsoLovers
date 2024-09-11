@@ -39,7 +39,17 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
             new CommandLineArgumentList(Options.CaseSensitive ? StringComparer.InvariantCulture : StringComparer.InvariantCultureIgnoreCase);
          int index = 0;
 
-         foreach (string argument in NormalizeArguments(args).Where(x => !string.IsNullOrEmpty(x)))
+         var argsToParse = args;
+         if (Options.NormalizeArgumentArray)
+         {
+            argsToParse = NormalizeArguments(args).ToArray();
+         }
+         else
+         {
+            argsToParse = args.Select(s => s.Trim()).ToArray();
+         }
+
+         foreach (string argument in argsToParse.Where(x => !string.IsNullOrEmpty(x)))
          {
             if (IsNamedParameter(argument))
                ParseNamedParameter(argument, arguments, index);
@@ -173,12 +183,12 @@ namespace ConsoLovers.ConsoleToolkit.Core.CommandLineArguments.Parsing
       {
          if (string.IsNullOrEmpty(argumentString))
             return;
-
-         string option = argumentString.TrimStart(ArgumentSigns).Trim();
+         var trimmedArgumentString = argumentString.TrimStart();
+         string option = trimmedArgumentString.TrimStart(ArgumentSigns).Trim();
          if (string.IsNullOrEmpty(option))
             return;
 
-         var prefix = argumentString.Substring(0, argumentString.Length - option.Length);
+         var prefix = trimmedArgumentString.Substring(0, trimmedArgumentString.Length - option.Length);
 
          if (arguments.ContainsName(option))
          {
